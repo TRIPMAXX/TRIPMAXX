@@ -1,0 +1,160 @@
+.form_text_wrapper{
+width:80%;
+margin: 0px auto;
+}
+.form_wrapper{
+width:80%;
+margin: 0px auto;
+}
+.form_text_wrapper h1{
+font-size: 18px;
+line-height: 1.4;
+font-weight: 400;
+text-shadow: none;
+color: #cd2122;
+font-family: Open Sans;
+margin-bottom:15px;
+}
+.form_text_wrapper h5{
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 13px;
+line-height: 1.7;
+color: #535353;
+margin:0px;
+padding:0px 0px;
+}
+.form_text_wrapper p{
+font-size: 13px;
+line-height: 1.7;
+color: #535353;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+margin:0px;
+}
+.all_form_wrapper{
+padding:50px 0px 0px;
+}
+.form_wrapper{
+padding: 30px 0px 50px;
+}
+.form_input{
+height:60px;
+font-size: 14px;
+line-height: 1.42857143;
+padding:8px 0px 0px 15px;
+color: #555555;
+background-color: #ffffff;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.fancy-form {
+    position: relative;
+}
+.form-label{
+color: #969696;
+font-family: "Montserrat",Helvetica,Arial,sans-serif;
+font-size: 10px;
+text-transform: uppercase;
+position: absolute;
+top: 10px;
+left: 16px;
+cursor: text;
+-webkit-transition: all .25s ease;
+-moz-transition: all .25s ease;
+transition: all .25s ease;
+}
+.code_input{
+height:35px;
+margin-left:10px;
+}
+.btn_form{
+text-align:center;
+}
+.btn_form button{
+background-color: #cd2122;
+color: #fff;
+text-transform:uppercase;
+height:45px;
+
+}
+.cap_position{
+margin-left:180px;
+}
+.form_full_width{
+width:100%;
+margin:0px auto;
+}
+.code_text{
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 13px;
+line-height: 1.7;
+color: #535353;
+margin:0px;
+padding:0px 0px;
+}
+
+
+/*agent extra css start*/
+.agent_form_wrapper{
+width:100%;
+}
+.agent_form_text_wrapper{
+width:100%;
+}
+.agent_form_wrapper h1{
+    font-family: Open Sans;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 400;
+    font-style: normal;
+	font-weight:bold;
+	margin:20px 0px 25px;
+	color: #535353;
+}
+.form-label1{
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 13px;
+line-height: 1.7;
+color: #535353;
+}
+.cap_img{
+float:right;
+}
+.fancy-form span{
+color:red;
+}
+.select_bg{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+.radio_pad span{
+margin-right:10px;
+}
+.btn_top{
+margin-top:30px;
+}
+
+@media(max-width:991px){
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

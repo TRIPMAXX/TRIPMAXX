@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>TRIPMAX - Destination Management Company</title>
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<meta charset="utf-8" />
+<link rel="icon" href="favicon.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="css/bootstrap.css">
+<link rel="stylesheet" href="css/jquery-ui.css">
+<link rel="stylesheet" href="css/owl.carousel.css">
+<link rel="stylesheet" href="css/swiper.css">
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css"/>
+<link rel="stylesheet" href="css/tab.css"/>
+<link rel="stylesheet" href="css/mycss.css" />
+<link rel="stylesheet" href="css/backend.min.css" />
+<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Lora:400,400italic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Raleway:100,200,300,400,600,700,800' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Raleway:400,600' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700&amp;subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700&amp;subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700&amp;subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+</head>
+<body class="index-page">
+<header id="top">
+		<div class="header-a">
+			<div class="wrapper-padding">
+				<div class="header-phone"><span>+91 33 4032 8888</span></div>
+				<div class="header-account">
+					<a href="#">travel@tripmaxx.in</a>
+				</div>
+				<div class="header-social">
+					<a href="#" class="social-twitter"></a>
+					<a href="#" class="social-facebook"></a>
+					<a href="#" class="social-vimeo"></a>
+					<a href="#" class="social-pinterest"></a>
+					<a href="#" class="social-instagram"></a>
+				</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="header-b">
+			<div class="mobile-menu">
+				<nav>
+					<ul>
+						<li><a class="has-child" href="#">HOME</a></li>
+						<li>
+							<a class="has-child" href="#">DASHBOARD</a><!--for sub items plese link class="has-child"-->
+							<ul>
+								<li><a href="dashboard.html">DASHBOARD</a></li>
+								<li><a href="profile.html">PROFILE</a></li>
+								<li><a href="create_new_booking.html">CREATE NEW BOOKING</a></li>
+								<li><a href="booking.html">BOOKINGS</a></li>
+								<li><a href="accounting.html">ACCOUNT</a></li>
+								<li><a href="sub_agent.html">SUB AGENT</a></li>
+							</ul>
+						</li>
+						<li><a class="has-child" href="#">WHO WE ARE</a></li>
+						<li><a class="has-child" href="#">EXPERIENCE DESTINATION</a></li>
+						<li><a class="has-child" href="#">KNOW THE TEAM</a></li>
+						<li><a class="has-child" href="#">CAREER</a></li>
+						<li><a class="has-child" href="#">CONTACT</a></li>
+					</ul>
+				</nav>
+			</div>
+			<div class="wrapper-padding">
+				<div class="header-logo">
+					<a href="index.html"><img alt="" src="img/logo.png" /></a>
+				</div>
+				<div class="header-right">
+					<a href="#" class="menu-btn"></a>
+					<nav class="header-nav">
+						<ul>
+							<li><a href="#">HOME</a></li>
+							<li>
+								<a href="#">DASHBOARD</a>
+								<ul>
+									<li><a href="dashboard.html">DASHBOARD</a></li>
+									<li><a href="profile.html">PROFILE</a></li>
+									<li><a href="create_new_booking.html">CREATE NEW BOOKING</a></li>
+									<li><a href="booking.html">BOOKINGS</a></li>
+									<li><a href="accounting.html">ACCOUNT</a></li>
+									<li><a href="sub_agent.html">SUB AGENT</a></li>
+								</ul>
+							</li>
+							<li><a href="#">WHO WE ARE</a></li>
+							<li><a href="#">EXPERIENCE DESTINATION</a></li>
+							<li><a href="#">KNOW THE TEAM</a></li>
+							<li><a href="#">CAREER</a></li>
+							<li><a href="#">CONTACT</a></li>
+						</ul>
+					</nav>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+	</header>
+<div class="main-cont">
+  <div class="body-padding">
+    <div class="banner_slider" style="background:url(img/banner4.jpg)no-repeat center center/cover;">
+      <div class="banner_slider_text"> LISTS OF BOOKINGS </div>
+    </div>
+    <div id="" class="container">
+      <div class="mp-offesr">
+        <div class="wrapper-padding-a">
+          <div class="offer-slider">
+            <div class="row rows">
+            	<div class="col-md-12">
+                	<div class="box box2">
+							<div class="box-body box_body_res">
+								<div class="tab-pane active" role="tabpanel" id="step1">
+									<h3 class="field_heading" style="color:#d82d27">Booking History</h3>
+									<form name="profile" id="form_create_slider" method="POST" enctype="mulimedeia/form-data">
+										<div class="col-md-12 row rows">
+											<div class="box-body box_body_res">
+												<div class="form-group col-md-6 res_padding_left_right">
+													<label for="inputName" class="control-label">Booking ID</label>
+													<input type="text" class="form-control validate[required] hasDatepicker" value="" name="checkout" id="checkout" placeholder="Booking Id" tabindex="1">
+												</div>
+												<div class="form-group col-md-6 res_padding_left_right">
+													<label for="inputName" class="control-label">Reservation Status</label>
+													<select name="country" class="form-control select_box_styl validate[required]" id="country">
+														<option label="All" value="" selected="selected">All</option>
+														<option label="On Request" value="on_request">On Request</option>
+														<option label="Confirmed" value="confirmed">Confirmed</option>
+														<option label="Vouchered" value="vouchered">Vouchered</option>
+														<option label="Cancelled" value="cancelled">Cancelled</option>
+														<option label="Rejected" value="rejected">Rejected</option>
+														<option label="In Process Cancel" value="inprocess_cancel">In Process Cancel</option>
+														<option label="Posted" value="Posted">Posted</option>
+														<option label="Vouchered and Cancelled" value="vouchered_cancelled">Vouchered and Cancelled</option>
+														<option label="Vouchered and Cancelled" value="vouchered_cancelled">Quotation</option>
+													</select>
+												</div>
+												<div class="form-group col-md-6 res_padding_left_right">
+													<label for="inputName" class="control-label">Booking Date From</label>
+													<input type="text" class="form-control validate[required] hasDatepicker" value="" name="checkin" id="checkin" placeholder="Booking Date From<" tabindex="3">
+												</div>
+												<div class="form-group col-md-6 res_padding_left_right">
+													<label for="inputName" class="control-label">Booking Date To</label>
+													<input type="text" class="form-control validate[required] hasDatepicker" value="" name="checkout" id="checkout2" placeholder="Booking Date To" tabindex="4">
+												</div>
+												<div class="form-group col-md-6 res_padding_left_right">
+													<label for="inputName" class="control-label">Service Date From</label>
+													<input type="text" class="form-control validate[required] hasDatepicker" value="" name="checkin2" id="checkin2" placeholder="Service Date From" tabindex="3">
+												</div>
+												<div class="form-group col-md-6 res_padding_left_right">
+													<label for="inputName" class="control-label">Service Date To</label>
+													<input type="text" class="form-control validate[required] hasDatepicker" value="" name="checkout2" id="checkout3" placeholder="Service Date To" tabindex="4">
+												</div>
+                                                <div class="clearfix"></div>
+											</div>
+										</div>
+									</form>
+									<ul class="list-inline pull-left res_btn">
+										<li><button type="button" class="btn btn-primary next-step">Search</button></li>
+									</ul>
+								</div>
+							</div>
+							
+						</div>
+                </div>
+            </div>
+            <div class="row rows">
+                            <div class="col-md-12">
+                                	<!--<div class="bopoking_hedaing">
+                                    	<h1>Booking History</h1>
+                                    </div>-->
+                                	<div class="box box-info">
+							<!--<div class="box-header">
+								<i class="fa fa-cart-plus"></i>
+								<h3 class="box-title">LATEST BOOKING REQUEST</h3>
+								
+							</div>-->
+							<div class="box-body">
+								<div class="box-body no-padding">
+									<div id="no-more-tables">
+                                    <table class="table table-condensed">
+										<thead>
+                                       <tr>
+                                          <th style="width: 10px">#</th>
+                                          <th>Customer Details</th>
+                                          <th>Check In & Check Out Date</th>
+                                         <th>Destination</th>
+                                          <th>Service Include</th>
+                                          <th>Total Quotation</th>
+                                          <th>Status</th>
+                                          <th>Action</th>
+                                          
+                                       </tr>
+									   </thead>
+                                       <tr>
+                                          <td data-title="#">1</td>
+                                         <td data-title="Order Details">
+                                           	Sandeep Sing <br>
+											E: candeep@gmail.com <br>
+                                            P: +91 2365986989
+                                          </td>
+                                          <td data-title="Distance">
+                                             01/03/2018 - 04/03/2018
+                                          </td>
+                                          <td data-title="Status">
+											Thailand, Bangkok<br/>for 3 Days 1 Person
+                                          </td>
+                                          <td data-title="Status">
+											Hotel, Transfer, Tour
+                                          </td>
+                                          
+                                           <td data-title="Status">
+											$8475.00
+                                          </td>
+                                          <td data-title="Status">
+											<span class="btn-warning" style="display: inline-block; padding: 10px 10px;font-weight: bold;">PENDING</span>
+                                          </td>
+										 
+                                          <td class=" " data-title="Action">
+														<a href = "view_booking_details.html" title = "View Booking Details"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
+														<a href = "javascript:void(0);" title = "Generate Vouchers"><i class="fa fa-file fa-1x" ></i></a>&nbsp;&nbsp;
+														<a href="edit_booking_new.html" title="Edit Booking"><i class="fa fa-pencil-square-o fa-1x"></i></a>&nbsp;&nbsp;
+														<a href="#" title="Delete Booking" onclick=""><i class="fa fa fa-trash-o fa-1x"></i></a>
+													</td>
+                                       </tr>
+                                    </table>
+                                 </div>
+								</div>
+							</div>
+                                </div>
+                            </div>
+                            
+                            
+						</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<footer class="footer-a">
+  <div class="wrapper-padding">
+    <div class="container">
+      <div class="row rows">
+        <div class="col-md-6">
+          <div class="row rows">
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <div class="section">
+                <div class="footer-lbl">Get In Touch</div>
+                <div class="footer-adress"> 2, Ganesh Chandra Avenue, Commerce House, 1st floor,<br>
+                  Kolkata 700013. India. </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <div class="section">
+                <div class="footer-lbl">CONTACT</div>
+                <div class="footer-phones">Telephones: +91 33 4032 8888</div>
+                <div class="footer-email">E-mail: travel@tripmaxx.in</div>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <section class="map_sec">
+            <div id="map_canvas" class="google_map" style="position: relative; overflow: hidden;"></div>
+            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqHRNCLFjL_2XipyaSdSswQUdoWPYU7Rs&amp;callback=initialize" async defer></script> 
+            <script type="text/javascript">
+							<!--
+							/*google map*/
+							var locations = [
+							  ['<img src="image/user.png"  height="auto"  alt="" style="width:100% !important">', 'Acropolis Mall', 'USA', 'Gautam Talukdar', 'Go to office page in order to see all team members', '#', 'images/map1.png'],
+
+							  
+							];
+							var geocoder;
+							var map;
+							//var bounds = new google.maps.LatLngBounds();
+
+							function initialize() {
+							  map = new google.maps.Map(
+								document.getElementById("map_canvas"), {
+								  center: new google.maps.LatLng(22.5726, 88.3639),
+								  zoom: 10,
+								  mapTypeId: google.maps.MapTypeId.ROADMAP
+								});
+							  geocoder = new google.maps.Geocoder();
+
+							  for (i = 0; i < locations.length; i++) {
+								geocodeAddress(locations, i);
+							  }
+
+							}
+
+							//google.maps.event.addDomListener(window, "load", initialize);
+							function geocodeAddress(locations, i) {
+							  var img = locations[i][0];
+							  var address = locations[i][2];
+							  var name = locations[i][3];
+							  var des = locations[i][4];
+							  var url = locations[i][5];
+							  var icon = locations[i][6];
+							  geocoder.geocode({
+								  'address': locations[i][1]
+								},
+								function(results, status) {
+								  if (status == google.maps.GeocoderStatus.OK) {
+									var marker = new google.maps.Marker({
+									  icon: icon,
+									  map: map,
+									  position: results[0].geometry.location,
+									  img: img,
+									  animation: google.maps.Animation.DROP,
+									  address: address,
+									  url: url,
+									  name:name,
+									  des:des
+									})
+									infoWindow(marker, map, img, address, url, name, des);
+									//bounds.extend(marker.getPosition());
+									//map.fitBounds(bounds);
+								  } else {
+									alert("geocode of " + address + " failed:" + status);
+								  }
+								});
+
+							}
+							function infoWindow(marker, map, img, address, url, name, des) {
+							  google.maps.event.addListener(marker, 'click', function() {
+								var html = "<div style='width:290px;'><div style='border:1px solid #ccc; float:left; width:75px'>" + img + "</div><div style='border:0px solid red; float:right; width:205px'><p style='font-size:14px;color:red'>" + address + "</p><p style='font-weight:bold;'>" + name + "</p><p>" + des + "</p></div></div>";
+								iw = new google.maps.InfoWindow({
+								  content: html,
+								  maxWidth: 350
+								});
+								iw.open(map, marker);
+							  });
+							}
+							//-->
+							</script> 
+          </section>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="clear"></div>
+  </div>
+</footer>
+<footer class="footer-b">
+  <div class="wrapper-padding">
+    <div class="footer-left" style = "text-align:center;">&copy; Copyright 2017 TripMaxx. All rights reserved.</div>
+  </div>
+</footer>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script> 
+<script src="js/bootstrap.min.js"></script> 
+<script src="js/swiper.min.js"></script> 
+<script src="js/slideInit.js"></script> 
+<script src="js/jqeury.appear.js"></script> 
+<script src="js/script.js"></script> 
+<script src="js/owl.carousel.min.js"></script> 
+<script src="js/custom.select.js"></script> 
+<script src="js/jquery-ui.min.js"></script> 
+<script type="text/javascript" src="js/twitterfeed.js"></script> 
+<script src="js/jquery.canvasjs.min.js"></script> 
+<script>
+	$(document).ready(function(){
+		$('.date-inpt').datepicker();
+		$('.custom-select').customSelect();
+		$(function() {
+			$(document.body).on('appear', '.fly-in', function(e, $affected) {
+				$(this).addClass("appeared");
+			});
+			$('.fly-in').appear({force_process: true});
+		});
+
+		$(".owl-slider").owlCarousel({
+			loop:true,
+			margin:28,
+			responsiveClass:true,
+			responsive:{
+		0:{
+			items:1,
+			nav:true
+		},
+		620:{
+			items:2,
+			nav:true
+		},
+		900:{
+			items:3,
+			nav:false
+		},
+		1120:{
+			items:4,
+			nav:true,
+			loop:false
+		}
+	}
+		});
+		//$slideHover();
+	});
+	</script> 
+<script>
+		window.onload = function () {
+			// Construct options first and then pass it as a parameter
+			var options1 = {
+				animationEnabled: true,
+				title: {
+					text: "Monthly Sales Chart"
+				},
+				data: [{
+					type: "column", //change it to line, area, bar, pie, etc
+					legendText: "",
+					showInLegend: false,
+					dataPoints: [
+						{ label: "Agent 1", y: 10 },
+						{ label: "Agent 2", y: 6 },
+						{ label: "Agent 3", y: 14 },
+						{ label: "Agent 4", y: 18 },
+						{ label: "Agent 5", y: 12 },
+						{ label: "Agent 6", y: 19 },
+						{ label: "Agent 7", y: 30 },
+						{ label: "Agent 8", y: 40 },
+						{ label: "Agent 9", y: 55 },
+						{ label: "Agent 10", y: 5 }
+						]
+					}]
+			};
+
+			var options2 = {
+				animationEnabled: true,
+				title: {
+					text: "Progress Chart"
+				},
+				data: [{
+					type: "pie", //change it to line, area, bar, pie, etc
+					legendText: "",
+					showInLegend: false,
+					dataPoints: [
+						{ label: "2017", y: 8 },
+						{ label: "2017", y: 10 },
+						{ label: "2018", y: 25 }
+						]
+					}]
+			};
+
+			$("#resizable1").resizable({
+				create: function (event, ui) {
+					//Create chart.
+					$("#chartContainer1").CanvasJSChart(options1);
+				},
+				resize: function (event, ui) {
+					//Update chart size according to its container size.
+					$("#chartContainer1").CanvasJSChart().render();
+				}
+			});
+
+			$("#resizable2").resizable({
+				create: function (event, ui) {
+					//Create chart.
+					$("#chartContainer2").CanvasJSChart(options2);
+				},
+				resize: function (event, ui) {
+					//Update chart size according to its container size.
+					$("#chartContainer2").CanvasJSChart().render();
+				}
+			});
+
+		}
+	</script>
+    <script type="text/javascript">
+		$(document).ready(function(){
+			$(".add-row").click(function(){
+				var markup = '<span><div class="form-group col-md-12"><div class="form-group col-md-3"><input type="checkbox" name="record"/>&nbsp;&nbsp;<label for="inputName" class="control-label">Country<font color="#FF0000">*</font></label><select name="country" class="form-control validate[required]" id="country"><option value="">- Select-</option><option label="AUSTRALIA" value="1">AUSTRALIA</option><option label="GREECE - ISLANDS" value="22">GREECE - ISLANDS</option><option label="GREECE - MAINLAND" value="23">GREECE - MAINLAND</option><option label="HONG KONG" value="HKG">HONG KONG</option><option label="INDONESIA" value="28">INDONESIA</option><option label="MACAU" value="MO">MACAU</option><option label="MALAYSIA" value="39">MALAYSIA</option><option label="MALDIVES" value="40">MALDIVES</option><option label="MYANMAR" value="148">MYANMAR</option><option label="SINGAPORE" value="55">SINGAPORE</option><option label="SRI LANKA" value="59">SRI LANKA</option><option label="THAILAND" value="64">THAILAND</option><option label="UNITED ARAB EMIRATES" value="67">UNITED ARAB EMIRATES</option></select></div><div class="form-group col-md-3"><label for="inputName" class="control-label">City<font color="#FF0000">*</font></label><select class="form-control validate[required]" name="city" id="city"><option value="">- Select-</option><option value="Ayutthaya">Ayutthaya</option><option value="Bangkok">Bangkok</option><option value="Cha am">Cha Am</option><option value="Chiang mai">Chiang Mai</option><option value="Chiang rai">Chiang Rai</option><option value="Hat yai">Hat Yai</option><option value="Hua hin">Hua Hin</option><option value="Kanchanaburi">Kanchanaburi</option><option value="Khao lak">Khao Lak</option><option value="Khao yai">Khao Yai</option><option value="Koh chang">Koh Chang</option><option value="Koh lanta">Koh Lanta</option><option value="Koh phangan">Koh Phangan</option><option value="Koh samui">Koh Samui</option><option value="Krabi">Krabi</option><option value="Pattaya">Pattaya</option><option value="Phang nga">Phang Nga</option><option value="Phi phi island">Phi Phi Island</option><option value="Phuket">Phuket</option><option value="Pranburi">Pranburi</option><option value="Rayong">Rayong</option><option value="Sa kaeo">Sa Kaeo</option><option value="Samui island">Samui Island</option><option value="Trat">Trat</option></select></div><div class="form-group col-md-3"><label for="inputName" class="control-label">For No Of Nights<font color="#FF0000">*</font></label><input type="text" class="form-control validate[required]"  value="" name="number_of_night" id="number_of_night" placeholder="Number Of Nights" tabindex = "4" /></div><div class="form-group col-md-3"><label for="inputName" class="control-label">Hotel Ratings<font color="#FF0000">*</font></label><br/><input type="checkbox" value="" name="hotel_ratings" id="hotel_ratings" />&nbsp;1&nbsp;&nbsp;<input type="checkbox" value="" name="hotel_ratings" id="hotel_ratings" />&nbsp;2&nbsp;&nbsp;<input type="checkbox"  value="" name="hotel_ratings" id="hotel_ratings" />&nbsp;3&nbsp;&nbsp;<input type="checkbox" value="" name="hotel_ratings" id="hotel_ratings" />&nbsp;4&nbsp;&nbsp;<input type="checkbox" value="" name="hotel_ratings" id="hotel_ratings" />&nbsp;5</div></div></span><div class="clearfix"></div>';
+				$("#sample").append(markup);
+			});
+			
+			// Find and remove selected table rows
+			$(".delete-row").click(function(){
+				//alert();
+				$("#sample").find('input[name="record"]').each(function(){
+					if($(this).is(":checked")){
+						$(this).parents("span").remove();
+					}
+				});
+			});
+		});    
+	</script>
+
+</body>
+</html>
