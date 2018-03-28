@@ -1,5 +1,93 @@
 <?php
-require_once('../loader.inc');
+	require_once('loader.inc');
+	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
+	$white_list_array = array('attribute_name', 'serial_number', 'type', 'status', 'token', 'id', 'btn_submit');
+	$verify_token = "edit_attribute";
+	if(isset($_GET['attribute_id']) && $_GET['attribute_id']!=""):
+		$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
+		if(isset($autentication_data->status)):
+			if($autentication_data->status=="success"):
+				$post_data['token']=array(
+					"token"=>$autentication_data->results->token,
+					"token_timeout"=>$autentication_data->results->token_timeout,
+					"token_generation_time"=>$autentication_data->results->token_generation_time
+				);
+				if(isset($_POST['btn_submit'])) {
+					$_POST['id']=base64_decode($_GET['attribute_id']);
+					if(tools::verify_token($white_list_array, $_POST, $verify_token)) {
+						$post_data['data']=$_POST;
+						$post_data_str=json_encode($post_data);
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+						curl_setopt($ch, CURLOPT_HEADER, false);
+						curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+						curl_setopt($ch, CURLOPT_POST, true);
+						curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+						curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+						curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."attribute/update.php");
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+						$return_data = curl_exec($ch);
+						curl_close($ch);
+						$return_data_arr=json_decode($return_data, true);
+						$supplier_save_data=array();
+						if($return_data_arr['status']=="success")
+						{
+							$_SESSION['SET_TYPE'] = 'success';
+							$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+							header("location:attributes");
+							exit;
+						}
+						else
+						{
+							$_SESSION['SET_TYPE'] = 'error';
+							$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+						}
+					} else {
+						$_SESSION['SET_TYPE'] = 'error';
+						$_SESSION['SET_FLASH'] = 'Access token mismatch. Please reload the page & try again.';
+					}
+				};
+				$post_data['data']=$_GET;
+				$post_data_str=json_encode($post_data);
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+				curl_setopt($ch, CURLOPT_HEADER, false);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+				curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."attribute/read.php");
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+				$return_data = curl_exec($ch);
+				curl_close($ch);
+				$return_data_arr=json_decode($return_data, true);
+				$attribute_data=array();
+				if(!isset($return_data_arr['status'])):
+					$_SESSION['SET_TYPE'] = 'error';
+					$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+					header("location:attributes");
+					exit;
+				elseif($return_data_arr['status']=="success"):
+					$attribute_data=$return_data_arr['results'];
+				else:
+					$_SESSION['SET_TYPE'] = 'error';
+					$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+					header("location:attributes");
+					exit;
+				endif;
+			else:
+				$_SESSION['SET_TYPE'] = 'error';
+				$_SESSION['SET_FLASH'] = $autentication_data->msg;
+			endif;
+		else:
+			$_SESSION['SET_TYPE'] = 'error';
+			$_SESSION['SET_FLASH'] = "We are having some problem to authorize api.";
+		endif;
+	else:
+		$_SESSION['SET_TYPE'] = 'error';
+		$_SESSION['SET_FLASH'] = 'Some data missing.';
+		header("location:attributes");
+		exit;
+	endif;
 ?>
 <!DOCTYPE html>
 <html>
@@ -10,21 +98,9 @@ require_once('../loader.inc');
 	<script type="text/javascript">
 	<!--
 	jQuery(document).ready(function(){
-		jQuery("#form_create_slider").validationEngine();
+		jQuery("#edit_attribute_from").validationEngine();
 	});
 	//-->
-	</script>
-	<script type="text/javascript">
-	CKEDITOR.config.autoParagraph = false;
-	CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
-	CKEDITOR.config.shiftEnterMode = CKEDITOR.ENTER_BR;
-	CKEDITOR.config.protectedSource.push(/<i[^>]*><\/i>/g);
-	CKEDITOR.config.allowedContent = true;
-	</script>
-	<script>
-	jQuery(document).ready(function(){
-		jQuery("#profile").validationEngine();
-	});
 	</script>
 	<!-- JAVASCRIPT CODE -->
 </head>
@@ -53,39 +129,38 @@ require_once('../loader.inc');
 					<div class="col-md-12">
 						<div id="notify_msg_div"></div>
 						<div class="box box-primary">
-							<form name="profile" name="form_create_slider" id="form_create_slider" method="POST" enctype="mulimedeia/form-data">
+							<form name="profile" name="edit_attribute_from" id="edit_attribute_from" method="POST" enctype="multipart/form-data">
 								<div class="col-md-12 row">
 									<div class="box-body">
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Attribute Name<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="" name="attribute_name" id="attribute_name" placeholder="Attribute Name" tabindex = "1" />
+											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['attribute_name']) && $_POST['attribute_name']!='' ? $_POST['attribute_name'] : (isset($attribute_data['attribute_name']) && $attribute_data['attribute_name']!='' ? $attribute_data['attribute_name'] : ""));?>" name="attribute_name" id="attribute_name" placeholder="Attribute Name" tabindex = "1" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Serial Number<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="" name="serial_number" id="serial_number" placeholder="Serial Number" tabindex = "2" />
+											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['serial_number']) && $_POST['serial_number']!='' ? $_POST['serial_number'] : (isset($attribute_data['serial_number']) && $attribute_data['serial_number']!='' ? $attribute_data['serial_number'] : ""));?>" name="serial_number" id="serial_number" placeholder="Serial Number" tabindex = "2" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Attribute Type</label>
-											<select class="form-control validate[optional]"  tabindex = "5">
-												<option value = "Both">Both</option>
-												<option value = "Hotel">Hotel</option>
-												<option value = "Room">Room</option>
+											<select class="form-control " name="type" id="type" tabindex = "3">
+												<option value = "Both" <?php echo(isset($_POST['type']) && $_POST['type']=='Both' ? 'selected="selected"' : (isset($attribute_data['type']) && $attribute_data['type']=='Both' ? 'selected="selected"' : ""));?>>Both</option>
+												<option value = "Hotel" <?php echo(isset($_POST['type']) && $_POST['type']=='Hotel' ? 'selected="selected"' : (isset($attribute_data['type']) && $attribute_data['type']=='Hotel' ? 'selected="selected"' : ""));?>>Hotel</option>
+												<option value = "Room" <?php echo(isset($_POST['type']) && $_POST['type']=='Room' ? 'selected="selected"' : (isset($attribute_data['type']) && $attribute_data['type']=='Room' ? 'selected="selected"' : ""));?>>Room</option>
 											</select>
 										</div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Status</label>
-											<select class="form-control validate[optional]"  tabindex = "5">
-												<option value = "agent">Active</option>
-												<option value = "agent">Inactive</option>
+											<select class="form-control validate[optional]" name="status" id="status" tabindex = "4">
+												<option value = "1" <?php echo(isset($_POST['status']) && $_POST['status']==1 ? 'selected="selected"' : (isset($attribute_data['status']) && $attribute_data['status']==1 ? 'selected="selected"' : ""));?>>Active</option>
+												<option value = "0" <?php echo(isset($_POST['status']) && $_POST['status']==0 ? 'selected="selected"' : (isset($attribute_data['status']) && $attribute_data['status']==0 ? 'selected="selected"' : ""));?>>Inactive</option>
 											</select>
 										</div>
 									</div>
 								</div>
 								<div class="col-md-12 row">
 									<div class="box-footer">
-										<input type="hidden" name="token" value="" />
-										<input type = "hidden" name = "id" id = "id" value = "" />
-										<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex = "4">UPDATE</button>
+										<input type="hidden" name="token" value="<?php echo(tools::generateFormToken($verify_token)); ?>" />
+										<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex = "5">UPDATE</button>
 									</div>
 								</div>
 							</form>

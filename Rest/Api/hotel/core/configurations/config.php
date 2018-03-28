@@ -15,7 +15,7 @@ DATABASE CONFIGURATION
 define("DATABASE_SERVER", "localhost");
 
 //ENTER THE NAME OF YOUR DATABASE
-define("DATABASE_NAME", "tripmaxx_dmc");
+define("DATABASE_NAME", "tripmaxx_hotel");
 
 //ENTER THE USERNAME THAT CONNECTS TO YOUR DATABASE
 define("DATABASE_USERNAME", "root");
@@ -70,15 +70,15 @@ define("PRODUCT_NAME", "TRIPMAXX");
 
 //DEFINE PASSWORD SECURITY SALT
 define("SECURITY_SALT", "neo@008790-09878900678905456@coderz%4844q0pdda!4545");
-define("PROMO_DOC", "assets/upload/promotional_offer/");
-define("CMS_BANNER", "assets/upload/cms_banner/");
-define("GENERAL_IMAGES", "assets/upload/general/");
+define("PROMO_DOC", "../../../../../control_center/assets/upload/promotional_offer/");
+define("CMS_BANNER", "../../../../../control_center/assets/upload/cms_banner/");
+define("GENERAL_IMAGES", "../../../../../control_center/assets/upload/general/");
+
+define("HOTEL_IMAGES", "../../../../../hotel_control_center/assets/upload/hotel/");
+define("ROOM_IMAGES", "../../../../../hotel_control_center/assets/upload/room/");
+
 define("API_USERNAME", "a");
 define("API_PASSWORD", "1");
-define("REST_API_PATH", "Rest/Api/");
-define("SUPPLIER_API_PATH", "supplier/api/");
-define("HOTEL_API_PATH", "hotel/api/");
-
-define("HOTEL_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/hotel/");
-define("ROOM_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/room/");
+define("TOKEN", "b");
+define("TOKEN_TIMEOUT", "10");
 ?>

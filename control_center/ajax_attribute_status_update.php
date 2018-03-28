@@ -3,8 +3,8 @@ require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');	
 	$data['status']="error";
 	$data['msg']="Some data missing.";
-	if(isset($_POST['supplier_id']) && $_POST['supplier_id']!=""):
-		$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."authorized.php"));
+	if(isset($_POST['attribute_id']) && $_POST['attribute_id']!=""):
+		$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
 		$data['msg']="Token is not verified.";
 		if(isset($autentication_data->status)):
 			if($autentication_data->status=="success"):
@@ -14,8 +14,8 @@ require_once('loader.inc');
 					"token_generation_time"=>$autentication_data->results->token_generation_time
 				);
 				$_POST['update_type']="status";
-				$_POST['id']=$_POST['supplier_id'];
-				unset($_POST['supplier_id']);
+				$_POST['id']=$_POST['attribute_id'];
+				unset($_POST['attribute_id']);
 				$post_data['data']=$_POST;
 				$post_data_str=json_encode($post_data);
 				$ch = curl_init();
@@ -23,13 +23,13 @@ require_once('loader.inc');
 				curl_setopt($ch, CURLOPT_HEADER, false);
 				curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
 				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-				curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."supplier/update.php");
+				curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."attribute/update.php");
 				curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 				$return_data = curl_exec($ch);
 				curl_close($ch);
 				$return_data_arr=json_decode($return_data, true);
-				$supplier_data=array();
+				$attribute_data=array();
 				if(!isset($return_data_arr['status'])):
 					$data['msg']="Some error has been occure during execution.";
 				elseif($return_data_arr['status']=="success"):

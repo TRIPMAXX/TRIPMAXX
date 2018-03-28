@@ -26,9 +26,9 @@
 			$country_data=array();
 			if($return_data_arr['status']=="success"):
 				$country_data=$return_data_arr['results'];
-			else:
-				$_SESSION['SET_TYPE'] = 'error';
-				$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+			//else:
+			//	$_SESSION['SET_TYPE'] = 'error';
+			//	$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
 			endif;
 
 			if(isset($_POST['btn_submit'])) {

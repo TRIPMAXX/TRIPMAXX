@@ -1,5 +1,6 @@
 <?php
 require_once('loader.inc');
+tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
 $white_list_array = array('first_name', 'last_name', 'company_name', 'type_of_business', 'email_address', 'password', 'phone_number', 'address', 'country', 'supplier_code', 'creation_date', 'last_updated', 'status', 'token', 'id', 'btn_submit', 'confirm_password');
 $verify_token = "edit_supllier";
 if(isset($_GET['supplier_id']) && $_GET['supplier_id']!=""):
@@ -82,11 +83,15 @@ if(isset($_GET['supplier_id']) && $_GET['supplier_id']!=""):
 			if(!isset($return_data_arr['status'])):
 				$_SESSION['SET_TYPE'] = 'error';
 				$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+				header("location:supplier");
+				exit;
 			elseif($return_data_arr['status']=="success"):
 				$supplier_data=$return_data_arr['results'];
 			else:
 				$_SESSION['SET_TYPE'] = 'error';
 				$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+				header("location:supplier");
+				exit;
 			endif;
 		else:
 			$_SESSION['SET_TYPE'] = 'error';
