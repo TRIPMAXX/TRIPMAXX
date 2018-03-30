@@ -6,7 +6,7 @@
 	$return_data['status']="error";
 	$return_data['msg']="Token is not verified.";
 	$server_data=json_decode(file_get_contents("php://input"), true);
-	if(isset($server_data['token']) && isset($server_data['token']['token']) && isset($server_data['token']['token_timeout']) && isset($server_data['token']['token_generation_time']) && $server_data['token']['token']==TOKEN && ($server_data['token']['token_generation_time']+$server_data['token']['token_timeout']) > time()):
+	if(isset($server_data['token']) && isset($server_data['token']['token']) && isset($server_data['token']['token_timeout']) && isset($server_data['token']['token_generation_time']) && tools::jwtTokenDecode($server_data['token']['token']) && ($server_data['token']['token_generation_time']+$server_data['token']['token_timeout']) > time()):
 		if(isset($server_data['data']) && isset($server_data['data']['country_id']) && $server_data['data']['country_id']!=""):
 			$contry_list = tools::find("all", TM_COUNTRIES, '*', "WHERE id=:id ", array(":id"=>base64_decode($server_data['data']['country_id'])));
 		else:

@@ -2,7 +2,7 @@
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
 	if(isset($_GET['hotel_id']) && $_GET['hotel_id']!=""):
-		$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."authorized.php"));
+		$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
 		if(isset($autentication_data->status)):
 			if($autentication_data->status=="success"):
 			$post_data['token']=array(

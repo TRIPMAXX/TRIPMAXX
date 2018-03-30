@@ -6,6 +6,7 @@ PRODUCT NAME: TRAVELMAXX
 PAGE FUNCTIONALITY: THIS IS THE MICROSERVICE FOR DMC FEATURE.
 =========================================================================================================================
 */
+use \Firebase\JWT\JWT;
 
 class tools { 
 	/*
@@ -1079,6 +1080,33 @@ class tools {
 			return 'n-a';
 		}	
 		return $text;
+	}
+	public static function jwtTokenDecode($token_array){
+		$secretKey = base64_decode(TOKEN_SECRET_KEY);
+		try{
+			$decoded = JWT::decode($token_array, $secretKey, array('HS512'));
+			if($decoded->data->file_name!="" && file_exists("../".$decoded->data->file_name)):
+				$file_token=file_get_contents("../".$decoded->data->file_name);
+				if($decoded->jti==$file_token && time() < $decoded->exp):
+					//unlink("../".$decoded->data->file_name);
+					$files = glob("../*.txt");
+					foreach($files as $file):
+						$file_first_section=explode("_", $file);
+						if(time() > (substr($file_first_section[0], 3)+(TOKEN_TIMEOUT*2))):
+							unlink($file);
+						endif;
+					endforeach;
+					return true;
+				else:
+					return false;
+				endif;
+			else:
+				return false;
+			endif;
+		}catch(Exception $e){
+			//echo $e->getMessage();
+			return false;
+		}
 	}
 }
 ?>

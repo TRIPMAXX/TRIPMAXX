@@ -6,7 +6,7 @@
 	$return_data['status']="error";
 	$return_data['msg']="Token is not verified.";
 	$server_data=json_decode(file_get_contents("php://input"), true);
-	if(isset($server_data['token']) && isset($server_data['token']['token']) && isset($server_data['token']['token_timeout']) && isset($server_data['token']['token_generation_time']) && $server_data['token']['token']==TOKEN && ($server_data['token']['token_generation_time']+$server_data['token']['token_timeout']) > time()):
+	if(isset($server_data['token']) && isset($server_data['token']['token']) && isset($server_data['token']['token_timeout']) && isset($server_data['token']['token_generation_time']) && tools::jwtTokenDecode($server_data['token']['token']) && ($server_data['token']['token_generation_time']+$server_data['token']['token_timeout']) > time()):
 		$hotel_id=$server_data['data']['id'];
 		$find_hotel = tools::find("first", TM_HOTELS, '*', "WHERE id=:id", array(":id"=>$hotel_id));
 		if(!empty($find_hotel)):

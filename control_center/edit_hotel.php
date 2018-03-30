@@ -4,7 +4,7 @@
 	$white_list_array = array('hotel_name', 'hotel_images', 'email_address', 'password', 'confirm_password', 'hotel_address', 'country', 'state', 'city', 'postal_code', 'phone_number', 'alternate_phone_number', 'short_description', 'long_description', 'checkin_time', 'checkout_time', 'rating', 'is_cancellation_policy_applied', 'cancellation_charge', 'cancellation_allowed_days', 'other_policy', 'amenities', 'amenities_arr', 'status', 'token', 'id', 'btn_submit');
 	$verify_token = "edit_hotel";
 	if(isset($_GET['hotel_id']) && $_GET['hotel_id']!=""):
-		$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."authorized.php"));
+		$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
 		if(isset($autentication_data->status)):
 			if($autentication_data->status=="success"):
 			$post_data['token']=array(
@@ -119,15 +119,15 @@
 			if(!isset($return_data_arr['status'])):
 				$_SESSION['SET_TYPE'] = 'error';
 				$_SESSION['SET_FLASH']="Some error has been occure during execution.";
-				header("location:hotels");
-				exit;
+				//header("location:hotels");
+				//exit;
 			elseif($return_data_arr['status']=="success"):
 				$hotel_data=$return_data_arr['results'];
 			else:
 				$_SESSION['SET_TYPE'] = 'error';
 				$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
-				header("location:hotels");
-				exit;
+				//header("location:hotels");
+				//exit;
 			endif;
 		else:
 			$_SESSION['SET_TYPE'] = 'error';

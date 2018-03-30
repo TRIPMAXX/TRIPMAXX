@@ -74,8 +74,13 @@ define("PROMO_DOC", "../../../../../control_center/assets/upload/promotional_off
 define("CMS_BANNER", "../../../../../control_center/assets/upload/cms_banner/");
 define("GENERAL_IMAGES", "../../../../../control_center/assets/upload/general/");
 
+define("REST_API_PATH", "Rest/Api/");
+define("SUPPLIER_API_PATH", "supplier/api/");
+define("HOTEL_API_PATH", "hotel/api/");
+
 define("API_USERNAME", "a");
 define("API_PASSWORD", "1");
-define("TOKEN", "b");
-define("TOKEN_TIMEOUT", "10");
+define("TOKEN", "");
+define("TOKEN_TIMEOUT", 20);
+define("TOKEN_SECRET_KEY", "tripmaxjwtkey");
 ?>
