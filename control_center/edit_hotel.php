@@ -119,15 +119,15 @@
 			if(!isset($return_data_arr['status'])):
 				$_SESSION['SET_TYPE'] = 'error';
 				$_SESSION['SET_FLASH']="Some error has been occure during execution.";
-				//header("location:hotels");
-				//exit;
+				header("location:hotels");
+				exit;
 			elseif($return_data_arr['status']=="success"):
 				$hotel_data=$return_data_arr['results'];
 			else:
 				$_SESSION['SET_TYPE'] = 'error';
 				$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
-				//header("location:hotels");
-				//exit;
+				header("location:hotels");
+				exit;
 			endif;
 		else:
 			$_SESSION['SET_TYPE'] = 'error';
@@ -330,6 +330,7 @@ endif;
 											<label for="hotel_images" class="control-label">Hotel Images</label>
 											<input type="file" class="form-control"  value="" name="hotel_images[]" id="hotel_images" placeholder="Hotel Image" tabindex = "2" multiple/>
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-12">
 											<?php
 											if(isset($hotel_data['hotel_images']) && $hotel_data['hotel_images']!=""):
@@ -359,13 +360,14 @@ endif;
 											<label for="confirm_password" class="control-label">Confirm Password</label>
 											<input type="password" class="form-control validate[equals[password]]"  value="" name="confirm_password" id="confirm_password" placeholder="Confirm Password" tabindex = "5"/>
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-12">
 											<label for="inputName" class="control-label">Hotel Address<font color="#FF0000">*</font></label>
 											<textarea class="form-control validate[required]"  value="" name="hotel_address" id="hotel_address" placeholder="Hotel Address" tabindex = "6"><?php echo(isset($_POST['hotel_address']) && $_POST['hotel_address']!='' ? $_POST['hotel_address'] : (isset($hotel_data['hotel_address']) && $hotel_data['hotel_address']!='' ? $hotel_data['hotel_address'] : ""));?></textarea>
 										</div>
 										<div class="form-group col-md-3">
 											<label for="country" class="control-label">Country<font color="#FF0000">*</font></label>
-											<select name = "country" id="country" class="form-control form_input1 select_bg" tabindex = "7">
+											<select name = "country" id="country" class="form-control form_input1 select_bg validate[required]" tabindex = "7">
 												<option value = "">Select Country</option>
 												<?php
 												if(!empty($country_data)):
@@ -380,13 +382,13 @@ endif;
 										</div>
 										<div class="form-group col-md-3">
 											<label for="state" class="control-label">State / Region<font color="#FF0000">*</font></label>
-											<select name = "state" id="state" class="form-control form_input1 select_bg" tabindex = "8">
+											<select name = "state" id="state" class="form-control form_input1 select_bg validate[required]" tabindex = "8">
 												<option value = "">Select State / Region</option>
 											</select>
 										</div>
 										<div class="form-group col-md-3">
 											<label for="city" class="control-label">City<font color="#FF0000">*</font></label>
-											<select name = "city" id="city" class="form-control form_input1 select_bg" tabindex = "9">
+											<select name = "city" id="city" class="form-control form_input1 select_bg validate[required]" tabindex = "9">
 												<option value = "">Select City</option>
 											</select>
 										</div>
@@ -394,6 +396,7 @@ endif;
 											<label for="postal_code" class="control-label">Postal Code<font color="#FF0000">*</font></label>
 											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['postal_code']) && $_POST['postal_code']!='' ? $_POST['postal_code'] : (isset($hotel_data['postal_code']) && $hotel_data['postal_code']!='' ? $hotel_data['postal_code'] : ""));?>" name="postal_code" id="postal_code" placeholder="Postal Code" tabindex = "10" />
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="phone_number" class="control-label">Phone Number<font color="#FF0000">*</font></label>
 											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['phone_number']) && $_POST['phone_number']!='' ? $_POST['phone_number'] : (isset($hotel_data['phone_number']) && $hotel_data['phone_number']!='' ? $hotel_data['phone_number'] : ""));?>" name="phone_number" id="phone_number" placeholder="Phone Number" tabindex = "11" />
@@ -402,6 +405,7 @@ endif;
 											<label for="alternate_phone_number" class="control-label">Altername Phone Number</label>
 											<input type="text" class="form-control"  value="<?php echo(isset($_POST['alternate_phone_number']) && $_POST['alternate_phone_number']!='' ? $_POST['alternate_phone_number'] : (isset($hotel_data['alternate_phone_number']) && $hotel_data['alternate_phone_number']!='' ? $hotel_data['alternate_phone_number'] : ""));?>" name="alternate_phone_number" id="alternate_phone_number" placeholder="Altername Phone Number" tabindex = "12" />
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-12">
 											<label for="short_description" class="control-label">Short Description</label>
 											<textarea class="form-control validate[optional]"  value="" name="short_description" id="short_description" placeholder="Short Description" tabindex = "13"><?php echo(isset($_POST['short_description']) && $_POST['short_description']!='' ? $_POST['short_description'] : (isset($hotel_data['short_description']) && $hotel_data['short_description']!='' ? $hotel_data['short_description'] : ""));?></textarea>
@@ -430,6 +434,7 @@ endif;
 											?>
 											</select>
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-4">
 											<label for="is_cancellation_policy_applied" class="control-label">Is Cancellation Policy Applied?<font color="#FF0000">*</font></label>
 											<select name = "is_cancellation_policy_applied" id="is_cancellation_policy_applied" class="form-control form_input1 select_bg" tabindex="18">
@@ -453,6 +458,7 @@ endif;
 											?>
 											</select>
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-12">
 											<label for="other_policy" class="control-label">Other Policies</label>
 											<textarea class="form-control ckeditor"  value="" name="other_policy" id="other_policy" placeholder="Other Policies" tabindex = "21"><?php echo(isset($_POST['other_policy']) && $_POST['other_policy']!='' ? $_POST['other_policy'] : (isset($hotel_data['other_policy']) && $hotel_data['other_policy']!='' ? $hotel_data['other_policy'] : ""));?></textarea>
@@ -476,12 +482,13 @@ endif;
 											?>
 										</div>
 										<div class="form-group col-md-6">
-											<label for="status" class="control-label validate[required]">Status<font color="#FF0000">*</font></label>
-											<select class="form-control validate[optional]" name="status" id="status" tabindex = "22">
+											<label for="status" class="control-label">Status<font color="#FF0000">*</font></label>
+											<select class="form-control validate[required]" name="status" id="status" tabindex = "22">
 												<option value = "1" <?php echo(isset($_POST['status']) && $_POST['status']==1 ? 'selected="selected"' : (isset($hotel_data['status']) && $hotel_data['status']==1 ? 'selected="selected"' : ""));?>>Active</option>
 												<option value = "0" <?php echo(isset($_POST['status']) && $_POST['status']==0 ? 'selected="selected"' : (isset($hotel_data['status']) && $hotel_data['status']==0 ? 'selected="selected"' : ""));?>>Inactive</option>
 											</select>
 										</div>
+										<div class="clearfix"></div>
 									</div>
 								</div>
 								<div class="col-md-12 row">

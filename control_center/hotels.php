@@ -23,7 +23,6 @@
 				$return_data = curl_exec($ch);
 				curl_close($ch);
 				$return_data_arr=json_decode($return_data, true);
-				$attribute_data=array();
 				if(!isset($return_data_arr['status'])):
 					$_SESSION['SET_TYPE'] = 'error';
 					$_SESSION['SET_FLASH']="Some error has been occure during execution.";
@@ -194,7 +193,7 @@
 													<td class=" "><?= $hotel_val['phone_number'];?></td>
 													<td class=" "><?= $hotel_val['co_name'];?></td>
 													<td class=" "><?= $hotel_val['s_name'];?></td>
-													<td class=" "><?= $hotel_val['ci_name'];?> star</td>
+													<td class=" "><?= $hotel_val['rating'];?> star</td>
 													<td class=" ">
 														<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $hotel_val['status']==1 ? "btn-success" : "btn-danger";?>" onclick="change_status(<?= $hotel_val['id'];?>, $(this))"><?= $hotel_val['status']==1 ? "Active" : "Inactive";?></a>
 													</td>

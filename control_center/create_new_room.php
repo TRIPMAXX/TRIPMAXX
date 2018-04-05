@@ -201,6 +201,7 @@ endif;
 											<br/>
 											<font color = "red">SELECT MULTIPLE BY HOLDING CONTROL BUTTON.</font>
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-12">
 											<label for="inputName" class="control-label">Room Description<font color="#FF0000">*</font></label>
 											<textarea class="form-control ckeditor validate[required]" name="room_address" id="room_address" placeholder="Room Description" tabindex = "3"><?php echo(isset($_POST['room_address']) && $_POST['room_address']!='' ? $_POST['room_address'] : "");?></textarea>
@@ -227,6 +228,7 @@ endif;
 											<label for="inputName" class="control-label">Default Number Of Rooms<font color="#FF0000">*</font></label>
 											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['number_of_rooms']) && $_POST['number_of_rooms']!='' ? $_POST['number_of_rooms'] : "");?>" name="number_of_rooms" id="number_of_rooms" placeholder="Default Number Of Rooms" tabindex = "5" />
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Status</label>
 											<select class="form-control validate[optional]" name="status" id="status" tabindex = "6">

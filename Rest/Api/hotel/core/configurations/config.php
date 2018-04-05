@@ -78,7 +78,6 @@ define("HOTEL_IMAGES", "../../../../../hotel_control_center/assets/upload/hotel/
 define("ROOM_IMAGES", "../../../../../hotel_control_center/assets/upload/room/");
 
 define("REST_API_PATH", "Rest/Api/");
-define("SUPPLIER_API_PATH", "supplier/api/");
 define("HOTEL_API_PATH", "hotel/api/");
 
 define("API_USERNAME", "a");

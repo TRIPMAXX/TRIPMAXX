@@ -1,5 +1,140 @@
 <?php
-require_once('../loader.inc');
+	require_once('loader.inc');
+	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
+	$white_list_array = array('company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'code', 'username', 'password', 'account_department_name', 'account_department_email', 'account_department_number', 'reservation_department_name', 'reservation_department_email', 'reservation_department_number', 'management_department_name', 'management_department_email', 'management_department_number', 'hotel_price', 'tour_price', 'transfer_price', 'packaage_price', 'status', 'token', 'id', 'btn_submit', 'confirm_password');
+	$verify_token = "edit_agent";
+	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
+	if(isset($autentication_data->status)):
+		if($autentication_data->status=="success"):
+			$post_data['token']=array(
+				"token"=>$autentication_data->results->token,
+				"token_timeout"=>$autentication_data->results->token_timeout,
+				"token_generation_time"=>$autentication_data->results->token_generation_time
+			);
+			$post_data_str=json_encode($post_data);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($ch, CURLOPT_HEADER, false);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."country/read.php");
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+			$return_data = curl_exec($ch);
+			curl_close($ch);
+			$return_data_arr=json_decode($return_data, true);
+			$country_data=array();
+			if($return_data_arr['status']=="success"):
+				$country_data=$return_data_arr['results'];
+			//else:
+			//	$_SESSION['SET_TYPE'] = 'error';
+			//	$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+			endif;
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($ch, CURLOPT_HEADER, false);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."currency/read.php");
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+			$return_data = curl_exec($ch);
+			curl_close($ch);
+			$return_data_arr=json_decode($return_data, true);
+			$currency_data=array();
+			if($return_data_arr['status']=="success"):
+				$currency_data=$return_data_arr['results'];
+			//else:
+			//	$_SESSION['SET_TYPE'] = 'error';
+			//	$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+			endif;
+			if(isset($_POST['btn_submit'])) {
+				$_POST['id']=base64_decode($_GET['agent_id']);
+				if(tools::verify_token($white_list_array, $_POST, $verify_token)) {
+					$_POST['uploaded_files']=array();
+					if(isset($_FILES["image"])){
+						$extension = pathinfo($_FILES["image"]['name'], PATHINFO_EXTENSION);
+						$validation_array = array('jpg', 'jpeg', 'png', 'gif', 'bmp');
+						if(in_array(strtolower($extension), $validation_array)) {
+							$data = file_get_contents($_FILES["image"]['tmp_name']);
+							$base64 = 'data:image/' . $extension . ';base64,' . base64_encode($data);
+							$_POST['uploaded_files']=curl_file_create($base64, $_FILES["image"]['type'], $_FILES["image"]['name']);
+						}
+					}
+					$post_data['data']=$_POST;
+					if(isset($_GET['gse_id']) && $_GET['gse_id']!="")
+						$post_data['data']['parent_id']=base64_decode($_GET['gse_id']);
+					$post_data_str=json_encode($post_data);
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($ch, CURLOPT_HEADER, false);
+					curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+					curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
+					curl_setopt($ch, CURLOPT_POST, true);
+					curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+					curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/update.php");
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+					$return_data = curl_exec($ch);
+					curl_close($ch);
+					$return_data_arr=json_decode($return_data, true);
+					//print_r($return_data_arr);
+					if($return_data_arr['status']=="success")
+					{
+						$_SESSION['SET_TYPE'] = 'success';
+						$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+						if(isset($_GET['gse_id']) && $_GET['gse_id']!=""):
+							header("location:sub_agents?gsa_id=".$_GET['gse_id']);
+						else:
+							header("location:agents");
+						endif;
+						exit;
+					}
+					else
+					{
+						$_SESSION['SET_TYPE'] = 'error';
+						$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+					}
+				} else {
+					$_SESSION['SET_TYPE'] = 'error';
+					$_SESSION['SET_FLASH'] = 'Access token mismatch. Please reload the page & try again.';
+				}
+			}
+			$post_data['data']=$_GET;
+			$post_data_str=json_encode($post_data);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($ch, CURLOPT_HEADER, false);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/read.php");
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+			$return_data = curl_exec($ch);
+			curl_close($ch);
+			$return_data_arr=json_decode($return_data, true);
+			$agent_data=array();
+			if(!isset($return_data_arr['status'])):
+				$_SESSION['SET_TYPE'] = 'error';
+				$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+				header("location:agents");
+				exit;
+			elseif($return_data_arr['status']=="success"):
+				$agent_data=$return_data_arr['results'];
+			else:
+				$_SESSION['SET_TYPE'] = 'error';
+				$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+				header("location:agents");
+				exit;
+			endif;
+		else:
+			$_SESSION['SET_TYPE'] = 'error';
+			$_SESSION['SET_FLASH'] = $autentication_data->msg;
+		endif;
+	else:
+		$_SESSION['SET_TYPE'] = 'error';
+		$_SESSION['SET_FLASH'] = "We are having some problem to authorize api.";
+	endif;
 ?>
 <!DOCTYPE html>
 <html>
@@ -9,9 +144,102 @@ require_once('../loader.inc');
 	<!-- JAVASCRIPT CODE -->
 	<script type="text/javascript">
 	<!--
-	jQuery(document).ready(function(){
-		jQuery("#form_currency_add").validationEngine();
+	$(function(){
+		$("#form_edit_agent").validationEngine();
+		$("#country").change(function(){
+			fetch_state($(this).val());
+		});
+		$("#state").change(function(){
+			fetch_city($(this).val());
+		});
+		<?php 
+		if((isset($_POST['country']) && $_POST['country']!="") || (isset($agent_data['country']) && $agent_data['country']!=""))
+		{
+		?>
+			fetch_state(<?php echo(isset($_POST['country']) && $_POST['country']!="" ? $_POST['country'] : (isset($agent_data['country']) && $agent_data['country']!="" ? $agent_data['country'] : ""));?>);
+		<?php
+		}
+		?>
+		<?php 
+		if((isset($_POST['state']) && $_POST['state']!="") || (isset($agent_data['state']) && $agent_data['state']!=""))
+		{
+		?>
+			fetch_city(<?php echo(isset($_POST['state']) && $_POST['state']!="" ? $_POST['state'] : (isset($agent_data['state']) && $agent_data['state']!="" ? $agent_data['state'] : ""));?>);
+		<?php
+		}
+		?>
 	});
+	function fetch_state(country_id)
+	{
+		$.ajax({
+			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_state_fetch";?>",
+			type:"post",
+			data:{
+				country_id:country_id
+			},
+			beforeSend:function(){
+				$("#city").html('<option value = "">Select City</option>');
+				$("#state").html('<option value = "">Select State / Region</option>');
+			},
+			dataType:"json",
+			success:function(response){
+				//console.log(response);
+				if(response.status=="success")
+				{
+					if(response.results.length > 0)
+					{
+						$.each(response.results, function(state_key, state_val){
+							$("#state").append('<option value = "'+state_val['id']+'">'+state_val['name']+'</option>');
+						});
+					}
+				}
+				else
+				{
+					//showError(response.msg);
+				}
+			},
+			error:function(){
+				//showError("We are having some problem. Please try later.");
+			}
+		}).done(function(){
+			$("#state").val('<?php echo(isset($_POST['state']) && $_POST['state']!="" ? $_POST['state'] : (isset($agent_data['state']) && $agent_data['state']!="" ? $agent_data['state'] : ""));?>');
+		});;
+	}
+	function fetch_city(state_id)
+	{
+		$.ajax({
+			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_city_fetch";?>",
+			type:"post",
+			data:{
+				state_id:state_id
+			},
+			beforeSend:function(){
+				$("#city").html('<option value = "">Select City</option>');
+			},
+			dataType:"json",
+			success:function(response){
+				//console.log(response);
+				if(response.status=="success")
+				{
+					if(response.results.length > 0)
+					{
+						$.each(response.results, function(city_key, city_val){
+							$("#city").append('<option value = "'+city_val['id']+'">'+city_val['name']+'</option>');
+						});
+					}
+				}
+				else
+				{
+					//showError(response.msg);
+				}
+			},
+			error:function(){
+				//showError("We are having some problem. Please try later.");
+			}
+		}).done(function(){
+			$("#city").val('<?php echo(isset($_POST['city']) && $_POST['city']!="" ? $_POST['city'] : (isset($agent_data['city']) && $agent_data['city']!="" ? $agent_data['city'] : ""));?>');
+		});
+	}
 	//-->
 	</script>
 	<!-- JAVASCRIPT CODE -->
@@ -36,7 +264,7 @@ require_once('../loader.inc');
 				</ol>
 			</section>
             <section class="content">
-				<form  name="form_currency_add" id="form_currency_add" method="POST">
+				<form  name="form_edit_agent" id="form_edit_agent" method="POST" enctype="multipart/form-data">
 				<div class="row">
 					<div class="col-md-12">
 						<div id="notify_msg_div"></div>
@@ -48,120 +276,155 @@ require_once('../loader.inc');
 								<div class="box-body">
 									<div id="" class="row rows">
 										<div class="form-group col-md-6">
-											<label for="pwd" class="form-label1">Company Name <span class=""> *</span> :</label>
-											<input type="email" class="form-control form_input1" id="email" placeholder="">
+											<label for="company_name" class="form-label1">Company Name <font color="#FF0000">*</font> :</label>
+											<input type="text" class="form-control form_input1 validate[required]" id="company_name" name="company_name" placeholder="Company Name" value="<?php echo(isset($_POST['company_name']) && $_POST['company_name']!='' ? $_POST['company_name'] : (isset($agent_data['company_name']) && $agent_data['company_name']!='' ? $agent_data['company_name'] : ""));?>" tabindex="1">
 										</div>
 										<div class="form-group col-md-6">
-											<label for="pwd" class="form-label1">Company Accounting Name<span class=""> *</span> :</label>
-											<input type="email" class="form-control form_input1" id="email" placeholder="">
+											<label for="accounting_name" class="form-label1">Company Accounting Name <font color="#FF0000">*</font> :</label>
+											<input type="text" class="form-control form_input1 validate[required]" id="accounting_name" name="accounting_name" placeholder="Company Accounting Name" value="<?php echo(isset($_POST['accounting_name']) && $_POST['accounting_name']!='' ? $_POST['accounting_name'] : (isset($agent_data['accounting_name']) && $agent_data['accounting_name']!='' ? $agent_data['accounting_name'] : ""));?>" tabindex="2">
 										</div>
-										
+										<div class="clearfix"></div>
 										<div class="form-group col-md-4">
-											<label for="pwd" class="form-label1">First Name<span class=""> *</span> :</label>
-											<input type="email" class="form-control form_input1" id="email" placeholder="First Name">
+											<label for="first_name" class="form-label1">First Name <font color="#FF0000">*</font> :</label>
+											<input type="text" class="form-control form_input1 validate[required]" id="first_name" name="first_name" placeholder="First Name" value="<?php echo(isset($_POST['first_name']) && $_POST['first_name']!='' ? $_POST['first_name'] : (isset($agent_data['first_name']) && $agent_data['first_name']!='' ? $agent_data['first_name'] : ""));?>" tabindex="3">
 										</div>
 										<div class="form-group col-md-4">
-											<label for="pwd" class="form-label1">Middle Name<span class=""> *</span> :</label>
-											<input type="email" class="form-control form_input1" id="email" placeholder="Middle Name">
+											<label for="middle_name" class="form-label1">Middle Name :</label>
+											<input type="text" class="form-control form_input1" id="middle_name" name="middle_name" placeholder="Middle Name" value="<?php echo(isset($_POST['middle_name']) && $_POST['middle_name']!='' ? $_POST['middle_name'] : (isset($agent_data['middle_name']) && $agent_data['middle_name']!='' ? $agent_data['middle_name'] : ""));?>" tabindex="4">
 										</div>
 												
 										<div class="form-group col-md-4">
-											<label for="pwd" class="form-label1">Last Name<span class=""> *</span> :</label>
-											<input type="email" class="form-control form_input1" id="email" placeholder="Last Name">
+											<label for="last_name" class="form-label1">Last Name <font color="#FF0000">*</font> :</label>
+											<input type="text" class="form-control form_input1 validate[required]" id="last_name" name="last_name" placeholder="Last Name" value="<?php echo(isset($_POST['last_name']) && $_POST['last_name']!='' ? $_POST['last_name'] : (isset($agent_data['last_name']) && $agent_data['last_name']!='' ? $agent_data['last_name'] : ""));?>" tabindex="5">
+										</div>
+										<div class="clearfix"></div>
+										<div class="form-group col-md-6">
+											<label for="email_address" class="form-label1">Email <font color="#FF0000">*</font> :</label>
+											<input type="email" class="form-control form_input1 validate[required]" id="email_address" name="email_address" placeholder="Email" value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : (isset($agent_data['email_address']) && $agent_data['email_address']!='' ? $agent_data['email_address'] : ""));?>" tabindex="6">
 										</div>
 										<div class="form-group col-md-6">
-											<label for="pwd" class="form-label1">Email<span class=""> *</span> :</label>
-											<input type="email" class="form-control form_input1" id="email" placeholder="">
+											<label for="designation" class="form-label1">Designation :</label>
+											<input type="text" class="form-control form_input1" id="designation" name="designation" placeholder="Designation" value="<?php echo(isset($_POST['designation']) && $_POST['designation']!='' ? $_POST['designation'] : (isset($agent_data['designation']) && $agent_data['designation']!='' ? $agent_data['designation'] : ""));?>" tabindex="7">
 										</div>
-										<div class="form-group col-md-6">
-											<label for="pwd" class="form-label1">Designation :</label>
-											<input type="email" class="form-control form_input1" id="email" placeholder="">
-										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-6 radio_pad">
-											<label for="pwd" class="form-label1">IATA Status<span class=""> *</span> :</label>
-											<select name="cars" class="form-control form_input1 select_bg">
-												<option value="Approve" class="form-control form_input1">Approve</option>
-												<option value="Not Approve" class="form-control form_input1">Not Approve</option>
+											<label for="iata_status" class="form-label1">IATA Status <font color="#FF0000">*</font> :</label>
+											<select name="iata_status" id="iata_status" class="form-control form_input1 select_bg" tabindex="8">
+												<option value="1" <?php echo(isset($_POST['iata_status']) && $_POST['iata_status']==1 ? 'selected="selected"' : (isset($agent_data['iata_status']) && $agent_data['iata_status']==1 ? 'selected="selected"' : ""));?>>Approve</option>
+												<option value="0" <?php echo(isset($_POST['iata_status']) && $_POST['iata_status']==0 ? 'selected="selected"' : (isset($agent_data['iata_status']) && $agent_data['iata_status']==0 ? 'selected="selected"' : ""));?>>Not Approve</option>
 											</select>
 										</div>
 										<div class="form-group col-md-6">
-											<label for="pwd" class="form-label1">Nature of Business:</label>
-											<select name="cars" class="form-control form_input1 select_bg">
-												<option value="volvo" class="form-control form_input1">- Select -</option>
-												<option value="saab" class="form-control form_input1">Activity Supplier</option>
-												<option value="fiat" class="form-control form_input1">Hotel</option>
-												<option value="audi" class="form-control form_input1">Hotel Chain</option>
-												<option value="saab" class="form-control form_input1">Resturent</option>
+											<label for="nature_of_business" class="form-label1">Nature of Business:</label>
+											<select name="nature_of_business" id="nature_of_business" class="form-control form_input1 select_bg" tabindex="9">
+												<option value="">- Select -</option>
+												<option value="Activity Supplier" <?php echo(isset($_POST['nature_of_business']) && $_POST['nature_of_business']=="Activity Supplier" ? 'selected="selected"' : (isset($agent_data['nature_of_business']) && $agent_data['nature_of_business']=="Activity Supplier" ? 'selected="selected"' : ""));?>>Activity Supplier</option>
+												<option value="Hotel" <?php echo(isset($_POST['nature_of_business']) && $_POST['nature_of_business']=="Hotel" ? 'selected="selected"' : (isset($agent_data['nature_of_business']) && $agent_data['nature_of_business']=="Hotel" ? 'selected="selected"' : ""));?>>Hotel</option>
+												<option value="Hotel Chain" <?php echo(isset($_POST['nature_of_business']) && $_POST['nature_of_business']=="Hotel Chain" ? 'selected="selected"' : (isset($agent_data['nature_of_business']) && $agent_data['nature_of_business']=="Hotel Chain" ? 'selected="selected"' : ""));?>>Hotel Chain</option>
+												<option value="Resturent" <?php echo(isset($_POST['nature_of_business']) && $_POST['nature_of_business']=="Resturent" ? 'selected="selected"' : (isset($agent_data['nature_of_business']) && $agent_data['nature_of_business']=="Resturent" ? 'selected="selected"' : ""));?>>Resturent</option>
 											</select>
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="pwd" class="form-label1">Preferred Currency <span class="">*</span> :</label>
-											<select name="cars" class="form-control form_input1 select_bg">
-												<option value="volvo" class="form-control form_input1">- Select -</option>
-												<option value="saab" class="form-control form_input1">Activity Supplier</option>
-												<option value="fiat" class="form-control form_input1">Hotel</option>
-												<option value="audi" class="form-control form_input1">Hotel Chain</option>
-												<option value="saab" class="form-control form_input1">Resturent</option>
+											<select name="preferred_currency" class="form-control form_input1 select_bg">
+												<option value="" class="form-control form_input1">- Select Currency -</option>
+											<?php
+											if(!empty($currency_data)):
+												foreach($currency_data as $currency_key=>$currency_val):
+											?>
+												<option value = "<?php echo $currency_val['id'];?>" <?php echo(isset($_POST['preferred_currency']) && $_POST['preferred_currency']==$currency_val['id'] ? 'selected="selected"' : (isset($agent_data['preferred_currency']) && $agent_data['preferred_currency']==$currency_val['id'] ? 'selected="selected"' : ""));?>><?php echo $currency_val['currency_name']." (".$currency_val['currency_code'].")";?></option>
+											<?php
+												endforeach;
+											endif;
+											?>
 											</select>
 										</div>
 										<div class="form-group col-md-6">
-											<label for="pwd" class="form-label1">Country<span class="">*</span> :</label>
-											<select name="cars" class="form-control form_input1 select_bg" style="background:rgba(255,255,255) url('img/dropdown_arrow.png') no-repeat 98% center !important; background-size:30px !important">
-												<option value="volvo" class="form-control form_input1">- Select -</option>
-												<option value="saab" class="form-control form_input1">Activity Supplier</option>
-												<option value="fiat" class="form-control form_input1">Hotel</option>
-												<option value="audi" class="form-control form_input1">Hotel Chain</option>
-												<option value="saab" class="form-control form_input1">Resturent</option>
+											<label for="country" class="control-label">Country <font color="#FF0000">*</font> :</label>
+											<select name = "country" id="country" class="form-control form_input1 select_bg validate[required]" tabindex = "11">
+												<option value = "">Select Country</option>
+												<?php
+												if(!empty($country_data)):
+													foreach($country_data as $country_key=>$country_val):
+												?>
+													<option value = "<?php echo $country_val['id'];?>" <?php echo(isset($_POST['country']) && $_POST['country']==$country_val['id'] ? 'selected="selected"' : (isset($agent_data['country']) && $agent_data['country']==$country_val['id'] ? 'selected="selected"' : ""));?>><?php echo $country_val['name'];?></option>
+												<?php
+													endforeach;
+												endif;
+												?>
+											</select>
+										</div>
+										<div class="clearfix"></div>
+										<div class="form-group col-md-3">
+											<label for="state" class="control-label">State / Region <font color="#FF0000">*</font> :</label>
+											<select name = "state" id="state" class="form-control form_input1 select_bg validate[required]" tabindex = "12">
+												<option value = "">Select State / Region</option>
+											</select>
+										</div>
+										<div class="form-group col-md-3">
+											<label for="city" class="control-label">City <font color="#FF0000">*</font> :</label>
+											<select name = "city" id="city" class="form-control form_input1 select_bg validate[required]" tabindex = "13">
+												<option value = "">Select City</option>
 											</select>
 										</div>
 										<div class="form-group col-md-6">
-											<label for="pwd" class="form-label1">City <span class="">*</span> :</label>
-											<select name="cars" class="form-control form_input1 select_bg">
-												<option value="volvo" class="form-control form_input1">Please Select</option>
-												<option value="saab" class="form-control form_input1">Activity Supplier</option>
-												<option value="fiat" class="form-control form_input1">Hotel</option>
-												<option value="audi" class="form-control form_input1">Hotel Chain</option>
-												<option value="saab" class="form-control form_input1">Resturent</option>
-											</select>
+											<label for="zipcode" class="form-label1">Pincode/Zipcode/Postcode <font color="#FF0000">*</font> :</label>
+											<input type="text" class="form-control form_input1 validate[required]" id="zipcode" name="zipcode" placeholder="Pincode/Zipcode/Postcode" value="<?php echo(isset($_POST['zipcode']) && $_POST['zipcode']!='' ? $_POST['zipcode'] : (isset($agent_data['zipcode']) && $agent_data['zipcode']!='' ? $agent_data['zipcode'] : ""));?>" tabindex="14">
 										</div>
-										<div class="form-group col-md-6">
-											<label for="pwd" class="form-label1">Pincode/Zipcode/Postcode<span class="">*</span> :</label>
-											<input type="email" class="form-control form_input1" id="email" placeholder="">
-										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-12">
-											<label for="pwd" class="form-label1">Address<span class="">*</span> :</label>
-											<textarea class="form-control form_input1" rows="5" id="comment"></textarea>
+											<label for="address" class="form-label1">Address <font color="#FF0000">*</font> :</label>
+											<textarea class="form-control form_input1 validate[required]" rows="5" id="address" name="address" tabindex="15"><?php echo(isset($_POST['address']) && $_POST['address']!='' ? $_POST['address'] : (isset($agent_data['address']) && $agent_data['address']!='' ? $agent_data['address'] : ""));?></textarea>
 										</div>
 										<div class="form-group col-md-6">
-											<label for="pwd" class="form-label1">Time Zone<span class="">*</span> :</label>
-											<select name="cars" class="form-control form_input1 select_bg" style="background:rgba(255,255,255) url('img/dropdown_arrow.png') no-repeat 98% center !important; background-size:30px !important">
-												<option value="volvo" class="form-control form_input1">- Select -</option>
-												<option value="saab" class="form-control form_input1">Activity Supplier</option>
-												<option value="fiat" class="form-control form_input1">Hotel</option>
-												<option value="audi" class="form-control form_input1">Hotel Chain</option>
-												<option value="saab" class="form-control form_input1">Resturent</option>
+											<label for="timezone" class="form-label1">Time Zone <font color="#FF0000">*</font> :</label>
+											<?php
+												$time_zone_arr=tools::generate_timezone_list();
+											?>
+											<select name="timezone" name="timezone" class="form-control form_input1 select_bg validate[required]" tabindex="16">
+												<option value="" class="form-control form_input1">- Select Timezone -</option>
+											<?php
+											foreach($time_zone_arr as $time_key=>$time_val)
+											{
+											?>
+												<option value="<?php echo $time_key;?>" <?php echo(isset($_POST['timezone']) && $_POST['timezone']==$time_key ? "selected='selected'" : (isset($agent_data['timezone']) && $agent_data['timezone']==$time_key ? "selected='selected'" : ''))?>><?php echo $time_val;?></option>
+											<?php
+											}
+											?>
 											</select>
 										</div>
 										<div class="form-group col-md-6">
-											<label for="pwd" class="form-label1">Telephone* :</label>
-											<input type="email" class="form-control form_input1" id="email" placeholder="">
+											<label for="telephone" class="form-label1">Telephone <font color="#FF0000">*</font> :</label>
+											<input type="text" class="form-control form_input1 validate[required]" id="telephone" name="telephone" placeholder="Telephone" value="<?php echo(isset($_POST['telephone']) && $_POST['telephone']!='' ? $_POST['telephone'] : (isset($agent_data['telephone']) && $agent_data['telephone']!='' ? $agent_data['telephone'] : ""));?>" tabindex="17">
+										</div>
+										<div class="clearfix"></div>
+										<div class="form-group col-md-6">
+											<label for="mobile_number" class="form-label1">Mobile Number <font color="#FF0000">*</font> :</label>
+											<input type="text" class="form-control form_input1 validate[required]" id="mobile_number" name="mobile_number" placeholder="Mobile Number" value="<?php echo(isset($_POST['mobile_number']) && $_POST['mobile_number']!='' ? $_POST['mobile_number'] : (isset($agent_data['mobile_number']) && $agent_data['mobile_number']!='' ? $agent_data['mobile_number'] : ""));?>" tabindex="18">
 										</div>
 										<div class="form-group col-md-6">
-											<label for="pwd" class="form-label1">Mobile Number<span class="">*</span> :</label>
-											<input type="email" class="form-control form_input1" id="email" placeholder="">
+											<label for="website" class="form-label1">Website :</label>
+											<input type="text" class="form-control form_input1" id="website" name="website" placeholder="Website" value="<?php echo(isset($_POST['website']) && $_POST['website']!='' ? $_POST['website'] : (isset($agent_data['website']) && $agent_data['website']!='' ? $agent_data['website'] : ""));?>" tabindex="19">
+										</div>
+										<div class="clearfix"></div>
+										<div class="form-group col-md-6">
+											<label for="website" class="form-label1">Your Logo :</label>
+											<input type="file" class="form-control form_input1" id="image" name="image" placeholder="Your Logo" tabindex="20">
+											<?php
+											if(isset($agent_data['image']) && $agent_data['image']!=""):
+											?>
+											<br/>
+											<img src = "<?php echo(AGENT_IMAGE_PATH.$agent_data['image']);?>" border = "0" alt = "" style="width:150px;height:100px;margin:1px;" onerror="this.remove;"/>
+											<?php
+											endif;
+											?>
 										</div>
 										<div class="form-group col-md-6">
-											<label for="pwd" class="form-label1">Website:</label>
-											<input type="email" class="form-control form_input1" id="email" placeholder="">
+											<label for="code" class="form-label1">Type The Code Shown <font color="#FF0000">*</font> :</label>
+											<input type="text" class="form-control form_input1 validate[required]" id="code" name="code" placeholder="Type The Code Shown" value="<?php echo(isset($_POST['code']) && $_POST['code']!='' ? $_POST['code'] : (isset($agent_data['code']) && $agent_data['code']!='' ? $agent_data['code'] : ""));?>" tabindex="21">
 										</div>
-										<div class="form-group col-md-6">
-											<label for="pwd" class="form-label1">Your Logo:</label>
-											<input type="file"  id="email" placeholder="">
-										</div>
-										<div class="form-group col-md-6">
-											<label for="pwd" class="code_text1 form-label1">Type The Code Shown<span class="">*</span> :</label>
-											<input type="text" class="form-control form_input1" id="text" placeholder="">
-										</div>
+										<div class="clearfix"></div>
 									</div>
 								</div>
 							</div>
@@ -176,16 +439,16 @@ require_once('../loader.inc');
 								<div class="box-body">
 									<div id="" class="row rows">
 										<div class="form-group col-md-12">
-											<label for="pwd" class="form-label1">Username <span class="">*</span> :</label>
-											<input type="text" class="form-control form_input1" id="text" placeholder="">
+											<label for="username" class="form-label1">Username <font color="#FF0000">*</font> :</label>
+											<input type="text" class="form-control form_input1 validate[required]" id="username" name="username" placeholder="Username" value="<?php echo(isset($_POST['username']) && $_POST['username']!='' ? $_POST['username'] : (isset($agent_data['username']) && $agent_data['username']!='' ? $agent_data['username'] : ""));?>" tabindex="22">
 										</div>
 										<div class="form-group col-md-6">
-											<label for="pwd" class="form-label1">Password <span class="">*</span> :</label>
-											<input type="text" class="form-control form_input1" id="text" placeholder="">
+											<label for="password" class="form-label1">Password :</label>
+											<input type="password" class="form-control form_input1" id="password" name="password" placeholder="Password" value="" tabindex="23">
 										</div>
 										<div class="form-group col-md-6">
-											<label for="pwd" class="form-label1">Confirm Password <span class="">*</span> :</label>
-											<input type="text" class="form-control form_input1" id="text" placeholder="">
+											<label for="confirm_password" class="form-label1">Confirm Password :</label>
+											<input type="password" class="form-control form_input1 validate[equals[password]]" id="confirm_password" name="confirm_password" placeholder="Confirm Password" value="" tabindex="24">
 										</div>
 									</div>
 								</div>
@@ -200,77 +463,77 @@ require_once('../loader.inc');
 								</div>
 								<div class="box-body">
 									<div id="" class="row rows">
-										<div id="" class="col-md-3">
+										<div id="" class="col-md-4">
 											<div class="form-group fancy-form">
-												<label for="pwd" class="form-label1">Account Department :</label>
+												<label for="pwd" class="form-label1">Account Department <font color="#FF0000">*</font> :</label>
 											</div>
 										</div>
-										<div id="" class="col-md-9">
+										<div id="" class="col-md-8">
 											<div class="row rows">
 												<div id="" class="col-md-4">
 													<div class="form-group fancy-form">
-														<input type="text" class="form-control form_input1" id="text" placeholder="Name">
+														<input type="text" class="form-control form_input1 validate[required]" id="account_department_name" name="account_department_name" placeholder="Name" value="<?php echo(isset($_POST['account_department_name']) && $_POST['account_department_name']!='' ? $_POST['account_department_name'] : (isset($agent_data['account_department_name']) && $agent_data['account_department_name']!='' ? $agent_data['account_department_name'] : ""));?>" tabindex="25">
 													</div>
 												</div>
 												<div id="" class="col-md-4">
 													<div class="form-group fancy-form">
-														<input type="text" class="form-control form_input1" id="text" placeholder="Email">
+														<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="account_department_email" name="account_department_email" placeholder="Email" value="<?php echo(isset($_POST['account_department_email']) && $_POST['account_department_email']!='' ? $_POST['account_department_email'] : (isset($agent_data['account_department_email']) && $agent_data['account_department_email']!='' ? $agent_data['account_department_email'] : ""));?>" tabindex="26">
 													</div>
 												</div>
 												<div id="" class="col-md-4">
 													<div class="form-group fancy-form">
-														<input type="text" class="form-control form_input1" id="text" placeholder="Contact Number">
+														<input type="text" class="form-control form_input1 validate[required]" id="account_department_number" name="account_department_number" placeholder="Contact Number" value="<?php echo(isset($_POST['account_department_number']) && $_POST['account_department_number']!='' ? $_POST['account_department_number'] : (isset($agent_data['account_department_number']) && $agent_data['account_department_number']!='' ? $agent_data['account_department_number'] : ""));?>" tabindex="27">
 													</div>
 												</div>
 											</div>
 										</div>
 
-										<div id="" class="col-md-3">
+										<div id="" class="col-md-4">
 											<div class="form-group fancy-form">
-												<label for="pwd" class="form-label1">Reservations/Operations Department:</label>
+												<label for="pwd" class="form-label1">Reservations/Operations Department <font color="#FF0000">*</font> :</label>
 											</div>
 										</div>
-										<div id="" class="col-md-9">
+										<div id="" class="col-md-8">
 											<div class="row rows">
 												<div id="" class="col-md-4">
 													<div class="form-group fancy-form">
-														<input type="text" class="form-control form_input1" id="text" placeholder="Name">
+														<input type="text" class="form-control form_input1 validate[required]" id="reservation_department_name" name="reservation_department_name" placeholder="Name" value="<?php echo(isset($_POST['reservation_department_name']) && $_POST['reservation_department_name']!='' ? $_POST['reservation_department_name'] : (isset($agent_data['reservation_department_name']) && $agent_data['reservation_department_name']!='' ? $agent_data['reservation_department_name'] : ""));?>" tabindex="28">
 													</div>
 												</div>
 												<div id="" class="col-md-4">
 													<div class="form-group fancy-form">
-														<input type="text" class="form-control form_input1" id="text" placeholder="Email">
+														<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="reservation_department_email" name="reservation_department_email" placeholder="Email" value="<?php echo(isset($_POST['reservation_department_email']) && $_POST['reservation_department_email']!='' ? $_POST['reservation_department_email'] : (isset($agent_data['reservation_department_email']) && $agent_data['reservation_department_email']!='' ? $agent_data['reservation_department_email'] : ""));?>" tabindex="29">
 													</div>
 												</div>
 												<div id="" class="col-md-4">
 													<div class="form-group fancy-form">
-														<input type="text" class="form-control form_input1" id="text" placeholder="Contact Number">
+														<input type="text" class="form-control form_input1 validate[required]" id="reservation_department_number" name="reservation_department_number" placeholder="Contact Number" value="<?php echo(isset($_POST['reservation_department_number']) && $_POST['reservation_department_number']!='' ? $_POST['reservation_department_number'] : (isset($agent_data['reservation_department_number']) && $agent_data['reservation_department_number']!='' ? $agent_data['reservation_department_number'] : ""));?>" tabindex="30">
 													</div>
 												</div>
 											</div>
 										</div>
 										<div id="" class="col-md-12">
 											<div id="" class="row rows">
-												<div id="" class="col-md-3">
+												<div id="" class="col-md-4">
 													<div class="form-group fancy-form">
-														<label for="pwd" class="form-label1">Management Department:</label>
+														<label for="pwd" class="form-label1">Management Department <font color="#FF0000">*</font> :</label>
 													</div>
 												</div>
-												<div id="" class="col-md-9">
+												<div id="" class="col-md-8">
 													<div class="row rows">
 														<div id="" class="col-md-4">
 															<div class="form-group fancy-form">
-																<input type="text" class="form-control form_input1" id="text" placeholder="Name">
+																<input type="text" class="form-control form_input1 validate[required]" id="management_department_name" name="management_department_name" placeholder="Name" value="<?php echo(isset($_POST['management_department_name']) && $_POST['management_department_name']!='' ? $_POST['management_department_name'] : (isset($agent_data['management_department_name']) && $agent_data['management_department_name']!='' ? $agent_data['management_department_name'] : ""));?>" tabindex="31">
 															</div>
 														</div>
 														<div id="" class="col-md-4">
 															<div class="form-group fancy-form">
-																<input type="text" class="form-control form_input1" id="text" placeholder="Email">
+																<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="management_department_email" name="management_department_email" placeholder="Email" value="<?php echo(isset($_POST['management_department_email']) && $_POST['management_department_email']!='' ? $_POST['management_department_email'] : (isset($agent_data['management_department_email']) && $agent_data['management_department_email']!='' ? $agent_data['management_department_email'] : ""));?>" tabindex="32">
 															</div>
 														</div>
 														<div id="" class="col-md-4">
 															<div class="form-group fancy-form">
-																<input type="text" class="form-control form_input1" id="text" placeholder="Contact Number">
+																<input type="text" class="form-control form_input1 validate[required]" id="management_department_number" name="management_department_number" placeholder="Contact Number" value="<?php echo(isset($_POST['management_department_number']) && $_POST['management_department_number']!='' ? $_POST['management_department_number'] : (isset($agent_data['management_department_number']) && $agent_data['management_department_number']!='' ? $agent_data['management_department_number'] : ""));?>" tabindex="33">
 															</div>
 														</div>
 													</div>
@@ -291,20 +554,20 @@ require_once('../loader.inc');
 								<div class="box-body">
 									<div id="" class="row rows">
 										<div class="form-group col-md-3">
-											<label for="pwd" class="form-label1">Hotel :</label>
-											<input type="text" class="form-control form_input1" id="text" placeholder="Hotel">
+											<label for="hotel_price" class="form-label1">Hotel :</label>
+											<input type="text" class="form-control form_input1" id="hotel_price" name="hotel_price" placeholder="Hotel" value="<?php echo(isset($_POST['hotel_price']) && $_POST['hotel_price']!='' ? $_POST['hotel_price'] : (isset($agent_data['hotel_price']) && $agent_data['hotel_price']!='' ? $agent_data['hotel_price'] : ""));?>" tabindex="34">
 										</div>
 										<div class="form-group col-md-3">
-											<label for="pwd" class="form-label1">Tour :</label>
-											<input type="text" class="form-control form_input1" id="text" placeholder="Tour">
+											<label for="tour_price" class="form-label1">Tour :</label>
+											<input type="text" class="form-control form_input1" id="tour_price" name="tour_price" placeholder="Tour" value="<?php echo(isset($_POST['tour_price']) && $_POST['tour_price']!='' ? $_POST['tour_price'] : (isset($agent_data['tour_price']) && $agent_data['tour_price']!='' ? $agent_data['tour_price'] : ""));?>" tabindex="35">
 										</div>
 										<div class="form-group col-md-3">
-											<label for="pwd" class="form-label1">Transfer :</label>
-											<input type="text" class="form-control form_input1" id="text" placeholder="Transfer">
+											<label for="transfer_price" class="form-label1">Transfer :</label>
+											<input type="text" class="form-control form_input1" id="transfer_price" name="transfer_price" placeholder="Transfer" value="<?php echo(isset($_POST['transfer_price']) && $_POST['transfer_price']!='' ? $_POST['transfer_price'] : (isset($agent_data['transfer_price']) && $agent_data['transfer_price']!='' ? $agent_data['transfer_price'] : ""));?>" tabindex="36">
 										</div>
 										<div class="form-group col-md-3">
-											<label for="pwd" class="form-label1">Package :</label>
-											<input type="text" class="form-control form_input1" id="text" placeholder="Package">
+											<label for="packaage_price" class="form-label1">Package :</label>
+											<input type="text" class="form-control form_input1" id="packaage_price" name="packaage_price" placeholder="Package" value="<?php echo(isset($_POST['packaage_price']) && $_POST['packaage_price']!='' ? $_POST['packaage_price'] : (isset($agent_data['packaage_price']) && $agent_data['packaage_price']!='' ? $agent_data['packaage_price'] : ""));?>" tabindex="37">
 										</div>
 									</div>
 								</div>
@@ -313,7 +576,8 @@ require_once('../loader.inc');
 						</div>
 
 						<div class="box-footer">
-							<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex = "4">UPDATE</button>
+							<input type="hidden" name="token" value="<?php echo(tools::generateFormToken($verify_token)); ?>" />
+							<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex="38">UPDATE</button>
 						</div>
 					</div>
 				</div>

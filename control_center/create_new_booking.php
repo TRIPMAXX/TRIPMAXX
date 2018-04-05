@@ -1,5 +1,5 @@
 <?php
-require_once('../loader.inc');
+require_once('loader.inc');
 ?>
 <!DOCTYPE html>
 <html>

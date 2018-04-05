@@ -1,5 +1,99 @@
 <?php
-require_once('../loader.inc');
+	require_once('loader.inc');
+	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
+	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
+	if(isset($autentication_data->status)):
+		if($autentication_data->status=="success"):
+			$post_data['token']=array(
+				"token"=>$autentication_data->results->token,
+				"token_timeout"=>$autentication_data->results->token_timeout,
+				"token_generation_time"=>$autentication_data->results->token_generation_time
+			);
+			if(isset($_GET['agent_id']) && $_GET['agent_id']!=""):
+				$post_data['data']=$_GET;
+				$post_data_str=json_encode($post_data);
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+				curl_setopt($ch, CURLOPT_HEADER, false);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+				curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/delete.php");
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+				$return_data = curl_exec($ch);
+				curl_close($ch);
+				$return_data_arr=json_decode($return_data, true);
+				if(!isset($return_data_arr['status'])):
+					$_SESSION['SET_TYPE'] = 'error';
+					$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+				elseif($return_data_arr['status']=="success"):
+					$_SESSION['SET_TYPE'] = 'success';
+					$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+				else:
+					$_SESSION['SET_TYPE'] = 'error';
+					$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+				endif;
+				header("location:sub_agents?gsa_id=".$_GET['gse_id']);
+				exit;
+			endif;
+			$post_data['data']=$_GET;
+			$post_data_str=json_encode($post_data);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($ch, CURLOPT_HEADER, false);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/read.php");
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+			$return_data = curl_exec($ch);
+			curl_close($ch);
+			$return_data_arr=json_decode($return_data, true);
+			$gsa_data=array();
+			if(!isset($return_data_arr['status'])):
+				$_SESSION['SET_TYPE'] = 'error';
+				$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+				header("location:gsas");
+				exit;
+			elseif($return_data_arr['status']=="success"):
+				$gsa_data=$return_data_arr['results'];
+				$post_data['data']=array('parent_id'=>$gsa_data['id']);
+				$post_data_str=json_encode($post_data);
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+				curl_setopt($ch, CURLOPT_HEADER, false);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+				curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/read.php");
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+				$return_data = curl_exec($ch);
+				curl_close($ch);
+				$return_data_arr=json_decode($return_data, true);
+				$agent_data=array();
+				if(!isset($return_data_arr['status'])):
+					$_SESSION['SET_TYPE'] = 'error';
+					$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+				elseif($return_data_arr['status']=="success"):
+					$agent_data=$return_data_arr['results'];
+				else:
+					$_SESSION['SET_TYPE'] = 'error';
+					$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+				endif;
+			else:
+				$_SESSION['SET_TYPE'] = 'error';
+				$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+				header("location:gsas");
+				exit;
+			endif;
+		else:
+			$_SESSION['SET_TYPE'] = 'error';
+			$_SESSION['SET_FLASH'] = $autentication_data->msg;
+		endif;
+	else:
+		$_SESSION['SET_TYPE'] = 'error';
+		$_SESSION['SET_FLASH'] = "We are having some problem to authorize api.";
+	endif;
 ?>
 <!DOCTYPE html>
 <html>
@@ -8,10 +102,52 @@ require_once('../loader.inc');
 	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
 	<!-- JAVASCRIPT CODE -->
 	<script type="text/javascript">
-	<!--
 	$(document).ready(function() {
 		$('#example').DataTable();
 	} );
+	function change_status(agent_id, cur)
+	{
+		$.ajax({
+			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_agent_status_update";?>",
+			type:"post",
+			data:{
+				agent_id:agent_id
+			},
+			beforeSend:function(){
+				//cur.removeClass("btn-success").removeClass("btn-danger");
+				//cur.text("");
+				cur.hide();
+			},
+			dataType:"json",
+			success:function(response){
+				//console.log(response);
+				cur.show();
+				if(response.status=="success")
+				{
+					showSuccess(response.msg);
+					cur.removeClass("btn-success").removeClass("btn-danger");
+					if(response.results.status==1)
+					{
+						cur.addClass("btn-success");
+						cur.text("Active");
+					}
+					else
+					{
+						cur.addClass("btn-danger");
+						cur.text("Inactive");
+					}
+				}
+				else
+				{
+					showError(response.msg);
+				}
+			},
+			error:function(){
+				cur.show();
+				showError("We are having some problem. Please try later.");
+			}
+		});
+	}
 	</script>
 	<script>
 		window.onload = function () {
@@ -96,7 +232,7 @@ require_once('../loader.inc');
 	<!-- BODY --> 
 	<div class="content-wrapper">
 		<section class="content-header">
-			<h1>Sandy Smith Details</h1>
+			<h1><?= $gsa_data['first_name']." ".($gsa_data['middle_name']!="" ? $gsa_data['middle_name']." " : "").$gsa_data['last_name'];?> Details</h1>
 			<ol class="breadcrumb">
 				<li><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
 				<li class="active">Lists Of Sub Agents </li>
@@ -142,6 +278,9 @@ require_once('../loader.inc');
 				</div>
 			</div>
 			<div class="row">
+				<div class="col-md-12">
+					<div id="notify_msg_div"></div>
+				</div>
 				<section class="col-lg-6 connectedSortable">
 					<div class="box box-info">
 						<div id="resizable1" style="height: 370px;border:1px solid gray;">
@@ -159,7 +298,6 @@ require_once('../loader.inc');
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<div id="notify_msg_div"></div>
 					<div class="box box-primary">
 						<div class="col-md-12 row">
 							<div class="box-header">
@@ -168,107 +306,120 @@ require_once('../loader.inc');
 							<div class="box-body">
 								<div id="" class="row rows">
 									<div class="form-group col-md-4">
-										<label for="pwd" class="form-label1">Company Name <span class=""> *</span> :</label>
+										<label for="pwd" class="form-label1">Company Name :</label>
 										<br/>
-										Sample Company name
+										<?php echo(isset($gsa_data['company_name']) && $gsa_data['company_name']!='' ? $gsa_data['company_name'] : "N/A");?>
 									</div>
 									<div class="form-group col-md-4">
-										<label for="pwd" class="form-label1">Company Accounting Name<span class=""> *</span> :</label>
+										<label for="pwd" class="form-label1">Company Accounting Name :</label>
 										<br/>
-										Sample Company Accounting Name
+										<?php echo(isset($gsa_data['accounting_name']) && $gsa_data['accounting_name']!='' ? $gsa_data['accounting_name'] : "N/A");?>
 									</div>
 									
 									<div class="form-group col-md-4">
-										<label for="pwd" class="form-label1">First Name<span class=""> *</span> :</label>
+										<label for="pwd" class="form-label1">First Name :</label>
 										<br/>
-										Sandy
+										<?php echo(isset($gsa_data['first_name']) && $gsa_data['first_name']!='' ? $gsa_data['first_name'] : "N/A");?>
 									</div>
 									<div class="form-group col-md-4">
-										<label for="pwd" class="form-label1">Middle Name<span class=""> *</span> :</label>
+										<label for="pwd" class="form-label1">Middle Name :</label>
 										<br/>
-										N/A
+										<?php echo(isset($gsa_data['middle_name']) && $gsa_data['middle_name']!='' ? $gsa_data['middle_name'] : "N/A");?>
 									</div>
 											
 									<div class="form-group col-md-4">
-										<label for="pwd" class="form-label1">Last Name<span class=""> *</span> :</label>
+										<label for="pwd" class="form-label1">Last Name :</label>
 										<br/>
-										Smith
+										<?php echo(isset($gsa_data['last_name']) && $gsa_data['last_name']!='' ? $gsa_data['last_name'] : "N/A");?>
 									</div>
 									<div class="form-group col-md-4">
-										<label for="pwd" class="form-label1">Email<span class=""> *</span> :</label>
+										<label for="pwd" class="form-label1">Email :</label>
 										<br/>
-										sandy@gmail.com
+										<?php echo(isset($gsa_data['email_address']) && $gsa_data['email_address']!='' ? $gsa_data['email_address'] : "N/A");?>
 									</div>
 									<div class="form-group col-md-4">
 										<label for="pwd" class="form-label1">Designation :</label>
 										<br/>
-										Owner
+										<?php echo(isset($gsa_data['designation']) && $gsa_data['designation']!='' ? $gsa_data['designation'] : "N/A");?>
 									</div>
 									<div class="form-group col-md-4">
-										<label for="pwd" class="form-label1">IATA Status<span class=""> *</span> :</label>
+										<label for="pwd" class="form-label1">IATA Status :</label>
 										<br/>
-										Approve
+										<?php echo(isset($gsa_data['iata_status']) && $gsa_data['iata_status']==1 ? "Approve" : "Not Approve");?>
 									</div>
 									<div class="form-group col-md-4">
 										<label for="pwd" class="form-label1">Nature of Business:</label>
 										<br/>
-										Hotel
+										<?php echo(isset($gsa_data['nature_of_business']) && $gsa_data['nature_of_business']!='' ? $gsa_data['nature_of_business'] : "N/A");?>
 									</div>
 									<div class="form-group col-md-4">
-										<label for="pwd" class="form-label1">Preferred Currency <span class="">*</span> :</label>
+										<label for="pwd" class="form-label1">Preferred Currency :</label>
 										<br/>
-										Dollar
+										<?php echo(isset($gsa_data['currency_code']) && $gsa_data['currency_code']!='' ? $gsa_data['currency_code'] : "N/A");?>
 									</div>
 									<div class="form-group col-md-4">
-										<label for="pwd" class="form-label1">Country<span class="">*</span> :</label>
+										<label for="pwd" class="form-label1">Country :</label>
 										<br/>
-										India
+										<?php echo(isset($gsa_data['co_name']) && $gsa_data['co_name']!='' ? $gsa_data['co_name'] : "N/A");?>
 									</div>
 									<div class="form-group col-md-4">
-										<label for="pwd" class="form-label1">City <span class="">*</span> :</label>
+										<label for="pwd" class="form-label1">State :</label>
 										<br/>
-										West Bengal
+										<?php echo(isset($gsa_data['s_name']) && $gsa_data['s_name']!='' ? $gsa_data['s_name'] : "N/A");?>
 									</div>
 									<div class="form-group col-md-4">
-										<label for="pwd" class="form-label1">Pincode/Zipcode/Postcode<span class="">*</span> :</label>
+										<label for="pwd" class="form-label1">City :</label>
 										<br/>
-										700076
-									</div>
-									<div class="form-group col-md-8">
-										<label for="pwd" class="form-label1">Address<span class="">*</span> :</label>
-										<br/>
-										123 ABC Street
+										<?php echo(isset($gsa_data['ci_name']) && $gsa_data['ci_name']!='' ? $gsa_data['ci_name'] : "N/A");?>
 									</div>
 									<div class="form-group col-md-4">
-										<label for="pwd" class="form-label1">Time Zone<span class="">*</span> :</label>
+										<label for="pwd" class="form-label1">Pincode/Zipcode/Postcode :</label>
 										<br/>
-										IST
+										<?php echo(isset($gsa_data['zipcode']) && $gsa_data['zipcode']!='' ? $gsa_data['zipcode'] : "N/A");?>
 									</div>
+									<div class="form-group col-md-4">
+										<label for="pwd" class="form-label1">Time Zone :</label>
+										<br/>
+										<?php echo(isset($gsa_data['timezone']) && $gsa_data['timezone']!='' ? "GMT".$gsa_data['timezone'] : "N/A");?>
+									</div>
+									<div class="form-group col-md-12">
+										<label for="pwd" class="form-label1">Address :</label>
+										<br/>
+										<?php echo(isset($gsa_data['address']) && $gsa_data['address']!='' ? nl2br($gsa_data['address']) : "N/A");?>
+									</div>
+									
 									<div class="form-group col-md-4">
 										<label for="pwd" class="form-label1">Telephone* :</label>
 										<br/>
-										+91-2536989698
+										<?php echo(isset($gsa_data['telephone']) && $gsa_data['telephone']!='' ? $gsa_data['telephone'] : "N/A");?>
 									</div>
 									<div class="form-group col-md-4">
-										<label for="pwd" class="form-label1">Mobile Number<span class="">*</span> :</label>
+										<label for="pwd" class="form-label1">Mobile Number :</label>
 										<br/>
-										+91-1234567890
+										<?php echo(isset($gsa_data['mobile_number']) && $gsa_data['mobile_number']!='' ? $gsa_data['mobile_number'] : "N/A");?>
 									</div>
 									<div class="form-group col-md-4">
 										<label for="pwd" class="form-label1">Website:</label>
 										<br/>
-										N/A
+										<?php echo(isset($gsa_data['website']) && $gsa_data['website']!='' ? $gsa_data['website'] : "N/A");?>
 									</div>
 									<div class="form-group col-md-4">
 										<label for="pwd" class="form-label1">Your Logo:</label>
 										<br/>
-										N/A
-										
+										<?php
+										if($gsa_data['image']!=""):
+										?>
+											<img src = "<?php echo(AGENT_IMAGE_PATH.$gsa_data['image']);?>" border = "0" alt = "" width = "80" height = "80" onerror="this.remove;"/>
+										<?php
+										else:
+											echo "N/A";
+										endif;
+										?>
 									</div>
 									<div class="form-group col-md-4">
-										<label for="pwd" class="code_text1 form-label1">Agent Code<span class="">*</span> :</label>
+										<label for="pwd" class="code_text1 form-label1">Agent Code :</label>
 										<br/>
-										9123689
+										<?php echo(isset($gsa_data['code']) && $gsa_data['code']!='' ? $gsa_data['code'] : "N/A");?>
 									</div>
 								</div>
 							</div>
@@ -282,10 +433,9 @@ require_once('../loader.inc');
 		<section class="content">
 			<div class="row">
 				<section class="col-lg-12 connectedSortable">
-					<div id="notify_msg_div"></div>
 					<div class="box">
 						<div class="box-header">
-						   <h3 class="box-title">Lists Of Sub Agents Of "Sandy Smith"</h3>
+						   <h3 class="box-title">Lists Of Sub Agents Of "<?= $gsa_data['first_name']." ".($gsa_data['middle_name']!="" ? $gsa_data['middle_name']." " : "").$gsa_data['last_name'];?>"</h3>
 						</div>
 						<div class="box-body">
 							<div id="" class="col-md-12">
@@ -293,7 +443,7 @@ require_once('../loader.inc');
 										<div id="" class="col-md-8"></div>
 										<div id="" class="col-md-4">
 											<div id="" class="row">
-												<a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_agent"><button class="status_checks btn btn-success btn-md" type="submit" style="float:right; margin-bottom:10px;" value="" onclick="" >CREATE NEW SUB AGENT</button></a>
+												<a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_agent?gse_id=<?php echo base64_encode($gsa_data['id']);?>"><button class="status_checks btn btn-success btn-md" type="button" style="float:right; margin-bottom:10px;" value="">CREATE NEW SUB AGENT</button></a>
 											</div>
 										</div>
 									</div>
@@ -315,13 +465,28 @@ require_once('../loader.inc');
 											</tr>
 										</thead>
 										<tbody aria-relevant="all" aria-live="polite" role="alert">
+										<?php
+										if(!empty($agent_data)):
+											foreach($agent_data as $agent_key=>$agent_val):
+										?>
 											<tr class="odd">
-												<td class="  sorting_1">1</td>
-												<td class=" ">Sandy Smith</td>
-												<td class=" ">023569</td>
-												<td class=" ">sandy@gmail.com</td>
-												<td class=" ">11-1234-4568</td>
-												<td class=" ">Booking International</td>
+												<td class="  sorting_1"><?= $agent_key+1;?></td>
+												<td class=" " style="display:none;">
+												<?php
+												if($agent_val['image']!=""):
+												?>
+													<img src = "<?php echo(AGENT_IMAGE_PATH.$agent_val['image']);?>" border = "0" alt = "" width = "80" height = "80" onerror="this.remove;"/>
+												<?php
+												else:
+													echo "N/A";
+												endif;
+												?>
+												</td>
+												<td class=" "><?= $agent_val['first_name']." ".($agent_val['middle_name']!="" ? $agent_val['middle_name']." " : "").$agent_val['last_name'];?></td>
+												<td class=" "><?= $agent_val['code'];?></td>
+												<td class=" "><?= $agent_val['email_address'];?></td>
+												<td class=" "><?= $agent_val['telephone'];?></td>
+												<td class=" "><?= $agent_val['company_name'];?></td>
 												<td class=" ">
 													<b>ACTIVE BOOKING: 5
 													<br/>
@@ -331,40 +496,27 @@ require_once('../loader.inc');
 													<br/>
 													TOTAL EARNING: $2000.00</b>
 												</td>
-												<td class=" "><a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" id="status" data-id="" class="status_checks btn-success">Active</a></td>
-												<td class=" " data-title="Action">
-													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_booking" title = "Create New Bookings"><i class="fa fa-plus-square fa-1x" ></i></a>&nbsp;&nbsp;
-													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>bookings" title = "Lists Of Bookings"><i class="fa fa-plane fa-1x" ></i></a>&nbsp;&nbsp;
-													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>accounting" title = "Accounting"><i class="fa fa-usd fa-1x" ></i></a>&nbsp;&nbsp;
-													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_agent" title = "Edit Agent"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-													<a href = "#"  title = "Delete Agent" onclick = ""><i class="fa fa fa-trash-o fa-1x"></i></a>
-												</td>
-											</tr>
-											<tr class="odd">
-												<td class="  sorting_1">2</td>
-												<td class=" ">John Smith</td>
-												<td class=" ">369856</td>
-												<td class=" ">johny@gmail.com</td>
-												<td class=" ">11-1234-6933</td>
-												<td class=" ">Confort Booking Services</td>
 												<td class=" ">
-													<b>ACTIVE BOOKING: 5
-													<br/>
-													COMPLETE BOOKING: 20
-													<br/>
-													CANCELLED BOOKING: 4
-													<br/>
-													TOTAL EARNING: $2000.00</b>
+													<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $agent_val['status']==1 ? "btn-success" : "btn-danger";?>" onclick="change_status(<?= $agent_val['id'];?>, $(this))"><?= $agent_val['status']==1 ? "Active" : "Inactive";?></a>
 												</td>
-												<td class=" "><a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" id="status" data-id="" class="status_checks btn-success">Active</a></td>
 												<td class=" " data-title="Action">
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_booking" title = "Create New Bookings"><i class="fa fa-plus-square fa-1x" ></i></a>&nbsp;&nbsp;
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>bookings" title = "Lists Of Bookings"><i class="fa fa-plane fa-1x" ></i></a>&nbsp;&nbsp;
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>accounting" title = "Accounting"><i class="fa fa-usd fa-1x" ></i></a>&nbsp;&nbsp;
-													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_agent" title = "Edit Agent"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-													<a href = "#"  title = "Delete Agent" onclick = ""><i class="fa fa fa-trash-o fa-1x"></i></a>
+													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_agent?agent_id=<?php echo base64_encode($agent_val['id']);?>&gse_id=<?php echo base64_encode($gsa_data['id']);?>" title = "Edit Agent"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
+													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>sub_agents?agent_id=<?php echo base64_encode($agent_val['id']);?>&gse_id=<?php echo base64_encode($gsa_data['id']);?>"  title = "Delete Agent" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
 												</td>
 											</tr>
+										<?php
+											endforeach;
+										else:
+										?>
+											<tr align="center">
+												<td colspan="100%">No record found</td>
+											</tr>
+										<?php
+										endif;
+										?>
 										</tbody>
 									</table>
 								</div>

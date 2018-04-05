@@ -129,7 +129,7 @@
 					<div class="col-md-12">
 						<div id="notify_msg_div"></div>
 						<div class="box box-primary">
-							<form name="profile" name="edit_attribute_from" id="edit_attribute_from" method="POST" enctype="multipart/form-data">
+							<form name="edit_attribute_from" id="edit_attribute_from" method="POST" enctype="multipart/form-data">
 								<div class="col-md-12 row">
 									<div class="box-body">
 										<div class="form-group col-md-6">
@@ -140,6 +140,7 @@
 											<label for="inputName" class="control-label">Serial Number<font color="#FF0000">*</font></label>
 											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['serial_number']) && $_POST['serial_number']!='' ? $_POST['serial_number'] : (isset($attribute_data['serial_number']) && $attribute_data['serial_number']!='' ? $attribute_data['serial_number'] : ""));?>" name="serial_number" id="serial_number" placeholder="Serial Number" tabindex = "2" />
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Attribute Type</label>
 											<select class="form-control " name="type" id="type" tabindex = "3">
@@ -155,6 +156,7 @@
 												<option value = "0" <?php echo(isset($_POST['status']) && $_POST['status']==0 ? 'selected="selected"' : (isset($attribute_data['status']) && $attribute_data['status']==0 ? 'selected="selected"' : ""));?>>Inactive</option>
 											</select>
 										</div>
+										<div class="clearfix"></div>
 									</div>
 								</div>
 								<div class="col-md-12 row">

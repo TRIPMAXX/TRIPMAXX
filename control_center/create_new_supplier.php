@@ -126,6 +126,7 @@
 											<label for="last_name">Last Name <font color="#FF0000">*</font></label>
 											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['last_name']) && $_POST['last_name']!='' ? $_POST['last_name'] : "");?>" name="last_name" id="last_name" placeholder="Last Name" tabindex = "2" />
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="company_name" class="control-label">Company Name</label>
 											<input type="text" class="form-control validate[optional]" placeholder = "Company Name" name="company_name" id="company_name" tabindex = "3" value="<?php echo(isset($_POST['company_name']) && $_POST['company_name']!='' ? $_POST['company_name'] : "");?>"/>
@@ -139,6 +140,7 @@
 												<option value = "Restaurent" <?php echo(isset($_POST['type_of_business']) && $_POST['type_of_business']=='Restaurent' ? 'selected="selected"' : "");?>>Restaurent</option>
 											</select>
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="email_address" class="control-label">Email Address <font color="#FF0000">*</font></label>
 											<input type="text" class="form-control validate[required,custom[email]]"  placeholder = "Email Address" name="email_address" id="email_address" tabindex = "5" value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : "");?>"/>
@@ -147,6 +149,7 @@
 											<label for="phone_number" class="control-label">Contact Phone Number <font color="#FF0000">*</font></label>
 											<input type="text" class="form-control validate[required, custom[phone]]"  placeholder = "Contact Phone Number" name="phone_number" id="phone_number" tabindex = "6" value="<?php echo(isset($_POST['phone_number']) && $_POST['phone_number']!='' ? $_POST['phone_number'] : "");?>"/>
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="password" class="control-label">Account Password <font color="#FF0000">*</font></label>
 											<input type="password" class="form-control validate[required]"  placeholder = "Account Password" name="password" id="password" tabindex = "7" value=""/>
@@ -155,6 +158,7 @@
 											<label for="confirm_password" class="control-label">Confirm Account Password <font color="#FF0000">*</font></label>
 											<input type="password" class="form-control validate[required, equals[password]]"  placeholder = "Confirm Account Password" name="confirm_password" id="confirm_password" tabindex = "8"  value=""/>
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-12">
 											<label for="address" class="control-label">Contact Address <font color="#FF0000">*</font></label>
 											<textarea class="form-control validate[required]"  placeholder = "Contact Address" name="address" id="address" tabindex = "9"><?php echo(isset($_POST['address']) && $_POST['address']!='' ? $_POST['address'] : "");?></textarea>
@@ -177,6 +181,7 @@
 											<label for="supplier_code" class="control-label">Supplier Account Code <font color="#FF0000">*</font></label>
 											<input type="text" class="form-control validate[required]"  placeholder = "Supplier Account Code" name="supplier_code" id="supplier_code" tabindex = "11" value="<?php echo(isset($_POST['supplier_code']) && $_POST['supplier_code']!='' ? $_POST['supplier_code'] : "");?>"/>
 										</div>
+										<div class="clearfix"></div>
 									</div>
 								</div>
 								<div class="col-md-12 row">

@@ -12,13 +12,19 @@
 		if(!empty($find_room)):
 			$_POST['room_id']=$server_data['data']['room_id'];
 			for($i=1;$i<=5;$i++):
+				if(isset($_POST['id']))
+					unset($_POST['id']);
 				if(isset($server_data['data']['price_id'.$i]) && $server_data['data']['price_id'.$i]!=""):
 					$_POST['id']=$server_data['data']['price_id'.$i];
 				endif;
-				$_POST['start_date']=date("Y-m-d", strtotime($server_data['data']['start_date'.$i]));
-				$_POST['end_date']=date("Y-m-d", strtotime($server_data['data']['end_date'.$i]));
-				$_POST['price_per_night']=$server_data['data']['price_per_night'.$i];
-				$save_room_prices = tools::module_form_submission("", TM_ROOM_PRICES);
+				if($server_data['data']['start_date'.$i]!="" && $server_data['data']['end_date'.$i]!="" && $server_data['data']['price_per_night'.$i]!=""):
+					$start_date=date_create_from_format("d/m/Y", $server_data['data']['start_date'.$i]);
+					$_POST['start_date']=date_format($start_date,"Y-m-d");
+					$end_date=date_create_from_format("d/m/Y", $server_data['data']['end_date'.$i]);
+					$_POST['end_date']=date_format($end_date,"Y-m-d");
+					$_POST['price_per_night']=$server_data['data']['price_per_night'.$i];
+					$save_room_prices = tools::module_form_submission("", TM_ROOM_PRICES);
+				endif;
 			endfor;
 			$return_data['status']="success";
 			$return_data['msg'] = 'Room price has been saved successfully.';

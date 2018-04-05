@@ -264,16 +264,9 @@ endif;
 	<script>
 
 	$( function() {
-		$( "#start_date1" ).datepicker();
-		$( "#end_date1" ).datepicker();
-		$( "#start_date2" ).datepicker();
-		$( "#end_date2" ).datepicker();
-		$( "#start_date3" ).datepicker();
-		$( "#end_date3" ).datepicker();
-		$( "#start_date4" ).datepicker();
-		$( "#end_date4" ).datepicker();
-		$( "#start_date5" ).datepicker();
-		$( "#end_date5" ).datepicker();
+		$( "#start_date1, #end_date1, #start_date2, #end_date2, #start_date3, #end_date3, #start_date4, #end_date4, #start_date5, #end_date5" ).datepicker({
+			 dateFormat: 'dd/mm/yy',
+		});
 	} );
 	</script>
 	<!-- JAVASCRIPT CODE -->
@@ -316,6 +309,7 @@ endif;
 											<br/>
 											<font color = "red">SELECT MULTIPLE BY HOLDING CONTROL BUTTON.</font>
 										</div>
+										<div class="clearfix"></div>
 										<?php
 										if(isset($room_data['room_images']) && $room_data['room_images']!=""):
 										?>
@@ -367,6 +361,7 @@ endif;
 											<label for="inputName" class="control-label">Default Number Of Rooms<font color="#FF0000">*</font></label>
 											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['number_of_rooms']) && $_POST['number_of_rooms']!='' ? $_POST['number_of_rooms'] : (isset($room_data['number_of_rooms']) && $room_data['number_of_rooms']!='' ? $room_data['number_of_rooms'] : ""));?>" name="number_of_rooms" id="number_of_rooms" placeholder="Default Number Of Rooms" tabindex = "5" />
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Status</label>
 											<select class="form-control validate[optional]" name="status" id="status" tabindex = "6">
@@ -404,7 +399,7 @@ endif;
 														<th>#</th>
 														<th>Start Date</th>
 														<th>End Date</th>
-														<th>Room Price / Night $</th>
+														<th>Room Price / Night</th>
 													</tr>
 												</thead>
 												<tbody aria-relevant="all" aria-live="polite" role="alert">
@@ -425,13 +420,13 @@ endif;
 															?>
 														</td>
 														<td class=" ">
-															<input type="text" class="form-control validate[required] datepicker"  value="<?php echo(isset($_POST['start_date'.$i]) && $_POST['start_date'.$i]!='' ? $_POST['start_date'.$i] : (isset($room_price_data[$arr_index]) && $room_price_data[$arr_index]['start_date']!='' ? tools::module_date_format($room_price_data[$arr_index]['start_date']) : ""));?>" name="start_date<?php echo $i;?>" id="start_date<?php echo $i;?>" placeholder="Start Date" readonly />
+															<input type="text" class="form-control datepicker"  value="<?php echo(isset($_POST['start_date'.$i]) && $_POST['start_date'.$i]!='' ? $_POST['start_date'.$i] : (isset($room_price_data[$arr_index]) && $room_price_data[$arr_index]['start_date']!='' ? tools::module_date_format($room_price_data[$arr_index]['start_date']) : ""));?>" name="start_date<?php echo $i;?>" id="start_date<?php echo $i;?>" placeholder="Start Date" readonly />
 														</td>
 														<td class=" ">
-															<input type="text" class="form-control validate[required] datepicker"  value="<?php echo(isset($_POST['end_date'.$i]) && $_POST['end_date'.$i]!='' ? $_POST['end_date'.$i] : (isset($room_price_data[$arr_index]) && $room_price_data[$arr_index]['end_date']!='' ? tools::module_date_format($room_price_data[$arr_index]['end_date']) : ""));?>" name="end_date<?php echo $i;?>" id="end_date<?php echo $i;?>" placeholder="End Date" readonly />
+															<input type="text" class="form-control datepicker"  value="<?php echo(isset($_POST['end_date'.$i]) && $_POST['end_date'.$i]!='' ? $_POST['end_date'.$i] : (isset($room_price_data[$arr_index]) && $room_price_data[$arr_index]['end_date']!='' ? tools::module_date_format($room_price_data[$arr_index]['end_date']) : ""));?>" name="end_date<?php echo $i;?>" id="end_date<?php echo $i;?>" placeholder="End Date" readonly />
 														</td>
 														<td class=" ">
-															<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['price_per_night'.$i]) && $_POST['price_per_night'.$i]!='' ? $_POST['price_per_night'.$i] : (isset($room_price_data[$arr_index]) && $room_price_data[$arr_index]['price_per_night']!='' ? $room_price_data[$arr_index]['price_per_night'] : ""));?>" name="price_per_night<?php echo $i;?>" id="price_per_night<?php echo $i;?>" placeholder="Room Price  / Night"/>
+															<input type="text" class="form-control"  value="<?php echo(isset($_POST['price_per_night'.$i]) && $_POST['price_per_night'.$i]!='' ? $_POST['price_per_night'.$i] : (isset($room_price_data[$arr_index]) && $room_price_data[$arr_index]['price_per_night']!='' ? $room_price_data[$arr_index]['price_per_night'] : ""));?>" name="price_per_night<?php echo $i;?>" id="price_per_night<?php echo $i;?>" placeholder="Room Price  / Night"/>
 														</td>
 													</tr>
 												<?php

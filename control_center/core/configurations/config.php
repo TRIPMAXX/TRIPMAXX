@@ -78,7 +78,14 @@ define("API_PASSWORD", "1");
 define("REST_API_PATH", "Rest/Api/");
 define("SUPPLIER_API_PATH", "supplier/api/");
 define("HOTEL_API_PATH", "hotel/api/");
+define("AGENT_API_PATH", "agent/api/");
+define("TOUR_API_PATH", "tour/api/");
+define("TRANSFER_API_PATH", "transfer/api/");
+
 
 define("HOTEL_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/hotel/");
 define("ROOM_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/room/");
+define("AGENT_IMAGE_PATH", DOMAIN_NAME_PATH."agent_control_center/assets/upload/agent/");
+define("TOUR_IMAGE_PATH", DOMAIN_NAME_PATH."tour_control_center/assets/upload/tour/");
+define("TRANSFER_IMAGE_PATH", DOMAIN_NAME_PATH."transfer_control_center/assets/upload/transfer/");
 ?>

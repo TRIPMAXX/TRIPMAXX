@@ -82,6 +82,7 @@ if(isset($_POST['btn_submit'])) {
 										<label for="last_name"><font color="#FF0000">*</font>Last Name</label>
 										<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['last_name']) && $_POST['last_name']!='' ? $_POST['last_name'] : "");?>" name="last_name" id="last_name" placeholder="Last Name"  tabindex = "2" />
 									</div>
+									<div class="clearfix"></div>
 									<div class="form-group col-md-6">
 										<label for="email_address"><font color="#FF0000">*</font>Email</label>
 										<input type="text" class="form-control validate[required] custom[email]"  value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : "");?>" name="email_address" id="email_address" placeholder="Email Address" tabindex = "3" />
@@ -90,6 +91,7 @@ if(isset($_POST['btn_submit'])) {
 										<label for="username"><font color="#FF0000">*</font>Username</label>
 										<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['username']) && $_POST['username']!='' ? $_POST['username'] : "");?>" name="username" id="username" placeholder="Username" tabindex = "4" />
 									</div>
+									<div class="clearfix"></div>
 									<div class="form-group col-md-6">
 										<label for="password" class="control-label"><font color="#FF0000">*</font>Password</label>
 										<div class="input-icon right">
