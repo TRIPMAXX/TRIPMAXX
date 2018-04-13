@@ -24,6 +24,8 @@
 					$_POST['end_date']=date_format($end_date,"Y-m-d");
 					$_POST['price_per_night']=$server_data['data']['price_per_night'.$i];
 					$save_room_prices = tools::module_form_submission("", TM_ROOM_PRICES);
+				elseif($server_data['data']['start_date'.$i]=="" && $server_data['data']['end_date'.$i]=="" && $server_data['data']['price_per_night'.$i]=="" && isset($server_data['data']['price_id'.$i]) && $server_data['data']['price_id'.$i]!=""):
+					tools::delete(TM_ROOM_PRICES, "WHERE id=:id", array(":id"=>$server_data['data']['price_id'.$i]));
 				endif;
 			endfor;
 			$return_data['status']="success";

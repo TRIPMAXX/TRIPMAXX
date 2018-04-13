@@ -22,6 +22,7 @@
 						endforeach;
 					endif;
 					tools::delete(TM_ROOM_PRICES, "WHERE room_id=:room_id", array(":room_id"=>$room_val['id']));
+					tools::delete(TM_ROOM_AGENT_MARKUP, "WHERE room_id=:room_id", array(":room_id"=>$room_val['id']));
 					tools::delete(TM_ROOMS, "WHERE id=:id", array(":id"=>$room_val['id']));
 				endforeach;
 			endif;

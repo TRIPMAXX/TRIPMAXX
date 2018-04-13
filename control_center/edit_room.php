@@ -5,6 +5,8 @@
 	$verify_token = "edit_room";
 	$white_list_array_1 = array('room_id', 'price_id1', 'price_id2', 'price_id3', 'price_id4', 'price_id5', 'start_date1', 'end_date1', 'price_per_night1', 'start_date2', 'end_date2', 'price_per_night2', 'start_date3', 'end_date3', 'price_per_night3', 'start_date4', 'end_date4', 'price_per_night4', 'start_date5', 'end_date5', 'price_per_night5', 'token', 'id', 'btn_submit_price');
 	$verify_token_1 = "edit_room_price";
+	$white_list_array_2 = array('room_id', 'agent_id_arr', 'agent_markup', 'agent_markup_id_arr', 'token', 'id', 'btn_submit_markup');
+	$verify_token_2 = "edit_agent_markup";
 	if(isset($_GET['hotel_id']) && $_GET['hotel_id']!="" && isset($_GET['room_id']) && $_GET['room_id']!=""):
 		$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
 		if(isset($autentication_data->status)):
@@ -141,6 +143,38 @@
 						}
 					}
 				}
+				if(isset($_POST['btn_submit_markup'])):
+					$_POST['room_id']=base64_decode($_GET['room_id']);
+					if(tools::verify_token($white_list_array_2, $_POST, $verify_token_2)) {
+						//$post_data_new['token']=$post_data['token'];
+						$post_data['data']=$_POST;
+						$post_data_str=json_encode($post_data);
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+						curl_setopt($ch, CURLOPT_HEADER, false);
+						curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+						curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+						curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."room-markup/update.php");
+						curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+						$return_data = curl_exec($ch);
+						curl_close($ch);
+						$return_data_arr=json_decode($return_data, true);
+						//print_r($return_data_arr);
+						if($return_data_arr['status']=="success")
+						{
+							$_SESSION['SET_TYPE'] = 'success';
+							$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+							header("location:rooms?hotel_id=".base64_encode($hotel_data['id']));
+							exit;
+						}
+						else
+						{
+							$_SESSION['SET_TYPE'] = 'error';
+							$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+						}
+					};
+				endif;
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 				curl_setopt($ch, CURLOPT_HEADER, false);
@@ -181,6 +215,27 @@
 						//$_SESSION['SET_TYPE'] = 'error';
 						//$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
 					endif;
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($ch, CURLOPT_HEADER, false);
+					curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+					curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."room-markup/read.php");
+					curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+					$return_data = curl_exec($ch);
+					curl_close($ch);
+					$return_data_arr=json_decode($return_data, true);
+					$room_markup_data=array();
+					if(!isset($return_data_arr['status'])):
+						//$_SESSION['SET_TYPE'] = 'error';
+						//$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+					elseif($return_data_arr['status']=="success"):
+						$room_markup_data=$return_data_arr['results'];
+					else:
+						//$_SESSION['SET_TYPE'] = 'error';
+						//$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+					endif;
 				else:
 					$_SESSION['SET_TYPE'] = 'error';
 					$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
@@ -194,6 +249,40 @@
 		else:
 			$_SESSION['SET_TYPE'] = 'error';
 			$_SESSION['SET_FLASH'] = $autentication_data->msg;
+		endif;
+		$autentication_agent_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
+		if(isset($autentication_agent_data->status)):
+			if($autentication_agent_data->status=="success"):
+				$post_agent_data['token']=array(
+					"token"=>$autentication_agent_data->results->token,
+					"token_timeout"=>$autentication_agent_data->results->token_timeout,
+					"token_generation_time"=>$autentication_agent_data->results->token_generation_time
+				);
+				$post_agent_data['data']['status']=1;
+				$post_agent_data_str=json_encode($post_agent_data);
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+				curl_setopt($ch, CURLOPT_HEADER, false);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+				curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/read.php");
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $post_agent_data_str);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+				$return_data = curl_exec($ch);
+				curl_close($ch);
+				$return_data_arr=json_decode($return_data, true);
+				$agent_data=array();
+				if($return_data_arr['status']=="success"):
+					$agent_data=$return_data_arr['results'];
+				
+				//else:
+				//	$_SESSION['SET_TYPE'] = 'error';
+				//	$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+				endif;
+			else:
+				$_SESSION['SET_TYPE'] = 'error';
+				$_SESSION['SET_FLASH'] = $autentication_data->msg;
+			endif;
 		endif;
 	else:
 		$_SESSION['SET_TYPE'] = 'error';
@@ -448,78 +537,86 @@ endif;
 						</div>
 					</div>
 				</form>
-				<div class="row" style="display:none;">
-					<div class="col-md-12">
-						<div id="notify_msg_div"></div>
-						<div class="box box-primary">
-							<div class="col-md-12 row">
-								<div class="box-header">
-								   <h3 class="box-title">Agent Markup</h3>
-								</div>
-								<div class="box-body">
-									<div class="dataTables_wrapper form-inline" role="grid">
-										<table class="table table-bordered table-striped dataTable">
-											<thead>
-												<tr role="row">
-													<th>#</th>
-													<th>Agent Name</th>
-													<th>Agent Code</th>
-													<th>Agent Markup (%)</th>
-												</tr>
-											</thead>
-											<tbody aria-relevant="all" aria-live="polite" role="alert">
-												<tr class="odd">
-													<td class="  sorting_1">1</td>
-													<td class=" ">
-														Sandeep Sing
-													</td>
-													<td class=" ">
-														012365
-													</td>
-													<td class=" ">
-														<input type="text" class="form-control validate[required]"  value="" name="hotel_name" id="hotel_name" placeholder="Markup in %" tabindex = "1" />
-													</td>
-												</tr>
-												<tr class="odd">
-													<td class="  sorting_1">1</td>
-													<td class=" ">
-														Ajay Dey
-													</td>
-													<td class=" ">
-														123698
-													</td>
-													<td class=" ">
-														<input type="text" class="form-control validate[required]"  value="" name="hotel_name" id="hotel_name" placeholder="Markup in %" tabindex = "1" />
-													</td>
-												</tr>
-												<tr class="odd">
-													<td class="  sorting_1">1</td>
-													<td class=" ">
-														Pradipta Maitra
-													</td>
-													<td class=" ">
-														236589
-													</td>
-													<td class=" ">
-														<input type="text" class="form-control validate[required]"  value="" name="hotel_name" id="hotel_name" placeholder="Markup in %" tabindex = "1" />
-													</td>
-												</tr>
-											</tbody>
-										</table>
+				<form name="room_markup_from" id="room_markup_from" method="post">
+					<div class="row">
+						<div class="col-md-12">
+							<div id="notify_msg_div"></div>
+							<div class="box box-primary">
+								<div class="col-md-12 row">
+									<div class="box-header">
+									   <h3 class="box-title">Agent Markup</h3>
 									</div>
-									<div class="col-md-12 row">
-										<div class="box-footer">
-											<input type="hidden" name="token" value="" />
-											<input type = "hidden" name = "id" id = "id" value = "" />
-											<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex = "4">UPDATE</button>
+									<div class="box-body">
+										<div class="dataTables_wrapper form-inline" role="grid">
+											<table class="table table-bordered table-striped dataTable">
+												<thead>
+													<tr role="row">
+														<th>#</th>
+														<th>Agent Name</th>
+														<th>Agent Code</th>
+														<th>Agent Markup (%)</th>
+													</tr>
+												</thead>
+												<tbody aria-relevant="all" aria-live="polite" role="alert">
+												<?php
+												if(isset($agent_data) && !empty($agent_data)):
+													foreach($agent_data as $agent_key=>$agent_val):
+												?>
+													<tr class="odd">
+														<td class="  sorting_1"><?= $agent_key+1;?></td>
+														<td class=" ">
+															<?= $agent_val['first_name']." ".($agent_val['middle_name']!="" ? $agent_val['middle_name']." " : "").$agent_val['last_name'];?>
+														</td>
+														<td class=" ">
+															<?= $agent_val['code'];?>
+														</td>
+														<td class=" ">
+															<?php
+															$flag_agent=false;$agent_markup_val="";
+															if(isset($room_markup_data) && !empty($room_markup_data)):
+																foreach($room_markup_data as $markup_key=>$markup_val):
+																	if($agent_val['id']==$markup_val['agent_id']):
+																		$flag_agent=true;
+																		$agent_markup_val=$markup_val['markup_price'];
+																		break;
+																	endif;
+																endforeach;
+															endif;
+															if($flag_agent==true):
+															?>
+															<input type="hidden" value="<?= $markup_val['id'];?>" name="agent_markup_id_arr[]" tabindex = "1" />
+															<?php
+															endif;
+															?>
+															<input type="hidden" value="<?= $agent_val['id'];?>" name="agent_id_arr[]" tabindex = "1" />
+															<input type="text" class="form-control"  value="<?php echo($flag_agent==true ? $agent_markup_val : "");?>" name="agent_markup[]" placeholder="Markup in %" tabindex = "1" />
+														</td>
+													</tr>
+												<?php
+													endforeach;
+												else:
+												?>
+													<tr align="center">
+														<td colspan="100%">No record found</td>
+													</tr>
+												<?php
+												endif;
+												?>
+												</tbody>
+											</table>
+										</div>
+										<div class="col-md-12 row">
+											<div class="box-footer">
+												<input type="hidden" name="token" value="<?php echo(tools::generateFormToken($verify_token_2)); ?>" />
+												<button type="submit" id="btn_submit_markup" name="btn_submit_markup" class="btn btn-primary">UPDATE</button>
+											</div>
 										</div>
 									</div>
 								</div>
+								<div class="clearfix"></div>
 							</div>
-							<div class="clearfix"></div>
 						</div>
 					</div>
-				</div>
 				</form>
 			</section>
 		</div>

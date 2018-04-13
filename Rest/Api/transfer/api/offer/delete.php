@@ -11,6 +11,7 @@
 		$find_offer = tools::find("first", TM_OFFERS, '*', "WHERE id=:id", array(":id"=>base64_decode($_GET['offer_id'])));
 		if(!empty($find_offer)):
 			tools::delete(TM_OFFER_PRICES, "WHERE offer_id=:offer_id", array(":offer_id"=>$find_offer['id']));
+			tools::delete(TM_OFFER_AGENT_MARKUP, "WHERE offer_id=:offer_id", array(":offer_id"=>$find_offer['id']));
 			tools::delete(TM_OFFER_ADDON_PRICES, "WHERE offer_id=:offer_id", array(":offer_id"=>$find_offer['id']));
 			if(tools::delete(TM_OFFERS, "WHERE id=:id", array(":id"=>$find_offer['id']))):
 				$return_data['status'] = 'success';

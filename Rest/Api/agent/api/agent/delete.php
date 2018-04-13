@@ -18,6 +18,7 @@
 							if($sub_agent_val['image']!="" && file_exists(AGENT_IMAGES.$sub_agent_val['image']))
 								unlink(AGENT_IMAGES.$sub_agent_val['image']);
 						endif;
+						tools::delete(TM_AGENT_ACCOUNTING, "WHERE agent_id=:agent_id", array(":agent_id"=>$sub_agent_val['id']));
 						tools::delete(TM_AGENT, "WHERE id=:id", array(":id"=>$sub_agent_val['id']));
 					endforeach;
 				endif;
@@ -26,6 +27,7 @@
 				if($find_agent['image']!="" && file_exists(AGENT_IMAGES.$find_agent['image']))
 					unlink(AGENT_IMAGES.$find_agent['image']);
 			endif;
+			tools::delete(TM_AGENT_ACCOUNTING, "WHERE agent_id=:agent_id", array(":agent_id"=>$find_agent['id']));
 			if(tools::delete(TM_AGENT, "WHERE id=:id", array(":id"=>$find_agent['id']))):
 				$return_data['status'] = 'success';
 				$return_data['msg'] = 'Agent has been deleted successfully.';

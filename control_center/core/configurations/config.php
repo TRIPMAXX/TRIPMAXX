@@ -82,6 +82,12 @@ define("AGENT_API_PATH", "agent/api/");
 define("TOUR_API_PATH", "tour/api/");
 define("TRANSFER_API_PATH", "transfer/api/");
 
+define("MAX_ROOM_NO", 10);
+define("MAX_ADULT_NO", 10);
+define("MAX_CHILD_NO", 10);
+define("MAX_CHILD_AGE", 11);
+define("RECORD_PER_PAGE", 10);
+
 
 define("HOTEL_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/hotel/");
 define("ROOM_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/room/");

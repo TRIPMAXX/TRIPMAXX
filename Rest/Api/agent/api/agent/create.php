@@ -48,6 +48,12 @@
 					$_POST['image']=$file_name;
 				}
 				if($save_agent = tools::module_form_submission($uploaded_file_json_data, TM_AGENT)) {
+					$credit_balance=$_POST['credit_balance'];
+					unset($_POST);
+					$_POST['agent_id']=$save_agent;
+					$_POST['amount']=$credit_balance;
+					$_POST['note']="Default Credit";
+					$save_agent = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
 					$return_data['status']="success";
 					$return_data['msg'] = 'Agent has been created successfully.';
 					if(isset($_POST['type']) && $_POST['type']=="G")

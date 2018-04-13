@@ -14,6 +14,7 @@
 			if(!empty($find_offer)):
 				foreach($find_offer as $offer_key=>$offer_val):
 					tools::delete(TM_OFFER_PRICES, "WHERE offer_id=:offer_id", array(":offer_id"=>$offer_val['id']));
+					tools::delete(TM_OFFER_AGENT_MARKUP, "WHERE offer_id=:offer_id", array(":offer_id"=>$offer_val['id']));
 					tools::delete(TM_OFFER_ADDON_PRICES, "WHERE offer_id=:offer_id", array(":offer_id"=>$offer_val['id']));
 					tools::delete(TM_OFFERS, "WHERE id=:id", array(":id"=>$offer_val['id']));
 				endforeach;

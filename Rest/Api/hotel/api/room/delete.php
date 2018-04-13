@@ -19,6 +19,7 @@
 				endforeach;
 			endif;
 			tools::delete(TM_ROOM_PRICES, "WHERE room_id=:room_id", array(":room_id"=>$find_room['id']));
+			tools::delete(TM_ROOM_AGENT_MARKUP, "WHERE room_id=:room_id", array(":room_id"=>$find_room['id']));
 			if(tools::delete(TM_ROOMS, "WHERE id=:id", array(":id"=>$find_room['id']))):
 				$return_data['status'] = 'success';
 				$return_data['msg'] = 'Room has been deleted successfully.';

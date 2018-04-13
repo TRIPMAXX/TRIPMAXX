@@ -13,6 +13,7 @@ define( "TM_COUNTRIES", "tm_countries" );
 define( "TM_STATES", "tm_states" );
 define( "TM_ROOMS", "tm_rooms" );
 define( "TM_ROOM_PRICES", "tm_room_prices" );
+define( "TM_ROOM_AGENT_MARKUP", "tm_room_agent_markup" );
 define( "TM_CURRENCIES", "tm_currencies" );
 define( "TM_SETTINGS", "tm_settings" );
 ?>

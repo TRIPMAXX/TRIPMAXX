@@ -1,7 +1,7 @@
 <?php
 require_once('loader.inc');
 tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
-$white_list_array = array('website_logo', 'punch_line', 'contact_person_name', 'contact_email_address', 'contact_phone_number', 'contact_address', 'default_currency', 'maintenance_mode', 'google_map_api', 'google_analytics_api', 'from_email_address', 'default_page_title', 'default_meta_keyword', 'default_meta_description', 'prev_website_logo', 'token', 'id', 'btn_submit');
+$white_list_array = array('website_logo', 'punch_line', 'contact_person_name', 'contact_email_address', 'contact_phone_number', 'contact_address', 'default_currency', 'maintenance_mode', 'google_map_api', 'google_analytics_api', 'from_email_address', 'default_page_title', 'default_meta_keyword', 'default_meta_description', 'prev_website_logo', 'default_credit_balance', 'token', 'id', 'btn_submit');
 $verify_token = "general_settings";
 if(isset($_POST['btn_submit'])) {
 	$_POST['id']=1;
@@ -179,6 +179,12 @@ $currency_details = tools::find("all", TM_CURRENCIES, '*', "WHERE status=:status
 											<label for="default_meta_description" class="control-label">Default Page Meta Description</label>
 											<div class="input-icon right">
 												<textarea class="form-control" name="default_meta_description" id="default_meta_description" placeholder="Default Page Meta Description" tabindex = "14"><?php echo(isset($_POST['default_meta_description']) && $_POST['default_meta_description']!='' ? $_POST['default_meta_description'] : $general_setting['default_meta_description']);?></textarea>
+											</div>
+										</div>
+										<div class="form-group col-md-6">
+											<label for="default_credit_balance" class="control-label">Default Credit Balance<font color="#FF0000">*</font></label>
+											<div class="input-icon right">
+												<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['default_credit_balance']) && $_POST['default_credit_balance']!='' ? $_POST['default_credit_balance'] : $general_setting['default_credit_balance']);?>" name="default_credit_balance" id="default_credit_balance" placeholder="Default Credit Balance" tabindex = "15" />
 											</div>
 										</div>
 									</div>

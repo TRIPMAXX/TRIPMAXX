@@ -1,8 +1,9 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
-	$white_list_array = array('company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'code', 'username', 'password', 'account_department_name', 'account_department_email', 'account_department_number', 'reservation_department_name', 'reservation_department_email', 'reservation_department_number', 'management_department_name', 'management_department_email', 'management_department_number', 'hotel_price', 'tour_price', 'transfer_price', 'packaage_price', 'status', 'token', 'id', 'btn_submit', 'confirm_password');
+	$white_list_array = array('company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'code', 'username', 'password', 'account_department_name', 'account_department_email', 'account_department_number', 'reservation_department_name', 'reservation_department_email', 'reservation_department_number', 'management_department_name', 'management_department_email', 'management_department_number', 'hotel_price', 'tour_price', 'transfer_price', 'package_price', 'status', 'token', 'id', 'btn_submit', 'confirm_password', 'credit_balance');
 	$verify_token = "create_new_agent";
+	$general_setting = tools::find("first", TM_SETTINGS, 'default_credit_balance', "WHERE id=:id ", array(":id"=>1));
 	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
 	if(isset($autentication_data->status)):
 		if($autentication_data->status=="success"):
@@ -295,8 +296,8 @@
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
-											<label for="pwd" class="form-label1">Preferred Currency <span class="">*</span> :</label>
-											<select name="preferred_currency" class="form-control form_input1 select_bg">
+											<label for="pwd" class="form-label1">Preferred Currency <font color="#FF0000">*</font> :</label>
+											<select name="preferred_currency" class="form-control form_input1 select_bg validate[required]">
 												<option value="" class="form-control form_input1">- Select Currency -</option>
 											<?php
 											if(!empty($currency_data)):
@@ -527,8 +528,8 @@
 											<input type="text" class="form-control form_input1" id="transfer_price" name="transfer_price" placeholder="Transfer" value="<?php echo(isset($_POST['transfer_price']) && $_POST['transfer_price']!='' ? $_POST['transfer_price'] : "");?>" tabindex="36">
 										</div>
 										<div class="form-group col-md-3">
-											<label for="packaage_price" class="form-label1">Package :</label>
-											<input type="text" class="form-control form_input1" id="packaage_price" name="packaage_price" placeholder="Package" value="<?php echo(isset($_POST['packaage_price']) && $_POST['packaage_price']!='' ? $_POST['packaage_price'] : "");?>" tabindex="37">
+											<label for="package_price" class="form-label1">Package :</label>
+											<input type="text" class="form-control form_input1" id="package_price" name="package_price" placeholder="Package" value="<?php echo(isset($_POST['package_price']) && $_POST['package_price']!='' ? $_POST['package_price'] : "");?>" tabindex="37">
 										</div>
 									</div>
 								</div>
@@ -537,6 +538,7 @@
 						</div>
 
 						<div class="box-footer">
+							<input type="hidden" name="credit_balance" id="credit_balance" value="<?php echo $general_setting['default_credit_balance'];?>">
 							<input type="hidden" name="token" value="<?php echo(tools::generateFormToken($verify_token)); ?>" />
 							<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex="38">CREATE</button>
 						</div>

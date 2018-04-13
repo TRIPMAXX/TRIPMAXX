@@ -4,7 +4,7 @@ tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PAT
 if(isset($_GET['offer_id']) && $_GET['offer_id']!=""):
 	$promotional_offer = tools::find("first", TM_PROMOTIONAL_OFFERS, '*', "WHERE id=:id ", array(":id"=>base64_decode($_GET['offer_id'])));
 	if(!empty($promotional_offer)):
-		$white_list_array = array('offer_title', 'offer_description', 'offer_start_date', 'offer_end_date', 'offer_document', 'account_type', 'allowed_account', 'status', 'start_date', 'end_date', 'prev_offer_document', 'token', 'id', 'btn_submit');
+		$white_list_array = array('offer_title', 'offer_code', 'offer_description', 'offer_start_date', 'offer_end_date', 'offer_document', 'account_type', 'allowed_account', 'status', 'start_date', 'end_date', 'prev_offer_document', 'token', 'id', 'btn_submit');
 		$verify_token = "edit_offer";
 		if(isset($_POST['btn_submit'])) {
 			$_POST['id']=$promotional_offer['id'];
@@ -42,6 +42,9 @@ if(isset($_GET['offer_id']) && $_GET['offer_id']!=""):
 				if(tools::module_data_exists_check("offer_title = '".tools::stripcleantohtml($_POST['offer_title'])."' AND id <> ".$promotional_offer['id']."", '', TM_PROMOTIONAL_OFFERS)) {
 					$_SESSION['SET_TYPE'] = 'error';
 					$_SESSION['SET_FLASH'] = 'This offer title already exists.';
+				} elseif(tools::module_data_exists_check("offer_code = '".tools::stripcleantohtml($_POST['offer_code'])."' AND id <> ".$promotional_offer['id']."", '', TM_PROMOTIONAL_OFFERS)) {
+					$_SESSION['SET_TYPE'] = 'error';
+					$_SESSION['SET_FLASH'] = 'This offer code already exists.';
 				} else {
 					if($save_promotional_offers = tools::module_form_submission($uploaded_file_json_data, TM_PROMOTIONAL_OFFERS)) {
 						$_SESSION['SET_TYPE'] = 'success';
@@ -129,32 +132,36 @@ endif;
 											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['offer_title']) && $_POST['offer_title']!='' ? $_POST['offer_title'] : $promotional_offer['offer_title']);?>" name="offer_title" id="offer_title" placeholder="Offer Title" tabindex = "1" />
 										</div>
 										<div class="form-group col-md-12">
+											<label for="offer_code">Offer Code <font color="#FF0000">*</font></label>
+											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['offer_code']) && $_POST['offer_code']!='' ? $_POST['offer_code'] : $promotional_offer['offer_code']);?>" name="offer_code" id="offer_code" placeholder="Offer Code" tabindex = "2" />
+										</div>
+										<div class="form-group col-md-12">
 											<label for="offer_description">Offer Description <font color="#FF0000">*</font></label>
-											<textarea class="form-control validate[required]" name="offer_description" id="offer_description" placeholder="Offer Description" tabindex = "2"><?php echo(isset($_POST['offer_description']) && $_POST['offer_description']!='' ? $_POST['offer_description'] : $promotional_offer['offer_description']);?></textarea>
+											<textarea class="form-control validate[required]" name="offer_description" id="offer_description" placeholder="Offer Description" tabindex = "3"><?php echo(isset($_POST['offer_description']) && $_POST['offer_description']!='' ? $_POST['offer_description'] : $promotional_offer['offer_description']);?></textarea>
 										</div>
 										<div class="form-group col-md-6">
 											<label for="start_date" class="control-label">Start Date</label>
-											<input type="text" class="form-control validate[optional]"  placeholder = "Start Date" name="start_date" id="start_date" tabindex = "3" value="<?php echo(isset($_POST['start_date']) && $_POST['start_date']!='' ? $_POST['start_date'] : date("m/d/Y", strtotime($promotional_offer['offer_start_date'])));?>"/>
+											<input type="text" class="form-control validate[optional]"  placeholder = "Start Date" name="start_date" id="start_date" tabindex = "4" value="<?php echo(isset($_POST['start_date']) && $_POST['start_date']!='' ? $_POST['start_date'] : date("m/d/Y", strtotime($promotional_offer['offer_start_date'])));?>"/>
 										</div>
 										<div class="form-group col-md-6">
 											<label for="end_date" class="control-label">End Date</label>
-											<input type="text" class="form-control validate[optional]"  placeholder = "End Date" name="end_date" id="end_date" tabindex = "4" value="<?php echo(isset($_POST['end_date']) && $_POST['end_date']!='' ? $_POST['end_date'] : date("m/d/Y", strtotime($promotional_offer['offer_end_date'])));?>"/>
+											<input type="text" class="form-control validate[optional]"  placeholder = "End Date" name="end_date" id="end_date" tabindex = "5" value="<?php echo(isset($_POST['end_date']) && $_POST['end_date']!='' ? $_POST['end_date'] : date("m/d/Y", strtotime($promotional_offer['offer_end_date'])));?>"/>
 										</div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Choose Account Type</label>
-											<select class="form-control validate[optional]" tabindex = "5" name="account_type" id="account_type">
+											<select class="form-control validate[optional]" tabindex = "6" name="account_type" id="account_type">
 												<option value = "All" <?php echo(isset($_POST['account_type']) && $_POST['account_type']=='All' ? 'selected="selected"' : ($promotional_offer['account_type']=='All' ? 'selected="selected"' : ""));?>>All</option>
 											</select>
 										</div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Choose Specific User</label>
-											<select class="form-control validate[optional]" tabindex = "6" name="allowed_account" id="allowed_account" >
+											<select class="form-control validate[optional]" tabindex = "7" name="allowed_account" id="allowed_account" >
 												<!-- <?php echo(isset($_POST['allowed_account']) && $_POST['allowed_account']=='All' ? 'selected="selected"' : ($promotional_offer['allowed_account']=='All' ? 'selected="selected"' : ""));?> -->
 											</select>
 										</div>
 										<div class="form-group col-md-12">
 											<label for="offer_document" class="control-label">Upload Offer Document</label>
-											<input type = "file" name = "offer_document" />
+											<input type = "file" name = "offer_document" tabindex = "8"/>
 											<br/>
 											<?php
 											if($promotional_offer['offer_document']!="" && file_exists(PROMO_DOC.$promotional_offer['offer_document'])):
@@ -169,7 +176,7 @@ endif;
 										</div>
 										<div class="form-group col-md-6">
 											<label for="status" class="control-label">Status</label>
-											<select class="form-control" tabindex = "5" name="status" id="status" >
+											<select class="form-control" tabindex = "9" name="status" id="status" >
 												<option value = "1" <?php echo(isset($_POST['status']) && $_POST['status']==1 ? 'selected="selected"' : ($promotional_offer['status']==1 ? 'selected="selected"' : ""));?>>Active</option>
 												<option value = "0" <?php echo(isset($_POST['status']) && $_POST['status']==0 ? 'selected="selected"' : ($promotional_offer['status']==0 ? 'selected="selected"' : ""));?>>Inactive</option>
 											</select>
@@ -179,7 +186,7 @@ endif;
 								<div class="col-md-12 row">
 									<div class="box-footer">
 										<input type="hidden" name="token" value="<?php echo(tools::generateFormToken($verify_token)); ?>" />
-										<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex = "4">UPDATE</button>
+										<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex = "10">UPDATE</button>
 									</div>
 								</div>
 							</form>
