@@ -1,7 +1,7 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
-	$white_list_array = array('hotel_id', 'room_type', 'room_images', 'room_address', 'amenities', 'price', 'number_of_rooms', 'start_date', 'end_date', 'price_per_night', 'status', 'token', 'id', 'btn_submit', 'amenities_arr');
+	$white_list_array = array('hotel_id', 'room_type', 'room_images', 'room_description', 'amenities', 'price', 'number_of_rooms', 'start_date', 'end_date', 'price_per_night', 'status', 'token', 'id', 'btn_submit', 'amenities_arr');
 	$verify_token = "create_new_room";
 	if(isset($_GET['hotel_id']) && $_GET['hotel_id']!=""):
 		$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
@@ -204,7 +204,7 @@ endif;
 										<div class="clearfix"></div>
 										<div class="form-group col-md-12">
 											<label for="inputName" class="control-label">Room Description<font color="#FF0000">*</font></label>
-											<textarea class="form-control ckeditor validate[required]" name="room_address" id="room_address" placeholder="Room Description" tabindex = "3"><?php echo(isset($_POST['room_address']) && $_POST['room_address']!='' ? $_POST['room_address'] : "");?></textarea>
+											<textarea class="form-control ckeditor validate[required]" name="room_description" id="room_description" placeholder="Room Description" tabindex = "3"><?php echo(isset($_POST['room_description']) && $_POST['room_description']!='' ? $_POST['room_description'] : "");?></textarea>
 										</div>
 										<div class="form-group col-md-12">
 											<label for="inputName" class="control-label">Available Facilities<font color="#FF0000">*</font></label>

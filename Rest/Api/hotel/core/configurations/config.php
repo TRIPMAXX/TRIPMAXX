@@ -83,6 +83,10 @@ define("HOTEL_API_PATH", "hotel/api/");
 define("API_USERNAME", "a");
 define("API_PASSWORD", "1");
 define("TOKEN", "");
-define("TOKEN_TIMEOUT", 100);
+define("TOKEN_TIMEOUT", 10000);
 define("TOKEN_SECRET_KEY", "tripmaxjwtkey");
+define("RECORD_PER_PAGE", 10);
+
+define("HOTEL_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/hotel/");
+define("ROOM_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/room/");
 ?>

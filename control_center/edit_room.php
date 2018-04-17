@@ -1,7 +1,7 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
-	$white_list_array = array('hotel_id', 'room_type', 'room_images', 'room_address', 'amenities', 'price', 'number_of_rooms', 'start_date', 'end_date', 'price_per_night', 'status', 'token', 'id', 'btn_submit', 'amenities_arr');
+	$white_list_array = array('hotel_id', 'room_type', 'room_images', 'room_description', 'amenities', 'price', 'number_of_rooms', 'start_date', 'end_date', 'price_per_night', 'status', 'token', 'id', 'btn_submit', 'amenities_arr');
 	$verify_token = "edit_room";
 	$white_list_array_1 = array('room_id', 'price_id1', 'price_id2', 'price_id3', 'price_id4', 'price_id5', 'start_date1', 'end_date1', 'price_per_night1', 'start_date2', 'end_date2', 'price_per_night2', 'start_date3', 'end_date3', 'price_per_night3', 'start_date4', 'end_date4', 'price_per_night4', 'start_date5', 'end_date5', 'price_per_night5', 'token', 'id', 'btn_submit_price');
 	$verify_token_1 = "edit_room_price";
@@ -422,7 +422,7 @@ endif;
 										?>
 										<div class="form-group col-md-12">
 											<label for="inputName" class="control-label">Room Description<font color="#FF0000">*</font></label>
-											<textarea class="form-control ckeditor validate[required]" name="room_address" id="room_address" placeholder="Room Description" tabindex = "3"><?php echo(isset($_POST['room_address']) && $_POST['room_address']!='' ? $_POST['room_address'] : (isset($room_data['room_address']) && $room_data['room_address']!='' ? $room_data['room_address'] : ""));?></textarea>
+											<textarea class="form-control ckeditor validate[required]" name="room_description" id="room_description" placeholder="Room Description" tabindex = "3"><?php echo(isset($_POST['room_description']) && $_POST['room_description']!='' ? $_POST['room_description'] : (isset($room_data['room_description']) && $room_data['room_description']!='' ? $room_data['room_description'] : ""));?></textarea>
 										</div>
 										<div class="form-group col-md-12">
 											<label for="inputName" class="control-label">Available Facilities<font color="#FF0000">*</font></label>

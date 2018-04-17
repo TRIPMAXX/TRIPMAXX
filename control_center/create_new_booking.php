@@ -70,6 +70,7 @@
 <head>
 	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>CREATE NEW BOOKING</title>
 	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
+	<script src="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>assets/raty/jquery.raty.js" type="text/javascript"></script>
 	<style type="text/css">
 		.hide_age_div, .each_tab_content{display:none;}
 		.active_each_tab_content{display:block;}
@@ -275,28 +276,15 @@
 		}
 	}
 
-	function show_rooms(id) {
-		if(id == "hotel1")
+	function show_rooms(id)
+	{
+		if($("#"+id).is(":visible"))
 		{
-			if(document.getElementById('hotel1').style.display == 'none')
-			{
-				document.getElementById('hotel1').style.display = 'block';
-			}
-			else
-			{
-				document.getElementById('hotel1').style.display = 'none';
-			}
+			$("#"+id).hide();
 		}
-		if(id == "hotel2")
+		else
 		{
-			if(document.getElementById('hotel2').style.display == 'none')
-			{
-				document.getElementById('hotel2').style.display = 'block';
-			}
-			else
-			{
-				document.getElementById('hotel2').style.display = 'none';
-			}
+			$("#"+id).show();
 		}
 	}
 
@@ -437,9 +425,27 @@
 			$("#"+cur.attr("data-tab_id")).addClass("active_each_tab_content");
 		}
 	}
-	function fetch_secend_step2_rcd(page, type)
+	function change_order(cur)
 	{
-		var search_val='';
+		var sort_order=cur.val();
+		var city_id=cur.attr("data-city_id");
+		var country_id=cur.attr("data-country_id");
+		var search_val=$("#keyword_search"+city_id).val();
+		var page=1;
+		var type=1;
+		fetch_secend_step2_rcd(page, type, sort_order, city_id, country_id, search_val);
+	}
+	function filter_search(cur, city_id)
+	{
+		var search_val=$("#keyword_search"+city_id).val();
+		var country_id=cur.attr("data-country_id");
+		var sort_order=cur.parents("#city"+city_id).find("input[name='sort']:checked").val();
+		var page=1;
+		var type=1;
+		fetch_secend_step2_rcd(page, type, sort_order, city_id, country_id, search_val);
+	}
+	function fetch_secend_step2_rcd(page, type, sort_order='', city_id='', country_id='', search_val='')
+	{
 		if(type==2)
 		{
 		}
@@ -448,17 +454,50 @@
 			type:"post",
 			data:{
 				page:page,
-				type:type
+				type:type,
+				sort_order:sort_order,
+				city_id:city_id,
+				country_id:country_id,
+				search_val:search_val
 			},
 			beforeSend:function(){
 				$(".loader_inner").fadeIn();
 			},
-			//dataType:"json",
+			dataType:"json",
 			success:function(response){
+				console.log(JSON.stringify(response, null, 4));
+				if(response.status=="success")
+				{
+					if(sort_order!="" || search_val!="")
+					{
+						$("#city"+city_id).html(response.hotel_data);
+					}
+					else
+					{
+						$(".hotel_tab_all_data_div").html(response.hotel_data);
+						$(".city_tab_button_div").html(response.city_tab_html);
+					}
+
+				}
+				else
+				{
+					showError(response.msg);
+				}
+				$(".loader_inner").fadeOut();
 			},
 			error:function(){
-				//showError("We are having some problem. Please try later.");
+				showError("We are having some problem. Please try later.");
+				$(".loader_inner").fadeOut();
 			}
+		}).done(function() {
+			$(".rate_content_div").each(function(){
+				$(this).raty({
+					readOnly: true,
+					path: '<?php echo(DOMAIN_NAME_PATH_ADMIN);?>assets/raty/images',
+					score:$(this).attr("data-rate")
+				});
+			});
+			$('#min_rating_div').raty('set', { score: window.localStorage.getItem("set_star") });				 
 		});
 	}
 		$(document).ready(function(){
@@ -938,14 +977,10 @@
 												<h3>Search Hotels</h3>
 												<form name="form_secend_step" id="form_secend_step" method="POST" enctype="multipart/form-data">
 													<div class="city_tab_button_div">
-														<div class="col-md-3 cls_each_city_tab_div cls_each_city_tab_div_active" data-tab_id="city1" onclick="change_city_hotel($(this))">City 1</div>
-														<div class="col-md-3 cls_each_city_tab_div" data-tab_id="city2" onclick="change_city_hotel($(this))">City 2</div>
-														<div class="col-md-3 cls_each_city_tab_div" data-tab_id="city3" onclick="change_city_hotel($(this))">City 3</div>
-														<div class="col-md-3 cls_each_city_tab_div" data-tab_id="city4" onclick="change_city_hotel($(this))">City 4</div>
-														<div class="clearfix"></div>
+														<!-- City Tab -->
 													</div>
-													<div class="main_tab_content_outer">
-														<div class="each_tab_content active_each_tab_content" id="city1">
+													<div class="main_tab_content_outer hotel_tab_all_data_div">
+														<!-- <div class="each_tab_content active_each_tab_content" id="city1">
 															<div class="col-md-6">
 																<p>Your search for <font color = "red"><b>Thailand</b></font>, <font color = "red"><b>Bangkok</b></font> for <font color = "red"><b>3 Night(s)</b></font> fetched <font color = "red"><b>782 Hotels</b></font></p>
 															</div>
@@ -1558,7 +1593,7 @@
 																</div>
 																<div class="clearfix"></div>
 															</div>
-														</div>
+														</div> -->
 													</div>
 													<ul class="list-inline pull-right">
 														<li><button type="button" class="btn btn-warning prev-step">Modify Search</button></li>

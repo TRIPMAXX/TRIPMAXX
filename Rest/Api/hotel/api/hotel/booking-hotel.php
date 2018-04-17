@@ -1,0 +1,264 @@
+<?php
+	header("Access-Control-Allow-Origin: *");
+	header("Content-Type: application/json; charset=UTF-8");
+	include_once('../../init.php');
+	$return_data['status']="error";
+	$return_data['msg']="Token is not verified.";
+	$server_data=json_decode(file_get_contents("php://input"), true);
+	//$server_data=json_decode('{"token":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE1MjM4ODQyNTgsImp0aSI6IlVyT3JabDFqNUJCMG42d0l1Y0hUUnhYRmN4N1M1STFkTlF5ZDFUeWQxd0U9IiwiaXNzIjoiaHR0cDpcL1wvbG9jYWxob3N0XC90cmlwbWF4eFwvUmVzdFwvQXBpXC9ob3RlbFwvYXBpXC8iLCJuYmYiOjE1MjM4ODQyNTgsImV4cCI6MTUyMzg5NDI1OCwiZGF0YSI6eyJmaWxlX25hbWUiOiIxNTIzODg0MjU4XzE0MDkyLnR4dCJ9fQ.E2o6ejvsub1kG6uwAHYEnp-e1EEaFgAn5fHnCkEAGlf6niye9tPwkRIhRHvNI78WoIvImmbpf1R-TQIFbcJy9w","token_timeout":10000,"token_generation_time":1523884258},"data":{"booking_type":"personal","agent_name":"","checkin":"17\/04\/2018","checkout":"21\/04\/2018","country":["101"],"city":["5312"],"number_of_night":["3"],"hotel_ratings":[["2"]],"sel_nationality":"5","country_residance":"7","sel_currency":"2","rooms":"1","adult":["1"],"child":[""],"offset":0,"record_per_page":10,"sort_order":"name","city_id":"5312","country_id":"101","search_val":"www"}}', true);
+	if(isset($server_data['token']) && isset($server_data['token']['token']) && isset($server_data['token']['token_timeout']) && isset($server_data['token']['token_generation_time']) && tools::jwtTokenDecode($server_data['token']['token']) && ($server_data['token']['token_generation_time']+$server_data['token']['token_timeout']) > time()):
+		if(isset($server_data['data']) && isset($server_data['data']['country']) && !empty($server_data['data']['country'])):
+			$offset=0;
+			if(isset($server_data['data']['offset']) && $server_data['data']['offset']!=""):
+				$offset=$server_data['data']['offset'];
+			endif;
+			$limit=RECORD_PER_PAGE;
+			if(isset($server_data['data']['record_per_page']) && $server_data['data']['record_per_page']!=""):
+				$limit=$server_data['data']['record_per_page'];
+			endif;
+			$city_tab_html='';
+			$hotel_list_html='';			
+			$country_city_rcd_html='';
+			$search_query="";
+			$add_day=0;
+			$default_currency=tools::find("first", TM_SETTINGS." as s, ".TM_CURRENCIES." as c", 'c.*', "WHERE c.id=s.default_currency ", array());
+			foreach($server_data['data']['country'] as $country_key=>$counrty_val):	
+				$order_by='ORDER BY h.id DESC';
+				if(isset($server_data['data']['city_id']) && $server_data['data']['city_id']!=""):
+					if(isset($server_data['data']['country_id']) && $server_data['data']['country_id']!="" && $counrty_val==$server_data['data']['country_id'] && $server_data['data']['city_id']==$server_data['data']['city'][$country_key]):
+						if(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']!=""):
+							if($server_data['data']['sort_order']=="price"):
+								$order_by='ORDER BY h.id DESC';
+							elseif($server_data['data']['sort_order']=="name"):
+								$order_by='ORDER BY h.hotel_name ASC';
+							elseif($server_data['data']['sort_order']=="rating"):
+								$order_by='ORDER BY h.rating ASC';
+							endif;
+						endif;
+
+						if(isset($server_data['data']['search_val']) && $server_data['data']['search_val']!=""):
+							$search_query="AND (hotel_name LIKE :hotel_name OR email_address LIKE :email_address OR postal_code LIKE :postal_code OR short_description LIKE :short_description) ";
+							$execute[':hotel_name']="%".$server_data['data']['search_val']."%";
+							$execute[':email_address']="%".$server_data['data']['search_val']."%";
+							$execute[':postal_code']="%".$server_data['data']['search_val']."%";
+							$execute[':short_description']="%".$server_data['data']['search_val']."%";
+						endif;
+					else:
+						continue;
+					endif;
+				endif;
+				$checkin_date_obj=date_create_from_format("d/m/Y", $server_data['data']['checkin']);
+				$checkin_date=date_format($checkin_date_obj, "Y-m-d");
+				$checkin_date_on_city=date("Y-m-d", strtotime($checkin_date)+(24*60*60*$add_day));
+				$add_day=$add_day+$server_data['data']['number_of_night'][$country_key];
+				$checkout_date_on_city=date("Y-m-d", strtotime($checkin_date_on_city)+(24*60*60*$server_data['data']['number_of_night'][$country_key]));
+				$hotel_list_html='';
+				$each_first_price="--";
+				$execute['co_id']=$counrty_val;
+				$execute['ci_id']=$server_data['data']['city'][$country_key];
+				$hotel_list = tools::find("all", TM_HOTELS." as h, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci", 'h.*, co.name as co_name, s.name as s_name, ci.name as ci_name', "WHERE h.country=co.id AND h.state=s.id AND h.city=ci.id AND co.id=:co_id AND ci.id=:ci_id ".$search_query.$order_by." LIMIT ".$offset.",".$limit." ", $execute);
+				if(!empty($hotel_list)):
+					$country_name=$hotel_list[0]['co_name'];
+					$city_name=$hotel_list[0]['ci_name'];
+					$total_hotel=count($hotel_list);
+					foreach($hotel_list as $hotel_key=>$hotel_val):
+						$room_list = tools::find("all", TM_ROOMS, '*', "WHERE hotel_id=:hotel_id ", array(":hotel_id"=>$hotel_val['id']));
+						$room_html='';
+						if(!empty($room_list)):
+							foreach($room_list as $room_key=>$room_val):
+								ob_start();
+?>
+								<div style="padding:10px 0 10px 0;border:1px solid gray;">
+									<div class="col-md-1" style="font-weight:bold;">
+										<img src="assets/img/a_icon.png" border="0" alt="">
+										<br>
+										<input type="radio" name="select">
+									</div>
+									<div class="col-md-3" style="font-weight:bold;">
+										<?= $room_val['room_type'];?>
+										<br>
+										<font color="red"><?= $room_val['room_description'];?></font>
+									</div>
+									<div class="col-md-2"><?= $room_val['number_of_rooms'];?></div>
+									<div class="col-md-4">
+									<?php
+									$previous_week=0;
+									$week_day_th='';
+									$week_day_td='';
+									$main_html='';
+									$total_price=0.00;
+									for($i=strtotime($checkin_date_on_city);$i<=strtotime($checkout_date_on_city);):
+										$complete_date=date("Y-m-d", $i);
+										$room_price_list = tools::find("first", TM_ROOM_PRICES, '*', "WHERE room_id=:room_id AND start_date<=:start_date AND end_date>=:end_date AND status=:status", array(":room_id"=>$room_val['id'], ":start_date"=>$complete_date, ":end_date"=>$complete_date, ':status'=>1));
+										if(!empty($room_price_list)):
+											$room_day_price=$room_price_list['price_per_night'];
+										else:
+											$room_day_price=$room_val['price'];
+										endif;
+										$total_price=$total_price+$room_day_price;
+										$day_num=date("N", $i);
+										$day_name=date("D", $i);
+										$week_num=date("W", $i);
+										if($day_num==7)
+											$week_num=$week_num+1;
+										if($week_num!=$previous_week && $previous_week > 0):
+											$main_html.='
+											<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable">
+												<thead>
+													<tr role="row">
+														'.$week_day_th.'
+													</tr>
+												</thead>
+												<tbody aria-relevant="all" aria-live="polite" role="alert">
+													<tr>
+														'.$week_day_td.'
+													</tr>
+												</tbody>
+											</table>';
+											$week_day_th='';
+											$week_day_td='';
+										endif;
+										if($week_day_th==""):
+											$week_day_th='<th valign="middle" style="background-color:gray;" align="center">#</th>';
+											$week_day_td='<td valign="middle"> Wk '.$week_num.' </td>';
+										endif;
+										$week_day_th.='<th valign="middle" style="background-color:gray;" align="center">'.$day_name.'</th>';
+										$week_day_td.='<th valign="middle">'.$default_currency['currency_code'].number_format($room_day_price, 2,".",".").'</th>';
+
+										$previous_week=$week_num;
+										$i=$i+(24*60*60);
+									endfor;
+									if($week_day_th!="" && $week_day_td!=""):
+										$main_html.='
+										<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable">
+											<thead>
+												<tr role="row">
+													'.$week_day_th.'
+												</tr>
+											</thead>
+											<tbody aria-relevant="all" aria-live="polite" role="alert">
+												<tr>
+													'.$week_day_td.'
+												</tr>
+											</tbody>
+										</table>';
+									endif;
+									echo $main_html;
+									?>
+									</div>
+									<div class="col-md-2" style="font-weight:bold;color:red;text-align:center;"><?php echo $default_currency['currency_code'].number_format($total_price, 2,".",".");?></div>
+									<div class="clearfix"></div>
+								</div>
+<?php
+								$each_room_html=ob_get_clean();
+								$room_html.=$each_room_html;
+								$each_first_price=$default_currency['currency_code'].number_format($total_price, 2,".",".");
+							endforeach;
+						endif;
+						ob_start();
+?>
+							<div class="form-group col-md-12">
+								<div style="border:1px solid red;background-color:red;">
+									<div class="col-md-3" style="font-weight:bold;color:#fff;">Hotel Name</div>
+									<div class="col-md-2" style="font-weight:bold;color:#fff;">Rating</div>
+									<div class="col-md-2" style="font-weight:bold;color:#fff;">Location</div>
+									<div class="col-md-3" style="font-weight:bold;color:#fff;text-align:center;">Availability</div>
+									<div class="col-md-2" style="font-weight:bold;color:#fff;text-align:center;">Rate</div>
+									<div class="clearfix"></div>
+								</div>
+								<div style="padding:20px 0 0 0;border:1px solid red;">
+									<div class="col-md-3" style="font-weight:bold;"><?php echo $hotel_val['hotel_name'];?></div>
+									<div class="col-md-2" style="font-weight:bold;">
+										<div class="rate_content_div" data-rate="<?php echo $hotel_val['rating'];?>"></div>
+									</div>
+									<div class="col-md-2" style="font-weight:bold;"><?php echo $city_name;?></div>
+									<div class="col-md-3" style="font-weight:bold;text-align:center;"><button type="button" class="btn btn-success next-step">AVAILABLE</button></div>
+									<div class="col-md-2" style="font-weight:bold;text-align:center;"><?php echo $each_first_price;?></div>
+									<div class="clearfix"></div>
+									<div class="col-md-3">
+										<?php
+										if($hotel_val['hotel_images']!=""):
+											$image_arr=explode(",", $hotel_val['hotel_images']);
+											//if($image_arr[0]!="" && file_exists(HOTEL_IMAGE_PATH.$image_arr[0])):
+										?>
+											<img src = "<?php echo(HOTEL_IMAGE_PATH.$image_arr[0]);?>" border = "0" alt = "" width = "250" height = "150" onerror="this.remove;"/>
+										<?php
+											/*else:
+												echo "N/A";
+											endif;*/
+										else:
+											echo "N/A";
+										endif;
+										?>
+									</div>
+									<div class="col-md-9">
+										<?php echo nl2br($hotel_val['short_description']);?>
+									</div>
+									<div class="clearfix"></div>
+									<div class="col-md-12">
+										<a href="<?php echo DOMAIN_NAME_PATH_ADMIN;?>view_hotel_details?hotel_id=<?php echo base64_encode($hotel_val['id']);?>" target="_blank" style="font-size:16px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_rooms('hotel<?php echo $hotel_val['id'];?>');" style="font-size:16px;"><b>VIEW AVAILABLE ROOMS</b></a>
+									</div>
+									<div class="clearfix"></div>
+									<div id="hotel<?php echo $hotel_val['id'];?>" style="display:none;">
+										<?php echo $room_html;?>
+									</div>
+								</div>
+							</div>
+<?php
+						$each_hotel_list_html=ob_get_clean();
+						$hotel_list_html.=$each_hotel_list_html;
+					endforeach;
+				else:
+					$contry_list = tools::find("first", TM_COUNTRIES, '*', "WHERE id=:id ORDER BY name ASC ", array(":id"=>$counrty_val));
+					$city_list = tools::find("first", TM_CITIES, '*', "WHERE id=:id ", array(":id"=>$server_data['data']['city'][$country_key]));
+					$country_name=$contry_list['name'];
+					$city_name=$city_list['name'];
+					$total_hotel=0;
+				endif;
+				if(count($server_data['data']['country'])>1 && $server_data['data']['sort_order']=="" && $server_data['data']['search_val']==""):
+					$city_tab_html.='<div class="col-md-3 cls_each_city_tab_div '.($country_key==0 ? "cls_each_city_tab_div_active" : "").'" data-tab_id="city'.$server_data['data']['city'][$country_key].'" onclick="change_city_hotel($(this))">'.$city_name.'</div>';
+				endif;
+				if($hotel_list_html==""):
+					$hotel_list_html='<div class="col-md-12 text-center" style="padding:30px;color:red;">No record found</div>';
+				endif;
+				if($server_data['data']['sort_order']=="" && $server_data['data']['search_val']==""):
+					$country_city_rcd_html.='<div class="each_tab_content '.($country_key==0 ? "active_each_tab_content" : "").'" id="city'.$server_data['data']['city'][$country_key].'">';
+				endif;
+					$country_city_rcd_html.='<div class="col-md-6">';
+						$country_city_rcd_html.='<p>Your search for <font color="red"><b>'.$country_name.'</b></font>, <font color="red"><b>'.$city_name.'</b></font> for <font color="red"><b>'.$server_data['data']['number_of_night'][$country_key].' Night(s)</b></font> fetched <font color="red"><b>'.$total_hotel.' Hotel(s)</b></font></p>';
+					$country_city_rcd_html.='</div>';
+					$country_city_rcd_html.='<div class="col-md-6">';
+						$country_city_rcd_html.='<p><b>SORT BY:</b>&nbsp;&nbsp;&nbsp;
+						<input type = "radio" name = "sort" value="price" onchange="change_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'" '.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="price" ? 'checked="checked"' : '').'/>&nbsp;Price&nbsp;&nbsp;
+						<input type = "radio" name = "sort" value="name" onchange="change_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'"'.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="name" ? 'checked="checked"' : '').'/>&nbsp;Hotel Name&nbsp;&nbsp;
+						<input type = "radio" name = "sort" value="rating" onchange="change_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'"'.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="rating" ? 'checked="checked"' : '').'/>&nbsp;Rating</p>';
+					$country_city_rcd_html.='</div>';
+					$country_city_rcd_html.='<div class="clearfix"></div>';
+					$country_city_rcd_html.='<div class="form-group col-sm-6">';
+						$country_city_rcd_html.='<label for="inputName" class="control-label">Search</label>';
+						$country_city_rcd_html.='<input type="text" class="form-control" name="keyword_search'.$server_data['data']['city'][$country_key].'" id="keyword_search'.$server_data['data']['city'][$country_key].'" value="'.(isset($server_data['data']['search_val']) && $server_data['data']['search_val']!="" ? $server_data['data']['search_val'] : "").'">';
+					$country_city_rcd_html.='</div>';
+					$country_city_rcd_html.='<div class="form-group col-sm-5 text-left">';
+						$country_city_rcd_html.='<button type="button" class="btn btn-primary next-step" onclick="filter_search($(this), '.$server_data['data']['city'][$country_key].')" style="margin-top:23px;" data-country_id="'.$counrty_val.'">Search</button>';
+					$country_city_rcd_html.='</div>';
+					$country_city_rcd_html.='<div class="clearfix"></div>';
+					$country_city_rcd_html.='<div class="all_rcd_row">';
+						$country_city_rcd_html.=$hotel_list_html;
+						$country_city_rcd_html.='<div class="clearfix"></div>';
+					$country_city_rcd_html.='</div>';
+				if($server_data['data']['sort_order']=="" && $server_data['data']['search_val']==""):
+					$country_city_rcd_html.='</div>';
+				endif;
+			endforeach;
+			$city_tab_html.='<div class="clearfix"></div>';
+			$return_data['status']="success";
+			$return_data['msg']="Date fetched successfully.";
+			$return_data['country_city_rcd_html']=$country_city_rcd_html;
+			$return_data['city_tab_html']=$city_tab_html;
+		else:
+			$return_data['status']="error";
+			$return_data['msg']="Some data missing.";
+		endif;
+	endif;
+	echo json_encode($return_data);	
+?>
