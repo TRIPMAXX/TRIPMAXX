@@ -15,7 +15,7 @@ DATABASE CONFIGURATION
 define("DATABASE_SERVER", "localhost");
 
 //ENTER THE NAME OF YOUR DATABASE
-define("DATABASE_NAME", "tripmaxx_hotel");
+define("DATABASE_NAME", "tripmaxx_bookings");
 
 //ENTER THE USERNAME THAT CONNECTS TO YOUR DATABASE
 define("DATABASE_USERNAME", "root");
@@ -78,8 +78,6 @@ define("HOTEL_IMAGES", "../../../../../hotel_control_center/assets/upload/hotel/
 define("ROOM_IMAGES", "../../../../../hotel_control_center/assets/upload/room/");
 
 define("REST_API_PATH", "Rest/Api/");
-define("HOTEL_API_PATH", "hotel/api/");
-define("AGENT_API_PATH", "agent/api/");
 define("BOOKING_API_PATH", "booking/api/");
 
 define("API_USERNAME", "a");
@@ -89,6 +87,4 @@ define("TOKEN_TIMEOUT", 10000);
 define("TOKEN_SECRET_KEY", "tripmaxjwtkey");
 define("RECORD_PER_PAGE", 10);
 
-define("HOTEL_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/hotel/");
-define("ROOM_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/room/");
 ?>

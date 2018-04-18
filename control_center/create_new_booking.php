@@ -212,6 +212,32 @@
 			}
 			$(".all_adult_child_div").html(adult_child_html);
 		});
+		var iScrollPos = 0;
+		$(window).scroll(function(){
+			var iCurScrollPos = $(this).scrollTop();
+			if (iCurScrollPos > iScrollPos) {
+				if($(window).scrollTop() == $("body")[0].scrollHeight-$(window).outerHeight())
+				{
+					if($(".tab-content .active").attr("id")=="step2")
+					{
+						var cur=$(".tab-content .active ").find(".active_each_tab_content");
+						if(cur.find(".hotel_list_tab_no_more_record_status").val()==0)
+						{
+							var page=eval(cur.find(".hotel_list_tab_current_page").val())+eval(1);
+							var type=2;
+							var sort_order=cur.find("input[name='sort']:checked").val();
+							var city_id=cur.attr("data-city_id");
+							var country_id=cur.attr("data-country_id");
+							var search_val=$("#keyword_search"+city_id).val();
+							fetch_secend_step2_rcd(page, type, sort_order, city_id, country_id, search_val)
+						}
+					}
+				}
+			} else {
+			   //Scrolling Up
+			}
+			iScrollPos = iCurScrollPos;
+		});
 	});
 	CKEDITOR.config.autoParagraph = false;
 	CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
@@ -425,6 +451,19 @@
 			$("#"+cur.attr("data-tab_id")).addClass("active_each_tab_content");
 		}
 	}
+	function change_room_radio(cur)
+	{
+		if(cur.attr('previousValue') == 'true')
+		{
+            cur.prop('checked', false);
+			cur.attr('previousValue', false);
+        } 
+		else
+		{
+			$('input[name=selected_room]').attr('previousValue', false);
+            cur.attr('previousValue', true);
+        }
+	}
 	function change_order(cur)
 	{
 		var sort_order=cur.val();
@@ -448,6 +487,7 @@
 	{
 		if(type==2)
 		{
+			$("#city"+city_id+" .hotel_list_tab_current_page").val(page);
 		}
 		$.ajax({
 			url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_find_booking_step2_data";?>',
@@ -465,12 +505,20 @@
 			},
 			dataType:"json",
 			success:function(response){
-				console.log(JSON.stringify(response, null, 4));
+				//console.log(response);
+				//console.log(JSON.stringify(response, null, 4));
 				if(response.status=="success")
 				{
-					if(sort_order!="" || search_val!="")
+					if(type==2)
 					{
-						$("#city"+city_id).html(response.hotel_data);
+						$("#city"+city_id+" .all_rcd_row").append(response.hotel_data);
+						$(".tab-content .active ").find(".hotel_list_tab_current_page").val(page);
+						if(response.hotel_data.indexOf("No more record found") > -1)
+							$(".tab-content .active ").find(".hotel_list_tab_no_more_record_status").val(1);
+					}
+					else if(sort_order!="" || search_val!="")
+					{
+						$("#city"+city_id+" .all_rcd_row").html(response.hotel_data);
 					}
 					else
 					{
