@@ -72,7 +72,7 @@
 	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
 	<script src="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>assets/raty/jquery.raty.js" type="text/javascript"></script>
 	<style type="text/css">
-		.hide_age_div, .each_tab_content{display:none;}
+		.hide_age_div, .each_hotel_tab_content, .each_tour_tab_content{display:none;}
 		.active_each_tab_content{display:block;}
 		.loader_inner{
 			position: fixed;
@@ -85,8 +85,8 @@
 		.loader_inner img{
 			margin-top:40vh;
 		}
-		.city_tab_button_div{margin-bottom: 20px;}
-		.cls_each_city_tab_div{
+		.city_tab_button_div, .tour_city_tab_button_div{margin-bottom: 20px;}
+		.cls_each_city_hotel_tab_div, .cls_each_city_tour_tab_div{
 			padding: 5px;
 			text-align: center;
 			border:1px solid rgba(255, 0, 0, 0.32);
@@ -212,6 +212,51 @@
 			}
 			$(".all_adult_child_div").html(adult_child_html);
 		});
+		$(".save_step2_data").click(function(){
+			if($('.each_hotel_tab_content').length != $('input[class="selected_room"]:checked').length)
+			{
+				showError("Please select hotel for all the cities.");
+			}
+			else
+			{
+				var hotel_room_arr=[];
+				$('input[class="selected_room"]:checked').each(function(){
+					hotel_room_arr.push($(this).val());
+				});
+				$.ajax({
+					url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_booking_step2_execute";?>',
+					type:"post",
+					data:{
+						hotel_room_arr:hotel_room_arr
+					},
+					beforeSend:function(){
+						$(".loader_inner").fadeIn();
+					},
+					dataType:"json",
+					success:function(response){
+						//console.log(response);
+						//console.log(JSON.stringify(response, null, 4));
+						if(response.status=="success")
+						{
+							var page=1;
+							var type=1;
+							fetch_secend_step3_rcd(page, type);
+							var $active = $('.wizard .nav-tabs li.active');
+							$active.next().removeClass('disabled');
+							$active.next().find('a[data-toggle="tab"]').click();
+						}
+						else
+						{
+							showError(response.msg);
+						}
+						$(".loader_inner").fadeOut();
+					},
+					error:function(){
+						//showError("We are having some problem. Please try later.");
+					}
+				});
+			}
+		});
 		var iScrollPos = 0;
 		$(window).scroll(function(){
 			var iCurScrollPos = $(this).scrollTop();
@@ -313,6 +358,17 @@
 			$("#"+id).show();
 		}
 	}
+	function show_offers(id) 
+	{
+		if($("#"+id).is(":visible"))
+		{
+			$("#"+id).hide();
+		}
+		else
+		{
+			$("#"+id).show();
+		}
+	}
 
 	function show_transfers(id) {
 		if(id == "transfer1")
@@ -335,31 +391,6 @@
 			else
 			{
 				document.getElementById('transfer2').style.display = 'none';
-			}
-		}
-	}
-
-	function show_tours(id) {
-		if(id == "tour1")
-		{
-			if(document.getElementById('tour1').style.display == 'none')
-			{
-				document.getElementById('tour1').style.display = 'block';
-			}
-			else
-			{
-				document.getElementById('tour1').style.display = 'none';
-			}
-		}
-		if(id == "tour2")
-		{
-			if(document.getElementById('tour2').style.display == 'none')
-			{
-				document.getElementById('tour2').style.display = 'block';
-			}
-			else
-			{
-				document.getElementById('tour2').style.display = 'none';
 			}
 		}
 	}
@@ -445,8 +476,18 @@
 	{
 		if(cur.hasClass("cls_each_city_tab_div_active")==false)
 		{
-			$(".each_tab_content").removeClass("active_each_tab_content");
-			$(".cls_each_city_tab_div").removeClass("cls_each_city_tab_div_active");
+			$(".each_hotel_tab_content").removeClass("active_each_tab_content");
+			$(".cls_each_city_hotel_tab_div").removeClass("cls_each_city_tab_div_active");
+			cur.addClass("cls_each_city_tab_div_active");
+			$("#"+cur.attr("data-tab_id")).addClass("active_each_tab_content");
+		}
+	}
+	function change_city_tour(cur)
+	{
+		if(cur.hasClass("cls_each_city_tab_div_active")==false)
+		{
+			$(".each_tour_tab_content").removeClass("active_each_tab_content");
+			$(".cls_each_city_tour_tab_div").removeClass("cls_each_city_tab_div_active");
 			cur.addClass("cls_each_city_tab_div_active");
 			$("#"+cur.attr("data-tab_id")).addClass("active_each_tab_content");
 		}
@@ -460,7 +501,7 @@
         } 
 		else
 		{
-			$('input[name=selected_room]').attr('previousValue', false);
+			$('input[name="selected_room[]"]').attr('previousValue', false);
             cur.attr('previousValue', true);
         }
 	}
@@ -480,15 +521,11 @@
 		var country_id=cur.attr("data-country_id");
 		var sort_order=cur.parents("#city"+city_id).find("input[name='sort']:checked").val();
 		var page=1;
-		var type=1;
+		var type=3;
 		fetch_secend_step2_rcd(page, type, sort_order, city_id, country_id, search_val);
 	}
 	function fetch_secend_step2_rcd(page, type, sort_order='', city_id='', country_id='', search_val='')
 	{
-		if(type==2)
-		{
-			$("#city"+city_id+" .hotel_list_tab_current_page").val(page);
-		}
 		$.ajax({
 			url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_find_booking_step2_data";?>',
 			type:"post",
@@ -512,13 +549,22 @@
 					if(type==2)
 					{
 						$("#city"+city_id+" .all_rcd_row").append(response.hotel_data);
-						$(".tab-content .active ").find(".hotel_list_tab_current_page").val(page);
+						$(".tab-content .active .active_each_tab_content").find(".hotel_list_tab_current_page").val(page);
+						var prev_count=$("#city"+city_id+" .total_hotel_number").html();
+						var new_count=eval(prev_count)+eval(response.heading_count_rcd);
+						$("#city"+city_id+" .total_hotel_number").html(new_count);
 						if(response.hotel_data.indexOf("No more record found") > -1)
-							$(".tab-content .active ").find(".hotel_list_tab_no_more_record_status").val(1);
+							$(".tab-content .active .active_each_tab_content").find(".hotel_list_tab_no_more_record_status").val(1);
 					}
-					else if(sort_order!="" || search_val!="")
+					else if(sort_order!="" || type==3)
 					{
+						if(type==3)
+						{
+							$(".tab-content .active .active_each_tab_content").find(".hotel_list_tab_current_page").val(1);
+							$(".tab-content .active .active_each_tab_content").find(".hotel_list_tab_no_more_record_status").val(0);
+						}
 						$("#city"+city_id+" .all_rcd_row").html(response.hotel_data);
+						$("#city"+city_id+" .total_hotel_number").text(response.heading_count_rcd);
 					}
 					else
 					{
@@ -548,6 +594,67 @@
 			$('#min_rating_div').raty('set', { score: window.localStorage.getItem("set_star") });				 
 		});
 	}
+	function fetch_secend_step3_rcd(page, type, sort_order='', city_id='', country_id='', search_val='')
+	{
+		$.ajax({
+			url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_find_booking_step3_data";?>',
+			type:"post",
+			data:{
+				page:page,
+				type:type,
+				sort_order:sort_order,
+				city_id:city_id,
+				country_id:country_id,
+				search_val:search_val
+			},
+			beforeSend:function(){
+				$(".loader_inner").fadeIn();
+			},
+			dataType:"json",
+			success:function(response){
+				//console.log(response);
+				//console.log(JSON.stringify(response, null, 4));
+				if(response.status=="success")
+				{
+					if(type==2)
+					{
+						$("#city"+city_id+" .all_rcd_row").append(response.hotel_data);
+						$(".tab-content .active .active_each_tab_content").find(".hotel_list_tab_current_page").val(page);
+						var prev_count=$("#city"+city_id+" .total_hotel_number").html();
+						var new_count=eval(prev_count)+eval(response.heading_count_rcd);
+						$("#city"+city_id+" .total_hotel_number").html(new_count);
+						if(response.hotel_data.indexOf("No more record found") > -1)
+							$(".tab-content .active .active_each_tab_content").find(".hotel_list_tab_no_more_record_status").val(1);
+					}
+					else if(sort_order!="" || type==3)
+					{
+						if(type==3)
+						{
+							$(".tab-content .active .active_each_tab_content").find(".hotel_list_tab_current_page").val(1);
+							$(".tab-content .active .active_each_tab_content").find(".hotel_list_tab_no_more_record_status").val(0);
+						}
+						$("#city"+city_id+" .all_rcd_row").html(response.tour_data);
+						$("#city"+city_id+" .total_hotel_number").text(response.heading_count_rcd);
+					}
+					else
+					{
+						$(".tour_tab_all_data_div").html(response.tour_data);
+						$(".tour_city_tab_button_div").html(response.city_tab_html);
+					}
+				}
+				else
+				{
+					showError(response.msg);
+				}
+				$(".loader_inner").fadeOut();
+			},
+			error:function(){
+				showError("We are having some problem. Please try later.");
+				$(".loader_inner").fadeOut();
+			}
+		});
+	}
+
 		$(document).ready(function(){
 			$(".add-row").click(function(){
 				var new_row_key=$(this).attr("data-attr_key");
@@ -653,15 +760,15 @@
 											<li role="presentation" class="disabled">
 												<a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" >
 												<span class="round-tab">
-													<i class="fa fa-car fa-1x" ></i>
+													<i class="fa fa-road fa-1x" ></i>
 												</span>
 												</a>
 											</li>
 
 											<li role="presentation" class="disabled">
 												<a href="#step4" data-toggle="tab" aria-controls="step4" role="tab" >
-												<span class="round-tab">
-													<i class="fa fa-road fa-1x" ></i>
+												<span class="round-tab">										
+													<i class="fa fa-car fa-1x" ></i>
 												</span>
 												</a>
 											</li>
@@ -1023,799 +1130,27 @@
 											</div>
 											<div class="tab-pane" role="tabpanel" id="step2">
 												<h3>Search Hotels</h3>
-												<form name="form_secend_step" id="form_secend_step" method="POST" enctype="multipart/form-data">
+												<!-- <form name="form_secend_step" id="form_secend_step" method="POST" enctype="multipart/form-data"> -->
 													<div class="city_tab_button_div">
 														<!-- City Tab -->
 													</div>
 													<div class="main_tab_content_outer hotel_tab_all_data_div">
-														<!-- <div class="each_tab_content active_each_tab_content" id="city1">
-															<div class="col-md-6">
-																<p>Your search for <font color = "red"><b>Thailand</b></font>, <font color = "red"><b>Bangkok</b></font> for <font color = "red"><b>3 Night(s)</b></font> fetched <font color = "red"><b>782 Hotels</b></font></p>
-															</div>
-															<div class="col-md-6">
-																<p><b>SORT BY:</b>&nbsp;&nbsp;&nbsp;<input type = "radio" name = "sort" / >&nbsp;Price&nbsp;&nbsp;<input type = "radio" name = "sort" / >&nbsp;Hotel Name&nbsp;&nbsp;<input type = "radio" name = "sort" / >&nbsp;Rating</p>
-															</div>												
-															<div class="form-group col-md-3">
-																<label for="inputName" class="control-label">Filter By Hotel Name<font color="#FF0000">*</font></label>
-																<select class="form-control validate[optional]" name="sel_avlbl_hotel">
-																	<option value="">- All Hotels -</option>
-																	<option label="137 pillars suites and residences bangkok" value="331864">137 pillars suites and residences bangkok</option>
-																	<option label="137 pillars suites" value="96Y_BKK">137 pillars suites</option>
-																	<option label="1sabai hostel" value="5a95046e7e962fe9f28b4604">1sabai hostel</option>
-																	<option label="212 serviced apartment" value="5a95046e7e962fe9f28b4674">212 serviced apartment</option>
-																	<option label="48 ville donmuang airport" value="5a95046e7e962fe9f28b459e">48 ville donmuang airport</option>
-																	<option label="@hua lamphong hostel" value="5a95046e7e962fe9f28b45a4">@hua lamphong hostel</option>
-																	<option label="A-one bangkok boutique hotel" value="737981">A-one bangkok boutique hotel</option>
-																	<option label="A-one bangkok" value="AON_BKK">A-one bangkok</option>
-																	<option label="A-one boutique hotel" value="AON2_BKK">A-one boutique hotel</option>
-																	<option label="Abloom exclusive serviced apartment" value="5a95046f7e962fc2f28b45a2">Abloom exclusive serviced apartment</option>
-																</select>
-															</div>
-															<div class="form-group col-md-3">
-																<label for="inputName" class="control-label">Filter By Location<font color="#FF0000">*</font></label>
-																<select class="form-control validate[optional]" name="sel_avlbl_hotel">
-																	<option value="">- Filter by Location -</option>
-																	<option label="All Locations" value="all_locations">All Locations</option>
-																	<option label=" " value=" "> </option>
-																	<option label="Airport" value="Airport">Airport</option>
-																	<option label="Airport - Suvarnabhumi Airport " value="Airport - Suvarnabhumi Airport ">Airport - Suvarnabhumi Airport </option>
-																	<option label="Ayuthaya Road" value="Ayuthaya Road">Ayuthaya Road</option>
-																	<option label="BANGKOK " value="BANGKOK ">BANGKOK </option>
-																	<option label="BANGKOK Sukhumvit" value="BANGKOK Sukhumvit">BANGKOK Sukhumvit</option>
-																	<option label="BANGKOK Terminal 21" value="BANGKOK Terminal 21">BANGKOK Terminal 21</option>
-																	<option label="Bang Rak" value="Bang Rak">Bang Rak</option>
-																	<option label="Bangkok" value="Bangkok">Bangkok</option>
-																	<option label="Bangkok Noi" value="Bangkok Noi">Bangkok Noi</option>
-																	<option label="Central" value="Central">Central</option>
-																</select>
-															</div>
-															<div class="form-group col-md-6">
-																<label for="inputName" class="control-label">Select Page<font color="#FF0000">*</font></label>
-																<select class="form-control validate[optional]" name="sel_avlbl_hotel">
-																	<option value="1">- 1 -</option>
-																	<option value="2">- 2 -</option>
-																	<option value="3">- 3 -</option>
-																	<option value="4">- 4 -</option>
-																	<option value="5">- 5 -</option>
-																	<option value="6">- 6 -</option>
-																	<option value="7">- 7 -</option>
-																	<option value="8">- 8 -</option>
-																	<option value="9">- 9 -</option>
-																	<option value="10">- 10 -</option>
-																</select>
-															</div>
-															<div class="clearfix"></div>
-															<div class="all_rcd_row">
-																<div class="form-group col-md-12">
-																	<div style = "border:1px solid red;background-color:red;">
-																		<div class="col-md-3" style = "font-weight:bold;color:#fff;">Hotel Name</div>
-																		<div class="col-md-2" style = "font-weight:bold;color:#fff;">Rating</div>
-																		<div class="col-md-2" style = "font-weight:bold;color:#fff;">Location</div>
-																		<div class="col-md-3" style = "font-weight:bold;color:#fff;text-align:center;">Availability</div>
-																		<div class="col-md-2" style = "font-weight:bold;color:#fff;text-align:center;">Rate</div>
-																		<div class="clearfix"></div>
-																	</div>
-																	<div style = "padding:20px 0 0 0;border:1px solid red;">
-																		<div class="col-md-3" style = "font-weight:bold;">Hotel Seagul</div>
-																		<div class="col-md-2" style = "font-weight:bold;"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>star.png" border = "0" alt = "" height = "20"/></div>
-																		<div class="col-md-2" style = "font-weight:bold;">Bangkok</div>
-																		<div class="col-md-3" style = "font-weight:bold;text-align:center;"><button type="button" class="btn btn-success next-step">AVAILABLE</button></div>
-																		<div class="col-md-2" style = "font-weight:bold;text-align:center;">$3803.67</div>
-																		<div class="clearfix"></div>
-																		<div class="col-md-3"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>hotel_images/img1.jpg" border = "0" alt = "" width = "250" height = "150" /></div>
-																		<div class="col-md-9">Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium</div>
-																		<div class="clearfix"></div>
-																		<div class="col-md-12">
-																			<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>view_hotel_details" target = "_blank" style = "font-size:16px;"><b>MORE INFO</b></a> | <a href = "javascript:void(0);" onclick = "show_rooms('hotel1');" style = "font-size:16px;"><b>VIEW AVAILABLE ROOMS</b></a>
-																		</div>
-																		<div class="clearfix"></div>
-																		<div id = "hotel1" style = "display:none;">
-																			<div style = "border:1px solid gray;background-color:gray;margin-top:10px;">
-																				<div class="col-md-1" style = "font-weight:bold;color:#fff;">#</div>
-																				<div class="col-md-3" style = "font-weight:bold;color:#fff;">Room Type</div>
-																				<div class="col-md-2" style = "font-weight:bold;color:#fff;">Rooms</div>
-																				<div class="col-md-4" style = "font-weight:bold;color:#fff;">Room Breakup</div>
-																				<div class="col-md-2" style = "font-weight:bold;color:#fff;text-align:center;">Total Amount</div>
-																				<div class="clearfix"></div>
-																			</div>
-																			<div style = "padding:10px 0 10px 0;border:1px solid gray;">
-																				<div class="col-md-1" style = "font-weight:bold;">
-																					<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>a_icon.png" border = "0" alt = "" />
-																					<br/>
-																					<input type = "radio" name = "select" />
-																				</div>
-																				<div class="col-md-3" style = "font-weight:bold;">
-																					Single Room Standard Room Only
-																					<br/>
-																					<font color = "red">Bedding : Twin/Double.</font>
-																				</div>
-																				<div class="col-md-2">1</div>
-																				<div class="col-md-4">
-																					<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable">
-																						<thead>
-																							<tr role="row">
-																								<th valign="middle" style="background-color:gray;" align="center">#</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Thu</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Fri</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Sat</th>
-																							</tr>
-																						</thead>
-																						<tbody aria-relevant="all" aria-live="polite" role="alert">
-																							<tr>
-																								<td valign="middle"> Wk1 </td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																							</tr>
-																						</tbody>
-																					</table>
-																				</div>
-																				<div class="col-md-2" style = "font-weight:bold;color:red;text-align:center;">$3796.77</div>
-																				<div class="clearfix"></div>
-																			</div>
-																			<div style = "padding:10px 0 10px 0;border:1px solid gray;">
-																				<div class="col-md-1" style = "font-weight:bold;">
-																					<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>r_icon.png" border = "0" alt = "" />
-																					<br/>
-																					<input type = "radio" name = "select" />
-																				</div>
-																				<div class="col-md-3" style = "font-weight:bold;">
-																					Single Room Superior Room Only
-																					<br/>
-																					<font color = "red">Bedding : Twin/Double.</font>
-																				</div>
-																				<div class="col-md-2">1</div>
-																				<div class="col-md-4">
-																					<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable">
-																						<thead>
-																							<tr role="row">
-																								<th valign="middle" style="background-color:gray;" align="center">#</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Thu</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Fri</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Sat</th>
-																							</tr>
-																						</thead>
-																						<tbody aria-relevant="all" aria-live="polite" role="alert">
-																							<tr>
-																								<td valign="middle"> Wk1 </td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																							</tr>
-																						</tbody>
-																					</table>
-																				</div>
-																				<div class="col-md-2" style = "font-weight:bold;color:red;text-align:center;">$3796.77</div>
-																				<div class="clearfix"></div>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-																<div class="form-group col-md-12">
-																	<div style = "border:1px solid red;background-color:red;">
-																		<div class="col-md-3" style = "font-weight:bold;color:#fff;">Hotel Name</div>
-																		<div class="col-md-2" style = "font-weight:bold;color:#fff;">Rating</div>
-																		<div class="col-md-2" style = "font-weight:bold;color:#fff;">Location</div>
-																		<div class="col-md-3" style = "font-weight:bold;color:#fff;text-align:center;">Availability</div>
-																		<div class="col-md-2" style = "font-weight:bold;color:#fff;text-align:center;">Rate</div>
-																		<div class="clearfix"></div>
-																	</div>
-																	<div style = "padding:20px 0 0 0;border:1px solid red;">
-																		<div class="col-md-3" style = "font-weight:bold;">Hotel Seagul</div>
-																		<div class="col-md-2" style = "font-weight:bold;"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>star.png" border = "0" alt = "" height = "20"/></div>
-																		<div class="col-md-2" style = "font-weight:bold;">Bangkok</div>
-																		<div class="col-md-3" style = "font-weight:bold;text-align:center;"><button type="button" class="btn btn-success next-step">AVAILABLE</button></div>
-																		<div class="col-md-2" style = "font-weight:bold;text-align:center;">$3803.67</div>
-																		<div class="clearfix"></div>
-																		<div class="col-md-3"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>hotel_images/img1.jpg" border = "0" alt = "" width = "250" height = "150" /></div>
-																		<div class="col-md-9">Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium</div>
-																		<div class="clearfix"></div>
-																		<div class="col-md-12">
-																			<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>view_hotel_details" target = "_blank" style = "font-size:16px;"><b>MORE INFO</b></a> | <a href = "javascript:void(0);"  onclick = "show_rooms('hotel2');" style = "font-size:16px;"><b>VIEW AVAILABLE ROOMS</b></a>
-																		</div>
-																		<div class="clearfix"></div>
-																		<div id = "hotel2" style = "display:none;">
-																			<div style = "border:1px solid gray;background-color:gray;margin-top:10px;">
-																				<div class="col-md-1" style = "font-weight:bold;color:#fff;">#</div>
-																				<div class="col-md-3" style = "font-weight:bold;color:#fff;">Room Type</div>
-																				<div class="col-md-2" style = "font-weight:bold;color:#fff;">Rooms</div>
-																				<div class="col-md-4" style = "font-weight:bold;color:#fff;">Room Breakup</div>
-																				<div class="col-md-2" style = "font-weight:bold;color:#fff;text-align:center;">Total Amount</div>
-																				<div class="clearfix"></div>
-																			</div>
-																			<div style = "padding:10px 0 10px 0;border:1px solid gray;">
-																				<div class="col-md-1" style = "font-weight:bold;">
-																					<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>a_icon.png" border = "0" alt = "" />
-																					<br/>
-																					<input type = "radio" name = "select" />
-																				</div>
-																				<div class="col-md-3" style = "font-weight:bold;">
-																					Single Room Standard Room Only
-																					<br/>
-																					<font color = "red">Bedding : Twin/Double.</font>
-																				</div>
-																				<div class="col-md-2">1</div>
-																				<div class="col-md-4">
-																					<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable">
-																						<thead>
-																							<tr role="row">
-																								<th valign="middle" style="background-color:gray;" align="center">#</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Thu</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Fri</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Sat</th>
-																							</tr>
-																						</thead>
-																						<tbody aria-relevant="all" aria-live="polite" role="alert">
-																							<tr>
-																								<td valign="middle"> Wk1 </td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																							</tr>
-																						</tbody>
-																					</table>
-																				</div>
-																				<div class="col-md-2" style = "font-weight:bold;color:red;text-align:center;">$3796.77</div>
-																				<div class="clearfix"></div>
-																			</div>
-																			<div style = "padding:10px 0 10px 0;border:1px solid gray;">
-																				<div class="col-md-1" style = "font-weight:bold;">
-																					<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>r_icon.png" border = "0" alt = "" />
-																					<br/>
-																					<input type = "radio" name = "select" />
-																				</div>
-																				<div class="col-md-3" style = "font-weight:bold;">
-																					Single Room Superior Room Only
-																					<br/>
-																					<font color = "red">Bedding : Twin/Double.</font>
-																				</div>
-																				<div class="col-md-2">1</div>
-																				<div class="col-md-4">
-																					<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable">
-																						<thead>
-																							<tr role="row">
-																								<th valign="middle" style="background-color:gray;" align="center">#</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Thu</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Fri</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Sat</th>
-																							</tr>
-																						</thead>
-																						<tbody aria-relevant="all" aria-live="polite" role="alert">
-																							<tr>
-																								<td valign="middle"> Wk1 </td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																							</tr>
-																						</tbody>
-																					</table>
-																				</div>
-																				<div class="col-md-2" style = "font-weight:bold;color:red;text-align:center;">$3796.77</div>
-																				<div class="clearfix"></div>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-																<div class="clearfix"></div>
-															</div>
-														</div>
-														<div class="each_tab_content" id="city2">
-															<div class="col-md-6">
-																<p>Your search for <font color = "red"><b>Thailand sfs</b></font>, <font color = "red"><b>Bangkok</b></font> for <font color = "red"><b>3 Night(s)</b></font> fetched <font color = "red"><b>782 Hotels</b></font></p>
-															</div>
-															<div class="col-md-6">
-																<p><b>SORT BY:</b>&nbsp;&nbsp;&nbsp;<input type = "radio" name = "sort" / >&nbsp;Price&nbsp;&nbsp;<input type = "radio" name = "sort" / >&nbsp;Hotel Name&nbsp;&nbsp;<input type = "radio" name = "sort" / >&nbsp;Rating</p>
-															</div>												
-															<div class="form-group col-md-3">
-																<label for="inputName" class="control-label">Filter By Hotel Name<font color="#FF0000">*</font></label>
-																<select class="form-control validate[optional]" name="sel_avlbl_hotel">
-																	<option value="">- All Hotels -</option>
-																	<option label="137 pillars suites and residences bangkok" value="331864">137 pillars suites and residences bangkok</option>
-																	<option label="137 pillars suites" value="96Y_BKK">137 pillars suites</option>
-																	<option label="1sabai hostel" value="5a95046e7e962fe9f28b4604">1sabai hostel</option>
-																	<option label="212 serviced apartment" value="5a95046e7e962fe9f28b4674">212 serviced apartment</option>
-																	<option label="48 ville donmuang airport" value="5a95046e7e962fe9f28b459e">48 ville donmuang airport</option>
-																	<option label="@hua lamphong hostel" value="5a95046e7e962fe9f28b45a4">@hua lamphong hostel</option>
-																	<option label="A-one bangkok boutique hotel" value="737981">A-one bangkok boutique hotel</option>
-																	<option label="A-one bangkok" value="AON_BKK">A-one bangkok</option>
-																	<option label="A-one boutique hotel" value="AON2_BKK">A-one boutique hotel</option>
-																	<option label="Abloom exclusive serviced apartment" value="5a95046f7e962fc2f28b45a2">Abloom exclusive serviced apartment</option>
-																</select>
-															</div>
-															<div class="form-group col-md-3">
-																<label for="inputName" class="control-label">Filter By Location<font color="#FF0000">*</font></label>
-																<select class="form-control validate[optional]" name="sel_avlbl_hotel">
-																	<option value="">- Filter by Location -</option>
-																	<option label="All Locations" value="all_locations">All Locations</option>
-																	<option label=" " value=" "> </option>
-																	<option label="Airport" value="Airport">Airport</option>
-																	<option label="Airport - Suvarnabhumi Airport " value="Airport - Suvarnabhumi Airport ">Airport - Suvarnabhumi Airport </option>
-																	<option label="Ayuthaya Road" value="Ayuthaya Road">Ayuthaya Road</option>
-																	<option label="BANGKOK " value="BANGKOK ">BANGKOK </option>
-																	<option label="BANGKOK Sukhumvit" value="BANGKOK Sukhumvit">BANGKOK Sukhumvit</option>
-																	<option label="BANGKOK Terminal 21" value="BANGKOK Terminal 21">BANGKOK Terminal 21</option>
-																	<option label="Bang Rak" value="Bang Rak">Bang Rak</option>
-																	<option label="Bangkok" value="Bangkok">Bangkok</option>
-																	<option label="Bangkok Noi" value="Bangkok Noi">Bangkok Noi</option>
-																	<option label="Central" value="Central">Central</option>
-																</select>
-															</div>
-															<div class="form-group col-md-6">
-																<label for="inputName" class="control-label">Select Page<font color="#FF0000">*</font></label>
-																<select class="form-control validate[optional]" name="sel_avlbl_hotel">
-																	<option value="1">- 1 -</option>
-																	<option value="2">- 2 -</option>
-																	<option value="3">- 3 -</option>
-																	<option value="4">- 4 -</option>
-																	<option value="5">- 5 -</option>
-																	<option value="6">- 6 -</option>
-																	<option value="7">- 7 -</option>
-																	<option value="8">- 8 -</option>
-																	<option value="9">- 9 -</option>
-																	<option value="10">- 10 -</option>
-																</select>
-															</div>
-															<div class="clearfix"></div>
-															<div class="all_rcd_row">
-																<div class="form-group col-md-12">
-																	<div style = "border:1px solid red;background-color:red;">
-																		<div class="col-md-3" style = "font-weight:bold;color:#fff;">Hotel Name</div>
-																		<div class="col-md-2" style = "font-weight:bold;color:#fff;">Rating</div>
-																		<div class="col-md-2" style = "font-weight:bold;color:#fff;">Location</div>
-																		<div class="col-md-3" style = "font-weight:bold;color:#fff;text-align:center;">Availability</div>
-																		<div class="col-md-2" style = "font-weight:bold;color:#fff;text-align:center;">Rate</div>
-																		<div class="clearfix"></div>
-																	</div>
-																	<div style = "padding:20px 0 0 0;border:1px solid red;">
-																		<div class="col-md-3" style = "font-weight:bold;">Hotel Seagul</div>
-																		<div class="col-md-2" style = "font-weight:bold;"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>star.png" border = "0" alt = "" height = "20"/></div>
-																		<div class="col-md-2" style = "font-weight:bold;">Bangkok</div>
-																		<div class="col-md-3" style = "font-weight:bold;text-align:center;"><button type="button" class="btn btn-success next-step">AVAILABLE</button></div>
-																		<div class="col-md-2" style = "font-weight:bold;text-align:center;">$3803.67</div>
-																		<div class="clearfix"></div>
-																		<div class="col-md-3"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>hotel_images/img1.jpg" border = "0" alt = "" width = "250" height = "150" /></div>
-																		<div class="col-md-9">Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium</div>
-																		<div class="clearfix"></div>
-																		<div class="col-md-12">
-																			<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>view_hotel_details" target = "_blank" style = "font-size:16px;"><b>MORE INFO</b></a> | <a href = "javascript:void(0);" onclick = "show_rooms('hotel1');" style = "font-size:16px;"><b>VIEW AVAILABLE ROOMS</b></a>
-																		</div>
-																		<div class="clearfix"></div>
-																		<div id = "hotel1" style = "display:none;">
-																			<div style = "border:1px solid gray;background-color:gray;margin-top:10px;">
-																				<div class="col-md-1" style = "font-weight:bold;color:#fff;">#</div>
-																				<div class="col-md-3" style = "font-weight:bold;color:#fff;">Room Type</div>
-																				<div class="col-md-2" style = "font-weight:bold;color:#fff;">Rooms</div>
-																				<div class="col-md-4" style = "font-weight:bold;color:#fff;">Room Breakup</div>
-																				<div class="col-md-2" style = "font-weight:bold;color:#fff;text-align:center;">Total Amount</div>
-																				<div class="clearfix"></div>
-																			</div>
-																			<div style = "padding:10px 0 10px 0;border:1px solid gray;">
-																				<div class="col-md-1" style = "font-weight:bold;">
-																					<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>a_icon.png" border = "0" alt = "" />
-																					<br/>
-																					<input type = "radio" name = "select" />
-																				</div>
-																				<div class="col-md-3" style = "font-weight:bold;">
-																					Single Room Standard Room Only
-																					<br/>
-																					<font color = "red">Bedding : Twin/Double.</font>
-																				</div>
-																				<div class="col-md-2">1</div>
-																				<div class="col-md-4">
-																					<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable">
-																						<thead>
-																							<tr role="row">
-																								<th valign="middle" style="background-color:gray;" align="center">#</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Thu</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Fri</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Sat</th>
-																							</tr>
-																						</thead>
-																						<tbody aria-relevant="all" aria-live="polite" role="alert">
-																							<tr>
-																								<td valign="middle"> Wk1 </td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																							</tr>
-																						</tbody>
-																					</table>
-																				</div>
-																				<div class="col-md-2" style = "font-weight:bold;color:red;text-align:center;">$3796.77</div>
-																				<div class="clearfix"></div>
-																			</div>
-																			<div style = "padding:10px 0 10px 0;border:1px solid gray;">
-																				<div class="col-md-1" style = "font-weight:bold;">
-																					<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>r_icon.png" border = "0" alt = "" />
-																					<br/>
-																					<input type = "radio" name = "select" />
-																				</div>
-																				<div class="col-md-3" style = "font-weight:bold;">
-																					Single Room Superior Room Only
-																					<br/>
-																					<font color = "red">Bedding : Twin/Double.</font>
-																				</div>
-																				<div class="col-md-2">1</div>
-																				<div class="col-md-4">
-																					<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable">
-																						<thead>
-																							<tr role="row">
-																								<th valign="middle" style="background-color:gray;" align="center">#</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Thu</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Fri</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Sat</th>
-																							</tr>
-																						</thead>
-																						<tbody aria-relevant="all" aria-live="polite" role="alert">
-																							<tr>
-																								<td valign="middle"> Wk1 </td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																							</tr>
-																						</tbody>
-																					</table>
-																				</div>
-																				<div class="col-md-2" style = "font-weight:bold;color:red;text-align:center;">$3796.77</div>
-																				<div class="clearfix"></div>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-																<div class="form-group col-md-12">
-																	<div style = "border:1px solid red;background-color:red;">
-																		<div class="col-md-3" style = "font-weight:bold;color:#fff;">Hotel Name</div>
-																		<div class="col-md-2" style = "font-weight:bold;color:#fff;">Rating</div>
-																		<div class="col-md-2" style = "font-weight:bold;color:#fff;">Location</div>
-																		<div class="col-md-3" style = "font-weight:bold;color:#fff;text-align:center;">Availability</div>
-																		<div class="col-md-2" style = "font-weight:bold;color:#fff;text-align:center;">Rate</div>
-																		<div class="clearfix"></div>
-																	</div>
-																	<div style = "padding:20px 0 0 0;border:1px solid red;">
-																		<div class="col-md-3" style = "font-weight:bold;">Hotel Seagul</div>
-																		<div class="col-md-2" style = "font-weight:bold;"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>star.png" border = "0" alt = "" height = "20"/></div>
-																		<div class="col-md-2" style = "font-weight:bold;">Bangkok</div>
-																		<div class="col-md-3" style = "font-weight:bold;text-align:center;"><button type="button" class="btn btn-success next-step">AVAILABLE</button></div>
-																		<div class="col-md-2" style = "font-weight:bold;text-align:center;">$3803.67</div>
-																		<div class="clearfix"></div>
-																		<div class="col-md-3"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>hotel_images/img1.jpg" border = "0" alt = "" width = "250" height = "150" /></div>
-																		<div class="col-md-9">Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium</div>
-																		<div class="clearfix"></div>
-																		<div class="col-md-12">
-																			<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>view_hotel_details" target = "_blank" style = "font-size:16px;"><b>MORE INFO</b></a> | <a href = "javascript:void(0);"  onclick = "show_rooms('hotel2');" style = "font-size:16px;"><b>VIEW AVAILABLE ROOMS</b></a>
-																		</div>
-																		<div class="clearfix"></div>
-																		<div id = "hotel2" style = "display:none;">
-																			<div style = "border:1px solid gray;background-color:gray;margin-top:10px;">
-																				<div class="col-md-1" style = "font-weight:bold;color:#fff;">#</div>
-																				<div class="col-md-3" style = "font-weight:bold;color:#fff;">Room Type</div>
-																				<div class="col-md-2" style = "font-weight:bold;color:#fff;">Rooms</div>
-																				<div class="col-md-4" style = "font-weight:bold;color:#fff;">Room Breakup</div>
-																				<div class="col-md-2" style = "font-weight:bold;color:#fff;text-align:center;">Total Amount</div>
-																				<div class="clearfix"></div>
-																			</div>
-																			<div style = "padding:10px 0 10px 0;border:1px solid gray;">
-																				<div class="col-md-1" style = "font-weight:bold;">
-																					<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>a_icon.png" border = "0" alt = "" />
-																					<br/>
-																					<input type = "radio" name = "select" />
-																				</div>
-																				<div class="col-md-3" style = "font-weight:bold;">
-																					Single Room Standard Room Only
-																					<br/>
-																					<font color = "red">Bedding : Twin/Double.</font>
-																				</div>
-																				<div class="col-md-2">1</div>
-																				<div class="col-md-4">
-																					<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable">
-																						<thead>
-																							<tr role="row">
-																								<th valign="middle" style="background-color:gray;" align="center">#</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Thu</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Fri</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Sat</th>
-																							</tr>
-																						</thead>
-																						<tbody aria-relevant="all" aria-live="polite" role="alert">
-																							<tr>
-																								<td valign="middle"> Wk1 </td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																							</tr>
-																						</tbody>
-																					</table>
-																				</div>
-																				<div class="col-md-2" style = "font-weight:bold;color:red;text-align:center;">$3796.77</div>
-																				<div class="clearfix"></div>
-																			</div>
-																			<div style = "padding:10px 0 10px 0;border:1px solid gray;">
-																				<div class="col-md-1" style = "font-weight:bold;">
-																					<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>r_icon.png" border = "0" alt = "" />
-																					<br/>
-																					<input type = "radio" name = "select" />
-																				</div>
-																				<div class="col-md-3" style = "font-weight:bold;">
-																					Single Room Superior Room Only
-																					<br/>
-																					<font color = "red">Bedding : Twin/Double.</font>
-																				</div>
-																				<div class="col-md-2">1</div>
-																				<div class="col-md-4">
-																					<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable">
-																						<thead>
-																							<tr role="row">
-																								<th valign="middle" style="background-color:gray;" align="center">#</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Thu</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Fri</th>
-																								<th valign="middle" style="background-color:gray;" align="center">Sat</th>
-																							</tr>
-																						</thead>
-																						<tbody aria-relevant="all" aria-live="polite" role="alert">
-																							<tr>
-																								<td valign="middle"> Wk1 </td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																								<td valign="middle">
-																									1265.59 
-																									&nbsp;
-																								</td>
-																							</tr>
-																						</tbody>
-																					</table>
-																				</div>
-																				<div class="col-md-2" style = "font-weight:bold;color:red;text-align:center;">$3796.77</div>
-																				<div class="clearfix"></div>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-																<div class="clearfix"></div>
-															</div>
-														</div> -->
+														<!-- All tab content -->
 													</div>
 													<ul class="list-inline pull-right">
 														<li><button type="button" class="btn btn-warning prev-step">Modify Search</button></li>
-														<li><button type="button" class="btn btn-primary next-step">Save and continue</button></li>
+														<li><button type="button" class="btn btn-primary save_step2_data">Save and continue</button></li>
 													</ul>
-												</form>
+												<!-- </form> -->
 											</div>
 											<div class="tab-pane" role="tabpanel" id="step3">
 												<h3>Search Transfer</h3>
-												<div class="col-md-6">
-													<p>Your search for <font color = "red"><b>Thailand</b></font>, <font color = "red"><b>Bangkok</b></font> for <font color = "red"><b>01/03/2018</b></font> for <font color = "red"><b>1 Adult(s)</b></font> gave <font color = "red"><b>2 transfers</b></font></p>
+												<div class="tour_city_tab_button_div">
+													<!-- Tour City Tab -->
 												</div>
-												<div class="col-md-6">
-													<p><b>SORT BY:</b>&nbsp;&nbsp;&nbsp;<input type = "radio" name = "sort" / >&nbsp;Price&nbsp;&nbsp;<input type = "radio" name = "sort" / >&nbsp;Name
+												<div class="main_tab_content_outer tour_tab_all_data_div">
+													<!-- All tour tab content -->
 												</div>
-												<form name="profile" name="form_create_slider" id="form_create_slider" method="POST" enctype="mulimedeia/form-data">
-													<div class="form-group col-md-3">
-														<label for="inputName" class="control-label">Filter By Service Type<font color="#FF0000">*</font></label>
-														<select class="form-control validate[optional]" name="sel_avlbl_hotel">
-															<option value="">- All Type -</option>
-															<option label="Private" value="Private">Private</option>
-															<option label="Shared" value="Shared">Shared</option>
-														</select>
-													</div>
-													<div class="form-group col-md-3">
-														<label for="inputName" class="control-label">Filter By Transfer Type<font color="#FF0000">*</font></label>
-														<select class="form-control validate[optional]" name="sel_avlbl_hotel">
-															<option value="">- All Type -</option>
-															<option label="Airport" value="Airport">Airport</option>
-															<option label="Accomodation" value="Accomodation">Accomodation</option>
-															<option label="Port" value="Port">Port</option>
-															<option label="Station" value="Station">Station</option>
-															<option label="Other" value="Other">Other</option>
-														</select>
-													</div>
-													<div class="form-group col-md-6">
-														<label for="inputName" class="control-label">Select Page<font color="#FF0000">*</font></label>
-														<select class="form-control validate[optional]" name="sel_avlbl_hotel">
-															<option value="1">- 1 -</option>
-															<option value="2">- 2 -</option>
-															<option value="3">- 3 -</option>
-															<option value="4">- 4 -</option>
-															<option value="5">- 5 -</option>
-															<option value="6">- 6 -</option>
-															<option value="7">- 7 -</option>
-															<option value="8">- 8 -</option>
-															<option value="9">- 9 -</option>
-															<option value="10">- 10 -</option>
-														</select>
-													</div>
-													<div class="form-group col-md-12">
-														<div style = "border:1px solid red;background-color:red;">
-															<div class="col-md-3" style = "font-weight:bold;color:#fff;">Transfer Name</div>
-															<div class="col-md-2" style = "font-weight:bold;color:#fff;">Duration</div>
-															<div class="col-md-3" style = "font-weight:bold;color:#fff;text-align:center;">Availability</div>
-															<div class="col-md-2" style = "font-weight:bold;color:#fff;text-align:center;">Rate</div>
-															<div class="clearfix"></div>
-														</div>
-														<div style = "padding:20px 0 0 0;border:1px solid red;">
-															<div class="col-md-3" style = "font-weight:bold;">Airport to Hotel Drop-off</div>
-															<div class="col-md-2" style = "font-weight:bold;">0 hr 45 mins</div>
-															<div class="col-md-3" style = "font-weight:bold;text-align:center;"><button type="button" class="btn btn-success next-step">AVAILABLE</button></div>
-															<div class="col-md-2" style = "font-weight:bold;text-align:center;color:red;">$50.67</div>
-															<div class="clearfix"></div>
-															<div class="col-md-3"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>transfer/img1.jpg" border = "0" alt = "" width = "250" height = "150" /></div>
-															<div class="col-md-9">Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium</div>
-															<div class="clearfix"></div>
-															<div class="col-md-12">
-																<a href = "javascript:void(0);" target = "_blank" style = "font-size:16px;"><b>MORE INFO</b></a> | <a href = "javascript:void(0);" onclick = "show_transfers('transfer1');" style = "font-size:16px;"><b>VIEW AVAILABLE OFFERS</b></a>
-															</div>
-															<div class="clearfix"></div>
-															<div id = "transfer1" style = "display:none;">
-																<div style = "border:1px solid gray;background-color:gray;margin-top:10px;">
-																	<div class="col-md-1" style = "font-weight:bold;color:#fff;">#</div>
-																	<div class="col-md-3" style = "font-weight:bold;color:#fff;">Vehicle</div>
-																	<div class="col-md-3" style = "font-weight:bold;color:#fff;">Pick Up</div>
-																	<div class="col-md-3" style = "font-weight:bold;color:#fff;">Drop Off</div>
-																	<div class="col-md-2" style = "font-weight:bold;color:#fff;text-align:center;">Total Amount</div>
-																	<div class="clearfix"></div>
-																</div>
-																<div style = "padding:10px 0 10px 0;border:1px solid gray;">
-																	<div class="col-md-1" style = "font-weight:bold;">
-																		<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>a_icon.png" border = "0" alt = "" />
-																		<br/>
-																		<input type = "radio" name = "select" />
-																	</div>
-																	<div class="col-md-3">
-																		Private Transfer Van/Car (2 pax)
-																	</div>
-																	<div class="col-md-3">Airport - Suvarnabhumi International Airport</div>
-																	<div class="col-md-3">City Drop-off</div>
-																	<div class="col-md-2" style = "font-weight:bold;color:red;text-align:center;">$37.77</div>
-																	<div class="clearfix"></div>
-																</div>
-																<div style = "padding:10px 0 10px 0;border:1px solid gray;">
-																	<div class="col-md-1" style = "font-weight:bold;">
-																		<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>r_icon.png" border = "0" alt = "" />
-																		<br/>
-																		<input type = "radio" name = "select" />
-																	</div>
-																	<div class="col-md-3">
-																		Private Transfer Van/Car (2 pax)
-																	</div>
-																	<div class="col-md-3">Airport - Suvarnabhumi International Airport</div>
-																	<div class="col-md-3">Accomodation Drop-off</div>
-																	<div class="col-md-2" style = "font-weight:bold;color:red;text-align:center;">$47.77</div>
-																	<div class="clearfix"></div>
-																</div>
-															</div>
-														</div>
-													</div>
-
-													<div class="form-group col-md-12">
-														<div style = "border:1px solid red;background-color:red;">
-															<div class="col-md-3" style = "font-weight:bold;color:#fff;">Transfer Name</div>
-															<div class="col-md-2" style = "font-weight:bold;color:#fff;">Duration</div>
-															<div class="col-md-3" style = "font-weight:bold;color:#fff;text-align:center;">Availability</div>
-															<div class="col-md-2" style = "font-weight:bold;color:#fff;text-align:center;">Rate</div>
-															<div class="clearfix"></div>
-														</div>
-														<div style = "padding:20px 0 0 0;border:1px solid red;">
-															<div class="col-md-3" style = "font-weight:bold;">Airport to Airport Drop-off</div>
-															<div class="col-md-2" style = "font-weight:bold;">0 hr 45 mins</div>
-															<div class="col-md-3" style = "font-weight:bold;text-align:center;"><button type="button" class="btn btn-success next-step">AVAILABLE</button></div>
-															<div class="col-md-2" style = "font-weight:bold;text-align:center;color:red;">$50.67</div>
-															<div class="clearfix"></div>
-															<div class="col-md-3"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>transfer/img2.jpg" border = "0" alt = "" width = "250" height = "150" /></div>
-															<div class="col-md-9">Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium</div>
-															<div class="clearfix"></div>
-															<div class="col-md-12">
-																<a href = "javascript:void(0);" target = "_blank" style = "font-size:16px;"><b>MORE INFO</b></a> | <a href = "javascript:void(0);" onclick = "show_transfers('transfer2');" style = "font-size:16px;"><b>VIEW AVAILABLE OFFERS</b></a>
-															</div>
-															<div class="clearfix"></div>
-															<div id = "transfer2" style = "display:none;">
-																<div style = "border:1px solid gray;background-color:gray;margin-top:10px;">
-																	<div class="col-md-1" style = "font-weight:bold;color:#fff;">#</div>
-																	<div class="col-md-3" style = "font-weight:bold;color:#fff;">Vehicle</div>
-																	<div class="col-md-3" style = "font-weight:bold;color:#fff;">Pick Up</div>
-																	<div class="col-md-3" style = "font-weight:bold;color:#fff;">Drop Off</div>
-																	<div class="col-md-2" style = "font-weight:bold;color:#fff;text-align:center;">Total Amount</div>
-																	<div class="clearfix"></div>
-																</div>
-																<div style = "padding:10px 0 10px 0;border:1px solid gray;">
-																	<div class="col-md-1" style = "font-weight:bold;">
-																		<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>a_icon.png" border = "0" alt = "" />
-																		<br/>
-																		<input type = "radio" name = "select" />
-																	</div>
-																	<div class="col-md-3">
-																		Private Transfer Van/Car (2 pax)
-																	</div>
-																	<div class="col-md-3">Airport - Suvarnabhumi International Airport</div>
-																	<div class="col-md-3">Airport - Don Muang International Airport</div>
-																	<div class="col-md-2" style = "font-weight:bold;color:red;text-align:center;">$37.77</div>
-																	<div class="clearfix"></div>
-																</div>
-																<div style = "padding:10px 0 10px 0;border:1px solid gray;">
-																	<div class="col-md-1" style = "font-weight:bold;">
-																		<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>r_icon.png" border = "0" alt = "" />
-																		<br/>
-																		<input type = "radio" name = "select" />
-																	</div>
-																	<div class="col-md-3">
-																		Private Transfer Van/Car (2 pax)
-																	</div>
-																	<div class="col-md-3">Airport - Suvarnabhumi International Airport</div>
-																	<div class="col-md-3">Airport - Don Muang International Airport</div>
-																	<div class="col-md-2" style = "font-weight:bold;color:red;text-align:center;">$47.77</div>
-																	<div class="clearfix"></div>
-																</div>
-															</div>
-														</div>
-													</div>
-												</form>
 												<ul class="list-inline pull-right">
 													<li><button type="button" class="btn btn-warning prev-step">Back To Hotel List</button></li>
 													<li><button type="button" class="btn btn-default next-step">Skip</button></li>

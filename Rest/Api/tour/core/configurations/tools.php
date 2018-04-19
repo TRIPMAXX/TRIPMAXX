@@ -1108,6 +1108,32 @@ class tools {
 			return false;
 		}
 	}
+	public static function apiauthentication($url){
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json","Authorization: Basic ".base64_encode(API_USERNAME.":".API_PASSWORD)));
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		curl_setopt($ch, CURLOPT_FAILONERROR, true);
+		$return_data = curl_exec($ch);
+		$return_data_arr=json_decode($return_data, true);
+		if(!isset($return_data_arr['status']))
+		{
+			$return_data_arr['status']="error";
+			$return_data_arr['msg']="Some error has been occure during authentication.";
+		}
+		if(curl_error($ch))
+		{
+			$return_data_arr['status']="error";
+			$return_data_arr['msg']=curl_error($ch);
+			//$return_data_arr['error_data']=curl_error($ch);
+		}
+		curl_close($ch);
+		$return_data=json_encode($return_data_arr);
+		return $return_data;
+	}
 	public static function generate_timezone_list()
 	{
 		static $regions = array(

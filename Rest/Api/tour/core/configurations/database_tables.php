@@ -15,4 +15,5 @@ define( "TM_TOURS", "tm_tours" );
 define( "TM_OFFER_PRICES", "tm_offer_prices" );
 define( "TM_OFFER_AGENT_MARKUP", "tm_offer_agent_markup" );
 define( "TM_CURRENCIES", "tm_currencies" );
+define( "TM_SETTINGS", "tm_settings" );
 ?>

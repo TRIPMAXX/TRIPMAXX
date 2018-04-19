@@ -3,7 +3,7 @@
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');	
 	$data['status']="error";
 	$data['msg']="Some data missing.";
-	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
+	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.TOUR_API_PATH."authorized.php"));
 	if(isset($autentication_data->status)):
 		if($autentication_data->status=="success"):
 			$post_data['token']=array(
@@ -30,20 +30,20 @@
 					curl_setopt($ch, CURLOPT_HEADER, false);
 					curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
 					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-					curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."hotel/booking-hotel.php");
+					curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.TOUR_API_PATH."tour/booking-tour.php");
 					curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 					$return_data = curl_exec($ch);
 					curl_close($ch);
 					$return_data_arr=json_decode($return_data, true);
-					$hotel_data=array();
+					$tour_data=array();
 					if(!isset($return_data_arr['status'])):
 						$data['status'] = 'error';
 						$data['msg']="Some error has been occure during execution.";
 					elseif($return_data_arr['status']=="success"):
 						$data['status'] = 'success';
 						$data['msg']="Data received successfully";
-						$data['hotel_data']=$return_data_arr['country_city_rcd_html'];
+						$data['tour_data']=$return_data_arr['country_city_rcd_html'];
 						$data['city_tab_html']=$return_data_arr['city_tab_html'];
 						$data['heading_count_rcd']=$return_data_arr['heading_count_rcd'];
 					else:

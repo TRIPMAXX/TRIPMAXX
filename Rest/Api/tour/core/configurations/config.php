@@ -76,12 +76,17 @@ define("GENERAL_IMAGES", "../../../../../control_center/assets/upload/general/")
 
 define("TOUR_IMAGES", "../../../../../tour_control_center/assets/upload/tour/");
 
+define("TOUR_IMAGE_PATH", DOMAIN_NAME_PATH."tour_control_center/assets/upload/tour/");
+
 define("REST_API_PATH", "Rest/Api/");
 define("TOUR_API_PATH", "tour/api/");
+define("AGENT_API_PATH", "agent/api/");
+define("BOOKING_API_PATH", "booking/api/");
 
 define("API_USERNAME", "a");
 define("API_PASSWORD", "1");
 define("TOKEN", "");
 define("TOKEN_TIMEOUT", 100);
 define("TOKEN_SECRET_KEY", "tripmaxjwtkey");
+define("RECORD_PER_PAGE", 10);
 ?>
