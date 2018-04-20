@@ -72,7 +72,7 @@
 	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
 	<script src="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>assets/raty/jquery.raty.js" type="text/javascript"></script>
 	<style type="text/css">
-		.hide_age_div, .each_hotel_tab_content, .each_tour_tab_content{display:none;}
+		.hide_age_div, .each_hotel_tab_content, .each_tour_tab_content, .each_transfer_tab_content{display:none;}
 		.active_each_tab_content{display:block;}
 		.loader_inner{
 			position: fixed;
@@ -85,8 +85,8 @@
 		.loader_inner img{
 			margin-top:40vh;
 		}
-		.city_tab_button_div, .tour_city_tab_button_div{margin-bottom: 20px;}
-		.cls_each_city_hotel_tab_div, .cls_each_city_tour_tab_div{
+		.city_tab_button_div, .tour_city_tab_button_div, .transfer_city_tab_button_div{margin-bottom: 20px;}
+		.cls_each_city_hotel_tab_div, .cls_each_city_tour_tab_div, .cls_each_city_transfer_tab_div{
 			padding: 5px;
 			text-align: center;
 			border:1px solid rgba(255, 0, 0, 0.32);
@@ -131,7 +131,7 @@
 						{
 							var page=1;
 							var type=1;
-							fetch_secend_step2_rcd(page, type);
+							fetch_step2_rcd(page, type);
 							var $active = $('.wizard .nav-tabs li.active');
 							$active.next().removeClass('disabled');
 							$active.next().find('a[data-toggle="tab"]').click();
@@ -240,7 +240,7 @@
 						{
 							var page=1;
 							var type=1;
-							fetch_secend_step3_rcd(page, type);
+							fetch_step3_rcd(page, type);
 							var $active = $('.wizard .nav-tabs li.active');
 							$active.next().removeClass('disabled');
 							$active.next().find('a[data-toggle="tab"]').click();
@@ -256,6 +256,44 @@
 					}
 				});
 			}
+		});
+		$(".save_step3_data").click(function(){
+			var tour_offer_arr=[];
+			$('input[class="selected_offer"]:checked').each(function(){
+				tour_offer_arr.push($(this).val());
+			});
+			$.ajax({
+				url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_booking_step3_execute";?>',
+				type:"post",
+				data:{
+					tour_offer_arr:tour_offer_arr
+				},
+				beforeSend:function(){
+					$(".loader_inner").fadeIn();
+				},
+				dataType:"json",
+				success:function(response){
+					//console.log(response);
+					//console.log(JSON.stringify(response, null, 4));
+					if(response.status=="success")
+					{
+						var page=1;
+						var type=1;
+						fetch_step4_rcd(page, type);
+						var $active = $('.wizard .nav-tabs li.active');
+						$active.next().removeClass('disabled');
+						$active.next().find('a[data-toggle="tab"]').click();
+					}
+					else
+					{
+						showError(response.msg);
+					}
+					$(".loader_inner").fadeOut();
+				},
+				error:function(){
+					//showError("We are having some problem. Please try later.");
+				}
+			});
 		});
 		var iScrollPos = 0;
 		$(window).scroll(function(){
@@ -274,7 +312,21 @@
 							var city_id=cur.attr("data-city_id");
 							var country_id=cur.attr("data-country_id");
 							var search_val=$("#keyword_search"+city_id).val();
-							fetch_secend_step2_rcd(page, type, sort_order, city_id, country_id, search_val)
+							fetch_step2_rcd(page, type, sort_order, city_id, country_id, search_val)
+						}
+					}
+					else if($(".tab-content .active").attr("id")=="step3")
+					{
+						var cur=$(".tab-content .active ").find(".active_each_tab_content");
+						if(cur.find(".tour_list_tab_no_more_record_status").val()==0)
+						{
+							var page=eval(cur.find(".tour_list_tab_current_page").val())+eval(1);
+							var type=2;
+							var sort_order=cur.find("input[name='tour_sort']:checked").val();
+							var city_id=cur.attr("data-city_id");
+							var country_id=cur.attr("data-country_id");
+							var search_val=$("#tour_keyword_search"+city_id).val();
+							fetch_step3_rcd(page, type, sort_order, city_id, country_id, search_val)
 						}
 					}
 				}
@@ -370,28 +422,15 @@
 		}
 	}
 
-	function show_transfers(id) {
-		if(id == "transfer1")
+	function show_transfers(id)
+	{
+		if($("#"+id).is(":visible"))
 		{
-			if(document.getElementById('transfer1').style.display == 'none')
-			{
-				document.getElementById('transfer1').style.display = 'block';
-			}
-			else
-			{
-				document.getElementById('transfer1').style.display = 'none';
-			}
+			$("#"+id).hide();
 		}
-		if(id == "transfer2")
+		else
 		{
-			if(document.getElementById('transfer2').style.display == 'none')
-			{
-				document.getElementById('transfer2').style.display = 'block';
-			}
-			else
-			{
-				document.getElementById('transfer2').style.display = 'none';
-			}
+			$("#"+id).show();
 		}
 	}
 	
@@ -492,17 +531,59 @@
 			$("#"+cur.attr("data-tab_id")).addClass("active_each_tab_content");
 		}
 	}
+	function change_city_transfer(cur)
+	{
+		if(cur.hasClass("cls_each_city_tab_div_active")==false)
+		{
+			$(".each_transfer_tab_content").removeClass("active_each_tab_content");
+			$(".cls_each_city_transfer_tab_div").removeClass("cls_each_city_tab_div_active");
+			cur.addClass("cls_each_city_tab_div_active");
+			$("#"+cur.attr("data-tab_id")).addClass("active_each_tab_content");
+		}
+	}
 	function change_room_radio(cur)
 	{
 		if(cur.attr('previousValue') == 'true')
 		{
             cur.prop('checked', false);
 			cur.attr('previousValue', false);
+			cur.parents(".form-group").find(".default_price_div").html(cur.parents(".form-group").find(".default_price_div").attr("data-default_price"));
         } 
 		else
 		{
 			$('input[name="selected_room[]"]').attr('previousValue', false);
-            cur.attr('previousValue', true);
+            cur.attr('previousValue', true);			
+			cur.parents(".form-group").find(".default_price_div").html(cur.attr('data-price'));
+        }
+	}
+	function change_offer_radio(cur)
+	{
+		if(cur.attr('previousValue') == 'true')
+		{
+            cur.prop('checked', false);
+			cur.attr('previousValue', false);
+			cur.parents(".form-group").find(".default_price_div").html(cur.parents(".form-group").find(".default_price_div").attr("data-default_price"));
+        } 
+		else
+		{
+			$('input[name="selected_offer[]"]').attr('previousValue', false);
+            cur.attr('previousValue', true);			
+			cur.parents(".form-group").find(".default_price_div").html(cur.attr('data-price'));
+        }
+	}
+	function change_transfer_radio(cur)
+	{
+		if(cur.attr('previousValue') == 'true')
+		{
+            cur.prop('checked', false);
+			cur.attr('previousValue', false);
+			cur.parents(".form-group").find(".default_price_div").html(cur.parents(".form-group").find(".default_price_div").attr("data-default_price"));
+        } 
+		else
+		{
+			$('input[name="selected_transfer[]"]').attr('previousValue', false);
+            cur.attr('previousValue', true);			
+			cur.parents(".form-group").find(".default_price_div").html(cur.attr('data-price'));
         }
 	}
 	function change_order(cur)
@@ -513,7 +594,27 @@
 		var search_val=$("#keyword_search"+city_id).val();
 		var page=1;
 		var type=1;
-		fetch_secend_step2_rcd(page, type, sort_order, city_id, country_id, search_val);
+		fetch_step2_rcd(page, type, sort_order, city_id, country_id, search_val);
+	}
+	function change_tour_order(cur)
+	{
+		var sort_order=cur.val();
+		var city_id=cur.attr("data-city_id");
+		var country_id=cur.attr("data-country_id");
+		var search_val=$("#tour_keyword_search"+city_id).val();
+		var page=1;
+		var type=1;
+		fetch_step3_rcd(page, type, sort_order, city_id, country_id, search_val);
+	}
+	function change_transfer_order(cur)
+	{
+		var sort_order=cur.val();
+		var city_id=cur.attr("data-city_id");
+		var country_id=cur.attr("data-country_id");
+		var search_val=$("#transfer_keyword_search"+city_id).val();
+		var page=1;
+		var type=1;
+		fetch_step4_rcd(page, type, sort_order, city_id, country_id, search_val);
 	}
 	function filter_search(cur, city_id)
 	{
@@ -522,9 +623,27 @@
 		var sort_order=cur.parents("#city"+city_id).find("input[name='sort']:checked").val();
 		var page=1;
 		var type=3;
-		fetch_secend_step2_rcd(page, type, sort_order, city_id, country_id, search_val);
+		fetch_step2_rcd(page, type, sort_order, city_id, country_id, search_val);
 	}
-	function fetch_secend_step2_rcd(page, type, sort_order='', city_id='', country_id='', search_val='')
+	function filter_tour_search(cur, city_id)
+	{
+		var search_val=$("#tour_keyword_search"+city_id).val();
+		var country_id=cur.attr("data-country_id");
+		var sort_order=cur.parents("#tour_city"+city_id).find("input[name='tour_sort']:checked").val();
+		var page=1;
+		var type=3;
+		fetch_step3_rcd(page, type, sort_order, city_id, country_id, search_val);
+	}
+	function filter_transfer_search(cur, city_id)
+	{
+		var search_val=$("#transfer_keyword_search"+city_id).val();
+		var country_id=cur.attr("data-country_id");
+		var sort_order=cur.parents("#transfer_city"+city_id).find("input[name='transfer_sort']:checked").val();
+		var page=1;
+		var type=3;
+		fetch_step4_rcd(page, type, sort_order, city_id, country_id, search_val);
+	}
+	function fetch_step2_rcd(page, type, sort_order='', city_id='', country_id='', search_val='')
 	{
 		$.ajax({
 			url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_find_booking_step2_data";?>',
@@ -563,8 +682,8 @@
 							$(".tab-content .active .active_each_tab_content").find(".hotel_list_tab_current_page").val(1);
 							$(".tab-content .active .active_each_tab_content").find(".hotel_list_tab_no_more_record_status").val(0);
 						}
-						$("#city"+city_id+" .all_rcd_row").html(response.hotel_data);
-						$("#city"+city_id+" .total_hotel_number").text(response.heading_count_rcd);
+						$("#step2 #city"+city_id+" .all_rcd_row").html(response.hotel_data);
+						$("#step2 #city"+city_id+" .total_hotel_number").text(response.heading_count_rcd);
 					}
 					else
 					{
@@ -594,7 +713,7 @@
 			$('#min_rating_div').raty('set', { score: window.localStorage.getItem("set_star") });				 
 		});
 	}
-	function fetch_secend_step3_rcd(page, type, sort_order='', city_id='', country_id='', search_val='')
+	function fetch_step3_rcd(page, type, sort_order='', city_id='', country_id='', search_val='')
 	{
 		$.ajax({
 			url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_find_booking_step3_data";?>',
@@ -618,28 +737,88 @@
 				{
 					if(type==2)
 					{
-						$("#city"+city_id+" .all_rcd_row").append(response.hotel_data);
-						$(".tab-content .active .active_each_tab_content").find(".hotel_list_tab_current_page").val(page);
-						var prev_count=$("#city"+city_id+" .total_hotel_number").html();
+						$("#tour_city"+city_id+" .all_rcd_row").append(response.tour_data);
+						$(".tab-content .active .active_each_tab_content").find(".tour_list_tab_current_page").val(page);
+						var prev_count=$("#tour_city"+city_id+" .total_tour_number").html();
 						var new_count=eval(prev_count)+eval(response.heading_count_rcd);
-						$("#city"+city_id+" .total_hotel_number").html(new_count);
-						if(response.hotel_data.indexOf("No more record found") > -1)
-							$(".tab-content .active .active_each_tab_content").find(".hotel_list_tab_no_more_record_status").val(1);
+						$("#tour_city"+city_id+" .total_tour_number").html(new_count);
+						if(response.tour_data.indexOf("No more record found") > -1)
+							$(".tab-content .active .active_each_tab_content").find(".tour_list_tab_no_more_record_status").val(1);
 					}
 					else if(sort_order!="" || type==3)
 					{
 						if(type==3)
 						{
-							$(".tab-content .active .active_each_tab_content").find(".hotel_list_tab_current_page").val(1);
-							$(".tab-content .active .active_each_tab_content").find(".hotel_list_tab_no_more_record_status").val(0);
+							$(".tab-content .active .active_each_tab_content").find(".tour_list_tab_current_page").val(1);
+							$(".tab-content .active .active_each_tab_content").find(".tour_list_tab_no_more_record_status").val(0);
 						}
-						$("#city"+city_id+" .all_rcd_row").html(response.tour_data);
-						$("#city"+city_id+" .total_hotel_number").text(response.heading_count_rcd);
+						$("#step3 #tour_city"+city_id+" .all_rcd_row").html(response.tour_data);
+						$("#step3 #tour_city"+city_id+" .total_tour_number").text(response.heading_count_rcd);
 					}
 					else
 					{
 						$(".tour_tab_all_data_div").html(response.tour_data);
 						$(".tour_city_tab_button_div").html(response.city_tab_html);
+					}
+				}
+				else
+				{
+					showError(response.msg);
+				}
+				$(".loader_inner").fadeOut();
+			},
+			error:function(){
+				showError("We are having some problem. Please try later.");
+				$(".loader_inner").fadeOut();
+			}
+		});
+	}
+	function fetch_step4_rcd(page, type, sort_order='', city_id='', country_id='', search_val='')
+	{
+		$.ajax({
+			url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_find_booking_step4_data";?>',
+			type:"post",
+			data:{
+				page:page,
+				type:type,
+				sort_order:sort_order,
+				city_id:city_id,
+				country_id:country_id,
+				search_val:search_val
+			},
+			beforeSend:function(){
+				$(".loader_inner").fadeIn();
+			},
+			dataType:"json",
+			success:function(response){
+				//console.log(response);
+				console.log(JSON.stringify(response, null, 4));
+				if(response.status=="success")
+				{
+					if(type==2)
+					{
+						$("#transfer_city"+city_id+" .all_rcd_row").append(response.transfer_data);
+						$(".tab-content .active .active_each_tab_content").find(".transfer_list_tab_current_page").val(page);
+						var prev_count=$("#transfer_city"+city_id+" .total_transfer_number").html();
+						var new_count=eval(prev_count)+eval(response.heading_count_rcd);
+						$("#transfer_city"+city_id+" .total_transfer_number").html(new_count);
+						if(response.tour_data.indexOf("No more record found") > -1)
+							$(".tab-content .active .active_each_tab_content").find(".transfer_list_tab_no_more_record_status").val(1);
+					}
+					else if(sort_order!="" || type==3)
+					{
+						if(type==3)
+						{
+							$(".tab-content .active .active_each_tab_content").find(".transfer_list_tab_current_page").val(1);
+							$(".tab-content .active .active_each_tab_content").find(".transfer_list_tab_no_more_record_status").val(0);
+						}
+						$("#step4 #transfer_city"+city_id+" .all_rcd_row").html(response.transfer_data);
+						$("#step4 #transfer_city"+city_id+" .total_transfer_number").text(response.heading_count_rcd);
+					}
+					else
+					{
+						$(".transfer_tab_all_data_div").html(response.transfer_data);
+						$(".transfer_city_tab_button_div").html(response.city_tab_html);
 					}
 				}
 				else
@@ -1144,7 +1323,7 @@
 												<!-- </form> -->
 											</div>
 											<div class="tab-pane" role="tabpanel" id="step3">
-												<h3>Search Transfer</h3>
+												<h3>Search Tour</h3>
 												<div class="tour_city_tab_button_div">
 													<!-- Tour City Tab -->
 												</div>
@@ -1154,181 +1333,21 @@
 												<ul class="list-inline pull-right">
 													<li><button type="button" class="btn btn-warning prev-step">Back To Hotel List</button></li>
 													<li><button type="button" class="btn btn-default next-step">Skip</button></li>
-													<li><button type="button" class="btn btn-primary btn-info-full next-step">Save and continue</button></li>
+													<li><button type="button" class="btn btn-primary btn-info-full save_step3_data">Save and continue</button></li>
 												</ul>
 											</div>
 											<div class="tab-pane" role="tabpanel" id="step4">
-												<h3>Search Tours</h3>
-												<div class="col-md-6">
-													<p>Your search for <font color = "red"><b>Thailand</b></font>, <font color = "red"><b>Bangkok</b></font> for <font color = "red"><b>01-03-2018</b></font> for <font color = "red"><b>1 Passenger(s)</b></font> gave <font color = "red"><b>2 tours</b></font></p>
+												<h3>Search Transfers</h3>
+												<div class="transfer_city_tab_button_div">
+													<!-- Transfer City Tab -->
 												</div>
-												<div class="col-md-6">
-													<p><b>SORT BY:</b>&nbsp;&nbsp;&nbsp;<input type = "radio" name = "sort" / >&nbsp;Price&nbsp;&nbsp;<input type = "radio" name = "sort" / >&nbsp;Name
+												<div class="main_tab_content_outer transfer_tab_all_data_div">
+													<!-- All Transfer tab content -->
 												</div>
-												<form name="profile" name="form_create_slider" id="form_create_slider" method="POST" enctype="mulimedeia/form-data">
-													<div class="form-group col-md-3">
-														<label for="inputName" class="control-label">Filter By Service Type<font color="#FF0000">*</font></label>
-														<select class="form-control validate[optional]" name="sel_avlbl_hotel">
-															<option value="">- All Type -</option>
-															<option label="Private" value="Private">Private</option>
-															<option label="Shared" value="Shared">Shared</option>
-														</select>
-													</div>
-													<div class="form-group col-md-3">
-														<label for="inputName" class="control-label">Filter By Tour Type<font color="#FF0000">*</font></label>
-														<select class="form-control validate[optional]" name="sel_avlbl_hotel">
-															<option value="">- All Type -</option>
-															<option label="Ticket Only" value="Ticket Only">Ticket Only</option>
-															<option label="Full Tour including Lunch" value="Full Tour including Lunch">Full Tour including Lunch</option>
-															<option label="Full Tour including Dinner" value="Port">Full Tour including Dinner</option>
-															<option label="Breakfast" value="Breakfast">Breakfast</option>
-															<option label="Lunch" value="Lunch">Lunch</option>
-															<option label="Dinner" value="Dinner">Dinner</option>
-														</select>
-													</div>
-													<div class="form-group col-md-6">
-														<label for="inputName" class="control-label">Select Page<font color="#FF0000">*</font></label>
-														<select class="form-control validate[optional]" name="sel_avlbl_hotel">
-															<option value="1">- 1 -</option>
-															<option value="2">- 2 -</option>
-															<option value="3">- 3 -</option>
-															<option value="4">- 4 -</option>
-															<option value="5">- 5 -</option>
-															<option value="6">- 6 -</option>
-															<option value="7">- 7 -</option>
-															<option value="8">- 8 -</option>
-															<option value="9">- 9 -</option>
-															<option value="10">- 10 -</option>
-														</select>
-													</div>
-													<div class="form-group col-md-12">
-														<div style = "border:1px solid red;background-color:red;">
-															<div class="col-md-3" style = "font-weight:bold;color:#fff;">Tour Name</div>
-															<div class="col-md-2" style = "font-weight:bold;color:#fff;">Transfer Type</div>
-															<div class="col-md-3" style = "font-weight:bold;color:#fff;text-align:center;">Availability</div>
-															<div class="col-md-2" style = "font-weight:bold;color:#fff;text-align:center;">Rate</div>
-															<div class="clearfix"></div>
-														</div>
-														<div style = "padding:20px 0 0 0;border:1px solid red;">
-															<div class="col-md-3" style = "font-weight:bold;">Art In Paradise Bangkok - Ticket Only</div>
-															<div class="col-md-2" style = "font-weight:bold;">Private</div>
-															<div class="col-md-3" style = "font-weight:bold;text-align:center;"><button type="button" class="btn btn-success next-step">AVAILABLE</button></div>
-															<div class="col-md-2" style = "font-weight:bold;text-align:center;color:red;">$50.67</div>
-															<div class="clearfix"></div>
-															<div class="col-md-3"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>tour/img1.jpg" border = "0" alt = "" width = "250" height = "150" /></div>
-															<div class="col-md-9">Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium</div>
-															<div class="clearfix"></div>
-															<div class="col-md-12">
-																<a href = "javascript:void(0);" target = "_blank" style = "font-size:16px;"><b>MORE INFO</b></a> | <a href = "javascript:void(0);" onclick = "show_tours('tour1');" style = "font-size:16px;"><b>VIEW AVAILABLE OFFERS</b></a>
-															</div>
-															<div class="clearfix"></div>
-															<div id = "tour1" style = "display:none;">
-																<div style = "border:1px solid gray;background-color:gray;margin-top:10px;">
-																	<div class="col-md-1" style = "font-weight:bold;color:#fff;">#</div>
-																	<div class="col-md-3" style = "font-weight:bold;color:#fff;">Offer Title</div>
-																	<div class="col-md-3" style = "font-weight:bold;color:#fff;">Service Type</div>
-																	<div class="col-md-3" style = "font-weight:bold;color:#fff;">Capacity</div>
-																	<div class="col-md-2" style = "font-weight:bold;color:#fff;text-align:center;">Total Amount</div>
-																	<div class="clearfix"></div>
-																</div>
-																<div style = "padding:10px 0 10px 0;border:1px solid gray;">
-																	<div class="col-md-1" style = "font-weight:bold;">
-																		<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>a_icon.png" border = "0" alt = "" />
-																		<br/>
-																		<input type = "radio" name = "select" />
-																	</div>
-																	<div class="col-md-3">
-																		Per Person (1-15 Pax)
-																	</div>
-																	<div class="col-md-3">Share</div>
-																	<div class="col-md-3">1-15</div>
-																	<div class="col-md-2" style = "font-weight:bold;color:red;text-align:center;">$37.77</div>
-																	<div class="clearfix"></div>
-																</div>
-																<div style = "padding:10px 0 10px 0;border:1px solid gray;">
-																	<div class="col-md-1" style = "font-weight:bold;">
-																		<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>r_icon.png" border = "0" alt = "" />
-																		<br/>
-																		<input type = "radio" name = "select" />
-																	</div>
-																	<div class="col-md-3">
-																		Per Person (1-5 Pax)
-																	</div>
-																	<div class="col-md-3">Private</div>
-																	<div class="col-md-3">1-5</div>
-																	<div class="col-md-2" style = "font-weight:bold;color:red;text-align:center;">$47.77</div>
-																	<div class="clearfix"></div>
-																</div>
-															</div>
-														</div>
-													</div>
-
-													<div class="form-group col-md-12">
-														<div style = "border:1px solid red;background-color:red;">
-															<div class="col-md-3" style = "font-weight:bold;color:#fff;">Tour Name</div>
-															<div class="col-md-2" style = "font-weight:bold;color:#fff;">Transfer Type</div>
-															<div class="col-md-3" style = "font-weight:bold;color:#fff;text-align:center;">Availability</div>
-															<div class="col-md-2" style = "font-weight:bold;color:#fff;text-align:center;">Rate</div>
-															<div class="clearfix"></div>
-														</div>
-														<div style = "padding:20px 0 0 0;border:1px solid red;">
-															<div class="col-md-3" style = "font-weight:bold;">Bangkok City Tour with Indian Lunch</div>
-															<div class="col-md-2" style = "font-weight:bold;">Private</div>
-															<div class="col-md-3" style = "font-weight:bold;text-align:center;"><button type="button" class="btn btn-success next-step">AVAILABLE</button></div>
-															<div class="col-md-2" style = "font-weight:bold;text-align:center;color:red;">$50.67</div>
-															<div class="clearfix"></div>
-															<div class="col-md-3"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>tour/img2.jpg" border = "0" alt = "" width = "250" height = "150" /></div>
-															<div class="col-md-9">Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium Lorem Ipsium</div>
-															<div class="clearfix"></div>
-															<div class="col-md-12">
-																<a href = "javascript:void(0);" target = "_blank" style = "font-size:16px;"><b>MORE INFO</b></a> | <a href = "javascript:void(0);" onclick = "show_tours('tour2');" style = "font-size:16px;"><b>VIEW AVAILABLE OFFERS</b></a>
-															</div>
-															<div class="clearfix"></div>
-															<div id = "tour2" style = "display:none;">
-																<div style = "border:1px solid gray;background-color:gray;margin-top:10px;">
-																	<div class="col-md-1" style = "font-weight:bold;color:#fff;">#</div>
-																	<div class="col-md-3" style = "font-weight:bold;color:#fff;">Offer Title</div>
-																	<div class="col-md-3" style = "font-weight:bold;color:#fff;">Service Type</div>
-																	<div class="col-md-3" style = "font-weight:bold;color:#fff;">Capacity</div>
-																	<div class="col-md-2" style = "font-weight:bold;color:#fff;text-align:center;">Total Amount</div>
-																	<div class="clearfix"></div>
-																</div>
-																<div style = "padding:10px 0 10px 0;border:1px solid gray;">
-																	<div class="col-md-1" style = "font-weight:bold;">
-																		<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>a_icon.png" border = "0" alt = "" />
-																		<br/>
-																		<input type = "radio" name = "select" />
-																	</div>
-																	<div class="col-md-3">
-																		Per Person (1-15 Pax)
-																	</div>
-																	<div class="col-md-3">Share</div>
-																	<div class="col-md-3">1-15</div>
-																	<div class="col-md-2" style = "font-weight:bold;color:red;text-align:center;">$37.77</div>
-																	<div class="clearfix"></div>
-																</div>
-																<div style = "padding:10px 0 10px 0;border:1px solid gray;">
-																	<div class="col-md-1" style = "font-weight:bold;">
-																		<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>r_icon.png" border = "0" alt = "" />
-																		<br/>
-																		<input type = "radio" name = "select" />
-																	</div>
-																	<div class="col-md-3">
-																		Per Person (1-5 Pax)
-																	</div>
-																	<div class="col-md-3">Private</div>
-																	<div class="col-md-3">1-5</div>
-																	<div class="col-md-2" style = "font-weight:bold;color:red;text-align:center;">$47.77</div>
-																	<div class="clearfix"></div>
-																</div>
-															</div>
-														</div>
-													</div>
-												</form>
 												<ul class="list-inline pull-right">
-													<li><button type="button" class="btn btn-warning prev-step">Manage Transfer</button></li>
+													<li><button type="button" class="btn btn-warning prev-step">Manage Tour</button></li>
 													<li><button type="button" class="btn btn-default next-step">Skip</button></li>
-													<li><button type="button" class="btn btn-primary btn-info-full next-step">Save and continue</button></li>
+													<li><button type="button" class="btn btn-primary btn-info-full save_step4_data">Save and continue</button></li>
 												</ul>
 											</div>
 											<div class="tab-pane" role="tabpanel" id="complete">

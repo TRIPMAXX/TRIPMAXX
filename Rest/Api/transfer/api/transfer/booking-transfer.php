@@ -24,7 +24,7 @@
 				$total_person=$total_person+$val_child;
 			endforeach;
 			$city_tab_html='';
-			$tour_list_html='';			
+			$transfer_list_html='';			
 			$country_city_rcd_html='';
 			$heading_count_rcd=0;
 			$search_query="";
@@ -55,7 +55,7 @@
 						curl_close($ch);
 						$return_data_agent_arr=json_decode($return_data_agent, true);
 						if($return_data_agent_arr['status']=="success"):
-							$markup_percentage=$return_data_agent_arr['results']['tour_price'];
+							$markup_percentage=$return_data_agent_arr['results']['transfer_price'];
 						endif;
 					endif;
 				endif;
@@ -68,14 +68,15 @@
 							if($server_data['data']['sort_order']=="price"):
 								$order_by='ORDER BY t.id DESC';
 							elseif($server_data['data']['sort_order']=="name"):
-								$order_by='ORDER BY t.tour_title ASC';
+								$order_by='ORDER BY t.transfer_title ASC';
 							endif;
 						endif;
 
 						if(isset($server_data['data']['search_val']) && $server_data['data']['search_val']!=""):
-							$search_query="AND (tour_title LIKE :tour_title OR short_description LIKE :short_description) ";
-							$execute[':tour_title']="%".$server_data['data']['search_val']."%";
-							$execute[':short_description']="%".$server_data['data']['search_val']."%";
+							$search_query="AND (transfer_title LIKE :transfer_title OR transfer_service LIKE :transfer_service OR service_note LIKE :service_note) ";
+							$execute[':transfer_title']="%".$server_data['data']['search_val']."%";
+							$execute[':transfer_service']="%".$server_data['data']['search_val']."%";
+							$execute[':service_note']="%".$server_data['data']['search_val']."%";
 						endif;
 					else:
 						continue;
@@ -86,20 +87,20 @@
 				$checkin_date_on_city=date("Y-m-d", strtotime($checkin_date)+(24*60*60*$add_day));
 				$add_day=$add_day+$server_data['data']['number_of_night'][$country_key];
 				$checkout_date_on_city=date("Y-m-d", strtotime($checkin_date_on_city)+(24*60*60*$server_data['data']['number_of_night'][$country_key]));
-				$tour_list_html='';
+				$transfer_list_html='';
 				$each_first_price="--";
 				$execute['co_id']=$counrty_val;
 				$execute['ci_id']=$server_data['data']['city'][$country_key];
-				$tour_list = tools::find("all", TM_TOURS." as t, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci", 't.*, co.name as co_name, s.name as s_name, ci.name as ci_name', "WHERE t.country=co.id AND t.state=s.id AND t.city=ci.id AND co.id=:co_id AND ci.id=:ci_id ".$search_query.$order_by." LIMIT ".$offset.", ".$limit." ", $execute);
-				if(!empty($tour_list)):
-					$country_name=$tour_list[0]['co_name'];
-					$city_name=$tour_list[0]['ci_name'];
-					$total_tour=count($tour_list);
-					foreach($tour_list as $tour_key=>$tour_val):
+				$transfer_list = tools::find("all", TM_TRANSFER." as t, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci", 't.*, co.name as co_name, s.name as s_name, ci.name as ci_name', "WHERE t.country=co.id AND t.state=s.id AND t.city=ci.id AND co.id=:co_id AND ci.id=:ci_id ".$search_query.$order_by." LIMIT ".$offset.", ".$limit." ", $execute);
+				if(!empty($transfer_list)):
+					$country_name=$transfer_list[0]['co_name'];
+					$city_name=$transfer_list[0]['ci_name'];
+					$total_transfer=count($transfer_list);
+					foreach($transfer_list as $transfer_key=>$transfer_val):
 						$each_first_price="--";
-						$offers_list = tools::find("all", TM_OFFERS, '*', "WHERE tour_id=:tour_id ", array(":tour_id"=>$tour_val['id']));
+						$offers_list = tools::find("all", TM_OFFERS, '*', "WHERE transfer_id=:transfer_id ", array(":transfer_id"=>$transfer_val['id']));
 						$offer_html='';
-						$tour_avalibility_status="";
+						$transfer_avalibility_status="";
 						if(!empty($offers_list)):
 							foreach($offers_list as $offer_key=>$offer_val):
 								if(isset($server_data['data']['booking_type']) && $server_data['data']['booking_type']=="agent" && isset($server_data['data']['agent_name']) && $server_data['data']['agent_name']!=""):
@@ -118,7 +119,7 @@
 											"token_generation_time"=>$autentication_data->results->token_generation_time
 										);
 										$post_data['data']['offer_id']=$offer_val['id'];
-										$post_data['data']['tour_id']=$tour_val['id'];
+										$post_data['data']['transfer_id']=$transfer_val['id'];
 										$post_data['data']['booking_start_date']=$checkin_date_on_city;
 										$post_data['data']['booking_end_date']=$checkout_date_on_city;
 										$post_data_str=json_encode($post_data);
@@ -127,7 +128,7 @@
 										curl_setopt($ch, CURLOPT_HEADER, false);
 										curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
 										curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-										curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."booking/booked-tour.php");
+										curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."booking/booked-transfer.php");
 										curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
 										curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 										$return_data_counter = curl_exec($ch);
@@ -141,11 +142,11 @@
 								$offer_avaliability_status="";
 								if($total_prev_booking>=$offer_val['offer_capacity']):
 									if($offer_key==0)
-										$tour_avalibility_status="not avaliable";
+										$transfer_avalibility_status="not avaliable";
 									$offer_avaliability_status="not avaliable";
 								elseif($total_prev_booking<$offer_val['offer_capacity']):
 									if($offer_key==0)
-										$tour_avalibility_status="avaliable";
+										$transfer_avalibility_status="avaliable";
 									$offer_avaliability_status="avaliable";
 								endif;
 								ob_start();
@@ -190,7 +191,7 @@
 										endif;
 										?>
 										<br>
-										<input type="radio" name="selected_offer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>]" class="selected_offer" onclick="change_offer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",".");?>">
+										<input type="radio" name="selected_transfer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>]" class="selected_transfer" onclick="change_transfer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",".");?>">
 									</div>
 									<div class="col-md-3" style="font-weight:bold;">
 										<?= $offer_val['offer_title'];?>
@@ -214,22 +215,22 @@
 ?>
 							<div class="form-group col-md-12">
 								<div style="border:1px solid red;background-color:red;">
-									<div class="col-md-3" style="font-weight:bold;color:#fff;">Tour Title</div>
-									<div class="col-md-2" style="font-weight:bold;color:#fff;">Tour Type</div>
+									<div class="col-md-3" style="font-weight:bold;color:#fff;">Transfer Title</div>
+									<div class="col-md-2" style="font-weight:bold;color:#fff;">Transfer Type</div>
 									<div class="col-md-3" style="font-weight:bold;color:#fff;text-align:center;">Availability</div>
 									<div class="col-md-2" style="font-weight:bold;color:#fff;text-align:center;">Rate</div>
 									<div class="clearfix"></div>
 								</div>
 								<div style="padding:20px 0 0 0;border:1px solid red;">
-									<div class="col-md-3" style="font-weight:bold;"><?php echo $tour_val['tour_title'];?></div>
-									<div class="col-md-2" style="font-weight:bold;"><?php echo $tour_val['tour_type'];?></div>
+									<div class="col-md-3" style="font-weight:bold;"><?php echo $transfer_val['transfer_title'];?></div>
+									<div class="col-md-2" style="font-weight:bold;"><?php echo $transfer_val['transfer_service'];?></div>
 									<div class="col-md-3" style="font-weight:bold;text-align:center;">
 										<?php
-										if($tour_avalibility_status=="avaliable"):
+										if($transfer_avalibility_status=="avaliable"):
 										?>
 										<button type="button" class="btn btn-success next-step">AVAILABLE</button>
 										<?php
-										elseif($tour_avalibility_status=="not avaliable"):
+										elseif($transfer_avalibility_status=="not avaliable"):
 										?>
 										<button type="button" class="btn btn-danger next-step">On Request</button>
 										<?php
@@ -240,11 +241,11 @@
 									<div class="clearfix"></div>
 									<div class="col-md-3">
 										<?php
-										if($tour_val['tour_images']!=""):
-											$image_arr=explode(",", $tour_val['tour_images']);
-											//if($image_arr[0]!="" && file_exists(TOUR_IMAGE_PATH.$image_arr[0])):
+										if($transfer_val['transfer_images']!=""):
+											$image_arr=explode(",", $transfer_val['transfer_images']);
+											//if($image_arr[0]!="" && file_exists(TRANSFER_IMAGE_PATH.$image_arr[0])):
 										?>
-											<img src = "<?php echo(TOUR_IMAGE_PATH.$image_arr[0]);?>" border = "0" alt = "" width = "250" height = "150" onerror="this.remove;"/>
+											<img src = "<?php echo(TRANSFER_IMAGE_PATH.$image_arr[0]);?>" border = "0" alt = "" width = "250" height = "150" onerror="this.remove;"/>
 										<?php
 											/*else:
 												echo "N/A";
@@ -255,14 +256,14 @@
 										?>
 									</div>
 									<div class="col-md-9">
-										<?php echo nl2br($tour_val['short_description']);?>
+										<?php echo nl2br($transfer_val['service_note']);?>
 									</div>
 									<div class="clearfix"></div>
 									<div class="col-md-12">
-										<a href="<?php echo DOMAIN_NAME_PATH_ADMIN;?>edit_tour?tour_id=<?php echo base64_encode($tour_val['id']);?>" target="_blank" style="font-size:16px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_offers('tour<?php echo $tour_val['id'];?>');" style="font-size:16px;"><b>VIEW AVAILABLE OFFERS</b></a>
+										<a href="<?php echo DOMAIN_NAME_PATH_ADMIN;?>edit_transfer?transfer_id=<?php echo base64_encode($transfer_val['id']);?>" target="_blank" style="font-size:16px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_transfers('transfer<?php echo $transfer_val['id'];?>');" style="font-size:16px;"><b>VIEW AVAILABLE OFFERS</b></a>
 									</div>
 									<div class="clearfix"></div>
-									<div id="tour<?php echo $tour_val['id'];?>" style="display:none;">
+									<div id="transfer<?php echo $transfer_val['id'];?>" style="display:none;">
 										<div style="border:1px solid gray;background-color:gray;margin-top:10px;">
 											<div class="col-md-1" style="font-weight:bold;color:#fff;">#</div>
 											<div class="col-md-3" style="font-weight:bold;color:#fff;">Offer Title</div>
@@ -277,40 +278,40 @@
 							</div>
 <?php
 						endif;
-						$each_tour_list_html=ob_get_clean();
-						$tour_list_html.=$each_tour_list_html;
+						$each_transfer_list_html=ob_get_clean();
+						$transfer_list_html.=$each_transfer_list_html;
 					endforeach;
 				else:
 					$contry_list = tools::find("first", TM_COUNTRIES, '*', "WHERE id=:id ORDER BY name ASC ", array(":id"=>$counrty_val));
 					$city_list = tools::find("first", TM_CITIES, '*', "WHERE id=:id ", array(":id"=>$server_data['data']['city'][$country_key]));
 					$country_name=$contry_list['name'];
 					$city_name=$city_list['name'];
-					$total_tour=0;
+					$total_transfer=0;
 				endif;
 				if(count($server_data['data']['country'])>1 && $server_data['data']['sort_order']=="" && $server_data['data']['type']!=3 && $server_data['data']['type']!=2):
-					$city_tab_html.='<div class="col-md-3 cls_each_city_tour_tab_div '.($country_key==0 ? "cls_each_city_tab_div_active" : "").'" data-tab_id="tour_city'.$server_data['data']['city'][$country_key].'" onclick="change_city_tour($(this))">'.$city_name.'</div>';
+					$city_tab_html.='<div class="col-md-3 cls_each_city_transfer_tab_div '.($country_key==0 ? "cls_each_city_tab_div_active" : "").'" data-tab_id="transfer_city'.$server_data['data']['city'][$country_key].'" onclick="change_city_transfer($(this))">'.$city_name.'</div>';
 				endif;
-				if($tour_list_html==""):
-					$tour_list_html='<div class="col-md-12 text-center no_rcd" style="padding:30px;color:red;">No '.($server_data['data']['type']==2 ? "more " : "").'record found</div>';
+				if($transfer_list_html==""):
+					$transfer_list_html='<div class="col-md-12 text-center no_rcd" style="padding:30px;color:red;">No '.($server_data['data']['type']==2 ? "more " : "").'record found</div>';
 				endif;
 				if($server_data['data']['sort_order']=="" && $server_data['data']['type']!=3 && $server_data['data']['type']!=2):
-					$country_city_rcd_html.='<div class="each_tour_tab_content '.($country_key==0 ? "active_each_tab_content" : "").'" id="tour_city'.$server_data['data']['city'][$country_key].'" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'">';
+					$country_city_rcd_html.='<div class="each_transfer_tab_content '.($country_key==0 ? "active_each_tab_content" : "").'" id="transfer_city'.$server_data['data']['city'][$country_key].'" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'">';
 				endif;
 					$country_city_rcd_html.='<div class="col-md-8 heading_count_rcd">';
-						$heading_count_rcd=$total_tour;
-						$country_city_rcd_html.='<p>Your search for <font color="red"><b>'.$country_name.'</b></font>, <font color="red"><b>'.$city_name.'</b></font> for <font color="red"><b>'.tools::module_date_format($checkin_date).'</b></font> for <font color="red"><b>'.$total_person.' Passenger(s)</b></font> fetched <font color="red"><b><span class="total_tour_number">'.$heading_count_rcd.'</span> Tour(s)</b></font></p>';
+						$heading_count_rcd=$total_transfer;
+						$country_city_rcd_html.='<p>Your search for <font color="red"><b>'.$country_name.'</b></font>, <font color="red"><b>'.$city_name.'</b></font> for <font color="red"><b>'.tools::module_date_format($checkin_date).'</b></font> for <font color="red"><b>'.$total_person.' Passenger(s)</b></font> fetched <font color="red"><b><span class="total_transfer_number">'.$heading_count_rcd.'</span> Transfer(s)</b></font></p>';
 					$country_city_rcd_html.='</div>';
 					$country_city_rcd_html.='<div class="col-md-4">';
 						$country_city_rcd_html.='<p><b>SORT BY:</b>&nbsp;&nbsp;&nbsp;';
-						//$country_city_rcd_html.='<input type = "radio" name = "tour_sort" value="price" onchange="change_tour_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'" '.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="price" ? 'checked="checked"' : '').'/>&nbsp;Price&nbsp;&nbsp;';
-						$country_city_rcd_html.='<input type = "radio" name = "tour_sort" value="name" onchange="change_tour_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'"'.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="name" ? 'checked="checked"' : '').'/>&nbsp;Tour Title&nbsp;&nbsp;';
-						//$country_city_rcd_html.='<input type = "radio" name = "tour_sort" value="rating" onchange="change_tour_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'"'.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="rating" ? 'checked="checked"' : '').'/>&nbsp;Rating</p>';
+						//$country_city_rcd_html.='<input type = "radio" name = "transfer_sort" value="price" onchange="change_transfer_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'" '.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="price" ? 'checked="checked"' : '').'/>&nbsp;Price&nbsp;&nbsp;';
+						$country_city_rcd_html.='<input type = "radio" name = "transfer_sort" value="name" onchange="change_transfer_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'"'.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="name" ? 'checked="checked"' : '').'/>&nbsp;Transfer Title&nbsp;&nbsp;';
+						//$country_city_rcd_html.='<input type = "radio" name = "transfer_sort" value="rating" onchange="change_transfer_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'"'.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="rating" ? 'checked="checked"' : '').'/>&nbsp;Rating</p>';
 					$country_city_rcd_html.='</div>';
 					$country_city_rcd_html.='<div class="clearfix"></div>';
-					$country_city_rcd_html.='<form name="form_third_step" id="form_third_step" method="POST" onsubmit="filter_tour_search($(this), '.$server_data['data']['city'][$country_key].');return false;" data-country_id="'.$counrty_val.'">';
+					$country_city_rcd_html.='<form name="form_third_step" id="form_third_step" method="POST" onsubmit="filter_transfer_search($(this), '.$server_data['data']['city'][$country_key].');return false;" data-country_id="'.$counrty_val.'">';
 						$country_city_rcd_html.='<div class="form-group col-sm-6">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Search</label>';
-							$country_city_rcd_html.='<input type="text" class="form-control" name="tour_keyword_search'.$server_data['data']['city'][$country_key].'" id="tour_keyword_search'.$server_data['data']['city'][$country_key].'" value="'.(isset($server_data['data']['search_val']) && $server_data['data']['search_val']!="" ? $server_data['data']['search_val'] : "").'">';
+							$country_city_rcd_html.='<input type="text" class="form-control" name="transfer_keyword_search'.$server_data['data']['city'][$country_key].'" id="transfer_keyword_search'.$server_data['data']['city'][$country_key].'" value="'.(isset($server_data['data']['search_val']) && $server_data['data']['search_val']!="" ? $server_data['data']['search_val'] : "").'">';
 						$country_city_rcd_html.='</div>';
 						$country_city_rcd_html.='<div class="form-group col-sm-5 text-left">';
 							$country_city_rcd_html.='<button type="submit" class="btn btn-primary next-step" style="margin-top:23px;" >Search</button>';
@@ -318,12 +319,12 @@
 						$country_city_rcd_html.='<div class="clearfix"></div>';
 					$country_city_rcd_html.='</form>';
 					$country_city_rcd_html.='<div class="all_rcd_row">';
-						$country_city_rcd_html.=$tour_list_html;
+						$country_city_rcd_html.=$transfer_list_html;
 						$country_city_rcd_html.='<div class="clearfix"></div>';
 					$country_city_rcd_html.='</div>';
 				if($server_data['data']['sort_order']=="" && $server_data['data']['type']!=3):
-						$country_city_rcd_html.='<input type="hidden" class="tour_list_tab_current_page" value="1"/>';
-						$country_city_rcd_html.='<input type="hidden" class="tour_list_tab_no_more_record_status" value="0"/>';
+						$country_city_rcd_html.='<input type="hidden" class="transfer_list_tab_current_page" value="1"/>';
+						$country_city_rcd_html.='<input type="hidden" class="transfer_list_tab_no_more_record_status" value="0"/>';
 					$country_city_rcd_html.='</div>';
 				endif;
 			endforeach;
@@ -332,7 +333,7 @@
 			$return_data['msg']="Date fetched successfully.";
 			if($server_data['data']['sort_order']!="" || $server_data['data']['type']==3 || $server_data['data']['type']==2 ):
 				
-				$return_data['country_city_rcd_html']=$tour_list_html.'<div class="clearfix"></div>';
+				$return_data['country_city_rcd_html']=$transfer_list_html.'<div class="clearfix"></div>';
 			else:
 				$return_data['country_city_rcd_html']=$country_city_rcd_html;
 			endif;

@@ -144,6 +144,54 @@
 									$room_avaliability_status="avaliable";
 								endif;
 								ob_start();
+								$previous_week=0;
+								$week_day_th='';
+								$week_day_td='';
+								$main_html='';
+								$total_price=0.00;
+								for($i=strtotime($checkin_date_on_city);$i<=strtotime($checkout_date_on_city);):
+									$complete_date=date("Y-m-d", $i);
+									$room_price_list = tools::find("first", TM_ROOM_PRICES, '*', "WHERE room_id=:room_id AND start_date<=:start_date AND end_date>=:end_date AND status=:status", array(":room_id"=>$room_val['id'], ":start_date"=>$complete_date, ":end_date"=>$complete_date, ':status'=>1));
+									if(!empty($room_price_list)):
+										$room_day_price=$room_price_list['price_per_night'];
+									else:
+										$room_day_price=$room_val['price'];
+									endif;
+									$total_price=$total_price+$room_day_price;
+									$agent_commision=($total_price * $markup_percentage)/100;
+									$each_day_agent_commision=($room_day_price * $markup_percentage)/100;
+									$day_num=date("N", $i);
+									$day_name=date("D", $i);
+									$week_num=date("W", $i);
+									if($day_num==7)
+										$week_num=$week_num+1;
+									if($week_num!=$previous_week && $previous_week > 0):
+										$main_html.='
+										<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable">
+											<thead>
+												<tr role="row">
+													'.$week_day_th.'
+												</tr>
+											</thead>
+											<tbody aria-relevant="all" aria-live="polite" role="alert">
+												<tr>
+													'.$week_day_td.'
+												</tr>
+											</tbody>
+										</table>';
+										$week_day_th='';
+										$week_day_td='';
+									endif;
+									if($week_day_th==""):
+										$week_day_th='<th valign="middle" style="background-color:gray;" align="center">#</th>';
+										$week_day_td='<td valign="middle"> Wk '.$week_num.' </td>';
+									endif;
+									$week_day_th.='<th valign="middle" style="background-color:gray;" align="center">'.$day_name.'</th>';
+									$week_day_td.='<th valign="middle">'.$default_currency['currency_code'].number_format($room_day_price+$each_day_agent_commision, 2,".",".").'</th>';
+
+									$previous_week=$week_num;
+									$i=$i+(24*60*60);
+								endfor;
 ?>
 								<div style="padding:10px 0 10px 0;border:1px solid gray;">
 									<div class="col-md-1" style="font-weight:bold;">
@@ -159,7 +207,7 @@
 										endif;
 										?>
 										<br>
-										<input type="radio" name="selected_room[<?= $server_data['data']['city'][$country_key];?>]" class="selected_room" onclick="change_room_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$room_val['id'];?>">
+										<input type="radio" name="selected_room[<?= $server_data['data']['city'][$country_key];?>]" class="selected_room" onclick="change_room_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$room_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision, 2,".",".");?>">
 									</div>
 									<div class="col-md-3" style="font-weight:bold;">
 										<?= $room_val['room_type'];?>
@@ -169,54 +217,6 @@
 									<div class="col-md-2"><?= $room_val['number_of_rooms'];?></div>
 									<div class="col-md-4">
 									<?php
-									$previous_week=0;
-									$week_day_th='';
-									$week_day_td='';
-									$main_html='';
-									$total_price=0.00;
-									for($i=strtotime($checkin_date_on_city);$i<=strtotime($checkout_date_on_city);):
-										$complete_date=date("Y-m-d", $i);
-										$room_price_list = tools::find("first", TM_ROOM_PRICES, '*', "WHERE room_id=:room_id AND start_date<=:start_date AND end_date>=:end_date AND status=:status", array(":room_id"=>$room_val['id'], ":start_date"=>$complete_date, ":end_date"=>$complete_date, ':status'=>1));
-										if(!empty($room_price_list)):
-											$room_day_price=$room_price_list['price_per_night'];
-										else:
-											$room_day_price=$room_val['price'];
-										endif;
-										$total_price=$total_price+$room_day_price;
-										$agent_commision=($total_price * $markup_percentage)/100;
-										$each_day_agent_commision=($room_day_price * $markup_percentage)/100;
-										$day_num=date("N", $i);
-										$day_name=date("D", $i);
-										$week_num=date("W", $i);
-										if($day_num==7)
-											$week_num=$week_num+1;
-										if($week_num!=$previous_week && $previous_week > 0):
-											$main_html.='
-											<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable">
-												<thead>
-													<tr role="row">
-														'.$week_day_th.'
-													</tr>
-												</thead>
-												<tbody aria-relevant="all" aria-live="polite" role="alert">
-													<tr>
-														'.$week_day_td.'
-													</tr>
-												</tbody>
-											</table>';
-											$week_day_th='';
-											$week_day_td='';
-										endif;
-										if($week_day_th==""):
-											$week_day_th='<th valign="middle" style="background-color:gray;" align="center">#</th>';
-											$week_day_td='<td valign="middle"> Wk '.$week_num.' </td>';
-										endif;
-										$week_day_th.='<th valign="middle" style="background-color:gray;" align="center">'.$day_name.'</th>';
-										$week_day_td.='<th valign="middle">'.$default_currency['currency_code'].number_format($room_day_price+$each_day_agent_commision, 2,".",".").'</th>';
-
-										$previous_week=$week_num;
-										$i=$i+(24*60*60);
-									endfor;
 									if($week_day_th!="" && $week_day_td!=""):
 										$main_html.='
 										<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable">
@@ -241,10 +241,12 @@
 <?php
 								$each_room_html=ob_get_clean();
 								$room_html.=$each_room_html;
-								$each_first_price=$default_currency['currency_code'].number_format($total_price+$agent_commision, 2,".",".");
+								if($each_first_price=="--")
+									$each_first_price=$default_currency['currency_code'].number_format($total_price+$agent_commision, 2,".",".");
 							endforeach;
 						endif;
 						ob_start();
+						if($room_html!=""):
 ?>
 							<div class="form-group col-md-12">
 								<div style="border:1px solid red;background-color:red;">
@@ -274,7 +276,7 @@
 										endif;
 										?>
 									</div>
-									<div class="col-md-2" style="font-weight:bold;text-align:center;"><?php echo $each_first_price;?></div>
+									<div class="col-md-2 default_price_div" style="font-weight:bold;text-align:center;" data-default_price="<?php echo $each_first_price;?>"><?php echo $each_first_price;?></div>
 									<div class="clearfix"></div>
 									<div class="col-md-3">
 										<?php
@@ -314,6 +316,7 @@
 								</div>
 							</div>
 <?php
+						endif;
 						$each_hotel_list_html=ob_get_clean();
 						$hotel_list_html.=$each_hotel_list_html;
 					endforeach;
