@@ -149,7 +149,7 @@
 								$week_day_td='';
 								$main_html='';
 								$total_price=0.00;
-								for($i=strtotime($checkin_date_on_city);$i<=strtotime($checkout_date_on_city);):
+								for($i=strtotime($checkin_date_on_city);$i<strtotime($checkout_date_on_city);):
 									$complete_date=date("Y-m-d", $i);
 									$room_price_list = tools::find("first", TM_ROOM_PRICES, '*', "WHERE room_id=:room_id AND start_date<=:start_date AND end_date>=:end_date AND status=:status", array(":room_id"=>$room_val['id'], ":start_date"=>$complete_date, ":end_date"=>$complete_date, ':status'=>1));
 									if(!empty($room_price_list)):

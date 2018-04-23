@@ -299,7 +299,7 @@
 				endif;
 					$country_city_rcd_html.='<div class="col-md-8 heading_count_rcd">';
 						$heading_count_rcd=$total_transfer;
-						$country_city_rcd_html.='<p>Your search for <font color="red"><b>'.$country_name.'</b></font>, <font color="red"><b>'.$city_name.'</b></font> for <font color="red"><b>'.tools::module_date_format($checkin_date).'</b></font> for <font color="red"><b>'.$total_person.' Passenger(s)</b></font> fetched <font color="red"><b><span class="total_transfer_number">'.$heading_count_rcd.'</span> Transfer(s)</b></font></p>';
+						$country_city_rcd_html.='<p>Your search for <font color="red"><b>'.$country_name.'</b></font>, <font color="red"><b>'.$city_name.'</b></font> for <font color="red"><b>'.tools::module_date_format($checkin_date_on_city).'</b></font> for <font color="red"><b>'.$total_person.' Passenger(s)</b></font> fetched <font color="red"><b><span class="total_transfer_number">'.$heading_count_rcd.'</span> Transfer(s)</b></font></p>';
 					$country_city_rcd_html.='</div>';
 					$country_city_rcd_html.='<div class="col-md-4">';
 						$country_city_rcd_html.='<p><b>SORT BY:</b>&nbsp;&nbsp;&nbsp;';

@@ -295,6 +295,42 @@
 				}
 			});
 		});
+		$(".save_step4_data").click(function(){
+			var transfer_offer_arr=[];
+			$('input[class="selected_transfer"]:checked').each(function(){
+				transfer_offer_arr.push($(this).val());
+			});
+			$.ajax({
+				url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_booking_step4_execute";?>',
+				type:"post",
+				data:{
+					transfer_offer_arr:transfer_offer_arr
+				},
+				beforeSend:function(){
+					$(".loader_inner").fadeIn();
+				},
+				dataType:"json",
+				success:function(response){
+					//console.log(response);
+					//console.log(JSON.stringify(response, null, 4));
+					if(response.status=="success")
+					{
+						var $active = $('.wizard .nav-tabs li.active');
+						$active.next().removeClass('disabled');
+						$active.next().find('a[data-toggle="tab"]').click();
+						fetch_step5_data();
+					}
+					else
+					{
+						showError(response.msg);
+					}
+					$(".loader_inner").fadeOut();
+				},
+				error:function(){
+					//showError("We are having some problem. Please try later.");
+				}
+			});
+		});
 		var iScrollPos = 0;
 		$(window).scroll(function(){
 			var iCurScrollPos = $(this).scrollTop();
@@ -329,20 +365,92 @@
 							fetch_step3_rcd(page, type, sort_order, city_id, country_id, search_val)
 						}
 					}
+					else if($(".tab-content .active").attr("id")=="step4")
+					{
+						var cur=$(".tab-content .active ").find(".active_each_tab_content");
+						if(cur.find(".transfer_list_tab_no_more_record_status").val()==0)
+						{
+							var page=eval(cur.find(".transfer_list_tab_current_page").val())+eval(1);
+							var type=2;
+							var sort_order=cur.find("input[name='tour_sort']:checked").val();
+							var city_id=cur.attr("data-city_id");
+							var country_id=cur.attr("data-country_id");
+							var search_val=$("#transfer_keyword_search"+city_id).val();
+							fetch_step4_rcd(page, type, sort_order, city_id, country_id, search_val)
+						}
+					}
 				}
 			} else {
 			   //Scrolling Up
 			}
 			iScrollPos = iCurScrollPos;
 		});
-	});
-	CKEDITOR.config.autoParagraph = false;
-	CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
-	CKEDITOR.config.shiftEnterMode = CKEDITOR.ENTER_BR;
-	CKEDITOR.config.protectedSource.push(/<i[^>]*><\/i>/g);
-	CKEDITOR.config.allowedContent = true;
-	jQuery(document).ready(function(){
-		jQuery("#profile").validationEngine();
+		$("#quotation_name_form").submit(function(){
+			if($("#quotation_name_form").validationEngine("validate"))
+			{
+				$.ajax({
+					url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_update_quotation_name";?>',
+					type:"post",
+					data:$("#quotation_name_form").serialize(),
+					beforeSend:function(){
+						$(".loader_inner").fadeIn();
+					},
+					dataType:"json",
+					success:function(response){
+						//console.log(response);
+						//console.log(JSON.stringify(response, null, 4));
+						if(response.status=="success")
+						{
+							showSuccess(response.msg);
+						}
+						else
+						{
+							showError(response.msg);
+						}
+						$(".loader_inner").fadeOut();
+					},
+					error:function(){
+						//showError("We are having some problem. Please try later.");
+					}
+				});
+			}
+			return false;
+		});
+		$("#payment_method_form").submit(function(){
+			if($("#quotation_name").val()=="")
+			{
+				showError("Please enter quotation name");
+			}
+			else
+			{
+				$.ajax({
+					url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_booking_step5_execute";?>',
+					type:"post",
+					data:$("#payment_method_form").serialize(),
+					beforeSend:function(){
+						$(".loader_inner").fadeIn();
+					},
+					dataType:"json",
+					success:function(response){
+						//console.log(response);
+						//console.log(JSON.stringify(response, null, 4));
+						if(response.status=="success")
+						{
+							//showSuccess(response.msg);
+						}
+						else
+						{
+							showError(response.msg);
+						}
+						$(".loader_inner").fadeOut();
+					},
+					error:function(){
+						//showError("We are having some problem. Please try later.");
+					}
+				});
+			}
+			return false;
+		});
 	});
 	function manage_booking_type(val) {
 		if(val == "agent") {
@@ -476,7 +584,7 @@
 	}
 	function match_night()
 	{
-		var total_days_selected=datediff($("#checkin").val(), $("#checkout").val())+1;
+		var total_days_selected=datediff($("#checkin").val(), $("#checkout").val());
 		var total_night_text_field=$(".number_of_night").length;
 		var minus_day=0;
 		var minus_field=0;
@@ -802,7 +910,7 @@
 						var prev_count=$("#transfer_city"+city_id+" .total_transfer_number").html();
 						var new_count=eval(prev_count)+eval(response.heading_count_rcd);
 						$("#transfer_city"+city_id+" .total_transfer_number").html(new_count);
-						if(response.tour_data.indexOf("No more record found") > -1)
+						if(response.transfer_data.indexOf("No more record found") > -1)
 							$(".tab-content .active .active_each_tab_content").find(".transfer_list_tab_no_more_record_status").val(1);
 					}
 					else if(sort_order!="" || type==3)
@@ -820,6 +928,35 @@
 						$(".transfer_tab_all_data_div").html(response.transfer_data);
 						$(".transfer_city_tab_button_div").html(response.city_tab_html);
 					}
+				}
+				else
+				{
+					showError(response.msg);
+				}
+				$(".loader_inner").fadeOut();
+			},
+			error:function(){
+				showError("We are having some problem. Please try later.");
+				$(".loader_inner").fadeOut();
+			}
+		});
+	}
+	function fetch_step5_data()
+	{
+		$.ajax({
+			url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_find_booking_step5_data";?>',
+			type:"post",
+			beforeSend:function(){
+				$(".loader_inner").fadeIn();
+			},
+			dataType:"json",
+			success:function(response){
+				//console.log(response);
+				console.log(JSON.stringify(response, null, 4));
+				if(response.status=="success")
+				{
+					$("#final_step_html").html(response.booking_html);
+					$("#total_price").html(response.total_price);
 				}
 				else
 				{
@@ -921,7 +1058,7 @@
 										<div class="connecting-line"></div>
 										<ul class="nav nav-tabs" role="tablist">
 											<li role="presentation" class="active">
-												<a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" >
+												<a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" title="General">
 												<span class="round-tab">
 													<i class="fa fa-bars fa-1x" ></i>
 												</span>
@@ -929,7 +1066,7 @@
 											</li>
 
 											<li role="presentation" class="disabled">
-												<a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" >
+												<a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" title="Select Hotel">
 												<span class="round-tab">
 													<i class="fa fa-bed fa-1x" ></i>
 												</span>
@@ -937,7 +1074,7 @@
 											</li>
 
 											<li role="presentation" class="disabled">
-												<a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" >
+												<a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="Select Tour">
 												<span class="round-tab">
 													<i class="fa fa-road fa-1x" ></i>
 												</span>
@@ -945,7 +1082,7 @@
 											</li>
 
 											<li role="presentation" class="disabled">
-												<a href="#step4" data-toggle="tab" aria-controls="step4" role="tab" >
+												<a href="#step4" data-toggle="tab" aria-controls="step4" role="tab" title="Select Transfer">
 												<span class="round-tab">										
 													<i class="fa fa-car fa-1x" ></i>
 												</span>
@@ -953,7 +1090,7 @@
 											</li>
 
 											<li role="presentation" class="disabled">
-												<a href="#complete" data-toggle="tab" aria-controls="complete" role="tab" >
+												<a href="#complete" data-toggle="tab" aria-controls="complete" role="tab" title="Complete">
 												<span class="round-tab">
 													<i class="fa fa-shopping-cart fa-1x" ></i>
 												</span>
@@ -1352,166 +1489,42 @@
 											</div>
 											<div class="tab-pane" role="tabpanel" id="complete">
 												<h3>Complete Your Booking</h3>
-												<form name="profile" name="form_create_slider" id="form_create_slider" method="POST" enctype="mulimedeia/form-data">
-													<div class="col-md-12 row">
-														<div class="box-body">
-															<div class="form-group col-md-6">
+												<div class="col-md-12 row">
+													<div id="final_step_html">
+														<!-- Final step display content -->
+													</div>
+													<div class="box-body">
+														<div class="form-group col-md-6">
+															<form method="post" action="" name="quotation_name_form" id="quotation_name_form">
 																<label for="inputName" class="control-label">Quotation Name<font color="#FF0000">*</font></label>
 																<br/>
 																<div style = "float:left;">
 																	<input type="text" class="form-control validate[required]"  value="" name="quotation_name" id="quotation_name" placeholder="Quotation Name" tabindex = "1"  />
 																</div>
 																<div style = "float:left;">
-																	&nbsp;<button type="button" class="btn btn-primary">Save</button>
+																	&nbsp;<button type="submit" class="btn btn-primary quotation_name_save_btn">Save</button>
 																</div>
-																<div style = "clear:both;"></div>
-															</div>
-															<div class="form-group col-md-6">
+																<div class = "clearfix"></div>
+															</form>
+														</div>
+														<div class="form-group col-md-6">
+															<form method="post" action="" name="payment_method_form" id="payment_method_form">
 																<label for="inputName" class="control-label">Choose Payment Method<font color="#FF0000">*</font></label>
 																<br/>
 																<div style = "float:left;">
 																	<select class="form-control validate[optional]" name="sel_avlbl_hotel">
-																		<option value="">Offine</option>
-																		<option label="PayUMoney" value="PayUMoney">PayUMoney</option>
-																		<option label="PayPal" value="PayPal">PayPal</option>
+																		<option value="">Pay</option>
 																	</select>
+																	<input type="hidden" name="total_price" id="total_price" value="">
 																</div>
 																<div style = "float:left;">
-																	&nbsp;<button type="button" class="btn btn-primary">Continue</button>
+																	&nbsp;<button type="submit" class="btn btn-primary payment_method_save_btn">Continue</button>
 																</div>
-																<div style = "clear:both;"></div>
-															</div>
+																<div class = "clearfix"></div>
+															</form>
 														</div>
-														<div class="box-body">
-															<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
-																<thead>
-																	<tr role="row">
-																		<th style = "text-align:center;">Pax</th>
-																		<th style = "text-align:center;">Quote Date</th>
-																		<th style = "text-align:center;">Destination</th>
-																		<th style = "text-align:center;">Service Date</th>
-																	</tr>
-																</thead>
-																<tbody aria-relevant="all" aria-live="polite" role="alert">
-																	<tr class="odd">
-																		<td style = "text-align:center;">1</td>
-																		<td style = "text-align:center;">28 Feb, 2018</td>
-																		<td style = "text-align:center;">Bangkok</td>
-																		<td style = "text-align:center;">01 Mar, 2018</td>
-																	</tr>
-																</tbody>
-															</table>
-														</div>
-														<div class="box-body">
-															<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
-																<thead>
-																	<tr role="row">
-																		<th style = "text-align:left;">Hotel</th>
-																		<th style = "text-align:center;">Room Type</th>
-																		<th style = "text-align:center;">Check In</th>
-																		<th style = "text-align:center;">Check Out</th>
-																		<th style = "text-align:center;">Rooms</th>
-																		<th style = "text-align:center;">Nights</th>
-																	</tr>
-																</thead>
-																<tbody aria-relevant="all" aria-live="polite" role="alert">
-																	<tr class="odd">
-																		<td style = "text-align:left;">Hotel Seagul</td>
-																		<td style = "text-align:center;">
-																			Single Room Standard Room Only
-																			<br/>
-																			<font color = "red">*No Check Out Allowed on 31st Dec.</font>
-																		</td>
-																		<td style = "text-align:center;">01 Mar, 2018</td>
-																		<td style = "text-align:center;">04 Mar, 2018</td>
-																		<td style = "text-align:center;">1</td>
-																		<td style = "text-align:center;">3</td>
-																	</tr>
-																</tbody>
-															</table>
-														</div>
-														<div class="box-body">
-															<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
-																<thead>
-																	<tr role="row">
-																		<th style = "text-align:left;">Tour Sites</th>
-																	</tr>
-																</thead>
-																<tbody aria-relevant="all" aria-live="polite" role="alert">
-																	<tr class="odd">
-																		<td style = "text-align:left;">Art In Paradise Bangkok - Ticket Only - - Private-Tour Van ( Units of vehicle: 1 )</td>
-																	</tr>
-																</tbody>
-															</table>
-														</div>
-														<div class="box-body">
-															<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
-																<thead>
-																	<tr role="row">
-																		<th style = "text-align:left;">Transfers</th>
-																	</tr>
-																</thead>
-																<tbody aria-relevant="all" aria-live="polite" role="alert">
-																	<tr class="odd">
-																		<td style = "text-align:left;">
-																		Bangkok - BANGKOK SUVARNABHUMI AIRPORT - BANGKOK DON MUANG AIRPORT - - Private Transfer Van/Car (2 pax) ( Units of vehicle: 1 )
-																		<br/>
-																		Pick Up: Airport - Suvarnabhumi International Airport
-																		<br/>
-																		Drop off: Airport - Don Muang International Airport
-																		</td>
-																	</tr>
-																</tbody>
-															</table>
-														</div>
-														<div class="box-body">
-															<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
-																<thead>
-																	<tr role="row">
-																		<th style = "text-align:center;" colspan = "3">Quotation ($)</th>
-																	</tr>
-																</thead>
-																<tbody aria-relevant="all" aria-live="polite" role="alert">
-																	<tr class="odd">
-																		<td style = "text-align:left;font-weight:bold;">Total Cost for Hotel Accommodation</td>
-																		<td style = "text-align:center;font-weight:bold;" colspan = "2">$3796.77</td>
-																	</tr>
-																	<tr class="odd">
-																		<td style = "text-align:left;font-weight:bold;">
-																			Add-on : Cost for other components Tours, Transfer & Meals
-																		</td>
-																		<td style = "text-align:center;font-weight:bold;">
-																			PER ADULT
-																			<br/>
-																			$4678.53
-																		</td>
-																		<td style = "text-align:center;font-weight:bold;">
-																			PER CHILD
-																			<br/>
-																			$0.00
-																		</td>
-																	</tr>
-																	<tr class="odd">
-																		<td style = "text-align:left;font-weight:bold;">
-																			No of Guests
-																		</td>
-																		<td style = "text-align:center;font-weight:bold;">
-																			1
-																		</td>
-																		<td style = "text-align:center;font-weight:bold;">
-																			0
-																		</td>
-																	</tr>
-																	<tr class="odd">
-																		<td style = "text-align:left;font-weight:bold;">Total Quantity</td>
-																		<td style = "text-align:center;font-weight:bold;color:red;" colspan = "2">$8475.00</td>
-																	</tr>
-																</tbody>
-															</table>
-														</div>
-														
 													</div>
-												</form>
+												</div>
 											</div>
 											<div class="clearfix"></div>
 										</div>
