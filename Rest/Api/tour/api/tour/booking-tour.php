@@ -190,7 +190,7 @@
 										endif;
 										?>
 										<br>
-										<input type="radio" name="selected_offer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>]" class="selected_offer" onclick="change_offer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",".");?>">
+										<input type="radio" name="selected_offer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>]" class="selected_offer" onclick="change_offer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>">
 									</div>
 									<div class="col-md-3" style="font-weight:bold;">
 										<?= $offer_val['offer_title'];?>
@@ -198,7 +198,7 @@
 									<div class="col-md-3"><?= $offer_val['service_type'];?></div>
 									<div class="col-md-3"><?= $offer_val['offer_capacity'];?></div>
 									<div class="col-md-2" style="font-weight:bold;color:red;text-align:center;">
-									<?php echo $default_currency['currency_code'].number_format((($total_price+$agent_commision+$nationality_charge)*$total_person), 2,".",".");?>
+									<?php echo $default_currency['currency_code'].number_format((($total_price+$agent_commision+$nationality_charge)*$total_person), 2,".",",");?>
 									</div>
 									<div class="clearfix"></div>
 								</div>
@@ -206,7 +206,7 @@
 								$each_offer_html=ob_get_clean();
 								$offer_html.=$each_offer_html;
 								if($each_first_price=="--")
-									$each_first_price=$default_currency['currency_code'].number_format((($total_price+$agent_commision+$nationality_charge)*$total_person), 2,".",".");
+									$each_first_price=$default_currency['currency_code'].number_format((($total_price+$agent_commision+$nationality_charge)*$total_person), 2,".",",");
 							endforeach;
 						endif;
 						ob_start();

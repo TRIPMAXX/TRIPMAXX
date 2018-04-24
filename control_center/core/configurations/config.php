@@ -81,6 +81,7 @@ define("HOTEL_API_PATH", "hotel/api/");
 define("AGENT_API_PATH", "agent/api/");
 define("TOUR_API_PATH", "tour/api/");
 define("TRANSFER_API_PATH", "transfer/api/");
+define("BOOKING_API_PATH", "booking/api/");
 
 define("MAX_ROOM_NO", 10);
 define("MAX_ADULT_NO", 10);

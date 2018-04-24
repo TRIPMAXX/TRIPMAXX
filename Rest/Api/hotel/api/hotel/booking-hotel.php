@@ -187,7 +187,7 @@
 										$week_day_td='<td valign="middle"> Wk '.$week_num.' </td>';
 									endif;
 									$week_day_th.='<th valign="middle" style="background-color:gray;" align="center">'.$day_name.'</th>';
-									$week_day_td.='<th valign="middle">'.$default_currency['currency_code'].number_format($room_day_price+$each_day_agent_commision, 2,".",".").'</th>';
+									$week_day_td.='<th valign="middle">'.$default_currency['currency_code'].number_format($room_day_price+$each_day_agent_commision, 2,".",",").'</th>';
 
 									$previous_week=$week_num;
 									$i=$i+(24*60*60);
@@ -207,7 +207,7 @@
 										endif;
 										?>
 										<br>
-										<input type="radio" name="selected_room[<?= $server_data['data']['city'][$country_key];?>]" class="selected_room" onclick="change_room_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$room_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision, 2,".",".");?>">
+										<input type="radio" name="selected_room[<?= $server_data['data']['city'][$country_key];?>]" class="selected_room" onclick="change_room_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$room_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision, 2,".",",");?>">
 									</div>
 									<div class="col-md-3" style="font-weight:bold;">
 										<?= $room_val['room_type'];?>
@@ -235,14 +235,14 @@
 									echo $main_html;
 									?>
 									</div>
-									<div class="col-md-2" style="font-weight:bold;color:red;text-align:center;"><?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision, 2,".",".");?></div>
+									<div class="col-md-2" style="font-weight:bold;color:red;text-align:center;"><?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision, 2,".",",");?></div>
 									<div class="clearfix"></div>
 								</div>
 <?php
 								$each_room_html=ob_get_clean();
 								$room_html.=$each_room_html;
 								if($each_first_price=="--")
-									$each_first_price=$default_currency['currency_code'].number_format($total_price+$agent_commision, 2,".",".");
+									$each_first_price=$default_currency['currency_code'].number_format($total_price+$agent_commision, 2,".",",");
 							endforeach;
 						endif;
 						ob_start();

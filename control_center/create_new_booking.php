@@ -419,7 +419,7 @@
 		$("#payment_method_form").submit(function(){
 			if($("#quotation_name").val()=="")
 			{
-				showError("Please enter quotation name");
+				showError("Please first save the quotation name");
 			}
 			else
 			{
@@ -430,13 +430,13 @@
 					beforeSend:function(){
 						$(".loader_inner").fadeIn();
 					},
-					dataType:"json",
+					//dataType:"json",
 					success:function(response){
-						//console.log(response);
+						console.log(response);
 						//console.log(JSON.stringify(response, null, 4));
 						if(response.status=="success")
 						{
-							//showSuccess(response.msg);
+							showSuccess(response.msg);
 						}
 						else
 						{
