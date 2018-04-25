@@ -1,5 +1,18 @@
 <?php
-require_once('loader.inc');
+	require_once('loader.inc');
+	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
+	unset($_SESSION['step_1']);
+	unset($_SESSION['step_2']);
+	unset($_SESSION['step_3']);
+	unset($_SESSION['step_4']);
+	unset($_SESSION['step_5']);
+	if(isset($_GET['msg']) && $_GET['msg']=="b_success")
+	{
+		$_SESSION['SET_TYPE'] = 'success';
+		$_SESSION['SET_FLASH'] = "Booking has been saved successfully.";
+		header("location:bookings");
+		exit;
+	}
 ?>
 <!DOCTYPE html>
 <html>

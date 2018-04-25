@@ -1,7 +1,7 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');	
-	$white_list_array = array('first_name', 'last_name', 'company_name', 'type_of_business', 'email_address', 'password', 'phone_number', 'address', 'country', 'supplier_code', 'creation_date', 'last_updated', 'status', 'token', 'id', 'btn_submit', 'confirm_password');
+	$white_list_array = array('first_name', 'last_name', 'company_name', 'type_of_business', 'email_address', 'password', 'phone_number', 'address', 'country', 'supplier_code', 'creation_date', 'last_updated', 'status', 'token', 'id', 'btn_submit', 'confirm_password', 'supplier_priority');
 	$verify_token = "create_new_supllier";
 	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."authorized.php"));
 	if(isset($autentication_data->status)):
@@ -180,6 +180,11 @@
 										<div class="form-group col-md-6">
 											<label for="supplier_code" class="control-label">Supplier Account Code <font color="#FF0000">*</font></label>
 											<input type="text" class="form-control validate[required]"  placeholder = "Supplier Account Code" name="supplier_code" id="supplier_code" tabindex = "11" value="<?php echo(isset($_POST['supplier_code']) && $_POST['supplier_code']!='' ? $_POST['supplier_code'] : "");?>"/>
+										</div>
+										<div class="clearfix"></div>
+										<div class="form-group col-md-6">
+											<label for="supplier_code" class="control-label">Supplier Priority <font color="#FF0000">*</font></label>
+											<input type="text" class="form-control validate[required, custom[onlyNumberSp]]"  placeholder = "Supplier Priority" name="supplier_priority" id="supplier_priority" tabindex = "11" value="<?php echo(isset($_POST['supplier_priority']) && $_POST['supplier_priority']!='' ? $_POST['supplier_priority'] : "");?>"/>
 										</div>
 										<div class="clearfix"></div>
 									</div>

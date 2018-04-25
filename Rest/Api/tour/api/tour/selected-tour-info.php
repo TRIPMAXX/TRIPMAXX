@@ -20,7 +20,7 @@
 				$markup_percentage=0.00;
 				$nationality_addon_percentage=0;
 				if(isset($server_data['data']['step_1']['booking_type']) && $server_data['data']['step_1']['booking_type']=="agent" && isset($server_data['data']['step_1']['agent_name']) && $server_data['data']['step_1']['agent_name']!=""):
-					$offer_agent_markup = tools::find("first", TM_OFFER_AGENT_MARKUP, '*', "WHERE tour_id=:tour_id AND agent_id=:agent_id ", array(":agent_id"=>$server_data['data']['step_1']['agent_name'], ":tour_id"=>$offer_details['id']));
+					$offer_agent_markup = tools::find("first", TM_OFFER_AGENT_MARKUP, '*', "WHERE offer_id=:offer_id AND agent_id=:agent_id ", array(":agent_id"=>$server_data['data']['step_1']['agent_name'], ":offer_id"=>$offer_details['id']));
 					if(!empty($offer_agent_markup)):
 						$markup_percentage=$offer_agent_markup['markup_price'];
 					endif;

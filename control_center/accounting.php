@@ -142,14 +142,12 @@
 					<div id="notify_msg_div"></div>
 					<div class="box">
 						<div class="box-body">
-							<div id="" class="col-md-12">
-								<div id="" class="row">
-									<div id="" class="col-md-8"></div>
-									<div id="" class="col-md-4">
-										<div id="" class="row">
-											<a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_accounting?agent_id=<?php echo base64_encode($agent_data['id']);?>"><button class="status_checks btn btn-success btn-md" type="submit" style="float:right; margin-bottom:10px;" value="">CREATE NEW ACCOUNTING</button></a>
-										</div>
-									</div>
+							<div id="" class="row">
+								<div id="" class="col-md-8">
+									<h4><strong>Current Credit Balance</strong> : <?php echo number_format($agent_data['credit_balance'], 2, ".", ",");?></h4>
+								</div>
+								<div id="" class="col-md-4">
+									<a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_accounting?agent_id=<?php echo base64_encode($agent_data['id']);?>"><button class="status_checks btn btn-success btn-md" type="submit" style="float:right; margin-bottom:10px;" value="">CREATE NEW ACCOUNTING</button></a>
 								</div>
 							</div>
 							<div id="example1_wrapper" class="dataTables_wrapper form-inline" role="grid">

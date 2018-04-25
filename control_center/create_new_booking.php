@@ -1,6 +1,11 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
+	unset($_SESSION['step_1']);
+	unset($_SESSION['step_2']);
+	unset($_SESSION['step_3']);
+	unset($_SESSION['step_4']);
+	unset($_SESSION['step_5']);
 	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
 	if(isset($autentication_data->status)):
 		if($autentication_data->status=="success"):
@@ -430,13 +435,14 @@
 					beforeSend:function(){
 						$(".loader_inner").fadeIn();
 					},
-					//dataType:"json",
+					dataType:"json",
 					success:function(response){
-						console.log(response);
+						//console.log(response);
 						//console.log(JSON.stringify(response, null, 4));
 						if(response.status=="success")
 						{
-							showSuccess(response.msg);
+							//showSuccess(response.msg);
+							window.location.href="bookings?msg=b_success";
 						}
 						else
 						{
@@ -445,7 +451,7 @@
 						$(".loader_inner").fadeOut();
 					},
 					error:function(){
-						//showError("We are having some problem. Please try later.");
+						showError("We are having some problem. Please try later.");
 					}
 				});
 			}
@@ -900,7 +906,7 @@
 			dataType:"json",
 			success:function(response){
 				//console.log(response);
-				console.log(JSON.stringify(response, null, 4));
+				//console.log(JSON.stringify(response, null, 4));
 				if(response.status=="success")
 				{
 					if(type==2)
@@ -952,11 +958,11 @@
 			dataType:"json",
 			success:function(response){
 				//console.log(response);
-				console.log(JSON.stringify(response, null, 4));
+				//console.log(JSON.stringify(response, null, 4));
 				if(response.status=="success")
 				{
 					$("#final_step_html").html(response.booking_html);
-					$("#total_price").html(response.total_price);
+					$("#total_price").val(response.total_price);
 				}
 				else
 				{
@@ -1513,7 +1519,7 @@
 																<br/>
 																<div style = "float:left;">
 																	<select class="form-control validate[optional]" name="sel_avlbl_hotel">
-																		<option value="">Pay</option>
+																		<option value="Pay">Pay</option>
 																	</select>
 																	<input type="hidden" name="total_price" id="total_price" value="">
 																</div>

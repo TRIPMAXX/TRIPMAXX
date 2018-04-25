@@ -52,6 +52,8 @@
 				$_POST['hotel_rating']=implode(",", $server_data['data']['step_1']['hotel_ratings'][$country_key]);
 				$save_booking_destination = tools::module_form_submission("", TM_BOOKING_DESTINATION);
 				if($save_booking_destination > 0):
+					$return_data['booking_id']=$save_booking_destination;
+					$return_hotel_ids=array();
 					$autentication_data_hotel=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
 					if(isset($autentication_data_hotel->status)):
 						if($autentication_data_hotel->status=="success"):
@@ -85,6 +87,7 @@
 								//$data['status'] = 'success';
 								//$data['msg']="Data received successfully";
 								unset($_POST);
+								array_push($return_hotel_ids, $return_data_arr_hotel['results']['hotel_id']);
 								$_POST['booking_destination_id']=$save_booking_destination;
 								$_POST['hotel_id']=$return_data_arr_hotel['results']['hotel_id'];
 								$_POST['room_id']=$return_data_arr_hotel['results']['room_id'];
@@ -104,6 +107,7 @@
 						//$data['status'] = 'error';
 						//$data['msg'] = $autentication_data_hotel->msg;
 					endif;
+					$return_data['return_hotel_ids']=$return_hotel_ids;
 					$number_of_person=$number_of_adult=$number_of_child=0;
 					foreach($server_data['data']['step_1']['adult'] as $adult_key=>$adult_val):
 						if($adult_val!="")
@@ -235,12 +239,12 @@
 				endif;
 			endforeach;
 			//$_POST['agent_id']=$save_agent;
-			//$return_data['status']="success";
-			//$return_data['msg'] = 'Booking has been created successfully.';
+			$return_data['status']="success";
+			$return_data['msg'] = 'Booking has been created successfully.';
 		else:
 			$return_data['status']="error";
 			$return_data['msg']="We are having some problem. Please try later.";
 		endif;
 	endif;
-	//echo json_encode($return_data);	
+	echo json_encode($return_data);	
 ?>

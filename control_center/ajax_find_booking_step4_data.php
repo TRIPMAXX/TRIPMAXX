@@ -3,6 +3,12 @@
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');	
 	$data['status']="error";
 	$data['msg']="Some data missing.";
+	/*$_POST['page']=1;
+	$_POST['type']=1;
+	$_POST['sort_order']="";
+	$_POST['city_id']="";
+	$_POST['country_id']="";
+	$_POST['search_val']="";*/
 	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.TRANSFER_API_PATH."authorized.php"));
 	if(isset($autentication_data->status)):
 		if($autentication_data->status=="success"):
@@ -35,6 +41,7 @@
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 					$return_data = curl_exec($ch);
 					curl_close($ch);
+					//print_r($return_data);
 					$return_data_arr=json_decode($return_data, true);
 					$transfer_data=array();
 					if(!isset($return_data_arr['status'])):

@@ -80,6 +80,7 @@ define("TRANSFER_IMAGE_PATH", DOMAIN_NAME_PATH."transfer_control_center/assets/u
 
 define("REST_API_PATH", "Rest/Api/");
 define("TRANSFER_API_PATH", "transfer/api/");
+define("AGENT_API_PATH", "agent/api/");
 define("BOOKING_API_PATH", "booking/api/");
 
 define("API_USERNAME", "a");

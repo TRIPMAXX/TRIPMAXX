@@ -1,7 +1,7 @@
 <?php
 require_once('loader.inc');
 tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
-$white_list_array = array('first_name', 'last_name', 'company_name', 'type_of_business', 'email_address', 'password', 'phone_number', 'address', 'country', 'supplier_code', 'creation_date', 'last_updated', 'status', 'token', 'id', 'btn_submit', 'confirm_password');
+$white_list_array = array('first_name', 'last_name', 'company_name', 'type_of_business', 'email_address', 'password', 'phone_number', 'address', 'country', 'supplier_code', 'creation_date', 'last_updated', 'status', 'token', 'id', 'btn_submit', 'confirm_password', 'supplier_priority');
 $verify_token = "edit_supllier";
 if(isset($_GET['supplier_id']) && $_GET['supplier_id']!=""):
 	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."authorized.php"));
@@ -220,6 +220,10 @@ endif;
 												<option value = "1" <?php echo(isset($_POST['status']) && $_POST['status']==1 ? 'selected="selected"' : (isset($supplier_data['status']) && $supplier_data['status']==1 ? 'selected="selected"' : ""));?>>Active</option>
 												<option value = "0" <?php echo(isset($_POST['status']) && $_POST['status']==0 ? 'selected="selected"' : (isset($supplier_data['status']) && $supplier_data['status']==0 ? 'selected="selected"' : ""));?>>Inactive</option>
 											</select>
+										</div>
+										<div class="form-group col-md-6">
+											<label for="supplier_code" class="control-label">Supplier Priority <font color="#FF0000">*</font></label>
+											<input type="text" class="form-control validate[required, custom[onlyNumberSp]]"  placeholder = "Supplier Priority" name="supplier_priority" id="supplier_priority" tabindex = "11" value="<?php echo(isset($_POST['supplier_priority']) && $_POST['supplier_priority']!='' ? $_POST['supplier_priority'] : (isset($supplier_data['supplier_priority']) && $supplier_data['supplier_priority']!=0 ? $supplier_data['supplier_priority'] : ""));?>"/>
 										</div>
 									</div>
 									<div class="col-md-12 row">

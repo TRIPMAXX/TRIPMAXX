@@ -52,7 +52,7 @@
 							$return_data = curl_exec($ch);
 							curl_close($ch);
 							$return_data_arr=json_decode($return_data, true);
-							//print_r($return_data_arr);
+							//print_r($return_data);
 							if($return_data_arr['status']=="success")
 							{
 								$_SESSION['SET_TYPE'] = 'success';

@@ -155,7 +155,7 @@
 									<div id="" class="row rows">
 										<div class="form-group col-md-6">
 											<label for="amount" class="form-label1">Amount <font color="#FF0000">*</font> :</label>
-											<input type="text" class="form-control form_input1 validate[required, custom[number]]" id="amount" name="amount" placeholder="Amount" value="<?php echo(isset($_POST['amount']) && $_POST['amount']!='' ? $_POST['amount'] : (isset($accounting_data['amount']) && $accounting_data['amount']!="" ? $accounting_data['amount'] : ""));?>" tabindex="1">
+											<?php echo(isset($_POST['amount']) && $_POST['amount']!='' ? $_POST['amount'] : (isset($accounting_data['amount']) && $accounting_data['amount']!="" ? $accounting_data['amount'] : ""));?>
 										</div>
 										<div class="form-group col-md-12">
 											<label for="note" class="form-label1">Notes <font color="#FF0000">*</font> :</label>
