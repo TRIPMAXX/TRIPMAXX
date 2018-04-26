@@ -14,7 +14,11 @@
 		$checkout_date=date_format($checkout_date_obj, "Y-m-d");
 		$_POST['checkout_date']=$checkout_date;
 		$_POST['booking_type']=$server_data['data']['step_1']['booking_type'];
-		$_POST['agent_id']=$server_data['data']['step_1']['agent_name'];
+		if($server_data['data']['step_1']['booking_type']=="agent"):
+			$_POST['agent_id']=$server_data['data']['step_1']['agent_name'];
+		else:
+			$_POST['dmc_id']=$server_data['data']['SESSION_DATA']['id'];
+		endif;
 		$_POST['nationality']=$server_data['data']['step_1']['sel_nationality'];
 		$_POST['residance_country']=$server_data['data']['step_1']['country_residance'];
 		$_POST['invoice_currency']=$server_data['data']['step_1']['sel_currency'];
@@ -40,8 +44,9 @@
 			endif;
 		endforeach;
 		$_POST['child']=json_encode($child_arr);
-		$_POST['child_age']=$server_data['data']['step_1']['child_age'];
-		$_POST['bed_required']=$server_data['data']['step_1']['bed_required'];
+		//$_POST['child_age']=$server_data['data']['step_1']['child_age'];
+		//$_POST['bed_required']=$server_data['data']['step_1']['bed_required'];
+		$_POST['total_amount']=$server_data['data']['total_price'];
 		if($save_booking = tools::module_form_submission("", TM_BOOKING_MASTERS)):
 			unset($_POST);
 			foreach($server_data['data']['step_1']['country'] as $country_key=>$country_val):

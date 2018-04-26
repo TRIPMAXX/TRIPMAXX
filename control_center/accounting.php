@@ -157,6 +157,7 @@
 											<tr role="row">
 												<th>#</th>
 												<th>Date</th>
+												<th>Debit/Credit</th>
 												<th>Amount</th>
 												<th>Note</th>
 												<th>Action</th>
@@ -169,8 +170,20 @@
 										?>
 											<tr class="odd">
 												<td class="  sorting_1"><?= $accounting_key+1;?></td>
-												</td>
 												<td class=" "><?= tools::module_date_format($accounting_val['creation_date'], "Y-m-d H:i:s");?></td>
+												<td class=" ">
+												<?php
+												if($accounting_val['debit_or_credit']=="Debit"):
+												?>
+													<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" class="btn-danger"><?= $accounting_val['debit_or_credit'];?></a>
+												<?php
+												else:
+												?>
+													<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" class="btn-success"><?= $accounting_val['debit_or_credit'];?></a>
+												<?php
+												endif;
+												?>
+												</td>
 												<td class=" "><?= $accounting_val['amount'];?></td>
 												<td class=" "><?= nl2br($accounting_val['note']);?></td>
 												<td class=" " data-title="Action">

@@ -64,6 +64,7 @@
 						"token_generation_time"=>$autentication_data_booking->results->token_generation_time
 					);
 					$post_data_booking['data']=$_SESSION;
+					$post_data_booking['data']['total_price']=$_POST['total_price'];
 					$post_data_str_booking=json_encode($post_data_booking);
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -88,8 +89,8 @@
 						$dmc_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>11, ':status'=>1));
 						if(!empty($dmc_email_template)):
 							$dmc_url_details="";
-							$dmc_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($_SESSION['first_name'], $_SESSION['last_name'], $dmc_url_details), $dmc_email_template['template_body']);
-							@tools::Send_HTML_Mail($_SESSION['email_address'], FROM_EMAIL, '', $dmc_email_template['template_subject'], $dmc_mail_Body);
+							$dmc_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($_SESSION['SESSION_DATA']['first_name'], $_SESSION['SESSION_DATA']['last_name'], $dmc_url_details), $dmc_email_template['template_body']);
+							@tools::Send_HTML_Mail($_SESSION['SESSION_DATA']['email_address'], FROM_EMAIL, '', $dmc_email_template['template_subject'], $dmc_mail_Body);
 						endif;
 						$autentication_data_supplier=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."authorized.php"));
 						if(isset($autentication_data_supplier->status)):
