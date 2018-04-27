@@ -213,7 +213,7 @@
 											else:
 											?>
 												<tr>
-													<td>No record found</td>
+													<td colspan="100%" class="text-center">No record found</td>
 												</tr>
 											<?php
 											endif;

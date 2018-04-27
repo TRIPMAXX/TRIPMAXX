@@ -1064,7 +1064,7 @@
 										<div class="connecting-line"></div>
 										<ul class="nav nav-tabs" role="tablist">
 											<li role="presentation" class="active">
-												<a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" title="General">
+												<a href="#step1" data-toggle="tab" aria-controls="step1" role="tab">
 												<span class="round-tab">
 													<i class="fa fa-bars fa-1x" ></i>
 												</span>
@@ -1072,7 +1072,7 @@
 											</li>
 
 											<li role="presentation" class="disabled">
-												<a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" title="Select Hotel">
+												<a href="#step2" data-toggle="tab" aria-controls="step2" role="tab">
 												<span class="round-tab">
 													<i class="fa fa-bed fa-1x" ></i>
 												</span>
@@ -1080,7 +1080,7 @@
 											</li>
 
 											<li role="presentation" class="disabled">
-												<a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="Select Tour">
+												<a href="#step3" data-toggle="tab" aria-controls="step3" role="tab">
 												<span class="round-tab">
 													<i class="fa fa-road fa-1x" ></i>
 												</span>
@@ -1088,7 +1088,7 @@
 											</li>
 
 											<li role="presentation" class="disabled">
-												<a href="#step4" data-toggle="tab" aria-controls="step4" role="tab" title="Select Transfer">
+												<a href="#step4" data-toggle="tab" aria-controls="step4" role="tab">
 												<span class="round-tab">										
 													<i class="fa fa-car fa-1x" ></i>
 												</span>
@@ -1096,7 +1096,7 @@
 											</li>
 
 											<li role="presentation" class="disabled">
-												<a href="#complete" data-toggle="tab" aria-controls="complete" role="tab" title="Complete">
+												<a href="#complete" data-toggle="tab" aria-controls="complete" role="tab">
 												<span class="round-tab">
 													<i class="fa fa-shopping-cart fa-1x" ></i>
 												</span>
