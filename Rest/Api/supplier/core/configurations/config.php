@@ -76,6 +76,7 @@ define("GENERAL_IMAGES", "../../../../../control_center/assets/upload/general/")
 
 define("REST_API_PATH", "Rest/Api/");
 define("SUPPLIER_API_PATH", "supplier/api/");
+define("BOOKING_API_PATH", "booking/api/");
 
 define("API_USERNAME", "a");
 define("API_PASSWORD", "1");

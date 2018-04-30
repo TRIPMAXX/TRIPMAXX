@@ -1,0 +1,88 @@
+<?php
+/*
+=========================================================================================================================
+COPYRIGHT: NEOCODERZ TECHNOLOGIES
+PRODUCT NAME: TRAVELMAXX
+PAGE FUNCTIONALITY: CONSISTS OF WEBSITE GENERAL AND OVERALL CONFIGURATION SETTINGS AND DEFINATION OF CONSTANTS AND GLOBAL VARIABLES USED THROUGHOUT THE WEBSITE.
+=========================================================================================================================
+*/
+
+/*******************************************************************************
+DATABASE CONFIGURATION
+********************************************************************************/
+
+//ENTER THE NAME OF THE DATABASE SERVER YOU ARE CONNECTING TO. NORMALLY SET TO "localhost"
+define("DATABASE_SERVER", "localhost");
+
+//ENTER THE NAME OF YOUR DATABASE
+define("DATABASE_NAME", "tripmaxx_supplier");
+
+//ENTER THE USERNAME THAT CONNECTS TO YOUR DATABASE
+define("DATABASE_USERNAME", "root");
+
+//ENTER THE PASSWORD FOR YOUR DATABASE USER
+define("DATABASE_PASSWORD", "");
+
+//BASE PATH
+$website_url = ((isset($_SERVER['HTTPS']) ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'].'/').'tripmaxx/';
+$project_folder = '';
+
+/*******************************************************************************
+DEFINE PATH FOR FRONT END
+********************************************************************************/
+
+//ENTER THE DOMAIN NAME FOR YOUR APPLICATION
+define("DOMAIN_NAME_PATH", $website_url);
+
+/*******************************************************************************
+DEFINE PATH FOR CONTROL CENTER
+********************************************************************************/
+
+//URL FOR CONTROL CENTER
+define("DOMAIN_NAME_PATH_ADMIN", $website_url.$project_folder."control_center/");
+
+//URL FOR HOTEL CONTROL CENTER
+define("DOMAIN_NAME_PATH_SUPPLIER", $website_url.$project_folder."supplier_control_center/");
+
+//URL FOR CONTROL CENTER CSS
+define("SUPPLIER_CONTROL_CENTER_CSS_PATH", $website_url.$project_folder."supplier_control_center/assets/css/");
+
+//URL FOR CONTROL CENTER IMAGE
+define("SUPPLIER_CONTROL_CENTER_IMAGE_PATH", $website_url.$project_folder."supplier_control_center/assets/img/");
+
+//URL FOR CONTROL CENTER JS
+define("SUPPLIER_CONTROL_CENTER_JS_PATH", $website_url.$project_folder."supplier_control_center/assets/js/");
+
+//PATH FOR CONTROL CENTER CKEDITOR
+define("SUPPLIER_CONTROL_CENTER_CKEDITOR_PATH", $website_url.$project_folder."supplier_control_center/assets/ckeditor/");
+
+//PATH FOR CONTROL CENTER COMMON FILES
+define("SUPPLIER_CONTROL_CENTER_COMMON_FILE_PATH", "assets/common/");
+
+//DAFAULT PAGE TITLE
+define("DEFAULT_PAGE_TITLE", "TRIPMAXX - ");
+
+//DAFAULT PAGE TITLE CONTROL CENTER
+define("DEFAULT_PAGE_TITLE_CONTROL_CENTER_SUPPLIER", "SUPPLIER CONTROL CENTER - TRIPMAXX - ");
+
+//DEFINE PRODUCT NAME 
+define("PRODUCT_NAME", "TRIPMAXX");
+
+//DEFINE PASSWORD SECURITY SALT
+define("SECURITY_SALT", "neo@008790-09878900678905456@coderz%4844q0pdda!4545");
+define("API_USERNAME", "a");
+define("API_PASSWORD", "1");
+define("TOKEN", "");
+define("TOKEN_TIMEOUT", 20);
+define("TOKEN_SECRET_KEY", "tripmaxjwtkey");
+define("REST_API_PATH", "Rest/Api/");
+define("SUPPLIER_API_PATH", "supplier/api/");
+define("HOTEL_API_PATH", "hotel/api/");
+define("AGENT_API_PATH", "agent/api/");
+define("TOUR_API_PATH", "tour/api/");
+define("TRANSFER_API_PATH", "transfer/api/");
+define("BOOKING_API_PATH", "booking/api/");
+define("DMC_API_PATH", "dmc/api/");
+
+define("RECORD_PER_PAGE", 10);
+?>

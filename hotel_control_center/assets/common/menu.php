@@ -18,6 +18,8 @@
 				<i class="fa fa-angle-left pull-right"></i>
 				</a>
 				<ul class="treeview-menu">
+					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>create_new_attribute"><i class="fa fa-circle-o"></i> CREATE ATTRIBUTES</a></li>
+					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>attributes"><i class="fa fa-circle-o"></i> LISTS OF ATTRIBUTES</a></li>
 					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>edit_hotel"><i class="fa fa-circle-o"></i> EDIT HOTEL</a></li>
 					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>create_new_room"><i class="fa fa-circle-o"></i> CREATE NEW ROOM</a></li>
 					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>rooms"><i class="fa fa-circle-o"></i> LISTS OF ROOMS</a></li>

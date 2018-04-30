@@ -11,6 +11,7 @@ define( "TM_BOOKING_HOTEL_DETAILS", "tm_booking_hotel_details" );
 define( "TM_BOOKING_TOUR_DETAILS", "tm_booking_tour_details" );
 define( "TM_BOOKING_TRANSFER_DETAILS", "tm_booking_transfer_details" );
 define( "TM_BOOKING_DESTINATION", "tm_booking_destination" );
+define( "TM_BOOKING_ASSIGNED_SUPPLIER", "tm_booking_assigned_supplier" );
 define( "TM_COUNTRIES", "tm_countries" );
 define( "TM_STATES", "tm_states" );
 define( "TM_CITIES", "tm_cities" );

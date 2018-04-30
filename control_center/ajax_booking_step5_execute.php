@@ -100,6 +100,7 @@
 									"token_timeout"=>$autentication_data_supplier->results->token_timeout,
 									"token_generation_time"=>$autentication_data_supplier->results->token_generation_time
 								);
+								$post_data_supplier['data']['booking_id']=$booking_id;
 								$post_data_str_supplier=json_encode($post_data_supplier);
 								$ch = curl_init();
 								curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);

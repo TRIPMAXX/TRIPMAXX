@@ -1,11 +1,11 @@
 <?php
-require_once('../loader.inc');
+require_once('loader.inc');
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>DASHBOARD</title>
-	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
+	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER_HOTEL);?>DASHBOARD</title>
+	<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
 	<!-- JAVASCRIPT CODE -->
 	<script>
 		window.onload = function () {
@@ -83,11 +83,11 @@ require_once('../loader.inc');
 	<div class="wrapper">
 		
 		<!-- TOP HEADER -->
-		<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'header.php');?>		
+		<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'header.php');?>		
 		<!-- TOP HEADER -->
 
 		<!-- LEFT MENU -->
-		<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'menu.php');?>
+		<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'menu.php');?>
 		<!-- LEFT MENU -->
 		
 		<!-- BODY -->
@@ -213,7 +213,7 @@ require_once('../loader.inc');
 		<!-- BODY -->
 
 		<!-- FOOTER -->
-		<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'footer.php');?>
+		<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'footer.php');?>
 		<!-- FOOTER -->
 
 	</div>
