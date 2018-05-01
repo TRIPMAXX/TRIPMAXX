@@ -92,7 +92,7 @@
 													<th>Destination</th>
 													<th>Service Include</th>
 													<th>Total Quotation</th>
-													<th>Status</th>
+													<!-- <th>Status</th> -->
 													<th>Action</th>
 												</tr>
 											</thead>
@@ -116,7 +116,8 @@
 													$checkout_date = strtotime($book_val['checkout_date']);
 													$datediff = $checkout_date - $checkin_date;
 													$destination_str="";
-													$service_arr=array("Hotel");
+													//$service_arr=array("Hotel");
+													$service_arr=array();
 													foreach($book_val['booking_destination_list'] as $dest_key=>$dest_val):
 														if($destination_str!="")
 															$destination_str.=", ";
@@ -224,9 +225,9 @@
 													<td class=" "><?php echo $destination_str;?></td>
 													<td class=" "><?php echo implode(", ", $service_arr);?></td>
 													<td class=" "><?php echo $book_val['currency_code'].number_format($book_val['total_amount'], 2, ".", ",");?></td>
-													<td class=" ">
+													<!-- <td class=" ">
 														<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $book_val['status']==1 ? "btn-success" : "btn-warning";?>"><?= $book_val['status']==1 ? "Completed" : "Pending";?></a>
-													</td>
+													</td> -->
 													<td class=" " data-title="Action">
 														<a href = "<?php echo(DOMAIN_NAME_PATH_SUPPLIER);?>view_booking?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "View Booking Details"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
 													</td>

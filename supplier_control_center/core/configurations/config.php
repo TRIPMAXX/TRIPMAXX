@@ -70,6 +70,7 @@ define("PRODUCT_NAME", "TRIPMAXX");
 
 //DEFINE PASSWORD SECURITY SALT
 define("SECURITY_SALT", "neo@008790-09878900678905456@coderz%4844q0pdda!4545");
+define("AUTO_LOGIN_SECURITY_KEY", "hjre658@37#99!");
 define("API_USERNAME", "a");
 define("API_PASSWORD", "1");
 define("TOKEN", "");
@@ -85,4 +86,6 @@ define("BOOKING_API_PATH", "booking/api/");
 define("DMC_API_PATH", "dmc/api/");
 
 define("RECORD_PER_PAGE", 10);
+
+define("FROM_EMAIL", "noreply@neocoderztechnologies.com");
 ?>

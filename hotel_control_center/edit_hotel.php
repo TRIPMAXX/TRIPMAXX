@@ -296,7 +296,7 @@
 											?>
 												<div style="display:inline-block;position:relative;">
 													<img src = "<?php echo(HOTEL_IMAGE_PATH.$img_val);?>" border = "0" alt = "" style="width:150px;height:100px;margin:1px;" onerror="this.remove;"/>
-													<img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>delete.png" border = "0" alt = "" style="width:12px;height:18px;position:absolute;top:5px;right:10px;cursor:pointer;" onclick="remove_img($(this), '<?php echo $img_val;?>', <?php echo $hotel_data['id'];?>)"/>
+													<img src = "<?php echo(HOTEL_CONTROL_CENTER_IMAGE_PATH);?>delete.png" border = "0" alt = "" style="width:12px;height:18px;position:absolute;top:5px;right:10px;cursor:pointer;" onclick="remove_img($(this), '<?php echo $img_val;?>', <?php echo $hotel_data['id'];?>)"/>
 												</div>
 											<?php
 													endif;

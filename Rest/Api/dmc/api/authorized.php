@@ -13,7 +13,7 @@
 		$issuedAt   = time();
 		$notBefore  = $issuedAt;             //Adding 0 seconds
 		$expire     = $notBefore + TOKEN_TIMEOUT;            // Adding 60 seconds
-		$serverName = DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH;
+		$serverName = DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH;
 		$file_name=$issuedAt."_".rand().".txt";
 		$data = [
 			'iat'  => $issuedAt,         // Issued at: time when the token was generated

@@ -68,7 +68,13 @@ class supplier_control_center extends tools {
 	* @return: Json with success flag.
 	* Used for Webservice.
 	*/
-	public static function supplier_auto_login() {
+	public static function supplier_auto_login($supplier_id) {
+		if($login_check = tools::find("first", TM_SUPPLIER, $value='*', "WHERE id=:id", array(":id"=>$supplier_id))) {
+			$_SESSION['SESSION_DATA_SUPPLIER'] = $login_check;
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 ?>

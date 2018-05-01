@@ -4,7 +4,7 @@
 	$white_list_array = array('hotel_id', 'room_type', 'room_images', 'room_description', 'amenities', 'price', 'number_of_rooms', 'start_date', 'end_date', 'price_per_night', 'status', 'token', 'id', 'btn_submit', 'amenities_arr');
 	$verify_token = "create_new_room";
 	if(isset($_SESSION['SESSION_DATA_HOTEL']['id']) && $_SESSION['SESSION_DATA_HOTEL']['id']!=""):		
-			$attribute_list = tools::find("all", TM_ATTRIBUTES, '*', "WHERE status=:status AND type=:type ".$ext_where." ORDER BY serial_number", array(":status"=>1, ":type"=>"Room"));
+			$attribute_list = tools::find("all", TM_ATTRIBUTES, '*', "WHERE status=:status AND type=:type ORDER BY serial_number", array(":status"=>1, ":type"=>"Room"));
 			$attribute_data=array();
 			if(!empty($attribute_list)):
 				$attribute_data=$attribute_list;			

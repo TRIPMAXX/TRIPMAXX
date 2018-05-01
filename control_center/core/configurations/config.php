@@ -43,6 +43,8 @@ define("DOMAIN_NAME_PATH_ADMIN", $website_url.$project_folder."control_center/")
 
 //URL FOR HOTEL CONTROL CENTER
 define("DOMAIN_NAME_PATH_HOTEL", $website_url.$project_folder."hotel_control_center/");
+//URL FOR SUPPLIER CONTROL CENTER
+define("DOMAIN_NAME_PATH_SUPPLIER", $website_url.$project_folder."supplier_control_center/");
 
 //URL FOR CONTROL CENTER CSS
 define("CONTROL_CENTER_CSS_PATH", $website_url.$project_folder."control_center/assets/css/");
@@ -70,6 +72,7 @@ define("PRODUCT_NAME", "TRIPMAXX");
 
 //DEFINE PASSWORD SECURITY SALT
 define("SECURITY_SALT", "neo@008790-09878900678905456@coderz%4844q0pdda!4545");
+define("AUTO_LOGIN_SECURITY_KEY", "hjre658@37#99!");
 define("PROMO_DOC", "assets/upload/promotional_offer/");
 define("CMS_BANNER", "assets/upload/cms_banner/");
 define("GENERAL_IMAGES", "assets/upload/general/");

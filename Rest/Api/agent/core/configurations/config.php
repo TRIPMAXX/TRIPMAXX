@@ -70,6 +70,7 @@ define("PRODUCT_NAME", "TRIPMAXX");
 
 //DEFINE PASSWORD SECURITY SALT
 define("SECURITY_SALT", "neo@008790-09878900678905456@coderz%4844q0pdda!4545");
+define("AUTO_LOGIN_SECURITY_KEY", "hjre658@37#99!");
 define("PROMO_DOC", "../../../../../control_center/assets/upload/promotional_offer/");
 define("CMS_BANNER", "../../../../../control_center/assets/upload/cms_banner/");
 define("GENERAL_IMAGES", "../../../../../control_center/assets/upload/general/");
@@ -78,10 +79,14 @@ define("AGENT_IMAGES", "../../../../../agent_control_center/assets/upload/agent/
 
 define("REST_API_PATH", "Rest/Api/");
 define("AGENT_API_PATH", "agent/api/");
+define("BOOKING_API_PATH", "booking/api/");
+define("DMC_API_PATH", "dmc/api/");
 
 define("API_USERNAME", "a");
 define("API_PASSWORD", "1");
 define("TOKEN", "");
 define("TOKEN_TIMEOUT", 1000);
 define("TOKEN_SECRET_KEY", "tripmaxjwtkey");
+
+define("FROM_EMAIL", "noreply@neocoderztechnologies.com");
 ?>

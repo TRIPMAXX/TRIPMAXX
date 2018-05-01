@@ -12,9 +12,9 @@
 							<p>Admin<small>Last Login: 03 Jan 2017</small></p>
 						</li>
 						<li class="user-footer">
-							<div class="pull-left">
+							<!-- <div class="pull-left">
 								<a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>profile" class="btn btn-default btn-flat">Profile</a>
-							</div>
+							</div> -->
 							<div class="pull-right">
 								<a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>logout" class="btn btn-default btn-flat">Sign out</a>
 							</div>

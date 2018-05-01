@@ -1,6 +1,6 @@
 <?php
 	require_once('loader.inc');
-	tools::module_validation_check(@$_SESSION['SESSION_DATA_SUPPLIER']['id'], DOMAIN_NAME_PATH_SUPPLIER.'login');
+	tools::module_validation_check(@$_SESSION['SESSION_DATA_HOTEL']['id'], DOMAIN_NAME_PATH_HOTEL.'login');
 	if(isset($_GET['booking_id']) && $_GET['booking_id']!=""):
 		$autentication_data_booking=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."authorized.php"));
 		if(isset($autentication_data_booking->status)):
@@ -11,14 +11,14 @@
 					"token_generation_time"=>$autentication_data_booking->results->token_generation_time
 				);
 				$post_data_booking['data']['booking_id']=base64_decode($_GET['booking_id']);
-				$post_data_booking['data']['supplier_id']=$_SESSION['SESSION_DATA_SUPPLIER']['id'];
+				$post_data_booking['data']['hotel_id']=$_SESSION['SESSION_DATA_HOTEL']['id'];
 				$post_data_str_booking=json_encode($post_data_booking);
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 				curl_setopt($ch, CURLOPT_HEADER, false);
 				curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
 				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-				curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."booking/supplier-data.php");
+				curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."booking/hotel-data.php");
 				curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str_booking);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 				$return_data_booking = curl_exec($ch);
@@ -35,25 +35,27 @@
 				endif;
 				if(isset($_POST) && !empty($_POST))
 				{
-					$post_data_booking['data']['status']=$_POST['booking_supplier_approval_status'];
-					$post_data_booking['data']['id']=$booking_details_list['booking_supplier_approval_status']['id'];
+					$post_data_booking['data']['status']=$_POST['booking_hotel_approval_status'];
+					$post_data_booking['data']['hotel_id']=$_SESSION['SESSION_DATA_HOTEL']['id'];
+					$post_data_booking['data']['booking_id']=$booking_details_list['id'];
 					$post_data_str_booking=json_encode($post_data_booking);
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 					curl_setopt($ch, CURLOPT_HEADER, false);
 					curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
 					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-					curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."booking/update-booking-supplier.php");
+					curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."booking/update-booking-hotel.php");
 					curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str_booking);
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 					$return_data_booking = curl_exec($ch);
 					curl_close($ch);
+					print_r($return_data_booking);
 					$return_data_arr_booking_update=json_decode($return_data_booking, true);
 					if(!isset($return_data_arr_booking_update['status'])):
 						$_SESSION['SET_TYPE'] = 'error';
 						$_SESSION['SET_FLASH']="Some error has been occure during execution.";
 					elseif($return_data_arr_booking_update['status']=="success"):
-						$autentication_data_dmc=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."authorized.php"));
+						/*$autentication_data_dmc=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."authorized.php"));
 						if(isset($autentication_data_dmc->status)):
 							if($autentication_data_dmc->status=="success"):
 								$post_data_dmc['token']=array(
@@ -119,10 +121,10 @@
 									endif;
 								endif;
 							endif;
-						endif;
+						endif;*/
 						$_SESSION['SET_TYPE'] = 'success';
 						$_SESSION['SET_FLASH']=$return_data_arr_booking_update['msg'];
-						header("location:".DOMAIN_NAME_PATH_SUPPLIER.'view_booking?booking_id='.$_GET['booking_id']);
+						header("location:".DOMAIN_NAME_PATH_HOTEL.'view_booking?booking_id='.$_GET['booking_id']);
 						exit;
 					else:
 						$_SESSION['SET_TYPE'] = 'error';
@@ -144,13 +146,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER_SUPPLIER);?>VIEW BOOKING</title>
-	<?php require_once(SUPPLIER_CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
+	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER_HOTEL);?>VIEW BOOKING</title>
+	<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
 	<script type="text/javascript">
 	<!--
 		$(function(){
-			$("#booking_supplier_approval_status").change(function(){
-				$("#booking_supplier_approval_status_form").submit();
+			$("#booking_hotel_approval_status").change(function(){
+				$("#booking_hotel_approval_status_form").submit();
 			});
 		});
 	//-->
@@ -159,11 +161,11 @@
 <body class="skin-purple">
 	<div class="wrapper">
 		<!-- TOP HEADER -->
-		<?php require_once(SUPPLIER_CONTROL_CENTER_COMMON_FILE_PATH.'header.php');?>		
+		<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'header.php');?>		
 		<!-- TOP HEADER -->
 
 		<!-- LEFT MENU -->
-		<?php require_once(SUPPLIER_CONTROL_CENTER_COMMON_FILE_PATH.'menu.php');?>
+		<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'menu.php');?>
 		<!-- LEFT MENU -->
 		
 		<!-- BODY -->
@@ -171,7 +173,7 @@
 			<section class="content-header">
 				<h1>View Booking</h1>
 				<ol class="breadcrumb">
-					<li><a href="<?php echo(DOMAIN_NAME_PATH_SUPPLIER);?>dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
+					<li><a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
 					<li class="active">View Booking</li>
 				</ol>
 			</section>
@@ -198,6 +200,7 @@
 							$datediff = $checkout_date - $checkin_date;
 							$destination_str="";
 							$service_arr=array("Hotel");
+							$hotel_booking_status=0;
 							foreach($booking_details_list['booking_destination_list'] as $dest_key=>$dest_val):
 								if($destination_str!="")
 									$destination_str.=", ";
@@ -206,6 +209,13 @@
 									array_push($service_arr, "Tour");
 								if(isset($dest_val['booking_transfer_list']) && !empty($dest_val['booking_transfer_list']) && !in_array("Transfer", $service_arr))
 									array_push($service_arr, "Transfer");
+								if(isset($dest_val['booking_hotel_list']) && !empty($dest_val['booking_hotel_list'])):
+									foreach($dest_val['booking_hotel_list'] as $hotel_key=>$hotel_val):
+										if($hotel_val['hotel_id']==$_SESSION['SESSION_DATA_HOTEL']['id']):
+											$hotel_booking_status=$hotel_val['status'];
+										endif;
+									endforeach;
+								endif;
 							endforeach;
 						?>
 						<div class="box box-primary">
@@ -227,11 +237,11 @@
 										<td style = "text-align:center;"><?php echo tools::module_date_format($booking_details_list['checkin_date'])." - ".tools::module_date_format($booking_details_list['checkout_date']);?></td>
 										<td style = "text-align:center;">
 											<?php
-											if(isset($booking_details_list['booking_supplier_approval_status']) && isset($booking_details_list['booking_supplier_approval_status']['status']) && $booking_details_list['booking_supplier_approval_status']['status']==0)
+											if(isset($hotel_booking_status) && $hotel_booking_status==0)
 											{
 											?>
-											<form method="post" name="booking_supplier_approval_status_form" id="booking_supplier_approval_status_form" action="">
-												<select name="booking_supplier_approval_status" id="booking_supplier_approval_status" class="btn-warning">
+											<form method="post" name="booking_hotel_approval_status_form" id="booking_hotel_approval_status_form" action="">
+												<select name="booking_hotel_approval_status" id="booking_hotel_approval_status" class="btn-warning">
 													<option value="0" class="btn-warning">Pending</option>
 													<option value="1" class="btn-success">Accept</option>
 													<option value="2" class="btn-danger">Reject</option>
@@ -239,13 +249,13 @@
 											</form>
 											<?php
 											}
-											elseif(isset($booking_details_list['booking_supplier_approval_status']) && isset($booking_details_list['booking_supplier_approval_status']['status']) && $booking_details_list['booking_supplier_approval_status']['status']==1)
+											elseif(isset($hotel_booking_status) && $hotel_booking_status==1)
 											{
 											?>
 											<span style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" class="btn-success">Accepted</span>
 											<?php
 											}
-											elseif(isset($booking_details_list['booking_supplier_approval_status']) && isset($booking_details_list['booking_supplier_approval_status']['status']) && $booking_details_list['booking_supplier_approval_status']['status']==2)
+											elseif(isset($hotel_booking_status) && $hotel_booking_status==2)
 											{
 											?>
 											<span style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" class="btn-danger">Rejected</span>
@@ -294,7 +304,7 @@
 														if(isset($return_data_arr_hotel['find_hotel']) && isset($return_data_arr_hotel['find_room'])):
 															ob_start();
 														?>
-															<tr class="odd">
+															<tr class="odd" <?php echo($hotel_val['hotel_id']==$_SESSION['SESSION_DATA_HOTEL']['id'] ? "" : 'style="display:none"');?>>
 																<td style = "text-align:left;"><?php echo $return_data_arr_hotel['find_hotel']['hotel_name'];?></td>
 																<td style = "text-align:center;">
 																	<?= $return_data_arr_hotel['find_room']['room_type'];?>
@@ -448,7 +458,7 @@
 							endif;
 							?>
 							<?php
-							/*if(isset($hotel_html) && $hotel_html!=""):
+							if(isset($hotel_html) && $hotel_html!=""):
 							?>
 							<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
 								<thead>
@@ -467,10 +477,10 @@
 								</tbody>
 							</table>
 							<?php
-							endif;*/
+							endif;
 							?>
 							<?php
-							if(isset($tour_html) && $tour_html!=""):
+							/*if(isset($tour_html) && $tour_html!=""):
 							?>
 							<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
 								<thead>
@@ -483,10 +493,10 @@
 								</tbody>
 							</table>
 							<?php
-							endif;
+							endif;*/
 							?>
 							<?php
-							if(isset($transfer_html) && $transfer_html!=""):
+							/*if(isset($transfer_html) && $transfer_html!=""):
 							?>
 							<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
 								<thead>
@@ -499,7 +509,7 @@
 								</tbody>
 							</table>
 							<?php
-							endif;
+							endif;*/
 							?>
 							<!-- <table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
 								<thead>
@@ -571,7 +581,7 @@
 		<!-- BODY -->
 
         <!-- FOOTER -->
-		<?php require_once(SUPPLIER_CONTROL_CENTER_COMMON_FILE_PATH.'footer.php');?>
+		<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'footer.php');?>
 		<!-- FOOTER -->
 
 	</div>

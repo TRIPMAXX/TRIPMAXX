@@ -70,6 +70,7 @@ define("PRODUCT_NAME", "TRIPMAXX");
 
 //DEFINE PASSWORD SECURITY SALT
 define("SECURITY_SALT", "neo@008790-09878900678905456@coderz%4844q0pdda!4545");
+define("AUTO_LOGIN_SECURITY_KEY", "hjre658@37#99!");
 define("PROMO_DOC", "assets/upload/promotional_offer/");
 define("CMS_BANNER", "assets/upload/cms_banner/");
 define("GENERAL_IMAGES", "assets/upload/general/");
@@ -81,6 +82,8 @@ define("HOTEL_API_PATH", "hotel/api/");
 define("AGENT_API_PATH", "agent/api/");
 define("TOUR_API_PATH", "tour/api/");
 define("TRANSFER_API_PATH", "transfer/api/");
+define("BOOKING_API_PATH", "booking/api/");
+define("DMC_API_PATH", "dmc/api/");
 
 define("MAX_ROOM_NO", 10);
 define("MAX_ADULT_NO", 10);
