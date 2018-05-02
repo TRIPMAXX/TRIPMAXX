@@ -14,6 +14,8 @@
 		endif;
 		if(!empty($booking_list)):
 			foreach($booking_list as $booking_key=>$booking_val):
+				$booking_supplier_list=tools::find("all", TM_BOOKING_ASSIGNED_SUPPLIER, '*', "WHERE booking_master_id=:booking_master_id ORDER BY id ASC ", array(":booking_master_id"=>$booking_val['id']));
+				$booking_list[$booking_key]['booking_supplier_list']=$booking_supplier_list;
 				$booking_destination_list = tools::find("all", TM_BOOKING_DESTINATION." as b, ".TM_COUNTRIES." as co, ".TM_CITIES." as ci", 'b.*, co.name as co_name, ci.name as ci_name', "WHERE b.country_id=co.id AND b.city_id=ci.id AND booking_master_id=:booking_master_id ", array(":booking_master_id"=>$booking_val['id']));
 				if(!empty($booking_destination_list)):
 					foreach($booking_destination_list as $destination_key=>$destination_val):

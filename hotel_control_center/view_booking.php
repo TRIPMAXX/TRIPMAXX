@@ -49,13 +49,13 @@
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 					$return_data_booking = curl_exec($ch);
 					curl_close($ch);
-					print_r($return_data_booking);
+					//print_r($return_data_booking);
 					$return_data_arr_booking_update=json_decode($return_data_booking, true);
 					if(!isset($return_data_arr_booking_update['status'])):
 						$_SESSION['SET_TYPE'] = 'error';
 						$_SESSION['SET_FLASH']="Some error has been occure during execution.";
 					elseif($return_data_arr_booking_update['status']=="success"):
-						/*$autentication_data_dmc=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."authorized.php"));
+						$autentication_data_dmc=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."authorized.php"));
 						if(isset($autentication_data_dmc->status)):
 							if($autentication_data_dmc->status=="success"):
 								$post_data_dmc['token']=array(
@@ -64,6 +64,7 @@
 									"token_generation_time"=>$autentication_data_dmc->results->token_generation_time
 								);
 								$post_data_dmc['data']['booking_details_list']=$booking_details_list;
+								$post_data_dmc['data']['email_template_id']=16;
 								$post_data_str_dmc=json_encode($post_data_dmc);
 								$ch = curl_init();
 								curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -76,6 +77,7 @@
 								$return_data_dmc = curl_exec($ch);
 								curl_close($ch);
 								$return_data_arr_dmc=json_decode($return_data_dmc, true);
+								//print_r($return_data_arr_dmc);
 								if(!isset($return_data_arr_dmc['status'])):
 									//$_SESSION['SET_TYPE'] = 'error';
 									//$_SESSION['SET_FLASH']="Some error has been occure during execution.";
@@ -97,6 +99,7 @@
 										"token_generation_time"=>$autentication_data_agent->results->token_generation_time
 									);
 									$post_data_agent['data']['booking_details_list']=$booking_details_list;
+									$post_data_agent['data']['email_template_id']=16;
 									$post_data_str_agent=json_encode($post_data_agent);
 									$ch = curl_init();
 									curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -108,7 +111,7 @@
 									curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 									$return_data_agent = curl_exec($ch);
 									curl_close($ch);
-									//print_r($return_data_agent);exit;
+									//print_r($return_data_agent);
 									$return_data_arr_agent=json_decode($return_data_agent, true);
 									if(!isset($return_data_arr_agent['status'])):
 										//$_SESSION['SET_TYPE'] = 'error';
@@ -121,7 +124,7 @@
 									endif;
 								endif;
 							endif;
-						endif;*/
+						endif;
 						$_SESSION['SET_TYPE'] = 'success';
 						$_SESSION['SET_FLASH']=$return_data_arr_booking_update['msg'];
 						header("location:".DOMAIN_NAME_PATH_HOTEL.'view_booking?booking_id='.$_GET['booking_id']);

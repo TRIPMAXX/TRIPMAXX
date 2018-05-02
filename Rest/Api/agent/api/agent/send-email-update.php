@@ -17,6 +17,7 @@
 						"token_timeout"=>$autentication_data_dmc->results->token_timeout,
 						"token_generation_time"=>$autentication_data_dmc->results->token_generation_time
 					);
+					$post_data_dmc['data']['email_template_id']=$server_data['data']['email_template_id'];
 					$post_data_str_dmc=json_encode($post_data_dmc);
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);

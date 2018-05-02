@@ -68,7 +68,13 @@ class hotel_control_center extends tools {
 	* @return: Json with success flag.
 	* Used for Webservice.
 	*/
-	public static function hotel_auto_login() {
+	public static function hotel_auto_login($hotel_id) {
+		if($login_check = tools::find("first", TM_HOTELS, $value='*', "WHERE id=:id", array(":id"=>$hotel_id))) {
+			$_SESSION['SESSION_DATA_HOTEL'] = $login_check;
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 ?>

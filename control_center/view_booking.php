@@ -28,6 +28,7 @@
 					$data['msg']="Some error has been occure during execution.";
 				elseif($return_data_arr_booking['status']=="success"):
 					$booking_details_list=$return_data_arr_booking['results'][0];
+					//print_r($booking_details_list);
 				else:
 					$data['status'] = 'error';
 					$data['msg'] = $return_data_arr_booking['msg'];
@@ -174,6 +175,19 @@
 																	$agent_commision=($hotel_val['price'] * $hotel_val['agent_markup_percentage'])/100;
 																	echo $booking_details_list['currency_code'].number_format($hotel_val['price']+$agent_commision, 2, ".", ",");
 																	$hotel_price=$hotel_price+($hotel_val['price']+$agent_commision);
+																	?>
+																</td>
+																<td style = "text-align:center;">
+																	<?php
+																	if($hotel_val['status']==0):
+																		echo '<span style="padding: 3px;" class="btn-warning">Pending</span>';
+																	elseif($hotel_val['status']==1):
+																		echo '<span style="padding: 3px;" class="btn-success">Action</span>';
+																	elseif($hotel_val['status']==2):
+																		echo '<span style="padding: 3px;" class="btn-danger">Reject</span>';
+																	else:
+																		echo 'N/A';
+																	endif;
 																	?>
 																</td>
 															</tr>
@@ -325,6 +339,7 @@
 										<th style = "text-align:center;">Rooms</th>
 										<th style = "text-align:center;">Nights</th>
 										<th style = "text-align:center;">Price Per Night</th>
+										<th style = "text-align:center;">Approval Status</th>
 									</tr>
 								</thead>
 								<tbody aria-relevant="all" aria-live="polite" role="alert">
@@ -332,6 +347,150 @@
 								</tbody>
 							</table>
 							<?php
+							endif;
+							?>
+							<?php
+							if(((isset($tour_html) && $tour_html!="") || (isset($transfer_html) && $transfer_html!="")) && isset($booking_details_list['booking_supplier_list']) && !empty($booking_details_list['booking_supplier_list'])):
+								$is_rejected=false;
+								$not_in_supplier_ids=array();
+							?>
+							<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
+								<thead>
+									<tr role="row">
+										<th>Supplier Name</th>
+										<th>Company Name</th>
+										<th>Email</th>
+										<th>Approval Status</th>
+										<th>Modification Date</th>
+									</tr>
+								</thead>
+								<tbody aria-relevant="all" aria-live="polite" role="alert">
+							<?php
+								foreach($booking_details_list['booking_supplier_list'] as $supplier_key=>$supplier_val):
+									$autentication_data_supplier=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."authorized.php"));
+									if(isset($autentication_data_supplier->status)):
+										if($autentication_data_supplier->status=="success"):
+											$post_data_supplier['token']=array(
+												"token"=>$autentication_data_supplier->results->token,
+												"token_timeout"=>$autentication_data_supplier->results->token_timeout,
+												"token_generation_time"=>$autentication_data_supplier->results->token_generation_time
+											);
+											$post_data_supplier['data']['supplier_id']=base64_encode($supplier_val['supplier_id']);
+											$post_data_str_supplier=json_encode($post_data_supplier);
+											$ch = curl_init();
+											curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+											curl_setopt($ch, CURLOPT_HEADER, false);
+											curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+											curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+											curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."supplier/read.php");
+											curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str_supplier);
+											curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+											$return_data_supplier = curl_exec($ch);
+											curl_close($ch);
+											$return_data_arr_supplier=json_decode($return_data_supplier, true);
+											if(!isset($return_data_arr_supplier['status'])):
+												//$data['status'] = 'error';
+												//$data['msg']="Some error has been occure during execution.";
+											elseif($return_data_arr_supplier['status']=="success"):
+												$supplier_return_data=$return_data_arr_supplier['results'];
+											else:
+												//$data['status'] = 'error';
+												//$data['msg'] = $return_data_arr_supplier['msg'];
+											endif;
+										endif;
+									else:
+										//$data['status'] = 'error';
+										//$data['msg'] = $autentication_data_supplier->msg;
+									endif;
+							?>
+									<tr>
+										<td><?php echo $supplier_return_data['first_name']." ".$supplier_return_data['last_name'];?></td>
+										<td><?php echo $supplier_return_data['company_name'];?></td>
+										<td><?php echo $supplier_return_data['email_address'];?></td>
+										<td>
+											<?php
+											if($supplier_val['status']==0):
+												echo '<span style="padding: 3px;" class="btn-warning">Pending</span>';
+											elseif($supplier_val['status']==1):
+												echo '<span style="padding: 3px;" class="btn-success">Acccepted</span>';
+											elseif($supplier_val['status']==2):
+												echo '<span style="padding: 3px;" class="btn-danger">Rejected</span>';
+											else:
+												echo 'N/A';
+											endif;
+											?>
+										</td>
+										<td><?php echo tools::module_date_format($supplier_val['last_updated'], "Y-m-d H:i:s");?></td>
+									</tr>
+							<?php
+									array_push($not_in_supplier_ids, $supplier_return_data['id']);
+									if($supplier_val['status']==2):
+										$is_rejected=true;
+									endif;
+								endforeach;
+							?>
+								</tbody>
+							</table>
+							<?php
+								if($is_rejected==true):
+									$not_in_supplier_ids_str=implode(",", $not_in_supplier_ids);
+									$autentication_data_other_supplier=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."authorized.php"));
+									if(isset($autentication_data_other_supplier->status)):
+										if($autentication_data_other_supplier->status=="success"):
+											$post_data_other_supplier['token']=array(
+												"token"=>$autentication_data_other_supplier->results->token,
+												"token_timeout"=>$autentication_data_other_supplier->results->token_timeout,
+												"token_generation_time"=>$autentication_data_other_supplier->results->token_generation_time
+											);
+											$post_data_other_supplier['data']['not_in_supplier_ids_str']=$not_in_supplier_ids_str;
+											$post_data_str_other_supplier=json_encode($post_data_other_supplier);
+											$ch = curl_init();
+											curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+											curl_setopt($ch, CURLOPT_HEADER, false);
+											curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+											curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+											curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."supplier/read.php");
+											curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str_other_supplier);
+											curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+											$return_data_other_supplier = curl_exec($ch);
+											curl_close($ch);
+											$return_data_arr_other_supplier=json_decode($return_data_other_supplier, true);
+											if(!isset($return_data_arr_other_supplier['status'])):
+												//$data['status'] = 'error';
+												//$data['msg']="Some error has been occure during execution.";
+											elseif($return_data_arr_other_supplier['status']=="success"):
+												$other_supplier_list=$return_data_arr_other_supplier['results'];
+											else:
+												//$data['status'] = 'error';
+												//$data['msg'] = $return_data_arr_other_supplier['msg'];
+											endif;
+										endif;
+									else:
+										//$data['status'] = 'error';
+										//$data['msg'] = $autentication_data_other_supplier->msg;
+									endif;
+							?>
+							<div class="" style="margin:10px 0px;border: 1px solid #000;padding: 10px 0px;">
+								<form class="form-inline " action="">
+									<div class="col-md-3 form-group">
+										<label for="email">Select Other Supplier:</label>
+									</div>
+									<div class="col-md-3 form-group">
+										<select class="form-control" name="other_supplier_id" id="other_supplier_id">
+										<?php
+										foreach($other_supplier_list as $other_key=>$other_val):
+										?>
+											<option value="<?php echo $other_val['id'];?>"><?php echo $other_val['first_name']." ".$other_val['last_name']." (".$other_val['supplier_code'].")";?></option>
+										<?php
+										endforeach;
+										?>
+										</select>
+									</div>
+									<button type="submit" class="btn btn-primary">Submit</button>
+								</form>
+							</div>
+							<?php
+								endif;
 							endif;
 							?>
 							<?php

@@ -62,6 +62,7 @@
 									"token_generation_time"=>$autentication_data_dmc->results->token_generation_time
 								);
 								$post_data_dmc['data']['booking_details_list']=$booking_details_list;
+								$post_data_dmc['data']['email_template_id']=15;
 								$post_data_str_dmc=json_encode($post_data_dmc);
 								$ch = curl_init();
 								curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -95,6 +96,7 @@
 										"token_generation_time"=>$autentication_data_agent->results->token_generation_time
 									);
 									$post_data_agent['data']['booking_details_list']=$booking_details_list;
+									$post_data_agent['data']['email_template_id']=15;
 									$post_data_str_agent=json_encode($post_data_agent);
 									$ch = curl_init();
 									curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);

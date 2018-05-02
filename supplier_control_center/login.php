@@ -6,7 +6,7 @@ if(isset($_SESSION['SESSION_DATA_SUPPLIER']) && !empty($_SESSION['SESSION_DATA_S
 {
 	$_SESSION['SET_TYPE'] = 'error';
 	$_SESSION['SET_FLASH'] = 'You are already logged in.';
-	tools::module_redirect(DOMAIN_NAME_PATH_SUPPLIER.'dashboard');
+	tools::module_redirect(DOMAIN_NAME_PATH_SUPPLIER.'bookings');
 	exit;
 }
 if(isset($_GET['auto_login_id']) && $_GET['auto_login_id']!="")
@@ -14,7 +14,7 @@ if(isset($_GET['auto_login_id']) && $_GET['auto_login_id']!="")
 	session_destroy();
 	session_start();
 	$auto_login_id=base64_decode($_GET['auto_login_id']);
-	$supplier_id=str_replace(array(SECURITY_SALT, AUTO_LOGIN_SECURITY_KEY), array("", ""), $auto_login_id);
+	$supplier_id=str_replace(array(SECURITY_SALT, "supplier", AUTO_LOGIN_SECURITY_KEY), array("", "", ""), $auto_login_id);
 	$object_control_center = new supplier_control_center();
 	if($object_control_center->supplier_auto_login($supplier_id)) {
 		if($_SESSION['SESSION_DATA_SUPPLIER']['status'] == 1) {

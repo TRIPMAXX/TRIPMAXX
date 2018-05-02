@@ -266,7 +266,7 @@ class tools {
 	* @returns formatted form filed value.
 	*/
 	public static function stripcleantohtml($s) {
-		return htmlentities(trim(strip_tags(stripslashes($s))), ENT_NOQUOTES, "UTF-8");
+		return htmlentities(trim(strip_tags(addslashes($s))), ENT_NOQUOTES, "UTF-8");
 	}
 
 	/*

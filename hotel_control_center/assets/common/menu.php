@@ -9,7 +9,6 @@
 			<li class="<?php echo(($current_page_name == 'create_new_booking.php' || $current_page_name == 'bookings.php' || $current_page_name == 'edit_booking.php') ? 'active' : '');?>">
 				<a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>bookings">
 				<span>LISTS OF BOOKINGS</span>
-				<i class="fa fa-angle-left pull-right"></i>
 				</a>
 			</li>
 			<li class="<?php echo(($current_page_name == 'create_new_attribute.php' || $current_page_name == 'attributes.php' || $current_page_name == 'edit_attribute.php' || $current_page_name == 'create_new_hotel.php' || $current_page_name == 'hotels.php' || $current_page_name == 'edit_hotel.php' || $current_page_name == 'rooms.php' || $current_page_name == 'create_new_room.php' || $current_page_name == 'edit_room.php' || $current_page_name == 'view_hotel_details.php') ? 'active' : '');?>">
