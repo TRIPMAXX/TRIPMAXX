@@ -115,6 +115,7 @@
 		header("location:tours");
 		exit;
 	endif;
+	$ajax_tour_id=base64_decode($_GET['tour_id']);
 ?>
 <!DOCTYPE html>
 <html>
@@ -133,7 +134,7 @@
 			type:"post",
 			data:{
 				offer_id:offer_id,
-				tour_id:<?php echo base64_decode($_GET['tour_id']);?>
+				tour_id:<?php echo $ajax_tour_id;?>
 			},
 			beforeSend:function(){
 				//cur.removeClass("btn-success").removeClass("btn-danger");

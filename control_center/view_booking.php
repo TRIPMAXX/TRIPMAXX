@@ -24,19 +24,186 @@
 				curl_close($ch);
 				$return_data_arr_booking=json_decode($return_data_booking, true);
 				if(!isset($return_data_arr_booking['status'])):
-					$data['status'] = 'error';
-					$data['msg']="Some error has been occure during execution.";
+					$_SESSION['SET_TYPE'] = 'error';
+					$_SESSION['SET_FLASH']="Some error has been occure during execution.";
 				elseif($return_data_arr_booking['status']=="success"):
 					$booking_details_list=$return_data_arr_booking['results'][0];
+					if(isset($_POST) && isset($_POST['other_supplier_id']) && $_POST['other_supplier_id']!="")
+					{
+						$post_data_booking['data']['supplier_id']=$_POST['other_supplier_id'];
+						$post_data_str_booking=json_encode($post_data_booking);
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+						curl_setopt($ch, CURLOPT_HEADER, false);
+						curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+						curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+						curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."booking/update-booking-supplier.php");
+						curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str_booking);
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+						$return_data_update_booking = curl_exec($ch);
+						curl_close($ch);
+						$return_data_arr_update_booking=json_decode($return_data_update_booking, true);
+						if(!isset($return_data_arr_update_booking['status'])):
+							$_SESSION['SET_TYPE'] = 'error';
+							$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+						elseif($return_data_arr_update_booking['status']=="success"):
+							$dmc_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>23, ':status'=>1));
+							if(!empty($dmc_email_template)):
+								$dmc_url_details='<a href="'.DOMAIN_NAME_PATH_ADMIN.'login?auto_login_id='.base64_encode(SECURITY_SALT.$_SESSION['SESSION_DATA']['id']."dmc".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_id).'" title="View Order">'.DOMAIN_NAME_PATH_ADMIN.'login?auto_login_id='.base64_encode(SECURITY_SALT.$_SESSION['SESSION_DATA']['id']."dmc".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_id).'</a>';
+								$dmc_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($_SESSION['SESSION_DATA']['first_name'], $_SESSION['SESSION_DATA']['last_name'], $dmc_url_details), $dmc_email_template['template_body']);
+								@tools::Send_HTML_Mail($_SESSION['SESSION_DATA']['email_address'], FROM_EMAIL, '', $dmc_email_template['template_subject'], $dmc_mail_Body);
+							endif;
+							if(isset($booking_details_list['booking_type']) && $booking_details_list['booking_type']=="agent" && isset($booking_details_list['agent_id']) && $booking_details_list['agent_id']!=""):
+								$autentication_data_agent=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
+								if(isset($autentication_data_agent->status)):
+									if($autentication_data_agent->status=="success"):
+										$post_data_agent['token']=array(
+											"token"=>$autentication_data_agent->results->token,
+											"token_timeout"=>$autentication_data_agent->results->token_timeout,
+											"token_generation_time"=>$autentication_data_agent->results->token_generation_time
+										);
+										$post_data_agent['data']['agent_id']=$booking_details_list['agent_id'];
+										$post_data_str_agent=json_encode($post_data_agent);
+										$ch = curl_init();
+										curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+										curl_setopt($ch, CURLOPT_HEADER, false);
+										curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+										curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+										curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/booking-agent.php");
+										curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str_agent);
+										curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+										$return_data_agent = curl_exec($ch);
+										curl_close($ch);
+										//print_r($return_data_agent);
+										$return_data_agent_arr=json_decode($return_data_agent, true);
+										$tour_data=array();
+										if(!isset($return_data_agent_arr['status'])):
+											//$data['status'] = 'error';
+											//$data['msg']="Some error has been occure during execution.";
+										elseif($return_data_agent_arr['status']=="success"):
+											if($return_data_agent_arr['result']['type']=="A"):
+												$agent_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>24, ':status'=>1));
+												if(!empty($agent_email_template)):
+													$agent_url_details="";
+													$agent_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_agent_arr['result']['first_name'], $return_data_agent_arr['result']['last_name'], $agent_url_details), $agent_email_template['template_body']);
+													@tools::Send_HTML_Mail($return_data_agent_arr['result']['email_address'], FROM_EMAIL, '', $agent_email_template['template_subject'], $agent_mail_Body);
+												endif;
+												if(isset($return_data_agent_arr['result_gsm']) && !empty($return_data_agent_arr['result_gsm'])):
+													$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>25, ':status'=>1));
+													if(!empty($gsm_email_template)):
+														$gsm_url_details="";
+														$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_agent_arr['result_gsm']['first_name'], $return_data_agent_arr['result_gsm']['last_name'], $gsm_url_details), $gsm_email_template['template_body']);
+														@tools::Send_HTML_Mail($return_data_agent_arr['result_gsm']['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
+													endif;
+												endif;
+											elseif($return_data_agent_arr['result']['type']=="G"):
+												$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>24, ':status'=>1));
+												if(!empty($gsm_email_template)):
+													$gsm_url_details="";
+													$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_agent_arr['result']['first_name'], $return_data_agent_arr['result']['last_name'], $gsm_url_details), $gsm_email_template['template_body']);
+													@tools::Send_HTML_Mail($return_data_agent_arr['result']['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
+												endif;
+											endif;
+											//$data['status'] = 'success';
+											//$data['msg']="Data received successfully";
+										else:
+											//$data['status'] = 'error';
+											//$data['msg'] = $return_data_arr['msg'];
+										endif;
+									endif;
+								endif;
+							endif;
+							$autentication_data_supplier=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."authorized.php"));
+							if(isset($autentication_data_supplier->status)):
+								if($autentication_data_supplier->status=="success"):
+									$post_data_supplier['token']=array(
+										"token"=>$autentication_data_supplier->results->token,
+										"token_timeout"=>$autentication_data_supplier->results->token_timeout,
+										"token_generation_time"=>$autentication_data_supplier->results->token_generation_time
+									);
+									$post_data_supplier['data']['supplier_id']=base64_encode($_POST['other_supplier_id']);
+									$post_data_str_supplier=json_encode($post_data_supplier);
+									$ch = curl_init();
+									curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+									curl_setopt($ch, CURLOPT_HEADER, false);
+									curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+									curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+									curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."supplier/read.php");
+									curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str_supplier);
+									curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+									$return_data_supplier = curl_exec($ch);
+									curl_close($ch);
+									$return_data_arr_supplier=json_decode($return_data_supplier, true);
+									if(!isset($return_data_arr_supplier['status'])):
+										//$data['status'] = 'error';
+										//$data['msg']="Some error has been occure during execution.";
+									elseif($return_data_arr_supplier['status']=="success"):
+										if(!empty($return_data_arr_supplier['results'])):
+											$supplier_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>13, ':status'=>1));
+											if(!empty($supplier_email_template)):
+												$supplier_url_details='<a href="'.DOMAIN_NAME_PATH_SUPPLIER.'login?auto_login_id='.base64_encode(SECURITY_SALT.$return_data_arr_supplier['results']['id']."supplier".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_details_list['id']).'" title="View Order">'.DOMAIN_NAME_PATH_SUPPLIER.'login?auto_login_id='.base64_encode(SECURITY_SALT.$return_data_arr_supplier['results']['id']."supplier".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_details_list['id']).'</a>';
+												$supplier_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_arr_supplier['results']['first_name'], $return_data_arr_supplier['results']['last_name'], $supplier_url_details), $supplier_email_template['template_body']);
+												@tools::Send_HTML_Mail($return_data_arr_supplier['results']['email_address'], FROM_EMAIL, '', $supplier_email_template['template_subject'], $supplier_mail_Body);
+											endif;
+										endif;
+										//$data['status'] = 'success';
+										//$data['msg']="Data received successfully";
+									else:
+										//$data['status'] = 'error';
+										//$data['msg'] = $return_data_arr_supplier['msg'];
+									endif;
+								endif;
+							else:
+								//$data['status'] = 'error';
+								//$data['msg'] = $autentication_data->msg;
+							endif;
+							$_SESSION['SET_TYPE'] = 'success';
+							$_SESSION['SET_FLASH']="Booking supplier updated successfully.";
+							header("location:view_booking?booking_id=".$_GET['booking_id']);
+							exit;
+						else:
+							$_SESSION['SET_TYPE'] = 'error';
+							$_SESSION['SET_FLASH'] = $return_data_arr_update_booking['msg'];
+						endif;
+					};
+					if(isset($_POST) && isset($_POST['booking_approval_status']) && $_POST['booking_approval_status']!="")
+					{
+						$post_data_booking['data']['status']=$_POST['booking_approval_status'];
+						$post_data_booking['data']['id']=$booking_details_list['id'];
+						$post_data_str_booking=json_encode($post_data_booking);
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+						curl_setopt($ch, CURLOPT_HEADER, false);
+						curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+						curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+						curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."booking/update.php");
+						curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str_booking);
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+						$return_data_booking = curl_exec($ch);
+						curl_close($ch);
+						$return_data_arr_booking_update=json_decode($return_data_booking, true);
+						if(!isset($return_data_arr_booking_update['status'])):
+							$_SESSION['SET_TYPE'] = 'error';
+							$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+						elseif($return_data_arr_booking_update['status']=="success"):
+							$_SESSION['SET_TYPE'] = 'success';
+							$_SESSION['SET_FLASH']=$return_data_arr_booking_update['msg'];
+							header("location:".DOMAIN_NAME_PATH_ADMIN.'view_booking?booking_id='.$_GET['booking_id']);
+							exit;
+						else:
+							$_SESSION['SET_TYPE'] = 'error';
+							$_SESSION['SET_FLASH'] = $return_data_arr_booking_update['msg'];
+						endif;
+					};
 					//print_r($booking_details_list);
 				else:
-					$data['status'] = 'error';
-					$data['msg'] = $return_data_arr_booking['msg'];
+					$_SESSION['SET_TYPE'] = 'error';
+					$_SESSION['SET_FLASH'] = $return_data_arr_booking['msg'];
 				endif;
 			endif;
 		else:
-			$data['status'] = 'error';
-			$data['msg'] = $autentication_data->msg;
+			$_SESSION['SET_TYPE'] = 'error';
+			$_SESSION['SET_FLASH'] = $autentication_data->msg;
 		endif;
 	else:
 		$_SESSION['SET_TYPE'] = 'error';
@@ -50,6 +217,15 @@
 <head>
 	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>VIEW BOOKING</title>
 	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
+	<script type="text/javascript">
+	<!--
+		$(function(){
+			$("#booking_approval_status").change(function(){
+				$("#booking_approval_status_form").submit();
+			});
+		});
+	//-->
+	</script>
 </head>
 <body class="skin-purple">
 	<div class="wrapper">
@@ -111,6 +287,7 @@
 										<th style = "text-align:center;">Quote Date</th>
 										<th style = "text-align:center;">Destination</th>
 										<th style = "text-align:center;">Booking Date</th>
+										<th style = "text-align:center;">Approval</th>
 									</tr>
 								</thead>
 								<tbody aria-relevant="all" aria-live="polite" role="alert">
@@ -119,6 +296,34 @@
 										<td style = "text-align:center;"><?php echo tools::module_date_format($booking_details_list['creation_date'], "Y-m-d H:i:s");?></td>
 										<td style = "text-align:center;"><?php echo $destination_str;?></td>
 										<td style = "text-align:center;"><?php echo tools::module_date_format($booking_details_list['checkin_date'])." - ".tools::module_date_format($booking_details_list['checkout_date']);?></td>
+										<td style = "text-align:center;">
+											<?php
+											if(isset($booking_details_list['status']) && isset($booking_details_list['status']) && $booking_details_list['status']==0)
+											{
+											?>
+											<form method="post" name="booking_approval_status_form" id="booking_approval_status_form" action="">
+												<select name="booking_approval_status" id="booking_approval_status" class="btn-warning">
+													<option value="0" class="btn-warning">Pending</option>
+													<option value="1" class="btn-success">Accept</option>
+													<option value="2" class="btn-danger">Reject</option>
+												</select>
+											</form>
+											<?php
+											}
+											elseif(isset($booking_details_list) && isset($booking_details_list['status']) && $booking_details_list['status']==1)
+											{
+											?>
+											<span style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" class="btn-success">Accepted</span>
+											<?php
+											}
+											elseif(isset($booking_details_list) && isset($booking_details_list['status']) && $booking_details_list['status']==2)
+											{
+											?>
+											<span style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" class="btn-danger">Rejected</span>
+											<?php
+											}
+											?>
+										</td>
 									</tr>
 								</tbody>
 							</table>
@@ -367,6 +572,7 @@
 								<tbody aria-relevant="all" aria-live="polite" role="alert">
 							<?php
 								foreach($booking_details_list['booking_supplier_list'] as $supplier_key=>$supplier_val):
+									$is_rejected=false;
 									$autentication_data_supplier=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."authorized.php"));
 									if(isset($autentication_data_supplier->status)):
 										if($autentication_data_supplier->status=="success"):
@@ -471,7 +677,7 @@
 									endif;
 							?>
 							<div class="" style="margin:10px 0px;border: 1px solid #000;padding: 10px 0px;">
-								<form class="form-inline " action="">
+								<form class="form-inline " id="other_supplier_form" name="other_supplier_form" action="" method="post">
 									<div class="col-md-3 form-group">
 										<label for="email">Select Other Supplier:</label>
 									</div>

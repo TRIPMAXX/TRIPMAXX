@@ -81,6 +81,15 @@
 					//print_r($return_data_arr);
 					if($return_data_arr['status']=="success")
 					{
+						if($_POST['password'] != "")
+						{
+							$tm_agent_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>21, ':status'=>1));
+							if(!empty($tm_agent_template)):
+								$tm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[USERNAME]", "[PASSWORD]"), array($_POST['first_name'], $_POST['last_name'], $_POST['username'], $_POST['password']), $tm_agent_template['template_body']);
+								//print_r($tm_mail_Body);exit;
+								@tools::Send_HTML_Mail($_POST['email_address'], FROM_EMAIL, '', $tm_agent_template['template_subject'], $tm_mail_Body);
+							endif;
+						}
 						$_SESSION['SET_TYPE'] = 'success';
 						$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
 						if(isset($_GET['gse_id']) && $_GET['gse_id']!=""):

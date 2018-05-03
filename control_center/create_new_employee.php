@@ -16,6 +16,12 @@ if(isset($_POST['btn_submit'])) {
 			$_SESSION['SET_FLASH'] = 'This username already exists.';
 		} else {
 			if($save_employee = tools::module_form_submission($uploaded_file_json_data, TM_DMC)) {
+				$employee_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>4, ':status'=>1));
+				if(!empty($employee_email_template)):
+					$employee_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[USERNAME]", "[PASSWORD]"), array($_POST['first_name'], $_POST['last_name'], $_POST['username'], $_POST['password']), $employee_email_template['template_body']);
+					//print_r($employee_mail_Body);exit;
+					@tools::Send_HTML_Mail($_POST['email_address'], FROM_EMAIL, '', $employee_email_template['template_subject'], $employee_mail_Body);
+				endif;
 				$_SESSION['SET_TYPE'] = 'success';
 				$_SESSION['SET_FLASH'] = 'Employee has been created successfully.';
 				header("location:employees");

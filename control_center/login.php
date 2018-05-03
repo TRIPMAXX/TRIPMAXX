@@ -3,7 +3,37 @@ require_once('loader.inc');
 
 $white_list_array = array('username', 'password', 'remember_me', 'token', 'status', 'btn_login');
 $verify_token = "edit_email_template";
-
+if(isset($_SESSION['SESSION_DATA']) && !empty($_SESSION['SESSION_DATA']))
+{
+	$_SESSION['SET_TYPE'] = 'error';
+	$_SESSION['SET_FLASH'] = 'You are already logged in.';
+	tools::module_redirect(DOMAIN_NAME_PATH.'dashboard');
+	exit;
+}
+if(isset($_GET['auto_login_id']) && $_GET['auto_login_id']!="")
+{
+	session_destroy();
+	session_start();
+	$auto_login_id=base64_decode($_GET['auto_login_id']);
+	$dmc_id=str_replace(array(SECURITY_SALT, "dmc", AUTO_LOGIN_SECURITY_KEY), array("", "", ""), $auto_login_id);
+	$object_control_center = new control_center();
+	if($object_control_center->auto_login($dmc_id)) {
+		if($_SESSION['SESSION_DATA']['status'] == 1) {
+			if(isset($_GET['booking_id']) && $_GET['booking_id']!=""):
+				tools::module_redirect(DOMAIN_NAME_PATH_ADMIN.'view_booking.php?booking_id='.$_GET['booking_id']);
+			else:
+				tools::module_redirect(DOMAIN_NAME_PATH_ADMIN.'bookings');
+			endif;
+		} else {
+			unset($_SESSION['SESSION_DATA']);
+			$_SESSION['SET_TYPE'] = 'error';
+			$_SESSION['SET_FLASH'] = 'Your account is inactive. Please contact DMC.';
+		}
+	}else {
+		$_SESSION['SET_TYPE'] = 'error';
+		$_SESSION['SET_FLASH'] = 'Invalid login details.';
+	}
+}
 if(isset($_POST['btn_login']))
 {
 	$object_control_center = new control_center();
@@ -26,6 +56,7 @@ if(isset($_POST['btn_login']))
 			if($_SESSION['SESSION_DATA']['status'] == 1) {
 				tools::module_redirect(DOMAIN_NAME_PATH_ADMIN.'dashboard');
 			} else {
+				unset($_SESSION['SESSION_DATA']);
 				$_SESSION['SET_TYPE'] = 'error';
 				$_SESSION['SET_FLASH'] = 'Your account is inactive. Please contact DMC.';
 			}

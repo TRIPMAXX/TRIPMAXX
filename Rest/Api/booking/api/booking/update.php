@@ -7,18 +7,13 @@
 	$return_data['msg']="Token is not verified.";
 	$server_data=json_decode(file_get_contents("php://input"), true);
 	if(isset($server_data['token']) && isset($server_data['token']['token']) && isset($server_data['token']['token_timeout']) && isset($server_data['token']['token_generation_time']) && tools::jwtTokenDecode($server_data['token']['token']) && ($server_data['token']['token_generation_time']+$server_data['token']['token_timeout']) > time()):
-		if(isset($server_data['data']) && isset($server_data['data']['agent_id']) && $server_data['data']['agent_id']!=""):
-			$find_agent = tools::find("first", TM_AGENT, '*', "WHERE id=:id", array(":id"=>$server_data['data']['agent_id']));
+		$_POST=$server_data['data'];
+		if($save_booking = tools::module_form_submission("", TM_BOOKING_MASTERS)):
 			$return_data['status']="success";
-			$return_data['results']=$find_agent;
-			$return_data['msg']="Data received successfully.";
-			if($find_agent['type']=="A" && $find_agent['parent_id'] > 0):
-				$find_gsm = tools::find("first", TM_AGENT, '*', "WHERE id=:id ", array(":id"=>$find_agent['parent_id']));
-				$return_data['result_gsm'] = $find_agent;
-			endif;
+			$return_data['msg']="Booking data updated successfully.";
 		else:
 			$return_data['status']="error";
-			$return_data['msg']="No agent found.";
+			$return_data['msg']="We are having some problem. Please try later.";
 		endif;
 	endif;
 	echo json_encode($return_data);	

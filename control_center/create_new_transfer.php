@@ -146,7 +146,7 @@
 	function fetch_state(country_id)
 	{
 		$.ajax({
-			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_state_fetch";?>",
+			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_transfer_state_fetch";?>",
 			type:"post",
 			data:{
 				country_id:country_id
@@ -182,7 +182,7 @@
 	function fetch_city(state_id)
 	{
 		$.ajax({
-			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_city_fetch";?>",
+			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_transfer_city_fetch";?>",
 			type:"post",
 			data:{
 				state_id:state_id

@@ -115,6 +115,7 @@
 		header("location:transfers");
 		exit;
 	endif;
+	$$ajax_transfer_id=base64_decode($_GET['transfer_id']);
 ?>
 <!DOCTYPE html>
 <html>
@@ -134,7 +135,7 @@
 			type:"post",
 			data:{
 				offer_id:offer_id,
-				transfer_id:<?php echo base64_decode($_GET['transfer_id']);?>
+				transfer_id:<?php echo $ajax_transfer_id;?>
 			},
 			beforeSend:function(){
 				//cur.removeClass("btn-success").removeClass("btn-danger");

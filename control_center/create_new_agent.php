@@ -77,10 +77,17 @@
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 					$return_data = curl_exec($ch);
 					curl_close($ch);
+					//print_r($return_data);
 					$return_data_arr=json_decode($return_data, true);
 					//print_r($return_data_arr);
 					if($return_data_arr['status']=="success")
 					{
+						$tm_agent_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>18, ':status'=>1));
+						if(!empty($tm_agent_template)):
+							$tm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[USERNAME]", "[PASSWORD]"), array($_POST['first_name'], $_POST['last_name'], $_POST['username'], $_POST['password']), $tm_agent_template['template_body']);
+							//print_r($tm_mail_Body);exit;
+							@tools::Send_HTML_Mail($_POST['email_address'], FROM_EMAIL, '', $tm_agent_template['template_subject'], $tm_mail_Body);
+						endif;
 						$_SESSION['SET_TYPE'] = 'success';
 						$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
 						if(isset($_GET['gse_id']) && $_GET['gse_id']!=""):
@@ -517,19 +524,19 @@
 									<div id="" class="row rows">
 										<div class="form-group col-md-3">
 											<label for="hotel_price" class="form-label1">Hotel :</label>
-											<input type="text" class="form-control form_input1" id="hotel_price" name="hotel_price" placeholder="Hotel" value="<?php echo(isset($_POST['hotel_price']) && $_POST['hotel_price']!='' ? $_POST['hotel_price'] : "");?>" tabindex="34">
+											<input type="text" class="form-control form_input1" id="hotel_price" name="hotel_price" placeholder="Hotel" value="<?php echo(isset($_POST['hotel_price']) && $_POST['hotel_price']!='' ? $_POST['hotel_price'] : "0.00");?>" tabindex="34">
 										</div>
 										<div class="form-group col-md-3">
 											<label for="tour_price" class="form-label1">Tour :</label>
-											<input type="text" class="form-control form_input1" id="tour_price" name="tour_price" placeholder="Tour" value="<?php echo(isset($_POST['tour_price']) && $_POST['tour_price']!='' ? $_POST['tour_price'] : "");?>" tabindex="35">
+											<input type="text" class="form-control form_input1" id="tour_price" name="tour_price" placeholder="Tour" value="<?php echo(isset($_POST['tour_price']) && $_POST['tour_price']!='' ? $_POST['tour_price'] : "0.00");?>" tabindex="35">
 										</div>
 										<div class="form-group col-md-3">
 											<label for="transfer_price" class="form-label1">Transfer :</label>
-											<input type="text" class="form-control form_input1" id="transfer_price" name="transfer_price" placeholder="Transfer" value="<?php echo(isset($_POST['transfer_price']) && $_POST['transfer_price']!='' ? $_POST['transfer_price'] : "");?>" tabindex="36">
+											<input type="text" class="form-control form_input1" id="transfer_price" name="transfer_price" placeholder="Transfer" value="<?php echo(isset($_POST['transfer_price']) && $_POST['transfer_price']!='' ? $_POST['transfer_price'] : "0.00");?>" tabindex="36">
 										</div>
 										<div class="form-group col-md-3">
 											<label for="package_price" class="form-label1">Package :</label>
-											<input type="text" class="form-control form_input1" id="package_price" name="package_price" placeholder="Package" value="<?php echo(isset($_POST['package_price']) && $_POST['package_price']!='' ? $_POST['package_price'] : "");?>" tabindex="37">
+											<input type="text" class="form-control form_input1" id="package_price" name="package_price" placeholder="Package" value="<?php echo(isset($_POST['package_price']) && $_POST['package_price']!='' ? $_POST['package_price'] : "0.00");?>" tabindex="37">
 										</div>
 									</div>
 								</div>

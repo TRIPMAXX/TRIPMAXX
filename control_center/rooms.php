@@ -115,6 +115,7 @@ else:
 	header("location:hotels");
 	exit;
 endif;
+$ajax_hotel_id= base64_decode($_GET['hotel_id']);
 ?>
 <!DOCTYPE html>
 <html>
@@ -134,7 +135,7 @@ endif;
 			type:"post",
 			data:{
 				room_id:room_id,
-				hotel_id:<?php echo base64_decode($_GET['hotel_id']);?>
+				hotel_id:<?php echo $ajax_hotel_id;?>
 			},
 			beforeSend:function(){
 				//cur.removeClass("btn-success").removeClass("btn-danger");
