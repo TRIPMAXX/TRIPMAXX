@@ -7,4 +7,8 @@ PAGE FUNCTIONALITY: THIS PAGE DEFINES THE LISTS OF DATABASE TABLES THAT HAS BEEN
 =========================================================================================================================
 */
 define( "TM_PACKAGES", "tm_packages" );
+define( "TM_CITIES", "tm_cities" );
+define( "TM_COUNTRIES", "tm_countries" );
+define( "TM_STATES", "tm_states" );
+define( "TM_BOOKINGS", "tm_bookings" );
 ?>

@@ -83,7 +83,7 @@
 	function change_status(package_id, cur)
 	{
 		$.ajax({
-			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_package_status_update.php";?>",
+			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_package_status_update";?>",
 			type:"post",
 			data:{
 				package_id:package_id
@@ -157,6 +157,8 @@
 												<tr role="row">
 													<th>#</th>
 													<th>Package Image</th>
+													<th>Country</th>
+													<th>City</th>
 													<th>Package Title</th>
 													<th>No Of Days</th>
 													<th>Package Price</th>
@@ -188,6 +190,8 @@
 													endif;
 													?>
 													</td>
+													<td class=" "><?= $package_val['co_name'];?></td>
+													<td class=" "><?= $package_val['ci_name'];?></td>
 													<td class=" "><?= $package_val['package_title'];?></td>
 													<td class=" "><?= $package_val['no_of_days'];?></td>
 													<td class=" "><?= $package_val['package_price'];?></td>
@@ -196,7 +200,7 @@
 														<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $package_val['status']==1 ? "btn-success" : "btn-danger";?>" onclick="change_status(<?= $package_val['id'];?>, $(this))"><?= $package_val['status']==1 ? "Active" : "Inactive";?></a>
 													</td>
 													<td class=" " data-title="Action">
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>tour_offers?tour_id=<?php echo base64_encode($package_val['id']);?>" title = "Manage Tour Offers"><i class="fa fa-home fa-1x" ></i></a>&nbsp;&nbsp;
+														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>package_bookings?package_id=<?php echo base64_encode($package_val['id']);?>" title = "Manage package bookings"><i class="fa fa-home fa-1x" ></i></a>&nbsp;&nbsp;
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_package?package_id=<?php echo base64_encode($package_val['id']);?>" title = "Edit Package"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>packages?package_id=<?php echo base64_encode($package_val['id']);?>"  title = "Delete Package" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
 													</td>

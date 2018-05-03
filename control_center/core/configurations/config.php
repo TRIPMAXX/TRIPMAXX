@@ -86,6 +86,7 @@ define("TOUR_API_PATH", "tour/api/");
 define("PACKAGE_API_PATH", "package/api/");
 define("TRANSFER_API_PATH", "transfer/api/");
 define("BOOKING_API_PATH", "booking/api/");
+define("DMC_API_PATH", "dmc/api/");
 
 define("MAX_ROOM_NO", 10);
 define("MAX_ADULT_NO", 10);

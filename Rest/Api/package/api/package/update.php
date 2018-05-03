@@ -37,7 +37,7 @@
 						$img = str_replace('data:image/'.$extension.';base64,', '', $file_val['name']);
 						$img = str_replace(' ', '+', $img);
 						$data_img_str = base64_decode($img);
-						file_put_contents(package_images.$file_name, $data_img_str);
+						file_put_contents(PACKAGE_IMAGES.$file_name, $data_img_str);
 						$_POST['package_images'].=($_POST['package_images']!="" ? "," : "").$file_name;
 					endforeach;
 				}
