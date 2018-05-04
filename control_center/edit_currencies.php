@@ -12,9 +12,189 @@ if(isset($_GET['currency_id']) && $_GET['currency_id']!=""):
 				$uploaded_file_json_data="";				
 				if(tools::module_data_exists_check("currency_name = '".tools::stripcleantohtml($_POST['currency_name'])."' AND id <> ".$find_currency['id']."", '', TM_CURRENCIES)) {
 					$_SESSION['SET_TYPE'] = 'error';
-					$_SESSION['SET_FLASH'] = 'This page heading already exists.';
+					$_SESSION['SET_FLASH'] = 'This currency name already exists.';
 				} else {
 					if($save_cms_data = tools::module_form_submission($uploaded_file_json_data, TM_CURRENCIES)) {
+						$autentication_data_agent_currency=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
+						if(isset($autentication_data_agent_currency->status)):
+							if($autentication_data_agent_currency->status=="success"):
+								$post_data_agent_currency['token']=array(
+									"token"=>$autentication_data_agent_currency->results->token,
+									"token_timeout"=>$autentication_data_agent_currency->results->token_timeout,
+									"token_generation_time"=>$autentication_data_agent_currency->results->token_generation_time
+								);
+								$post_data_agent_currency['data']=$_POST;
+								$post_data_agent_currency_str=json_encode($post_data_agent_currency);
+								$ch = curl_init();
+								curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+								curl_setopt($ch, CURLOPT_HEADER, false);
+								curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+								curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+								curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."currency/update.php");
+								curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_agent_currency_str);
+								curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+								$return_data_agent_currency = curl_exec($ch);
+								curl_close($ch);
+								//print_r($return_data_agent_currency);
+								$return_data_agent_currency_arr=json_decode($return_data_agent_currency, true);
+								if(!isset($return_data_agent_currency_arr['status'])):
+									//$data['msg']="Some error has been occure during execution.";
+								elseif($return_data_agent_currency_arr['status']=="success"):
+									//$data['status'] = 'success';
+									//$data['msg'] = $return_data_agent_currency_arr['msg'];
+								else:
+									//$data['msg'] = $return_data_agent_currency_arr['msg'];
+								endif;
+							else:
+								//$data['msg'] = $autentication_data_agent_currency->msg;
+							endif;
+						else:
+							//$data['msg'] = "We are having some problem to authorize api.";
+						endif;
+						$autentication_data_booking_currency=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."authorized.php"));
+						if(isset($autentication_data_booking_currency->status)):
+							if($autentication_data_booking_currency->status=="success"):
+								$post_data_booking_currency['token']=array(
+									"token"=>$autentication_data_booking_currency->results->token,
+									"token_timeout"=>$autentication_data_booking_currency->results->token_timeout,
+									"token_generation_time"=>$autentication_data_booking_currency->results->token_generation_time
+								);
+								$post_data_booking_currency['data']=$_POST;
+								$post_data_booking_currency_str=json_encode($post_data_booking_currency);
+								$ch = curl_init();
+								curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+								curl_setopt($ch, CURLOPT_HEADER, false);
+								curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+								curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+								curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."currency/update.php");
+								curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_booking_currency_str);
+								curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+								$return_data_booking_currency = curl_exec($ch);
+								curl_close($ch);
+								//print_r($return_data_booking_currency);
+								$return_data_booking_currency_arr=json_decode($return_data_booking_currency, true);
+								if(!isset($return_data_booking_currency_arr['status'])):
+									//$data['msg']="Some error has been occure during execution.";
+								elseif($return_data_booking_currency_arr['status']=="success"):
+									//$data['status'] = 'success';
+									//$data['msg'] = $return_data_booking_currency_arr['msg'];
+								else:
+									//$data['msg'] = $return_data_booking_currency_arr['msg'];
+								endif;
+							else:
+								//$data['msg'] = $autentication_data_booking_currency->msg;
+							endif;
+						else:
+							//$data['msg'] = "We are having some problem to authorize api.";
+						endif;
+						$autentication_data_hotel_currency=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
+						if(isset($autentication_data_hotel_currency->status)):
+							if($autentication_data_hotel_currency->status=="success"):
+								$post_data_hotel_currency['token']=array(
+									"token"=>$autentication_data_hotel_currency->results->token,
+									"token_timeout"=>$autentication_data_hotel_currency->results->token_timeout,
+									"token_generation_time"=>$autentication_data_hotel_currency->results->token_generation_time
+								);
+								$post_data_hotel_currency['data']=$_POST;
+								$post_data_hotel_currency_str=json_encode($post_data_hotel_currency);
+								$ch = curl_init();
+								curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+								curl_setopt($ch, CURLOPT_HEADER, false);
+								curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+								curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+								curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."currency/update.php");
+								curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_hotel_currency_str);
+								curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+								$return_data_hotel_currency = curl_exec($ch);
+								curl_close($ch);
+								//print_r($return_data_hotel_currency);
+								$return_data_hotel_currency_arr=json_decode($return_data_hotel_currency, true);
+								if(!isset($return_data_hotel_currency_arr['status'])):
+									//$data['msg']="Some error has been occure during execution.";
+								elseif($return_data_hotel_currency_arr['status']=="success"):
+									//$data['status'] = 'success';
+									//$data['msg'] = $return_data_hotel_currency_arr['msg'];
+								else:
+									//$data['msg'] = $return_data_hotel_currency_arr['msg'];
+								endif;
+							else:
+								//$data['msg'] = $autentication_data_hotel_currency->msg;
+							endif;
+						else:
+							//$data['msg'] = "We are having some problem to authorize api.";
+						endif;
+						$autentication_data_tour_currency=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.TOUR_API_PATH."authorized.php"));
+						if(isset($autentication_data_tour_currency->status)):
+							if($autentication_data_tour_currency->status=="success"):
+								$post_data_tour_currency['token']=array(
+									"token"=>$autentication_data_tour_currency->results->token,
+									"token_timeout"=>$autentication_data_tour_currency->results->token_timeout,
+									"token_generation_time"=>$autentication_data_tour_currency->results->token_generation_time
+								);
+								$post_data_tour_currency['data']=$_POST;
+								$post_data_tour_currency_str=json_encode($post_data_tour_currency);
+								$ch = curl_init();
+								curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+								curl_setopt($ch, CURLOPT_HEADER, false);
+								curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+								curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+								curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.TOUR_API_PATH."currency/update.php");
+								curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_tour_currency_str);
+								curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+								$return_data_tour_currency = curl_exec($ch);
+								curl_close($ch);
+								//print_r($return_data_tour_currency);
+								$return_data_tour_currency_arr=json_decode($return_data_tour_currency, true);
+								if(!isset($return_data_tour_currency_arr['status'])):
+									//$data['msg']="Some error has been occure during execution.";
+								elseif($return_data_tour_currency_arr['status']=="success"):
+									//$data['status'] = 'success';
+									//$data['msg'] = $return_data_tour_currency_arr['msg'];
+								else:
+									//$data['msg'] = $return_data_tour_currency_arr['msg'];
+								endif;
+							else:
+								//$data['msg'] = $autentication_data_tour_currency->msg;
+							endif;
+						else:
+							//$data['msg'] = "We are having some problem to authorize api.";
+						endif;
+						$autentication_data_transfer_currency=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.TRANSFER_API_PATH."authorized.php"));
+						if(isset($autentication_data_transfer_currency->status)):
+							if($autentication_data_transfer_currency->status=="success"):
+								$post_data_transfer_currency['token']=array(
+									"token"=>$autentication_data_transfer_currency->results->token,
+									"token_timeout"=>$autentication_data_transfer_currency->results->token_timeout,
+									"token_generation_time"=>$autentication_data_transfer_currency->results->token_generation_time
+								);
+								$post_data_transfer_currency['data']=$_POST;
+								$post_data_transfer_currency_str=json_encode($post_data_transfer_currency);
+								$ch = curl_init();
+								curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+								curl_setopt($ch, CURLOPT_HEADER, false);
+								curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+								curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+								curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.TRANSFER_API_PATH."currency/update.php");
+								curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_transfer_currency_str);
+								curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+								$return_data_transfer_currency = curl_exec($ch);
+								curl_close($ch);
+								//print_r($return_data_transfer_currency);
+								$return_data_transfer_currency_arr=json_decode($return_data_transfer_currency, true);
+								if(!isset($return_data_transfer_currency_arr['status'])):
+									//$data['msg']="Some error has been occure during execution.";
+								elseif($return_data_transfer_currency_arr['status']=="success"):
+									//$data['status'] = 'success';
+									//$data['msg'] = $return_data_transfer_currency_arr['msg'];
+								else:
+									//$data['msg'] = $return_data_transfer_currency_arr['msg'];
+								endif;
+							else:
+								//$data['msg'] = $autentication_data_transfer_currency->msg;
+							endif;
+						else:
+							//$data['msg'] = "We are having some problem to authorize api.";
+						endif;
 						$_SESSION['SET_TYPE'] = 'success';
 						$_SESSION['SET_FLASH'] = 'Currency has been updated successfully.';
 						header("location:currencies");
@@ -31,8 +211,8 @@ if(isset($_GET['currency_id']) && $_GET['currency_id']!=""):
 		};
 	else:
 		$_SESSION['SET_TYPE'] = 'error';
-		$_SESSION['SET_FLASH'] = 'Invalid cms id.';
-		header("location:cms");
+		$_SESSION['SET_FLASH'] = 'Invalid currency id.';
+		header("location:currencies");
 		exit;
 	endif;
 else:

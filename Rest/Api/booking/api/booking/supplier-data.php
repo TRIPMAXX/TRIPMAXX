@@ -11,9 +11,9 @@
 			$supplier_booking_list = tools::find("first", TM_BOOKING_ASSIGNED_SUPPLIER, 'GROUP_CONCAT(id) as booking_ids', "WHERE supplier_id=:supplier_id ", array(":supplier_id"=>$server_data['data']['supplier_id']));
 			if(!empty($supplier_booking_list) && $supplier_booking_list['booking_ids']!=""):
 				if(isset($server_data['data']) && isset($server_data['data']['booking_id']) && $server_data['data']['booking_id']!=""):
-					$booking_list = tools::find("all", TM_BOOKING_MASTERS." as b, ".TM_CURRENCIES." as cu", 'b.*, cu.currency_code as currency_code, cu.currency_name as currency_name', "WHERE b.invoice_currency=cu.id AND b.id=:id ", array(":id"=>$server_data['data']['booking_id']));
+					$booking_list = tools::find("all", TM_BOOKING_MASTERS." as b, ".TM_CURRENCIES." as cu", 'b.*, cu.currency_code as currency_code, cu.currency_name as currency_name', "WHERE b.invoice_currency=cu.id AND b.id=:id AND b.is_deleted = :is_deleted ", array(":id"=>$server_data['data']['booking_id'], ":is_deleted"=>"Y"));
 				else:
-					$booking_list = tools::find("all", TM_BOOKING_MASTERS." as b, ".TM_CURRENCIES." as cu", 'b.*,	cu.currency_code as currency_code, cu.currency_name as currency_name', "WHERE b.invoice_currency=cu.id AND b.id IN (".$supplier_booking_list['booking_ids'].") ", array());
+					$booking_list = tools::find("all", TM_BOOKING_MASTERS." as b, ".TM_CURRENCIES." as cu", 'b.*,	cu.currency_code as currency_code, cu.currency_name as currency_name', "WHERE b.invoice_currency=cu.id AND b.id IN (".$supplier_booking_list['booking_ids'].") AND b.is_deleted = :is_deleted ", array(":is_deleted"=>"N"));
 				endif;
 				if(!empty($booking_list)):
 					foreach($booking_list as $booking_key=>$booking_val):

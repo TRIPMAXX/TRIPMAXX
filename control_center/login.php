@@ -7,7 +7,7 @@ if(isset($_SESSION['SESSION_DATA']) && !empty($_SESSION['SESSION_DATA']))
 {
 	$_SESSION['SET_TYPE'] = 'error';
 	$_SESSION['SET_FLASH'] = 'You are already logged in.';
-	tools::module_redirect(DOMAIN_NAME_PATH.'dashboard');
+	tools::module_redirect(DOMAIN_NAME_PATH_ADMIN.'dashboard');
 	exit;
 }
 if(isset($_GET['auto_login_id']) && $_GET['auto_login_id']!="")

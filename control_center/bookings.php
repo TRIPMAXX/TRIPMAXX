@@ -21,6 +21,34 @@
 				"token_timeout"=>$autentication_data_booking->results->token_timeout,
 				"token_generation_time"=>$autentication_data_booking->results->token_generation_time
 			);
+			if(isset($_GET['del_booking_id']) && $_GET['del_booking_id']!=""):
+				$post_data_booking['data']['id']=base64_decode($_GET['del_booking_id']);
+				$post_data_booking['data']['is_deleted']="Y";
+				$post_data_str=json_encode($post_data_booking);
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+				curl_setopt($ch, CURLOPT_HEADER, false);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+				curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."booking/update.php");
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+				$return_data = curl_exec($ch);
+				curl_close($ch);
+				$return_data_arr=json_decode($return_data, true);
+				if(!isset($return_data_arr['status'])):
+					$_SESSION['SET_TYPE'] = 'error';
+					$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+				elseif($return_data_arr['status']=="success"):
+					$_SESSION['SET_TYPE'] = 'success';
+					$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+				else:
+					$_SESSION['SET_TYPE'] = 'error';
+					$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+				endif;
+				header("location:bookings");
+				exit;
+			endif;
 			$post_data_str_booking=json_encode($post_data_booking);
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -204,8 +232,8 @@
 													<td class=" " data-title="Action">
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>view_booking?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "View Booking Details"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
 														<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>booking_voucher?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "Generate Vouchers"><i class="fa fa-file fa-1x" ></i></a>&nbsp;&nbsp;
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_booking?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "Edit Booking"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp; 
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>bookings?booking_id=<?php echo base64_encode($book_val['id']);?>"  title = "Delete Booking" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>-->
+														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_booking?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "Edit Booking"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp; -->
+														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>bookings?del_booking_id=<?php echo base64_encode($book_val['id']);?>"  title = "Delete Booking" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
 													</td>
 												</tr>
 											<?php
