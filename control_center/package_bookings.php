@@ -115,6 +115,7 @@
 		header("location:packages");
 		exit;
 	endif;
+	$package_id=base64_decode($_GET['package_id']);
 ?>
 <!DOCTYPE html>
 <html>
@@ -129,11 +130,11 @@
 	function change_status(booking_id, cur)
 	{
 		$.ajax({
-			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_tour_booking_status_update";?>",
+			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_package_booking_status_update";?>",
 			type:"post",
 			data:{
 				booking_id:booking_id,
-				tour_id:<?php echo base64_decode($_GET['tour_id']);?>
+				package_id:<?php echo $package_id;?>
 			},
 			beforeSend:function(){
 				//cur.removeClass("btn-success").removeClass("btn-danger");
@@ -231,7 +232,7 @@
 													</td>
 													<td class=" " data-title="Action">
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_package_booking?package_id=<?php echo base64_encode($package_data['id']);?>&booking_id=<?php echo base64_encode($booking_val['id']);?>" title = "Edit package booking"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>package_bookings?package_id=<?php echo base64_encode($package_data['id']);?>&booking_id=<?php echo base64_encode($booking_val['id']);?>"  title = "Delete package booking" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
+														<!-- <a href = "<?php //echo(DOMAIN_NAME_PATH_ADMIN);?>package_bookings?package_id=<?php //echo base64_encode($package_data['id']);?>&booking_id=<?php echo base64_encode($booking_val['id']);?>"  title = "Delete package booking" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 													</td>
 												</tr>
 											<?php
