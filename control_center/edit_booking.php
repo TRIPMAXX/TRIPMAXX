@@ -1142,19 +1142,19 @@
 										<div class="tab-content">
 											<div class="tab-pane active" role="tabpanel" id="step1">
 												<h3>Select Criteria For New Booking</h3>
-												<form name="form_first_step" id="form_first_step" method="POST" enctype="mulitipart/form-data">
+												<form name="form_first_step" id="form_first_step" method="post" enctype="mulitipart/form-data">
 													<div class="col-md-12 row">
-														<div class="box-body" style="border:1px solid gray;">
+														<div class="box-body" style = "border:1px solid gray;">
 															<div class="form-group col-md-6">
 																<label for="inputName" class="control-label">Select Booking Type<font color="#FF0000">*</font></label>
-																<select name = "booking_type" id = "booking_type" class="form-control validate[optional]"  tabindex = "1" onchange = "manage_booking_type(this.value);">
+																<select name = "booking_type" id = "booking_type" class="form-control validate[required]"  tabindex = "1" onchange = "manage_booking_type(this.value);">
 																	<option value = "personal" <?php echo(isset($_POST['booking_type']) && $_POST['booking_type']=="personal" ? "selected='selected'" : (isset($booking_details_list['booking_type']) && $booking_details_list['booking_type']=="personal" ? "selected='selected'" : ""));?>>Personal Booking</option>
 																	<option value = "agent" <?php echo(isset($_POST['booking_type']) && $_POST['booking_type']=="agent" ? "selected='selected'" : (isset($agent_data) &&  !empty($agent_data) ? "selected='selected'" : (isset($booking_details_list['booking_type']) && $booking_details_list['booking_type']=="agent" ? "selected='selected'" : "")));?>>Agent Booking</option>
 																</select>
 															</div>
 															<div class="form-group col-md-6">
 																<label for="inputName" class="control-label">Select Agent<font color="#FF0000">*</font></label>
-																<select name = "agent_name" id = "agent_name" class="form-control validate[optional]"  tabindex = "2" <?php echo(isset($_POST['agent_name']) && $_POST['agent_name']!="" ? '' : 'disabled');?>>
+																<select name = "agent_name" id = "agent_name" class="form-control validate[required]"  tabindex = "2" <?php echo(isset($_POST['agent_name']) && $_POST['agent_name']!="" ? '' : 'disabled');?>>
 																	<option value = "">Select Agent</option>
 																<?php
 																if(isset($agent_list) && !empty($agent_list)):
@@ -1177,8 +1177,9 @@
 															</div>
 															<div class="clearfix"></div>
 														</div>
-														<div class="box-body"></div>
-														<div class="box-body" id = "sample" style="border:1px solid gray;">
+														<div class="box-body">
+														</div>
+														<div class="box-body" id = "sample"  style = "border:1px solid gray;">
 															<?php
 															if(isset($_POST['country']) && !empty($_POST['country']))
 															{
@@ -1246,6 +1247,7 @@
 															elseif(isset($booking_details_list['booking_destination_list']) && !empty($booking_details_list['booking_destination_list']))
 															{
 																foreach($booking_details_list['booking_destination_list'] as $destination_key=>$destination_val):
+																	$hotel_rating_arr=explode(",", $destination_val['hotel_rating']);
 															?>
 															<div class="form-group col-md-12 <?php echo($destination_key > 0 ? "appended_row" : "");?>">
 																<div class="form-group col-md-3">
@@ -1264,7 +1266,7 @@
 																	if(!empty($contry_list)):
 																		foreach($contry_list as $country_key=>$country_val):
 																	?>
-																		<option value = "<?php echo $country_val['id'];?>" <?php echo($post_country_val==$country_val['id'] ? 'selected="selected"' : "");?>><?php echo $country_val['name'];?></option>
+																		<option value = "<?php echo $country_val['id'];?>" <?php echo($destination_val['country_id']==$country_val['id'] ? 'selected="selected"' : "");?>><?php echo $country_val['name'];?></option>
 																	<?php
 																		endforeach;
 																	endif;
@@ -1273,10 +1275,10 @@
 																</div>
 																<div class="form-group col-md-3">
 																	<label for="inputName" class="control-label">City<font color="#FF0000">*</font></label>
-																	<select class="form-control validate[required]" name="city[<?php echo $post_country_key;?>]" id="city<?php echo $post_country_key;?>">
+																	<select class="form-control validate[required]" name="city[<?php echo $destination_key;?>]" id="city<?php echo $destination_key;?>">
 																		<option value="">Select City</option>
 																	<?php
-																	$state_list = tools::find("first", TM_STATES, 'GROUP_CONCAT(id) as state_ids', "WHERE country_id=:country_id ORDER BY name ASC ", array(":country_id"=>$post_country_val));
+																	$state_list = tools::find("first", TM_STATES, 'GROUP_CONCAT(id) as state_ids', "WHERE country_id=:country_id ORDER BY name ASC ", array(":country_id"=>$destination_val['country_id']));
 																	$city_list=array();
 																	if(!empty($state_list))
 																	{
@@ -1285,7 +1287,7 @@
 																	foreach($city_list as $city_key=>$city_val)
 																	{
 																	?>
-																	<option value = "<?php echo $city_val['id'];?>" <?php echo(isset($_POST['city']) && !empty($_POST['city']) && $_POST['city'][$post_country_key]==$city_val['id'] ? 'selected="selected"' : "");?>><?php echo $city_val['name'];?></option>
+																	<option value = "<?php echo $city_val['id'];?>" <?php echo(isset($destination_val['city_id']) && $destination_val['city_id']==$city_val['id'] ? 'selected="selected"' : "");?>><?php echo $city_val['name'];?></option>
 																	<?php
 																	}
 																	?>
@@ -1293,16 +1295,17 @@
 																</div>
 																<div class="form-group col-md-3">
 																	<label for="inputName" class="control-label">For No Of Nights<font color="#FF0000">*</font></label>
-																	<input type="text" class="form-control number_of_night validate[required]"  value="<?php echo(isset($_POST['number_of_night'][$post_country_key]) && $_POST['number_of_night'][$post_country_key]!='' ? $_POST['number_of_night'][$post_country_key] : "");?>" name="number_of_night[<?php echo $post_country_key;?>]" id="number_of_night<?php echo $post_country_key;?>" placeholder="Number Of Nights" tabindex = "4" onblur="check_night()"/>
+																	<input type="text" class="form-control number_of_night validate[required]"  value="<?php echo(isset($destination_val['no_of_night']) && $destination_val['no_of_night']!='' ? $destination_val['no_of_night'] : "");?>" name="number_of_night[<?php echo $destination_key;?>]" id="number_of_night<?php echo $destination_key;?>" placeholder="Number Of Nights" tabindex = "4" onblur="check_night()"/>
 																</div>
 																<div class="form-group col-md-3">
 																	<label for="inputName" class="control-label">Hotel Ratings<font color="#FF0000">*</font></label>
 																	<br/>
-																	<input type="checkbox" value="1" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(1, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;1&nbsp;&nbsp;<input type="checkbox" value="2" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(2, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;2&nbsp;&nbsp;<input type="checkbox"  value="3" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(3, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;3&nbsp;&nbsp;<input type="checkbox" value="4" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(4, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;4&nbsp;&nbsp;<input type="checkbox" value="5" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(5, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;5
+																	<input type="checkbox" value="1" name="hotel_ratings[<?php echo $destination_key;?>][]" <?php echo(isset($hotel_rating_arr) && !empty($hotel_rating_arr) && in_array(1, $hotel_rating_arr) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;1&nbsp;&nbsp;<input type="checkbox" value="2" name="hotel_ratings[<?php echo $destination_key;?>][]" <?php echo(isset($hotel_rating_arr) && !empty($hotel_rating_arr) && in_array(2, $hotel_rating_arr) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;2&nbsp;&nbsp;<input type="checkbox"  value="3" name="hotel_ratings[<?php echo $destination_key;?>][]" <?php echo(isset($hotel_rating_arr) && !empty($hotel_rating_arr) && in_array(3, $hotel_rating_arr) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;3&nbsp;&nbsp;<input type="checkbox" value="4" name="hotel_ratings[<?php echo $destination_key;?>][]" <?php echo(isset($hotel_rating_arr) && !empty($hotel_rating_arr) && in_array(4, $hotel_rating_arr) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;4&nbsp;&nbsp;<input type="checkbox" value="5" name="hotel_ratings[<?php echo $destination_key;?>][]" <?php echo(isset($hotel_rating_arr) && !empty($hotel_rating_arr) && in_array(5, $hotel_rating_arr) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;5
 																</div>
 															</div>
 															<?php
-																foreach;
+																endforeach;
+																$next_index=$destination_key+1;
 															}
 															else
 															{
@@ -1347,422 +1350,201 @@
 														</div>
 														<div class="box-body">
 															<div class="form-group col-md-12">
-																<a href = "javascript:void(0);" class="add-row"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>plus-icon.png" border = "0" alt = "" /></a>&nbsp;&nbsp;<b>ADD ANOTHER DESTINATION</b>&nbsp;&nbsp;<a href = "javascript:void(0);" class="delete-row"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>minus-icon.png" border = "0" alt = "" /></a>
+																<a href = "javascript:void(0);" class="add-row" data-attr_key="<?php echo $next_index;?>"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>plus-icon.png" border = "0" alt = "" /></a>&nbsp;&nbsp;<b>ADD ANOTHER DESTINATION</b>&nbsp;&nbsp;<a href = "javascript:void(0);" class="delete-row"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>minus-icon.png" border = "0" alt = "" /></a>
 															</div>
 														</div>
 														<div class="box-body">
+														</div>
+														<div class="box-body" style = "border:1px solid gray;">
 															<div class="form-group col-md-4">
 																<label for="inputName" class="control-label">Nationality<font color="#FF0000">*</font></label>
-																<select class="form-control validate[optional]" name="sel_nationality" id="sel_nationality"> 
-																	<option value="">  - Select -  </option>
-																	<option label="Afghanistani" value="AF">Afghanistani</option>
-																	<option label="Algerian" value="123">Algerian</option>
-																	<option label="American" value="69">American</option>
-																	<option label="Andorran" value="108">Andorran</option>
-																	<option label="Anguillan" value="166">Anguillan</option>
-																	<option label="Armenian" value="147">Armenian</option>
-																	<option label="Aruban" value="100">Aruban</option>
-																	<option label="Australian" value="1">Australian</option>
-																	<option label="Austrian" value="2">Austrian</option>
-																	<option label="Azerbaijani" value="142">Azerbaijani</option>
-																	<option label="Bahamian" value="101">Bahamian</option>
-																	<option label="Bahraini" value="106">Bahraini</option>
-																	<option label="Bangladeshi" value="3">Bangladeshi</option>
-																	<option label="Barbadian" value="102">Barbadian</option>
-																	<option label="Batswana" value="190">Batswana</option>
-																	<option label="Belarusian" value="141">Belarusian</option>
-																	<option label="Belgian" value="4">Belgian</option>
-																	<option label="Belizean" value="158">Belizean</option>
-																	<option label="Bolivian" value="169">Bolivian</option>
-																	<option label="Brazilian" value="5">Brazilian</option>
-																	<option label="British" value="68">British</option>
-																	<option label="Bruneian" value="89">Bruneian</option>
-																	<option label="Bulgarian" value="6">Bulgarian</option>
-																	<option label="Burkinabe" value="178">Burkinabe</option>
-																	<option label="Burundian" value="180">Burundian</option>
-																	<option label="Cambodian" value="90">Cambodian</option>
-																	<option label="Cameroonian" value="160">Cameroonian</option>
-																	<option label="Canadian" value="7">Canadian</option>
-																	<option label="Caymanian" value="105">Caymanian</option>
-																	<option label="Chadian" value="181">Chadian</option>
-																	<option label="Chilean" value="9">Chilean</option>
-																	<option label="Chinese" value="10">Chinese</option>
-																	<option label="Colombian" value="87">Colombian</option>
-																	<option label="Comorian" value="777">Comorian</option>
-																	<option label="Congo" value="203">Congo</option>
-																	<option label="Cook Islander" value="194">Cook Islander</option>
-																	<option label="Costa Rican" value="150">Costa Rican</option>
-																	<option label="Cote D Ivoire" value="177">Cote D Ivoire</option>
-																	<option label="Croatian" value="11">Croatian</option>
-																	<option label="Cuba" value="88">Cuba</option>
-																	<option label="Cypriot" value="12">Cypriot</option>
-																	<option label="Czech" value="13">Czech</option>
-																	<option label="Danish" value="14">Danish</option>
-																	<option label="Dominican (Dominican Republic)" value="91">Dominican (Dominican Republic)</option>
-																	<option label="Dutch" value="24">Dutch</option>
-																	<option label="Egyptian" value="EGY">Egyptian</option>
-																	<option label="Emirati" value="67">Emirati</option>
-																	<option label="Eritrean" value="201">Eritrean</option>
-																	<option label="Estonian" value="17">Estonian</option>
-																	<option label="Ethiopian" value="84">Ethiopian</option>
-																	<option label="Faroese" value="76">Faroese</option>
-																	<option label="Finnish" value="18">Finnish</option>
-																	<option label="French" value="19">French</option>
-																	<option label="French Polynesian" value="62">French Polynesian</option>
-																	<option label="Gambian" value="164">Gambian</option>
-																	<option label="Georgian" value="118">Georgian</option>
-																	<option label="German" value="21">German</option>
-																	<option label="Ghanaian" value="124">Ghanaian</option>
-																	<option label="Gibraltarian" value="77">Gibraltarian</option>
-																	<option label="Greek" value="22">Greek</option>
-																	<option label="Greenlandic" value="191">Greenlandic</option>
-																	<option label="Grenadian" value="115">Grenadian</option>
-																	<option label="Guamanian" value="110">Guamanian</option>
-																	<option label="Guatemalan" value="119">Guatemalan</option>
-																	<option label="Guinean" value="183">Guinean</option>
-																	<option label="Haitian" value="86">Haitian</option>
-																	<option label="Hongkonger" value="HKG">Hongkonger</option>
-																	<option label="Hungarian" value="26">Hungarian</option>
-																	<option label="Icelander" value="107">Icelander</option>
-																	<option label="Indian" value="27" selected="selected">Indian</option>
-																	<option label="Indonesian" value="28">Indonesian</option>
-																	<option label="Iranian" value="78">Iranian</option>
-																	<option label="Iraqi" value="79">Iraqi</option>
-																	<option label="Irish" value="29">Irish</option>
-																	<option label="Isreali" value="30">Isreali</option>
-																	<option label="Italian" value="31">Italian</option>
-																	<option label="Jamaican" value="32">Jamaican</option>
-																	<option label="Japanese" value="33">Japanese</option>
-																	<option label="Jordanian" value="34">Jordanian</option>
-																	<option label="Kazakh" value="173">Kazakh</option>
-																	<option label="Kenyan" value="80">Kenyan</option>
-																	<option label="Korean" value="57">Korean</option>
-																	<option label="Kuwaiti" value="KW">Kuwaiti</option>
-																	<option label="Kyrgyzstani" value="175">Kyrgyzstani</option>
-																	<option label="Lao" value="159">Lao</option>
-																	<option label="Latvian" value="36">Latvian</option>
-																	<option label="Lebanese" value="37">Lebanese</option>
-																	<option label="Liberian" value="192">Liberian</option>
-																	<option label="Libyan" value="172">Libyan</option>
-																	<option label="Liechtenstein" value="154">Liechtenstein</option>
-																	<option label="Lithuanian" value="120">Lithuanian</option>
-																	<option label="Luxembourger" value="38">Luxembourger</option>
-																	<option label="Malaysian" value="39">Malaysian</option>
-																	<option label="Maldivian" value="40">Maldivian</option>
-																	<option label="Maltese" value="41">Maltese</option>
-																	<option label="Martiniquais" value="153">Martiniquais</option>
-																	<option label="Mauritanian" value="185">Mauritanian</option>
-																	<option label="Mexican" value="43">Mexican</option>
-																	<option label="Micronesian" value="195">Micronesian</option>
-																	<option label="Moldovan" value="113">Moldovan</option>
-																	<option label="Monacan" value="85">Monacan</option>
-																	<option label="Mongolia" value="193">Mongolia</option>
-																	<option label="Montenegrin" value="200">Montenegrin</option>
-																	<option label="Moroccan" value="44">Moroccan</option>
-																	<option label="Mozambican" value="204">Mozambican</option>
-																	<option label="Myanmari" value="148">Myanmari</option>
-																	<option label="Namibian" value="161">Namibian</option>
-																	<option label="Nepalese" value="45">Nepalese</option>
-																	<option label="New Caledonian" value="122">New Caledonian</option>
-																	<option label="New Zealander" value="46">New Zealander</option>
-																	<option label="Nigerian" value="152">Nigerian</option>
-																	<option label="Norwegian" value="47">Norwegian</option>
-																	<option label="Omani" value="146">Omani</option>
-																	<option label="Pakistani" value="97">Pakistani</option>
-																	<option label="Palestinian" value="198">Palestinian</option>
-																	<option label="Panamanian" value="162">Panamanian</option>
-																	<option label="Paraguayan" value="149">Paraguayan</option>
-																	<option label="Peruvian" value="98">Peruvian</option>
-																	<option label="Philippine" value="48">Philippine</option>
-																	<option label="Polish" value="49">Polish</option>
-																	<option label="Portuguese" value="50">Portuguese</option>
-																	<option label="Puerto Rican" value="51">Puerto Rican</option>
-																	<option label="Qatari" value="168">Qatari</option>
-																	<option label="Romanian" value="52">Romanian</option>
-																	<option label="Russian" value="53">Russian</option>
-																	<option label="Rwandan" value="186">Rwandan</option>
-																	<option label="Salvadoran" value="157">Salvadoran</option>
-																	<option label="San Marino" value="54">San Marino</option>
-																	<option label="Saudi" value="95">Saudi</option>
-																	<option label="Senegalese" value="130">Senegalese</option>
-																	<option label="Serbian" value="109">Serbian</option>
-																	<option label="Seychellois" value="81">Seychellois</option>
-																	<option label="Singaporean" value="55">Singaporean</option>
-																	<option label="Slovakian" value="94">Slovakian</option>
-																	<option label="Slovenian" value="99">Slovenian</option>
-																	<option label="South African" value="56">South African</option>
-																	<option label="Spanish" value="58">Spanish</option>
-																	<option label="Sri Lankan" value="59">Sri Lankan</option>
-																	<option label="Sudanese" value="151">Sudanese</option>
-																	<option label="Surinamese" value="188">Surinamese</option>
-																	<option label="Swazi" value="199">Swazi</option>
-																	<option label="Swedish" value="60">Swedish</option>
-																	<option label="Swiss" value="61">Swiss</option>
-																	<option label="Syrian Arab Republic" value="74">Syrian Arab Republic</option>
-																	<option label="Taiwanese" value="63">Taiwanese</option>
-																	<option label="Tajikistani" value="170">Tajikistani</option>
-																	<option label="Tanzanian" value="112">Tanzanian</option>
-																	<option label="Thai" value="64">Thai</option>
-																	<option label="Tunisian" value="75">Tunisian</option>
-																	<option label="Turkish" value="65">Turkish</option>
-																	<option label="Ugandan" value="171">Ugandan</option>
-																	<option label="Ukrainian" value="66">Ukrainian</option>
-																	<option label="Uruguayan" value="70">Uruguayan</option>
-																	<option label="Us Citizens" value="184">Us Citizens</option>
-																	<option label="Uzbekistani" value="117">Uzbekistani</option>
-																	<option label="Venezuelan" value="71">Venezuelan</option>
-																	<option label="Verdean" value="139">Verdean</option>
-																	<option label="Vietnamese" value="72">Vietnamese</option>
-																	<option label="Yemeni" value="83">Yemeni</option>
-																	<option label="Zambian" value="189">Zambian</option>
-																	<option label="Zimbabwe" value="121">Zimbabwe</option>
+																<select class="form-control validate[required]" name="sel_nationality" id="sel_nationality"> 
+																	<option value = "">Select Nationality</option>
+																	<?php
+																	if(!empty($contry_list)):
+																		foreach($contry_list as $country_key=>$country_val):
+																	?>
+																		<option value = "<?php echo $country_val['id'];?>" <?php echo(isset($_POST['sel_nationality']) && $_POST['sel_nationality']==$country_val['id'] ? 'selected="selected"' : "");?>><?php echo $country_val['name'];?></option>
+																	<?php
+																		endforeach;
+																	endif;
+																	?>
 																</select>
 															</div>
 															<div class="form-group col-md-4">
 																<label for="inputName" class="control-label">Country Of Residence<font color="#FF0000">*</font></label>
-																<select class="form-control validate[optional]" name="sel_nationality" id="sel_nationality"> 
-																	<option value="">  - Select -  </option>
-																	<option label="Afghanistani" value="AF">Afghanistani</option>
-																	<option label="Algerian" value="123">Algerian</option>
-																	<option label="American" value="69">American</option>
-																	<option label="Andorran" value="108">Andorran</option>
-																	<option label="Anguillan" value="166">Anguillan</option>
-																	<option label="Armenian" value="147">Armenian</option>
-																	<option label="Aruban" value="100">Aruban</option>
-																	<option label="Australian" value="1">Australian</option>
-																	<option label="Austrian" value="2">Austrian</option>
-																	<option label="Azerbaijani" value="142">Azerbaijani</option>
-																	<option label="Bahamian" value="101">Bahamian</option>
-																	<option label="Bahraini" value="106">Bahraini</option>
-																	<option label="Bangladeshi" value="3">Bangladeshi</option>
-																	<option label="Barbadian" value="102">Barbadian</option>
-																	<option label="Batswana" value="190">Batswana</option>
-																	<option label="Belarusian" value="141">Belarusian</option>
-																	<option label="Belgian" value="4">Belgian</option>
-																	<option label="Belizean" value="158">Belizean</option>
-																	<option label="Bolivian" value="169">Bolivian</option>
-																	<option label="Brazilian" value="5">Brazilian</option>
-																	<option label="British" value="68">British</option>
-																	<option label="Bruneian" value="89">Bruneian</option>
-																	<option label="Bulgarian" value="6">Bulgarian</option>
-																	<option label="Burkinabe" value="178">Burkinabe</option>
-																	<option label="Burundian" value="180">Burundian</option>
-																	<option label="Cambodian" value="90">Cambodian</option>
-																	<option label="Cameroonian" value="160">Cameroonian</option>
-																	<option label="Canadian" value="7">Canadian</option>
-																	<option label="Caymanian" value="105">Caymanian</option>
-																	<option label="Chadian" value="181">Chadian</option>
-																	<option label="Chilean" value="9">Chilean</option>
-																	<option label="Chinese" value="10">Chinese</option>
-																	<option label="Colombian" value="87">Colombian</option>
-																	<option label="Comorian" value="777">Comorian</option>
-																	<option label="Congo" value="203">Congo</option>
-																	<option label="Cook Islander" value="194">Cook Islander</option>
-																	<option label="Costa Rican" value="150">Costa Rican</option>
-																	<option label="Cote D Ivoire" value="177">Cote D Ivoire</option>
-																	<option label="Croatian" value="11">Croatian</option>
-																	<option label="Cuba" value="88">Cuba</option>
-																	<option label="Cypriot" value="12">Cypriot</option>
-																	<option label="Czech" value="13">Czech</option>
-																	<option label="Danish" value="14">Danish</option>
-																	<option label="Dominican (Dominican Republic)" value="91">Dominican (Dominican Republic)</option>
-																	<option label="Dutch" value="24">Dutch</option>
-																	<option label="Egyptian" value="EGY">Egyptian</option>
-																	<option label="Emirati" value="67">Emirati</option>
-																	<option label="Eritrean" value="201">Eritrean</option>
-																	<option label="Estonian" value="17">Estonian</option>
-																	<option label="Ethiopian" value="84">Ethiopian</option>
-																	<option label="Faroese" value="76">Faroese</option>
-																	<option label="Finnish" value="18">Finnish</option>
-																	<option label="French" value="19">French</option>
-																	<option label="French Polynesian" value="62">French Polynesian</option>
-																	<option label="Gambian" value="164">Gambian</option>
-																	<option label="Georgian" value="118">Georgian</option>
-																	<option label="German" value="21">German</option>
-																	<option label="Ghanaian" value="124">Ghanaian</option>
-																	<option label="Gibraltarian" value="77">Gibraltarian</option>
-																	<option label="Greek" value="22">Greek</option>
-																	<option label="Greenlandic" value="191">Greenlandic</option>
-																	<option label="Grenadian" value="115">Grenadian</option>
-																	<option label="Guamanian" value="110">Guamanian</option>
-																	<option label="Guatemalan" value="119">Guatemalan</option>
-																	<option label="Guinean" value="183">Guinean</option>
-																	<option label="Haitian" value="86">Haitian</option>
-																	<option label="Hongkonger" value="HKG">Hongkonger</option>
-																	<option label="Hungarian" value="26">Hungarian</option>
-																	<option label="Icelander" value="107">Icelander</option>
-																	<option label="Indian" value="27" selected="selected">Indian</option>
-																	<option label="Indonesian" value="28">Indonesian</option>
-																	<option label="Iranian" value="78">Iranian</option>
-																	<option label="Iraqi" value="79">Iraqi</option>
-																	<option label="Irish" value="29">Irish</option>
-																	<option label="Isreali" value="30">Isreali</option>
-																	<option label="Italian" value="31">Italian</option>
-																	<option label="Jamaican" value="32">Jamaican</option>
-																	<option label="Japanese" value="33">Japanese</option>
-																	<option label="Jordanian" value="34">Jordanian</option>
-																	<option label="Kazakh" value="173">Kazakh</option>
-																	<option label="Kenyan" value="80">Kenyan</option>
-																	<option label="Korean" value="57">Korean</option>
-																	<option label="Kuwaiti" value="KW">Kuwaiti</option>
-																	<option label="Kyrgyzstani" value="175">Kyrgyzstani</option>
-																	<option label="Lao" value="159">Lao</option>
-																	<option label="Latvian" value="36">Latvian</option>
-																	<option label="Lebanese" value="37">Lebanese</option>
-																	<option label="Liberian" value="192">Liberian</option>
-																	<option label="Libyan" value="172">Libyan</option>
-																	<option label="Liechtenstein" value="154">Liechtenstein</option>
-																	<option label="Lithuanian" value="120">Lithuanian</option>
-																	<option label="Luxembourger" value="38">Luxembourger</option>
-																	<option label="Malaysian" value="39">Malaysian</option>
-																	<option label="Maldivian" value="40">Maldivian</option>
-																	<option label="Maltese" value="41">Maltese</option>
-																	<option label="Martiniquais" value="153">Martiniquais</option>
-																	<option label="Mauritanian" value="185">Mauritanian</option>
-																	<option label="Mexican" value="43">Mexican</option>
-																	<option label="Micronesian" value="195">Micronesian</option>
-																	<option label="Moldovan" value="113">Moldovan</option>
-																	<option label="Monacan" value="85">Monacan</option>
-																	<option label="Mongolia" value="193">Mongolia</option>
-																	<option label="Montenegrin" value="200">Montenegrin</option>
-																	<option label="Moroccan" value="44">Moroccan</option>
-																	<option label="Mozambican" value="204">Mozambican</option>
-																	<option label="Myanmari" value="148">Myanmari</option>
-																	<option label="Namibian" value="161">Namibian</option>
-																	<option label="Nepalese" value="45">Nepalese</option>
-																	<option label="New Caledonian" value="122">New Caledonian</option>
-																	<option label="New Zealander" value="46">New Zealander</option>
-																	<option label="Nigerian" value="152">Nigerian</option>
-																	<option label="Norwegian" value="47">Norwegian</option>
-																	<option label="Omani" value="146">Omani</option>
-																	<option label="Pakistani" value="97">Pakistani</option>
-																	<option label="Palestinian" value="198">Palestinian</option>
-																	<option label="Panamanian" value="162">Panamanian</option>
-																	<option label="Paraguayan" value="149">Paraguayan</option>
-																	<option label="Peruvian" value="98">Peruvian</option>
-																	<option label="Philippine" value="48">Philippine</option>
-																	<option label="Polish" value="49">Polish</option>
-																	<option label="Portuguese" value="50">Portuguese</option>
-																	<option label="Puerto Rican" value="51">Puerto Rican</option>
-																	<option label="Qatari" value="168">Qatari</option>
-																	<option label="Romanian" value="52">Romanian</option>
-																	<option label="Russian" value="53">Russian</option>
-																	<option label="Rwandan" value="186">Rwandan</option>
-																	<option label="Salvadoran" value="157">Salvadoran</option>
-																	<option label="San Marino" value="54">San Marino</option>
-																	<option label="Saudi" value="95">Saudi</option>
-																	<option label="Senegalese" value="130">Senegalese</option>
-																	<option label="Serbian" value="109">Serbian</option>
-																	<option label="Seychellois" value="81">Seychellois</option>
-																	<option label="Singaporean" value="55">Singaporean</option>
-																	<option label="Slovakian" value="94">Slovakian</option>
-																	<option label="Slovenian" value="99">Slovenian</option>
-																	<option label="South African" value="56">South African</option>
-																	<option label="Spanish" value="58">Spanish</option>
-																	<option label="Sri Lankan" value="59">Sri Lankan</option>
-																	<option label="Sudanese" value="151">Sudanese</option>
-																	<option label="Surinamese" value="188">Surinamese</option>
-																	<option label="Swazi" value="199">Swazi</option>
-																	<option label="Swedish" value="60">Swedish</option>
-																	<option label="Swiss" value="61">Swiss</option>
-																	<option label="Syrian Arab Republic" value="74">Syrian Arab Republic</option>
-																	<option label="Taiwanese" value="63">Taiwanese</option>
-																	<option label="Tajikistani" value="170">Tajikistani</option>
-																	<option label="Tanzanian" value="112">Tanzanian</option>
-																	<option label="Thai" value="64">Thai</option>
-																	<option label="Tunisian" value="75">Tunisian</option>
-																	<option label="Turkish" value="65">Turkish</option>
-																	<option label="Ugandan" value="171">Ugandan</option>
-																	<option label="Ukrainian" value="66">Ukrainian</option>
-																	<option label="Uruguayan" value="70">Uruguayan</option>
-																	<option label="Us Citizens" value="184">Us Citizens</option>
-																	<option label="Uzbekistani" value="117">Uzbekistani</option>
-																	<option label="Venezuelan" value="71">Venezuelan</option>
-																	<option label="Verdean" value="139">Verdean</option>
-																	<option label="Vietnamese" value="72">Vietnamese</option>
-																	<option label="Yemeni" value="83">Yemeni</option>
-																	<option label="Zambian" value="189">Zambian</option>
-																	<option label="Zimbabwe" value="121">Zimbabwe</option>
+																<select class="form-control validate[required]" name="country_residance" id="country_residance"> 
+																	<option value = "">Select Country Of Residence</option>
+																<?php
+																if(!empty($contry_list)):
+																	foreach($contry_list as $country_key=>$country_val):
+																?>
+																	<option value = "<?php echo $country_val['id'];?>" <?php echo(isset($_POST['country_residance']) && $_POST['country_residance']==$country_val['id'] ? 'selected="selected"' : "");?>><?php echo $country_val['name'];?></option>
+																<?php
+																	endforeach;
+																endif;
+																?>
 																</select>
 															</div>
 															<div class="form-group col-md-4">
 																<label for="inputName" class="control-label">Invoice Currency<font color="#FF0000">*</font></label>
-																<select class="form-control validate[optional]" name="sel_currency" id="selected_currency">
-																	<option value="">-Select-</option>
-																	<option label="AED" value="AED">AED</option>
-																	<option label="AUD" value="AUD">AUD</option>
-																	<option label="EUR" value="EUR">EUR</option>
-																	<option label="GBP" value="GBP">GBP</option>
-																	<option label="IDR" value="IDR">IDR</option>
-																	<option label="INR" value="INR" selected="selected">INR</option>
-																	<option label="MYR" value="MYR">MYR</option>
-																	<option label="PHP" value="PHP">PHP</option>
-																	<option label="SGD" value="SGD">SGD</option>
-																	<option label="THB" value="THB">THB</option>
-																	<option label="USD" value="USD">USD</option>
+																<select class="form-control validate[required]" name="sel_currency" id="selected_currency">
+																	<option value="">Select</option>
+																<?php
+																if(!empty($currency_list)):
+																	foreach($currency_list as $currency_key=>$currency_val):
+																?>
+																	<option value = "<?php echo $currency_val['id'];?>" <?php echo(isset($_POST['sel_currency']) && $_POST['sel_currency']==$currency_val['id'] ? 'selected="selected"' : "");?>><?php echo $currency_val['currency_name']." (".$currency_val['currency_code'].")";?></option>
+																<?php
+																	endforeach;
+																endif;
+																?>
 																</select>
 															</div>
-														</div>
-														<div class="box-body">
+															<div class="clearfix"></div>
 															<div class="form-group col-md-2">
 																<label for="inputName" class="control-label">Number Of Rooms<font color="#FF0000">*</font></label>
-																<select class="form-control validate[optional]" name="rooms" id="rooms"> 
-																	<option value="">  - Select -  </option>
-																	<option label="1" value="1">1</option>
-																	<option label="2" value="2">2</option>
-																	<option label="3" value="3">3</option>
-																	<option label="4" value="4">4</option>
-																	<option label="5" value="5">5</option>
+																<select class="form-control validate[required]" name="rooms" id="rooms"> 
+																<?php
+																for($rooom_no=1;$rooom_no<=MAX_ROOM_NO;$rooom_no++)
+																{
+																?>
+																	<option label="<?php echo $rooom_no;?>" value="<?php echo $rooom_no;?>" <?php echo(isset($_POST['rooms']) && $_POST['rooms']==$rooom_no ? 'selected="selected"' : "");?>><?php echo $rooom_no;?></option>
+																<?php
+																}
+																?>
 																</select>
 															</div>
-															<div class="form-group col-md-2">
-																<label for="inputName" class="control-label">Adult<font color="#FF0000">*</font></label>
-																<select class="form-control validate[optional]" name="adult" id="adult"> 
-																	<option value="">  - Select -  </option>
-																	<option label="1" value="1">1</option>
-																	<option label="2" value="2">2</option>
-																	<option label="3" value="3">3</option>
-																	<option label="4" value="4">4</option>
-																	<option label="5" value="5">5</option>
-																	<option label="6" value="6">6</option>
-																	<option label="7" value="7">7</option>
-																	<option label="8" value="8">8</option>
-																	<option label="9" value="9">9</option>
-																	<option label="10" value="10">10</option>
-																</select>
+															<div class="col-md-10 all_adult_child_div">
+															<?php
+															if(isset($_POST['rooms']) && $_POST['rooms']!="")
+															{
+																for($i=0;$i<$_POST['rooms'];$i++)
+																{
+															?>
+																<div class="row each_adult_child_div">
+																	<div class="form-group col-md-3">
+																		<label for="inputName" class="control-label">Adult<font color="#FF0000">*</font></label>
+																		<select class="form-control validate[required]" name="adult[<?php echo $i;?>]" id="adult<?php echo $i;?>"> 
+																		<?php
+																		for($adult_no=1;$adult_no<=MAX_ADULT_NO;$adult_no++)
+																		{
+																		?>
+																			<option label="<?php echo $adult_no;?>" value="<?php echo $adult_no;?>" <?php echo(isset($_POST['adult'][$i]) && $_POST['adult'][$i]==$adult_no ? 'selected="selected"' : "");?>><?php echo $adult_no;?></option>
+																		<?php
+																		}
+																		?>
+																		</select>
+																	</div>
+																	<div class="form-group col-md-3">
+																		<label for="inputName" class="control-label">Child</label>
+																		<select class="form-control validate[optional]" name="child[<?php echo $i;?>]" id="child<?php echo $i;?>" onchange = "child_attribute($(this), <?php echo $i;?>);"> 
+																			<option value="">Select</option>
+																		<?php
+																		for($child_no=1;$child_no<=MAX_CHILD_NO;$child_no++)
+																		{
+																		?>
+																			<option label="<?php echo $child_no;?>" value="<?php echo $child_no;?>" <?php echo(isset($_POST['child'][$i]) && $_POST['child'][$i]==$child_no ? 'selected="selected"' : "");?>><?php echo $child_no;?></option>
+																		<?php
+																		}
+																		?>
+																		</select>
+																	</div>
+																	<?php
+																	if(isset($_POST['child_age'][$i]) && !empty($_POST['child_age'][$i]))
+																	{
+																	?>
+																	<div class="col-md-6 all_child_age_div<?php echo $i;?>">
+																	<?php
+																		foreach($_POST['child_age'][$i] as $child_age_key=>$child_age_val)
+																		{
+																	?>
+																		<div class="row each_child_age_div">
+																			<div class="form-group col-md-4">
+																				<label for="inputName" class="control-label">Age</label>
+																				<div class="form-group">
+																					<select class="form-control validate[optional]" name="child_age[<?php echo $i;?>][<?php echo $child_age_key;?>]" id="child_age<?php echo $i;?><?php echo $child_age_key;?>">
+																					<?php
+																					for($child_loop=1;$child_loop<=MAX_CHILD_AGE;$child_loop++)
+																					{
+																					?>
+																						<option label="<?php echo $child_loop;?>" value="<?php echo $child_loop;?>" <?php echo($child_age_val==$child_loop ? 'selected="selected"' : "");?>><?php echo $child_loop;?></option>
+																					<?php
+																					}
+																					?>
+																					</select>
+																				</div>
+																			</div>
+																			<div class="form-group col-md-8">
+																				<label for="inputName" class="control-label">Additional Bed Required</label>
+																				<select class="form-control validate[optional]" name="bed_required[<?php echo $i;?>][<?php echo $child_age_key;?>]" id="bed_required<?php echo $i;?><?php echo $child_age_key;?>">
+																					<option value="Yes" <?php echo(isset($_POST['bed_required'][$i][$child_age_key]) && isset($_POST['bed_required'][$i][$child_age_key])&& $_POST['bed_required'][$i][$child_age_key]=="Yes" ? 'selected="selected"' : "");?>>Yes</option>
+																					<option value="No" <?php echo(isset($_POST['bed_required'][$i][$child_age_key]) && isset($_POST['bed_required'][$i][$child_age_key])&& $_POST['bed_required'][$i][$child_age_key]=="No" ? 'selected="selected"' : "");?>>No</option>
+																				</select>
+																			</div>
+																		</div>
+																		<div class="clearfix"></div>
+																	<?php
+																		}
+																	?>
+																	</div>
+																	<?php
+																	}
+																	?>
+																	<div class="clearfix"></div>
+																</div>
+															<?php
+																}
+															}
+															else
+															{
+															?>
+																<div class="row each_adult_child_div">
+																	<div class="form-group col-md-3">
+																		<label for="inputName" class="control-label">Adult<font color="#FF0000">*</font></label>
+																		<select class="form-control validate[required]" name="adult[0]" id="adult0"> 
+																		<?php
+																		for($adult_no=1;$adult_no<=MAX_ADULT_NO;$adult_no++)
+																		{
+																		?>
+																			<option label="<?php echo $adult_no;?>" value="<?php echo $adult_no;?>"><?php echo $adult_no;?></option>
+																		<?php
+																		}
+																		?>
+																		</select>
+																	</div>
+																	<div class="form-group col-md-3">
+																		<label for="inputName" class="control-label">Child</label>
+																		<select class="form-control validate[optional]" name="child[0]" id="child0" onchange = "child_attribute($(this), 0);"> 
+																			<option value="">Select</option>
+																		<?php
+																		for($child_no=1;$child_no<=MAX_CHILD_NO;$child_no++)
+																		{
+																		?>
+																			<option label="<?php echo $child_no;?>" value="<?php echo $child_no;?>"><?php echo $child_no;?></option>
+																		<?php
+																		}
+																		?>
+																		</select>
+																	</div>
+																	<div class="col-md-6 hide_age_div all_child_age_div0">
+																		
+																	</div>
+																	<div class="clearfix"></div>
+																</div>
+															<?php
+															}
+															?>
 															</div>
-															<div class="form-group col-md-2">
-																<label for="inputName" class="control-label">Child<font color="#FF0000">*</font></label>
-																<select class="form-control validate[optional]" name="child" id="child" onchange = "child_attribute(this.value);"> 
-																	<option value="">  - Select -  </option>
-																	<option label="1" value="1">1</option>
-																	<option label="2" value="2">2</option>
-																	<option label="3" value="3">3</option>
-																</select>
-															</div>
-															<div class="form-group col-md-2" style = "display:none;" id = "child_age_div">
-																<label for="inputName" class="control-label">Age</label>
-																<select class="form-control validate[optional]" name="child_age" id="child_age">
-																	<option label="1" value="1">1</option>
-																	<option label="2" value="2">2</option>
-																	<option label="3" value="3">3</option>
-																	<option label="4" value="4">4</option>
-																	<option label="5" value="5">5</option>
-																</select>
-															</div>
-															<div class="form-group col-md-4" style = "display:none;" id = "bed_required_div">
-																<label for="inputName" class="control-label">Additional Bed Required</label>
-																<select class="form-control validate[optional]" name="bed_required" id="bed_required">
-																	<option label="Yes" value="Yes">Yes</option>
-																	<option label="No" value="No">No</option>
-																</select>
-															</div>
+															<div class="clearfix"></div>
 														</div>
+														<div class="clearfix"></div>
 													</div>
+													<div class="clearfix"></div>
+													<ul class="list-inline pull-right" style = "margin-top:25px;">
+														<li><button type="submit" class="btn btn-primary ">Search</button></li>
+													</ul>
 												</form>
-												<ul class="list-inline pull-right">
-													<li><button type="button" class="btn btn-primary next-step">Search</button></li>
-												</ul>
 											</div>
 											<div class="tab-pane" role="tabpanel" id="step2">
 												<h3>Search Hotels</h3>

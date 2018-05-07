@@ -38,7 +38,7 @@ if(isset($_GET['supplier_id']) && $_GET['supplier_id']!=""):
 						if(!empty($tm_supplier_template)):
 							$tm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[USERNAME]", "[PASSWORD]"), array($_POST['first_name'], $_POST['last_name'], $_POST['email_address'], $_POST['password']), $tm_supplier_template['template_body']);
 							//print_r($tm_mail_Body);exit;
-							@tools::Send_HTML_Mail($_POST['email_address'], FROM_EMAIL, '', $tm_supplier_template['template_subject'], $tm_mail_Body);
+							@tools::Send_SMTP_Mail($_POST['email_address'], FROM_EMAIL, '', $tm_supplier_template['template_subject'], $tm_mail_Body);
 						endif;
 						}
 						$_SESSION['SET_TYPE'] = 'success';

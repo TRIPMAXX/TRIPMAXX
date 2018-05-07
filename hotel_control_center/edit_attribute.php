@@ -13,9 +13,11 @@
 							if(tools::module_data_exists_check("attribute_name = '".tools::stripcleantohtml($_POST['attribute_name'])."' AND id <> ".$find_attribute['id']."", '', TM_ATTRIBUTES)):
 								$_SESSION['SET_TYPE']="error";
 								$_SESSION['SET_FLASH'] = 'This attribute name already exists.';		
-							elseif($save_attribute_data = tools::module_form_submission("", TM_ATTRIBUTES)):								
+							elseif($save_attribute_data = tools::module_form_submission("", TM_ATTRIBUTES)):
 								$_SESSION['SET_TYPE'] = 'success';
 								$_SESSION['SET_FLASH'] = 'Attribute has been updated successfully.';
+								header("location:attributes");
+								exit;
 							else:
 								$_SESSION['SET_TYPE'] = 'error';
 								$_SESSION['SET_FLASH'] = 'We are having some probem. Please try again later.';

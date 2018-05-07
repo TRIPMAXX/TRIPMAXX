@@ -35,14 +35,14 @@
 			//	$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
 			endif;
 			if(isset($_GET['agent_id']) && $_GET['agent_id']!=""):
-				$post_data['data']=$_GET;
+				$post_data['data']['agent_id']=base64_decode($_GET['agent_id']);
 				$post_data_str=json_encode($post_data);
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 				curl_setopt($ch, CURLOPT_HEADER, false);
 				curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
 				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-				curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/read.php");
+				curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/booking-agent.php");
 				curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 				$return_data = curl_exec($ch);
@@ -94,14 +94,20 @@
 		.cls_each_city_hotel_tab_div, .cls_each_city_tour_tab_div, .cls_each_city_transfer_tab_div{
 			padding: 5px;
 			text-align: center;
-			border:1px solid rgba(255, 0, 0, 0.32);
-			background: #868484;
-			color: white;
+			border-style:solid;
+			border-color:rgba(255, 0, 0, 0.32);
+			border-width:1px;
+			/*background: #868484;*/
+			color: #3c8dbc;
 			font-size: 18px;
 			cursor:pointer;
+			border-top-width:0px;
 		}
 		.cls_each_city_tab_div_active{
-			background: #5bc0de;
+			/*background: #5bc0de;*/
+			border-top-width:1px;
+			color: #000;
+			border-bottom-width:0px;
 		}
 	</style>
 	<!-- JAVASCRIPT CODE -->

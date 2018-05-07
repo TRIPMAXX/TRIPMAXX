@@ -15,51 +15,46 @@
 		$attribute_data=array();
 		if(!empty($return_data_arr)):
 			$attribute_data=$return_data_arr;
+		endif;		
+		$return_data_arr=tools::find("first", TM_HOTELS." as h, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci", 'h.*, co.name as co_name, s.name as s_name, ci.name as ci_name', "WHERE h.country=co.id AND h.state=s.id AND h.city=ci.id AND h.id=:id ", array(":id"=>($_SESSION['SESSION_DATA_HOTEL']['id'])));
+		//print_r($return_data_arr); exit;
+		
+		$hotel_data=array();
+		if(empty($return_data_arr)):
+			$_SESSION['SET_TYPE'] = 'error';
+			$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+			//header("location:dashboard");
+			//exit;
+		elseif(!empty($return_data_arr)):
+			$hotel_data=$return_data_arr;			
 		endif;
+
 		if(isset($_POST['btn_submit'])) {
 			$_POST['id']=$_SESSION['SESSION_DATA_HOTEL']['id'];
 			if(tools::verify_token($white_list_array, $_POST, $verify_token)) {
-				$_POST['uploaded_files']=array();
-				if(isset($_FILES["hotel_images"])){
-					foreach($_FILES["hotel_images"]['name'] as $file_key=>$file_val):
-						$extension = pathinfo($file_val, PATHINFO_EXTENSION);
-						//$splited_name=explode(".", $file_val);
-						//$extension = end($splited_name);
-						$validation_array = array('jpg', 'jpeg', 'png', 'gif', 'bmp');
-						if(in_array(strtolower($extension), $validation_array)) {
-							$data = file_get_contents($_FILES["hotel_images"]['tmp_name'][$file_key]);
-							$base64 = 'data:image/' . $extension . ';base64,' . base64_encode($data);
-							array_push($_POST['uploaded_files'], curl_file_create($base64, $_FILES["hotel_images"]['type'][$file_key], $_FILES["hotel_images"]['name'][$file_key]));
-						}
-					endforeach;
-				}
 				$_POST['id']=$_SESSION['SESSION_DATA_HOTEL']['id'];
 				$check_flag=true;
-				if(tools::module_data_exists_check("hotel_name = '".tools::stripcleantohtml($_POST['hotel_name'])."' AND id <> ".$find_hotel['id']."", '', TM_HOTELS)) {
-				$check_flag=false;
-				$_SESSION['SET_TYPE']="error";
-				$return_data['msg'] = 'This hotel name already exists.';		
-				}elseif(tools::module_data_exists_check("email_address = '".tools::stripcleantohtml($_POST['email_address'])."' AND id <> ".$find_hotel['id']."", '', TM_HOTELS)) {
+				if(tools::module_data_exists_check("hotel_name = '".tools::stripcleantohtml($_POST['hotel_name'])."' AND id <> ".$_POST['id']."", '', TM_HOTELS)) {
 					$check_flag=false;
 					$_SESSION['SET_TYPE']="error";
-					$return_data['msg'] = 'This email address already exists.';		
+					$_SESSION['SET_FLASH'] = 'This hotel name already exists.';		
+				}elseif(tools::module_data_exists_check("email_address = '".tools::stripcleantohtml($_POST['email_address'])."' AND id <> ".$_POST['id']."", '', TM_HOTELS)) {
+					$check_flag=false;
+					$_SESSION['SET_TYPE']="error";
+					$_SESSION['SET_FLASH'] = 'This email address already exists.';		
 				}
 				if($check_flag==true):
-					$_POST['hotel_images']=$find_hotel['hotel_images'];
-					if(isset($_POST['uploaded_files']) && !empty($_POST['uploaded_files']))
-					{
-						foreach($_POST['uploaded_files'] as $file_key=>$file_val):
-							$random_number = tools::create_password(5);
-							$extension = pathinfo($file_val['postname'], PATHINFO_EXTENSION);
-							$file_name = str_replace(" ", '' , $random_number."_".$file_val['postname']);
-							//echo $file_val['name']."<br/>";
-							//echo HOTEL_IMAGES.$file_name."<br/>";
-							$img = str_replace('data:image/'.$extension.';base64,', '', $file_val['name']);
-							$img = str_replace(' ', '+', $img);
-							$data_img_str = base64_decode($img);
-							file_put_contents(HOTEL_IMAGES.$file_name, $data_img_str);
-							//move_uploaded_file($file_val['name'], HOTEL_IMAGES.$file_name);
-							$_POST['hotel_images'].=($_POST['hotel_images']!="" ? "," : "").$file_name;
+					$_POST['hotel_images']=$hotel_data['hotel_images'];
+					if(isset($_FILES["hotel_images"])){
+						foreach($_FILES["hotel_images"]['name'] as $file_key=>$file_val):
+							$extension = pathinfo($file_val, PATHINFO_EXTENSION);
+							$validation_array = array('jpg', 'jpeg', 'png', 'gif', 'bmp');
+							if(in_array(strtolower($extension), $validation_array)) {
+								$random_number = tools::create_password(5);
+								$file_name = str_replace(" ", '' , $random_number."_".$file_val);
+								move_uploaded_file($_FILES["hotel_images"]['tmp_name'][$file_key], HOTEL_IMAGES.$file_name);
+								$_POST['hotel_images'].=($_POST['hotel_images']!="" ? "," : "").$file_name;
+							}
 						endforeach;
 					}
 					if($save_hotel_data = tools::module_form_submission("", TM_HOTELS)):
@@ -77,19 +72,7 @@
 				$_SESSION['SET_TYPE'] = 'error';
 				$_SESSION['SET_FLASH'] = 'Access token mismatch. Please reload the page & try again.';
 			}
-		}
-		$return_data_arr=tools::find("first", TM_HOTELS." as h, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci", 'h.*, co.name as co_name, s.name as s_name, ci.name as ci_name', "WHERE h.country=co.id AND h.state=s.id AND h.city=ci.id AND h.id=:id ", array(":id"=>($_SESSION['SESSION_DATA_HOTEL']['id'])));
-		//print_r($return_data_arr); exit;
-		
-		$hotel_data=array();
-		if(empty($return_data_arr)):
-			$_SESSION['SET_TYPE'] = 'error';
-			$_SESSION['SET_FLASH']="Some error has been occure during execution.";
-			header("location:dashboard");
-			exit;
-		elseif(!empty($return_data_arr)):
-			$hotel_data=$return_data_arr;			
-		endif;		
+		};
 	else:
 		$_SESSION['SET_TYPE'] = 'error';
 		$_SESSION['SET_FLASH'] = 'Some data missing.';

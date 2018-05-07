@@ -18,22 +18,7 @@
 				else:
 					$_POST['amenities']=implode(",", $_POST['amenities_arr']);
 					if(tools::verify_token($white_list_array, $_POST, $verify_token)) {
-						$_POST['uploaded_files']=array();
-						if(isset($_FILES["room_images"])){
-							foreach($_FILES["room_images"]['name'] as $file_key=>$file_val):
-								$extension = pathinfo($file_val, PATHINFO_EXTENSION);
-								//$splited_name=explode(".", $file_val);
-								//$extension = end($splited_name);
-								$validation_array = array('jpg', 'jpeg', 'png', 'gif', 'bmp');
-								if(in_array(strtolower($extension), $validation_array)) {
-									$data = file_get_contents($_FILES["room_images"]['tmp_name'][$file_key]);
-									$base64 = 'data:image/' . $extension . ';base64,' . base64_encode($data);
-									array_push($_POST['uploaded_files'], curl_file_create($base64, $_FILES["room_images"]['type'][$file_key], $_FILES["room_images"]['name'][$file_key]));
-								}
-							endforeach;
-						}
 						$_POST['hotel_id']=$_SESSION['SESSION_DATA_HOTEL']['id'];
-						
 						if(tools::module_data_exists_check("room_type = '".tools::stripcleantohtml($_POST['room_type'])."' AND hotel_id='".tools::stripcleantohtml($_POST['hotel_id'])."'", '', TM_ROOMS)) 
 						{
 							$_SESSION['SET_TYPE']="error";
@@ -42,22 +27,18 @@
 						else 
 						{ 
 							$_POST['room_images']="";
-							if(isset($_POST['uploaded_files']) && !empty($_POST['uploaded_files']))
-							{
-								foreach($_POST['uploaded_files'] as $file_key=>$file_val):									
-									$random_number = tools::create_password(5);
-									$extension = pathinfo($file_val->postname, PATHINFO_EXTENSION);
-									$file_name = str_replace(" ", '' , $random_number."_".$file_val->postname);						
-									$img = str_replace('data:image/'.$extension.';base64,', '', $file_val->name);
-									$img = str_replace(' ', '+', $img); 
-									$data_img_str = base64_decode($img); 
-									
-									file_put_contents(ROOM_IMAGES.$file_name, $data_img_str);									
-									$_POST['room_images'].=($_POST['room_images']!="" ? "," : "").$file_name;
-									
+							if(isset($_FILES["room_images"])){
+								foreach($_FILES["room_images"]['name'] as $file_key=>$file_val):
+									$extension = pathinfo($file_val, PATHINFO_EXTENSION);
+									$validation_array = array('jpg', 'jpeg', 'png', 'gif', 'bmp');
+									if(in_array(strtolower($extension), $validation_array)) {
+										$random_number = tools::create_password(5);
+										$file_name = str_replace(" ", '' , $random_number."_".$file_val);
+										move_uploaded_file($_FILES["room_images"]['tmp_name'][$file_key], ROOM_IMAGES.$file_name);
+										$_POST['room_images'].=($_POST['room_images']!="" ? "," : "").$file_name;
+									}
 								endforeach;
 							}
-							
 							if($save_hotel = tools::module_form_submission($uploaded_file_json_data, TM_ROOMS)) {
 								$_SESSION['SET_TYPE']="success";
 								$_SESSION['SET_FLASH'] = 'Room has been created successfully.';
@@ -98,20 +79,6 @@
 	CKEDITOR.config.protectedSource.push(/<i[^>]*><\/i>/g);
 	CKEDITOR.config.allowedContent = true;
 	</script>
-	<script>
-	$( function() {
-		$( "#start_date1" ).datepicker();
-		$( "#end_date1" ).datepicker();
-		$( "#start_date2" ).datepicker();
-		$( "#end_date2" ).datepicker();
-		$( "#start_date3" ).datepicker();
-		$( "#end_date3" ).datepicker();
-		$( "#start_date4" ).datepicker();
-		$( "#end_date4" ).datepicker();
-		$( "#start_date5" ).datepicker();
-		$( "#end_date5" ).datepicker();
-	} );
-	</script>
 	<!-- JAVASCRIPT CODE -->
 </head>
 <body class="skin-purple">
@@ -128,7 +95,7 @@
 		<!-- BODY -->
 		<div class="content-wrapper">
             <section class="content-header">
-               <h1>Create New Room For "<?php echo(isset($_SESSION['SESSION_DATA_HOTEL']['hotel_name']) && $_SESSION['SESSION_DATA_HOTEL']['hotel_name']!='' ? $_SESSION['SESSION_DATA_HOTEL']['hotel_name'] : "N/A");?>"</h1>
+               <h1>Create New Room <!-- For "<?php echo(isset($_SESSION['SESSION_DATA_HOTEL']['hotel_name']) && $_SESSION['SESSION_DATA_HOTEL']['hotel_name']!='' ? $_SESSION['SESSION_DATA_HOTEL']['hotel_name'] : "N/A");?>" --></h1>
                <ol class="breadcrumb">
                   <li><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
                   <li class="active">Create New Room</li>
@@ -154,7 +121,7 @@
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-12">
-											<label for="inputName" class="control-label">Room Description<font color="#FF0000">*</font></label>
+											<label for="inputName" class="control-label">Room Description<!-- <font color="#FF0000">*</font> --></label>
 											<textarea class="form-control ckeditor validate[required]" name="room_description" id="room_description" placeholder="Room Description" tabindex = "3"><?php echo(isset($_POST['room_description']) && $_POST['room_description']!='' ? $_POST['room_description'] : "");?></textarea>
 										</div>
 										<div class="form-group col-md-12">

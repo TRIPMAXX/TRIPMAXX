@@ -49,6 +49,9 @@
 				header("location:bookings");
 				exit;
 			endif;
+			if(isset($_GET['agent_id']) && $_GET['agent_id']!=""):
+				$post_data_booking['data']['agent_id']=base64_decode($_GET['agent_id']);
+			endif;
 			$post_data_str_booking=json_encode($post_data_booking);
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -231,8 +234,8 @@
 													</td>
 													<td class=" " data-title="Action">
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>view_booking?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "View Booking Details"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
-														<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>booking_voucher?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "Generate Vouchers"><i class="fa fa-file fa-1x" ></i></a>&nbsp;&nbsp;
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_booking?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "Edit Booking"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp; -->
+														<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>booking_voucher?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "Generate Vouchers"><i class="fa fa-file fa-1x" ></i></a>&nbsp;&nbsp; -->
+														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_booking?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "Edit Booking"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>bookings?del_booking_id=<?php echo base64_encode($book_val['id']);?>"  title = "Delete Booking" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
 													</td>
 												</tr>

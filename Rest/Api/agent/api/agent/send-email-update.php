@@ -45,21 +45,21 @@
 				if(!empty($email_template)):
 					$agent_url_details="";
 					$agent_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($find_agent['first_name'], $find_agent['last_name'], $agent_url_details), $email_template['template_body']);
-					@tools::Send_HTML_Mail($find_agent['email_address'], FROM_EMAIL, '', $email_template['template_subject'], $agent_mail_Body);
+					@tools::Send_SMTP_Mail($find_agent['email_address'], FROM_EMAIL, '', $email_template['template_subject'], $agent_mail_Body);
 				endif;
 				if(isset($find_agent['parent_id']) && $find_agent['parent_id'] > 0):
 					$find_gsm = tools::find("first", TM_AGENT, '*', "WHERE id=:id ", array(":id"=>$find_agent['parent_id']));
 					if(!empty($email_template)):
 						$gsm_url_details="";
 						$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($find_gsm['first_name'], $find_gsm['last_name'], $gsm_url_details), $email_template['template_body']);
-						@tools::Send_HTML_Mail($find_gsm['email_address'], FROM_EMAIL, '', $email_template['template_subject'], $gsm_mail_Body);
+						@tools::Send_SMTP_Mail($find_gsm['email_address'], FROM_EMAIL, '', $email_template['template_subject'], $gsm_mail_Body);
 					endif;
 				endif;
 			elseif($find_agent['type']=="G"):
 				if(!empty($email_template)):
 					$gsm_url_details="";
 					$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($find_agent['first_name'], $find_agent['last_name'], $gsm_url_details), $email_template['template_body']);
-					@tools::Send_HTML_Mail($find_agent['email_address'], FROM_EMAIL, '', $email_template['template_subject'], $gsm_mail_Body);
+					@tools::Send_SMTP_Mail($find_agent['email_address'], FROM_EMAIL, '', $email_template['template_subject'], $gsm_mail_Body);
 				endif;
 			endif;
 			$return_data['status']="success";

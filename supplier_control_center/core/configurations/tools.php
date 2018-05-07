@@ -1,4 +1,7 @@
 <?php
+
+	include_once ("core/configurations/class.phpmailer.php");
+	include_once ("core/configurations/class.smtp.php");
 /*
 =========================================================================================================================
 COPYRIGHT: NEO CODERZ TECHNOLOGIES
@@ -199,8 +202,6 @@ class tools {
 	* @returns true or false.
 	*/
 	public static function Send_SMTP_Mail($mail_To, $mail_From, $mail_CC, $mail_subject, $mail_Body) {
-		include_once ("core/configurations/class.phpmailer.php");
-		include_once ("core/configurations/class.smtp.php");
 		$mail = new PHPMailer();
 		$mail->IsSMTP(); 
 		$mail->Host = "localhost";

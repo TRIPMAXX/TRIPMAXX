@@ -9,7 +9,7 @@
 	$verify_token_2 = "edit_agent_markup";
 	if(isset($_GET['room_id']) && $_GET['room_id']!="")
 	{		
-		$attribute_list = tools::find("all", TM_ATTRIBUTES, '*', "WHERE :all ", array(":all"=>1));		
+		$attribute_list = tools::find("all", TM_ATTRIBUTES, '*', "WHERE status=:status AND type=:type ORDER BY serial_number ", array(":status"=>1, ":type"=>"Room"));		
 		$attribute_data=array();
 		if(!empty($attribute_list)):
 			$attribute_data = $attribute_list;		
@@ -26,9 +26,9 @@
 				$room_price_data=$room_price_list;
 			endif;
 			
-			$return_data_arr = tools::find("all", TM_ROOM_AGENT_MARKUP, '*', "WHERE room_id=:room_id ", array(":room_id"=>($room_data['id'])));
+			$return_data_agent_arr = tools::find("all", TM_ROOM_AGENT_MARKUP, '*', "WHERE room_id=:room_id ", array(":room_id"=>($room_data['id'])));
 			$room_markup_data=array();
-			if(!empty($return_data_arr)):
+			if(!empty($return_data_agent_arr)):
 				$room_markup_data=$return_data_arr;
 			endif;
 
@@ -100,42 +100,26 @@
 				else:
 					$_POST['amenities']=implode(",", $_POST['amenities_arr']);
 					if(tools::verify_token($white_list_array, $_POST, $verify_token)) {
-						$_POST['uploaded_files']=array();
-						if(isset($_FILES["room_images"])){
-							foreach($_FILES["room_images"]['name'] as $file_key=>$file_val):
-								$extension = pathinfo($file_val, PATHINFO_EXTENSION);								
-								$validation_array = array('jpg', 'jpeg', 'png', 'gif', 'bmp');
-								if(in_array(strtolower($extension), $validation_array)) {
-									$data = file_get_contents($_FILES["room_images"]['tmp_name'][$file_key]);
-									$base64 = 'data:image/' . $extension . ';base64,' . base64_encode($data);
-									array_push($_POST['uploaded_files'], curl_file_create($base64, $_FILES["room_images"]['type'][$file_key], $_FILES["room_images"]['name'][$file_key]));
-								}
-							endforeach;
-						}
 						if(tools::module_data_exists_check("room_type = '".tools::stripcleantohtml($_POST['room_type'])."' AND id <> ".$_POST['id']."", '', TM_ROOMS)) {
 							$_SESSION['SET_TYPE']="error";
 							$_SESSION['SET_FLASH'] = 'This room type already exists.';		
 						}
 						else
+						{
 							$_POST['room_images']=$return_data_arr['room_images'];
-							if(isset($_POST['uploaded_files']) && !empty($_POST['uploaded_files']))
-							{
-								foreach($_POST['uploaded_files'] as $file_key=>$file_val):
-									$random_number = tools::create_password(5);
-									$extension = pathinfo($file_val->postname, PATHINFO_EXTENSION);
-									$file_name = str_replace(" ", '' , $random_number."_".$file_val->postname);
-									//echo $file_val['name']."<br/>";
-									//echo HOTEL_IMAGES.$file_name."<br/>";
-									$img = str_replace('data:image/'.$extension.';base64,', '', $file_val->name);
-									$img = str_replace(' ', '+', $img);
-									$data_img_str = base64_decode($img);
-									file_put_contents(ROOM_IMAGES.$file_name, $data_img_str);
-									//move_uploaded_file($file_val['name'], HOTEL_IMAGES.$file_name);
-									$_POST['room_images'].=($_POST['room_images']!="" ? "," : "").$file_name;
+							if(isset($_FILES["room_images"])){
+								foreach($_FILES["room_images"]['name'] as $file_key=>$file_val):
+									$extension = pathinfo($file_val, PATHINFO_EXTENSION);							
+									$validation_array = array('jpg', 'jpeg', 'png', 'gif', 'bmp');
+									if(in_array(strtolower($extension), $validation_array)) {
+										$random_number = tools::create_password(5);
+										$file_name = str_replace(" ", '' , $random_number."_".$file_val);
+										move_uploaded_file($_FILES["room_images"]['tmp_name'][$file_key], ROOM_IMAGES.$file_name);
+										$_POST['room_images'].=($_POST['room_images']!="" ? "," : "").$file_name;
+									}
 								endforeach;
 							}
 							if($save_hotel_data = tools::module_form_submission("", TM_ROOMS)):
-								$find_updated_room = tools::find("first", TM_ROOMS, '*', "WHERE id=:id", array(":id"=>$find_room['id']));
 								$_SESSION['SET_TYPE'] = 'success';
 								$_SESSION['SET_FLASH'] = 'Room has been updated successfully.';
 								header("location:rooms");
@@ -143,7 +127,8 @@
 							else:
 								$_SESSION['SET_TYPE'] = 'error';
 								$_SESSION['SET_FLASH'] = 'We are having some probem. Please try again later.';
-							endif;						
+							endif;
+						}
 					};
 				endif;
 			};
@@ -195,7 +180,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>EDIT ROOM</title>
+	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER_HOTEL);?>EDIT ROOM</title>
 	<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
 	<!-- JAVASCRIPT CODE -->
 	<script type="text/javascript">
@@ -271,7 +256,7 @@
 		<!-- BODY -->
 		<div class="content-wrapper">
             <section class="content-header">
-               <h1>Edit Room For "<?php echo(isset($_SESSION['SESSION_DATA_HOTEL']['hotel_name']) && $_SESSION['SESSION_DATA_HOTEL']['hotel_name']!='' ? $_SESSION['SESSION_DATA_HOTEL']['hotel_name'] : "N/A");?>"</h1>
+               <h1>Edit Room <!-- For "<?php echo(isset($_SESSION['SESSION_DATA_HOTEL']['hotel_name']) && $_SESSION['SESSION_DATA_HOTEL']['hotel_name']!='' ? $_SESSION['SESSION_DATA_HOTEL']['hotel_name'] : "N/A");?>" --></h1>
                <ol class="breadcrumb">
                   <li><a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
                   <li class="active">Edit Room</li>
@@ -318,7 +303,7 @@
 										endif;
 										?>
 										<div class="form-group col-md-12"> 
-											<label for="inputName" class="control-label">Room Description<font color="#FF0000">*</font></label>
+											<label for="inputName" class="control-label">Room Description<!-- <font color="#FF0000">*</font> --></label>
 											<textarea class="form-control ckeditor validate[required]" name="room_address" id="room_description" placeholder="Room Description" tabindex = "3"><?php echo(isset($_POST['room_address']) && $_POST['room_address']!='' ? $_POST['room_address'] : (isset($room_data['room_address']) && $room_data['room_address']!='' ? $room_data['room_address'] : ""));?></textarea>
 										</div>
 										<div class="form-group col-md-12">

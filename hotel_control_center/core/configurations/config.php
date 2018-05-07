@@ -91,6 +91,7 @@ define("MAX_CHILD_NO", 10);
 define("MAX_CHILD_AGE", 11);
 define("RECORD_PER_PAGE", 10);
 
+define("FROM_EMAIL", "noreply@neocoderztechnologies.com");
 
 define("HOTEL_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/hotel/");
 define("ROOM_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/room/");
@@ -99,4 +100,5 @@ define("TOUR_IMAGE_PATH", DOMAIN_NAME_PATH."tour_control_center/assets/upload/to
 define("TRANSFER_IMAGE_PATH", DOMAIN_NAME_PATH."transfer_control_center/assets/upload/transfer/");
 
 define("ROOM_IMAGES", "assets/upload/room/");
+define("HOTEL_IMAGES", "assets/upload/hotel/");
 ?>

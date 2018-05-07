@@ -91,6 +91,12 @@
 						//print_r($return_data_arr);
 						if($return_data_arr['status']=="success")
 						{
+							$hotel_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>28, ':status'=>1));
+							if(!empty($hotel_email_template)):
+								$hotel_mail_Body=str_replace(array("[HOTEL_NAME]", "[EMAIL]", "[PASSWORD]"), array($_POST['hotel_name'], $_POST['email_address'], $_POST['password']), $hotel_email_template['template_body']);
+								//print_r($hotel_mail_Body);exit;
+								@tools::Send_SMTP_Mail($_POST['email_address'], FROM_EMAIL, '', $hotel_email_template['template_subject'], $hotel_mail_Body);
+							endif;
 							$_SESSION['SET_TYPE'] = 'success';
 							$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
 							header("location:hotels");
@@ -267,7 +273,7 @@
 										<div class="clearfix"></div>
 										<div class="form-group col-md-4">
 											<label for="email_address" class="control-label">Email Address<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : "");?>" name="email_address" id="email_address" placeholder="Email Address" tabindex = "3" />
+											<input type="text" class="form-control validate[required, custom[email]]"  value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : "");?>" name="email_address" id="email_address" placeholder="Email Address" tabindex = "3" />
 										</div>
 										<div class="form-group col-md-4">
 											<label for="inputName" class="control-label">Password<font color="#FF0000">*</font></label>

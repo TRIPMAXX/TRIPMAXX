@@ -51,7 +51,7 @@
 							if(!empty($dmc_email_template)):
 								$dmc_url_details='<a href="'.DOMAIN_NAME_PATH_ADMIN.'login?auto_login_id='.base64_encode(SECURITY_SALT.$_SESSION['SESSION_DATA']['id']."dmc".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_id).'" title="View Order">'.DOMAIN_NAME_PATH_ADMIN.'login?auto_login_id='.base64_encode(SECURITY_SALT.$_SESSION['SESSION_DATA']['id']."dmc".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_id).'</a>';
 								$dmc_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($_SESSION['SESSION_DATA']['first_name'], $_SESSION['SESSION_DATA']['last_name'], $dmc_url_details), $dmc_email_template['template_body']);
-								@tools::Send_HTML_Mail($_SESSION['SESSION_DATA']['email_address'], FROM_EMAIL, '', $dmc_email_template['template_subject'], $dmc_mail_Body);
+								@tools::Send_SMTP_Mail($_SESSION['SESSION_DATA']['email_address'], FROM_EMAIL, '', $dmc_email_template['template_subject'], $dmc_mail_Body);
 							endif;
 							if(isset($booking_details_list['booking_type']) && $booking_details_list['booking_type']=="agent" && isset($booking_details_list['agent_id']) && $booking_details_list['agent_id']!=""):
 								$autentication_data_agent=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
@@ -86,14 +86,14 @@
 												if(!empty($agent_email_template)):
 													$agent_url_details="";
 													$agent_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_agent_arr['result']['first_name'], $return_data_agent_arr['result']['last_name'], $agent_url_details), $agent_email_template['template_body']);
-													@tools::Send_HTML_Mail($return_data_agent_arr['result']['email_address'], FROM_EMAIL, '', $agent_email_template['template_subject'], $agent_mail_Body);
+													@tools::Send_SMTP_Mail($return_data_agent_arr['result']['email_address'], FROM_EMAIL, '', $agent_email_template['template_subject'], $agent_mail_Body);
 												endif;
 												if(isset($return_data_agent_arr['result_gsm']) && !empty($return_data_agent_arr['result_gsm'])):
 													$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>25, ':status'=>1));
 													if(!empty($gsm_email_template)):
 														$gsm_url_details="";
 														$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_agent_arr['result_gsm']['first_name'], $return_data_agent_arr['result_gsm']['last_name'], $gsm_url_details), $gsm_email_template['template_body']);
-														@tools::Send_HTML_Mail($return_data_agent_arr['result_gsm']['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
+														@tools::Send_SMTP_Mail($return_data_agent_arr['result_gsm']['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
 													endif;
 												endif;
 											elseif($return_data_agent_arr['result']['type']=="G"):
@@ -101,7 +101,7 @@
 												if(!empty($gsm_email_template)):
 													$gsm_url_details="";
 													$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_agent_arr['result']['first_name'], $return_data_agent_arr['result']['last_name'], $gsm_url_details), $gsm_email_template['template_body']);
-													@tools::Send_HTML_Mail($return_data_agent_arr['result']['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
+													@tools::Send_SMTP_Mail($return_data_agent_arr['result']['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
 												endif;
 											endif;
 											//$data['status'] = 'success';
@@ -143,7 +143,7 @@
 											if(!empty($supplier_email_template)):
 												$supplier_url_details='<a href="'.DOMAIN_NAME_PATH_SUPPLIER.'login?auto_login_id='.base64_encode(SECURITY_SALT.$return_data_arr_supplier['results']['id']."supplier".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_details_list['id']).'" title="View Order">'.DOMAIN_NAME_PATH_SUPPLIER.'login?auto_login_id='.base64_encode(SECURITY_SALT.$return_data_arr_supplier['results']['id']."supplier".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_details_list['id']).'</a>';
 												$supplier_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_arr_supplier['results']['first_name'], $return_data_arr_supplier['results']['last_name'], $supplier_url_details), $supplier_email_template['template_body']);
-												@tools::Send_HTML_Mail($return_data_arr_supplier['results']['email_address'], FROM_EMAIL, '', $supplier_email_template['template_subject'], $supplier_mail_Body);
+												@tools::Send_SMTP_Mail($return_data_arr_supplier['results']['email_address'], FROM_EMAIL, '', $supplier_email_template['template_subject'], $supplier_mail_Body);
 											endif;
 										endif;
 										//$data['status'] = 'success';

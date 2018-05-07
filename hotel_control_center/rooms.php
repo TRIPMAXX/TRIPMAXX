@@ -122,7 +122,7 @@
 		<!-- BODY -->
 		<div class="content-wrapper">
 			<section class="content-header">
-				<h1>Lists Of Hotel Rooms For "<?php echo(isset($_SESSION['SESSION_DATA_HOTEL']['hotel_name']) && $_SESSION['SESSION_DATA_HOTEL']['hotel_name']!='' ? $_SESSION['SESSION_DATA_HOTEL']['hotel_name'] : "N/A");?>"</h1>
+				<h1>Lists Of Hotel Rooms <!-- For "<?php echo(isset($_SESSION['SESSION_DATA_HOTEL']['hotel_name']) && $_SESSION['SESSION_DATA_HOTEL']['hotel_name']!='' ? $_SESSION['SESSION_DATA_HOTEL']['hotel_name'] : "N/A");?>" --></h1>
 				<ol class="breadcrumb">
 					<li><a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
 					<li class="active">Lists Of Hotel Rooms</li>
