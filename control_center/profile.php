@@ -82,6 +82,7 @@ $profile = tools::find("first", TM_DMC, $value='id, first_name, last_name, email
 									<label for="last_name">Last Name&nbsp;<font color="#FF0000">*</font></label>
 									<input type = "text" class = "form-control validate[required]"  value = "<?php echo((isset($_POST['last_name']) && $_POST['last_name']!='' ? $_POST['last_name'] : $profile['last_name']));?>" name = "last_name" id = "last_name" placeholder = "Last Name" data-errormessage-value-missing="Last Name is required!" tabindex = "2" />
 								</div>
+								<div class="clearfix"></div>
 								<div class="form-group col-md-6">
 									<label for="email_address"><font color="#FF0000">*</font>Email Address</label>
 									<input type = "text" class = "form-control validate[required] custom[email]"  value = "<?php echo((isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : $profile['email_address']));?>" name = "email_address" id = "email_address" placeholder = "Email Address" data-errormessage-value-missing = "Email Address is required!" tabindex = "3" />
@@ -90,17 +91,23 @@ $profile = tools::find("first", TM_DMC, $value='id, first_name, last_name, email
 									<label for="username"><font color="#FF0000">*</font>Username</label>
 									<input type = "text" class = "form-control validate[required]"  value = "<?php echo((isset($_POST['username']) && $_POST['username']!='' ? $_POST['username'] : $profile['username']));?>" name = "username" id = "username" placeholder = "Enter Username" data-errormessage-value-missing = "Username is required!" tabindex = "4" />
 								</div>
+								<div class="clearfix"></div>
+								<div class="form-group col-md-6">
+									<label for="phone_number"><font color="#FF0000">*</font>Phone number</label>
+									<input type="text" class="form-control validate[required, custom[phone]]"  value="<?php echo(isset($_POST['phone_number']) && $_POST['phone_number']!='' ? $_POST['phone_number'] : $profile['phone_number']);?>" name="phone_number" id="phone_number" placeholder="Phone number" tabindex = "5" />
+								</div>
+								<div class="clearfix"></div>
 								<div class="form-group col-md-6">
 									<label for="password" class="control-label">Password</label>
 									<div class="input-icon right">
-										<input type = "password" class = "form-control "  placeholder = "Password" name = "password" id = "password" tabindex = "5" />
+										<input type = "password" class = "form-control "  placeholder = "Password" name = "password" id = "password" tabindex = "6" />
 									</div>
 									<div style = "margin-bottom:10px;color:#ff0000">Note: Leave blank if you do not wish to change existing password.</div>
 								</div>
 								<div class="form-group col-md-6">
 									<label for="confirm_password" class="control-label">Confirm Password</label>
 									<div class="input-icon right">
-										<input type = "password" class = "form-control validate[equals[password]]"  placeholder = "Confirm Password" name = "confirm_password" id = "confirm_password" tabindex = "6" />
+										<input type = "password" class = "form-control validate[equals[password]]"  placeholder = "Confirm Password" name = "confirm_password" id = "confirm_password" tabindex = "7" />
 									</div>
 									<div style = "margin-bottom:10px;color:#ff0000">Note: Leave blank if you do not wish to change existing password.</div>
 								</div>
@@ -109,11 +116,10 @@ $profile = tools::find("first", TM_DMC, $value='id, first_name, last_name, email
 						<div class="col-md-12 row">
 							<div class="box-footer">
 								<input type = "hidden" name = "token" value = "<?php echo(tools::generateFormToken($verify_token)); ?>" />
-								<input type = "hidden" name = "phone_number" value = "" />
 								<input type = "hidden" name = "status" value = "1" />
 								<input type = "hidden" name = "id" id = "id" value = "<?php echo($profile['id']);?>" />
 								<input type = "hidden" name = "id_custom" id = "id_custom" value = "" />
-								<button type = "submit" id = "btn_update" name = "btn_update" class = "btn btn-primary" tabindex = "7">UPDATE</button>
+								<button type = "submit" id = "btn_update" name = "btn_update" class = "btn btn-primary" tabindex = "8">UPDATE</button>
 							</div>
 						</div>
 						</form>

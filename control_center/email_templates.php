@@ -82,7 +82,7 @@ $email_templates = tools::find("all", TM_EMAIL_TEMPLATES, $value='id, template_t
 													<td class=" "><?php echo($email_template['template_subject']);?></td>
 													<td class=" " data-title="Action">
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_email_template?id=<?php echo(base64_encode($email_template['id']));?>" title = "Edit Email Template"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-														<a href = "#"  title = "Delete Email Templates" onclick = "delete_email_template('<?php echo(base64_encode($email_template['id']));?>');"><i class="fa fa fa-trash-o fa-1x"></i></a>
+														<!-- <a href = "#"  title = "Delete Email Templates" onclick = "delete_email_template('<?php echo(base64_encode($email_template['id']));?>');"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 													</td>
 												</tr>
 												<?php

@@ -188,7 +188,7 @@
 												<td class=" "><?= nl2br($accounting_val['note']);?></td>
 												<td class=" " data-title="Action">
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_accounting?accounting_id=<?php echo base64_encode($accounting_val['id']);?>&agent_id=<?php echo base64_encode($agent_data['id']);?>" title = "Edit Accounting"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>accounting?accounting_id=<?php echo base64_encode($accounting_val['id']);?>&agent_id=<?php echo base64_encode($agent_data['id']);?>"  title = "Delete Accounting" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
+													<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>accounting?accounting_id=<?php echo base64_encode($accounting_val['id']);?>&agent_id=<?php echo base64_encode($agent_data['id']);?>"  title = "Delete Accounting" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 												</td>
 											</tr>
 										<?php

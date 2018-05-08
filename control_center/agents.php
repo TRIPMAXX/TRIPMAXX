@@ -216,7 +216,7 @@
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>bookings?agent_id=<?php echo base64_encode($agent_val['id']);?>" title = "Lists Of Bookings"><i class="fa fa-plane fa-1x" ></i></a>&nbsp;&nbsp;
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>accounting?agent_id=<?php echo base64_encode($agent_val['id']);?>" title = "Accounting"><i class="fa fa-usd fa-1x" ></i></a>&nbsp;&nbsp;
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_agent?agent_id=<?php echo base64_encode($agent_val['id']);?>" title = "Edit Agent"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>agents?agent_id=<?php echo base64_encode($agent_val['id']);?>"  title = "Delete Agent" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
+													<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>agents?agent_id=<?php echo base64_encode($agent_val['id']);?>"  title = "Delete Agent" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 												</td>
 											</tr>
 										<?php

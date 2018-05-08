@@ -195,7 +195,7 @@ require_once('loader.inc');
 												</td>
 												<td class=" " data-title="Action">
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_supplier?supplier_id=<?php echo base64_encode($supplier_val['id']);?>" title = "Edit Supplier"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>supplier?supplier_id=<?php echo base64_encode($supplier_val['id']);?>"  title = "Delete Supplier" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
+													<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>supplier?supplier_id=<?php echo base64_encode($supplier_val['id']);?>"  title = "Delete Supplier" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 												</td>
 											</tr>
 										<?php

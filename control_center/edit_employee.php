@@ -109,7 +109,7 @@ endif;
 									<div class="clearfix"></div>
 									<div class="form-group col-md-6">
 										<label for="email_address"><font color="#FF0000">*</font>Email</label>
-										<input type="text" class="form-control validate[required] custom[email]"  value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : $find_employee['email_address']);?>" name="email_address" id="email_address" placeholder="Email Address" tabindex = "3" />
+										<input type="text" class="form-control validate[required], custom[email]"  value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : $find_employee['email_address']);?>" name="email_address" id="email_address" placeholder="Email Address" tabindex = "3" />
 									</div>
 									<div class="form-group col-md-6">
 										<label for="username"><font color="#FF0000">*</font>Username</label>
@@ -117,16 +117,21 @@ endif;
 									</div>
 									<div class="clearfix"></div>
 									<div class="form-group col-md-6">
+										<label for="phone_number"><font color="#FF0000">*</font>Phone number</label>
+										<input type="text" class="form-control validate[required, custom[phone]]"  value="<?php echo(isset($_POST['phone_number']) && $_POST['phone_number']!='' ? $_POST['phone_number'] : $find_employee['phone_number']);?>" name="phone_number" id="phone_number" placeholder="Phone number" tabindex = "5" />
+									</div>
+									<div class="clearfix"></div>
+									<div class="form-group col-md-6">
 										<label for="inputName" class="control-label">Password</label>
 										<div class="input-icon right">
-											<input type="password" class="form-control validate[optional]"  placeholder = "Password" name="password" id="password" tabindex = "5" />
+											<input type="password" class="form-control validate[optional]"  placeholder = "Password" name="password" id="password" tabindex = "6" />
 										</div>
 										<div style = "margin-bottom:10px;color:#ff0000">Note: Leave blank if you do not wish to change existing password.</div>
 									</div>
 									<div class="form-group col-md-6">
 										<label for="inputName" class="control-label">Confirm Password</label>
 										<div class="input-icon right">
-											<input type="password" class="form-control validate[optional, equals[password]]"  placeholder = "Confirm Password" name="confirm_password" id="confirm_password" tabindex = "6" />
+											<input type="password" class="form-control validate[optional, equals[password]]"  placeholder = "Confirm Password" name="confirm_password" id="confirm_password" tabindex = "7" />
 										</div>
 										<div style = "margin-bottom:10px;color:#ff0000">Note: Leave blank if you do not wish to change existing password.</div>
 									</div>
@@ -238,7 +243,7 @@ endif;
 				</div> -->
 				<div class="box-footer">
 					<input type="hidden" name="token" value="<?php echo(tools::generateFormToken($verify_token)); ?>" />
-					<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex = "7">UPDATE</button>
+					<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex = "8">UPDATE</button>
 				</div>
 				</form>
 			</section>

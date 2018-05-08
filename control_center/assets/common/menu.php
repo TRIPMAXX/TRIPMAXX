@@ -24,8 +24,8 @@
 				<ul class="treeview-menu">
 					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_package"><i class="fa fa-circle-o"></i> CREATE NEW</a></li>
 					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>packages"><i class="fa fa-circle-o"></i> LISTS OF PACKAGES</a></li>
-					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_combo_package"><i class="fa fa-circle-o"></i> CREATE NEW COMBO</a></li>
-					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>combo_packages"><i class="fa fa-circle-o"></i> LISTS OF COMBO</a></li>
+					<!-- <li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_combo_package"><i class="fa fa-circle-o"></i> CREATE NEW COMBO</a></li>
+					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>combo_packages"><i class="fa fa-circle-o"></i> LISTS OF COMBO</a></li> -->
 				</ul>
 			</li>
 			<li class="<?php echo(($current_page_name == 'create_new_tour_attribute.php' || $current_page_name == 'tour_attributes.php' || $current_page_name == 'edit_tour_attribute.php' || $current_page_name == 'create_new_tour.php' || $current_page_name == 'tours.php' || $current_page_name == 'edit_tour.php' || $current_page_name == 'tour_offers.php' || $current_page_name == 'create_new_tour_offer.php' || $current_page_name == 'edit_tour_offer.php') ? 'active' : '');?>">

@@ -187,7 +187,7 @@
 													</td>
 													<td class=" " data-title="Action">
 														<a href = "<?php echo(DOMAIN_NAME_PATH_HOTEL);?>edit_room?room_id=<?php echo base64_encode($room_val['id']);?>" title = "Edit Room"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-														<a href = "<?php echo(DOMAIN_NAME_PATH_HOTEL);?>rooms?room_id=<?php echo base64_encode($room_val['id']);?>"  title = "Delete Room" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
+														<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_HOTEL);?>rooms?room_id=<?php echo base64_encode($room_val['id']);?>"  title = "Delete Room" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 													</td>
 												</tr>
 											<?php

@@ -139,7 +139,7 @@
 						$autentication_data_hotel=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
 						if(isset($autentication_data_hotel->status)):
 							if($autentication_data_hotel->status=="success"):
-								$return_hotel_ids=array(2, 4);
+								//$return_hotel_ids=array(2, 4);
 								$post_data_hotel['token']=array(
 									"token"=>$autentication_data_hotel->results->token,
 									"token_timeout"=>$autentication_data_hotel->results->token_timeout,

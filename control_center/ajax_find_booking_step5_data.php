@@ -209,7 +209,8 @@
 							$fifth_section_html.='<td style = "text-align:center;font-weight:bold;">';
 								$fifth_section_html.='PER CHILD';
 								$fifth_section_html.='<br/>';
-								$fifth_section_html.=''.$tour_currency.number_format($tour_price+$transfer_price, 2,".",",").'';
+								//$fifth_section_html.=''.$tour_currency.number_format($tour_price+$transfer_price, 2,".",",").'';
+								$fifth_section_html.=''.$tour_currency.number_format(0, 2,".",",").'';
 							$fifth_section_html.='</td>';
 						$fifth_section_html.='</tr>';
 					endif;
@@ -226,13 +227,13 @@
 					$fifth_section_html.='</tr>';
 					$fifth_section_html.='<tr class="odd">';
 						$fifth_section_html.='<td style = "text-align:left;font-weight:bold;">Total Quantity</td>';
-						$fifth_section_html.='<td style = "text-align:center;font-weight:bold;color:red;" colspan = "2">'.$hotel_currency.number_format($hotel_price+(($tour_price+$transfer_price)*$number_of_person), 2,".",",").'</td>';
+						$fifth_section_html.='<td style = "text-align:center;font-weight:bold;color:red;" colspan = "2">'.$hotel_currency.number_format($hotel_price+(($tour_price+$transfer_price)*$number_of_adult), 2,".",",").'</td>';
 					$fifth_section_html.='</tr>';
 				$fifth_section_html.='</tbody>';
 			$fifth_section_html.='</table>';
 		$fifth_section_html.='</div>';
 		$data['booking_html']=$first_section_html.$secend_section_html.$third_section_html.$fourth_section_html.$fifth_section_html;
-		$data['total_price']=$hotel_price+(($tour_price+$transfer_price)*$number_of_person);
+		$data['total_price']=$hotel_price+(($tour_price+$transfer_price)*$number_of_adult);
 		$data['status']="success";
 		$data['msg']="Saved to session.";
 	endif;

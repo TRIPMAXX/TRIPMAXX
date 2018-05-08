@@ -514,8 +514,8 @@
 			$('.all_child_age_div'+index).show();
 		}
 		else {
-			$(".all_child_age_div").html(child_number_html);
-			$('.all_child_age_div').hide();
+			$(".all_child_age_div"+index).html(child_number_html);
+			$('.all_child_age_div'+index).hide();
 		}
 	}
 

@@ -91,7 +91,7 @@ if(isset($_POST['btn_submit'])) {
 									<div class="clearfix"></div>
 									<div class="form-group col-md-6">
 										<label for="email_address"><font color="#FF0000">*</font>Email</label>
-										<input type="text" class="form-control validate[required] custom[email]"  value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : "");?>" name="email_address" id="email_address" placeholder="Email Address" tabindex = "3" />
+										<input type="text" class="form-control validate[required], custom[email]"  value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : "");?>" name="email_address" id="email_address" placeholder="Email Address" tabindex = "3" />
 									</div>
 									<div class="form-group col-md-6">
 										<label for="username"><font color="#FF0000">*</font>Username</label>
@@ -99,15 +99,20 @@ if(isset($_POST['btn_submit'])) {
 									</div>
 									<div class="clearfix"></div>
 									<div class="form-group col-md-6">
+										<label for="phone_number"><font color="#FF0000">*</font>Phone number</label>
+										<input type="text" class="form-control validate[required, custom[phone]]"  value="<?php echo(isset($_POST['phone_number']) && $_POST['phone_number']!='' ? $_POST['phone_number'] : "");?>" name="phone_number" id="phone_number" placeholder="Phone number" tabindex = "5" />
+									</div>
+									<div class="clearfix"></div>
+									<div class="form-group col-md-6">
 										<label for="password" class="control-label"><font color="#FF0000">*</font>Password</label>
 										<div class="input-icon right">
-											<input type="password" class="form-control validate[required]"  placeholder = "Password" name="password" id="password" tabindex = "5" />
+											<input type="password" class="form-control validate[required]"  placeholder = "Password" name="password" id="password" tabindex = "6" />
 										</div>
 									</div>
 									<div class="form-group col-md-6">
 										<label for="confirm_password" class="control-label"><font color="#FF0000">*</font>Confirm Password</label>
 										<div class="input-icon right">
-											<input type="password" class="form-control validate[required, equals[password]]"  placeholder = "Confirm Password" name="confirm_password" id="confirm_password" tabindex = "6" />
+											<input type="password" class="form-control validate[required, equals[password]]"  placeholder = "Confirm Password" name="confirm_password" id="confirm_password" tabindex = "7" />
 										</div>
 									</div>
 								</div>
@@ -218,7 +223,7 @@ if(isset($_POST['btn_submit'])) {
 				</div> -->
 				<div class="box-footer">
 					<input type="hidden" name="token" value="<?php echo(tools::generateFormToken($verify_token)); ?>" />
-					<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex = "7">CREATE</button>
+					<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex = "8">CREATE</button>
 				</div>
 				</form>
 			</section>

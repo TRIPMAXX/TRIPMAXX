@@ -198,7 +198,7 @@
 													<td class=" " data-title="Action">
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>tour_offers?tour_id=<?php echo base64_encode($tour_val['id']);?>" title = "Manage Tour Offers"><i class="fa fa-home fa-1x" ></i></a>&nbsp;&nbsp;
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_tour?tour_id=<?php echo base64_encode($tour_val['id']);?>" title = "Edit Tour"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>tours?tour_id=<?php echo base64_encode($tour_val['id']);?>"  title = "Delete Tour" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
+														<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>tours?tour_id=<?php echo base64_encode($tour_val['id']);?>"  title = "Delete Tour" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 													</td>
 												</tr>
 											<?php

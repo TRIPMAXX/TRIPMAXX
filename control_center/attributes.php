@@ -175,7 +175,7 @@
 												</td>
 												<td class=" " data-title="Action">
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_attribute?attribute_id=<?php echo base64_encode($attribute_val['id']);?>" title = "Edit Attribute"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>attributes?attribute_id=<?php echo base64_encode($attribute_val['id']);?>"  title = "Delete Attribute" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
+													<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>attributes?attribute_id=<?php echo base64_encode($attribute_val['id']);?>"  title = "Delete Attribute" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 												</td>
 											</tr>
 										<?php

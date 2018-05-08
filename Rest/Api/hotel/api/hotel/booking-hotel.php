@@ -167,27 +167,38 @@
 										$week_num=$week_num+1;
 									if($week_num!=$previous_week && $previous_week > 0):
 										$main_html.='
-										<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable">
-											<thead>
-												<tr role="row">
-													'.$week_day_th.'
-												</tr>
-											</thead>
+										<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable" style="width:45%;display:inline-block">
 											<tbody aria-relevant="all" aria-live="polite" role="alert">
-												<tr>
-													'.$week_day_td.'
-												</tr>
+												'.$week_day_td.'
 											</tbody>
 										</table>';
 										$week_day_th='';
 										$week_day_td='';
 									endif;
 									if($week_day_th==""):
-										$week_day_th='<th valign="middle" style="background-color:gray;" align="center">#</th>';
-										$week_day_td='<td valign="middle"> Wk '.$week_num.' </td>';
+										$week_day_th='
+											<tr role="row">
+												<th valign="middle" style="background-color:gray;color: #FFF;" align="center">#</th>
+											</tr>
+										';
+										$week_day_td='
+											<tr>
+												<td valign="middle" style="background-color:gray;color: #FFF;" align="center">#</td>
+												<td valign="middle"> Wk '.$week_num.' </td>
+											</tr>
+										';
 									endif;
-									$week_day_th.='<th valign="middle" style="background-color:gray;" align="center">'.$day_name.'</th>';
-									$week_day_td.='<th valign="middle">'.$default_currency['currency_code'].number_format($room_day_price+$each_day_agent_commision, 2,".",",").'</th>';
+									$week_day_th.='
+										<tr role="row">
+											<th valign="middle" style="background-color:gray;" align="center">'.$day_name.'</th>
+										</tr>
+									';
+									$week_day_td.='
+										<tr>
+											<td valign="middle" style="background-color:gray;color: #FFF;" align="center">'.$day_name.'</td>
+											<td valign="middle">'.$default_currency['currency_code'].number_format($room_day_price+$each_day_agent_commision, 2,".",",").'</td>
+										</tr>
+									';
 
 									$previous_week=$week_num;
 									$i=$i+(24*60*60);
@@ -217,18 +228,12 @@
 									<div class="col-md-2"><?= $room_val['number_of_rooms'];?></div>
 									<div class="col-md-4">
 									<?php
-									if($week_day_th!="" && $week_day_td!=""):
+									//if($week_day_th!="" && $week_day_td!=""):
+									if($week_day_td!=""):
 										$main_html.='
-										<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable">
-											<thead>
-												<tr role="row">
-													'.$week_day_th.'
-												</tr>
-											</thead>
+										<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable" style="width:45%;display:inline-block">
 											<tbody aria-relevant="all" aria-live="polite" role="alert">
-												<tr>
-													'.$week_day_td.'
-												</tr>
+												'.$week_day_td.'
 											</tbody>
 										</table>';
 									endif;

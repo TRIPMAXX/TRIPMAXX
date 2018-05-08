@@ -96,14 +96,14 @@
 				if(!isset($return_data_arr1['status'])):
 					$_SESSION['SET_TYPE'] = 'error';
 					$_SESSION['SET_FLASH']="Some error has been occure during execution.";
-					header("location:package_bookings.php?package_id=".$_GET['package_id']);
+					header("location:package_bookings?package_id=".$_GET['package_id']);
 					exit;
 				elseif($return_data_arr1['status']=="success"):
 					$cost_data=$return_data_arr1['results'];
 				else:
 					$_SESSION['SET_TYPE'] = 'error';
 					$_SESSION['SET_FLASH'] = $return_data_arr1['msg'];
-					header("location:package_bookings.php?package_id=".$_GET['package_id']);
+					header("location:package_bookings?package_id=".$_GET['package_id']);
 					exit;
 				endif;
 				//***************************//
@@ -125,14 +125,14 @@
 				if(!isset($return_data_arr1['status'])):
 					$_SESSION['SET_TYPE'] = 'error';
 					$_SESSION['SET_FLASH']="Some error has been occure during execution.";
-					header("location:package_bookings.php?package_id=".$_GET['package_id']);
+					header("location:package_bookings?package_id=".$_GET['package_id']);
 					exit;
 				elseif($return_data_arr1['status']=="success"):
 					$booking_data=$return_data_arr1['results'];
 				else:
 					$_SESSION['SET_TYPE'] = 'error';
 					$_SESSION['SET_FLASH'] = $return_data_arr1['msg'];
-					header("location:package_bookings.php?package_id=".$_GET['package_id']);
+					header("location:package_bookings?package_id=".$_GET['package_id']);
 					exit;
 				endif;
 				$post_data['data']=$_GET;
@@ -152,7 +152,7 @@
 				if(!isset($return_data_arr['status'])):
 					$_SESSION['SET_TYPE'] = 'error';
 					$_SESSION['SET_FLASH']="Some error has been occure during execution.";
-					header("location:package_bookings.php?package_id=".$_GET['package_id']);
+					header("location:package_bookings?package_id=".$_GET['package_id']);
 					exit;
 				elseif($return_data_arr['status']=="success"):
 					$package_data=$return_data_arr['results'];	
@@ -350,7 +350,7 @@
 										</div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Select Agent<font color="#FF0000">*</font></label>
-											<select name = "agent_id" id = "agent_name" class="form-control validate[required]"  tabindex = "2" <?php echo(isset($_POST['agent_id']) && $_POST['agent_id']!="" ? '' : (isset($booking_data['agent_id']) && $booking_data['agent_id']!='' ? '' : 'disabled'));?>>
+											<select name = "agent_id" id = "agent_name" class="form-control validate[required]"  tabindex = "2" <?php echo(isset($_POST['agent_id']) && $_POST['agent_id']!="" ? '' : (isset($booking_data['booking_type']) && $booking_data['booking_type']=='agent' ? '' : 'disabled'));?>>
 												<option value = "">Select Agent</option>
 											<?php
 											if(isset($agent_list) && !empty($agent_list)):
@@ -435,7 +435,7 @@
 													<td class=" "><?= $cost_val['cost'];?></td>
 													<td class=" " data-title="Action">
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_booking_cost?booking_id=<?php echo base64_encode($cost_val['booking_id']);?>&package_id=<?php echo base64_encode($package_data['id']);?>&cost_id=<?php echo base64_encode($cost_val['id']);?>" title = "Edit Booking Cost"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_package_booking?booking_id=<?php echo base64_encode($cost_val['booking_id']);?>&package_id=<?php echo base64_encode($package_data['id']);?>&cost_id=<?php echo base64_encode($cost_val['id']);?>"  title = "Delete Booking Cost" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
+														<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_package_booking?booking_id=<?php echo base64_encode($cost_val['booking_id']);?>&package_id=<?php echo base64_encode($package_data['id']);?>&cost_id=<?php echo base64_encode($cost_val['id']);?>"  title = "Delete Booking Cost" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 													</td>
 												</tr>
 											<?php

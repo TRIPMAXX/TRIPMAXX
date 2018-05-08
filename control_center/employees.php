@@ -132,7 +132,7 @@ $emp_list = tools::find("all", TM_DMC, '*', "WHERE account_type=:account_type ",
 												</td>
 												<td class=" " data-title="Action">
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_employee?emp_id=<?php echo base64_encode($emp_val['id']);?>" title = "Edit Employee"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>employees?emp_id=<?php echo base64_encode($emp_val['id']);?>"  title = "Delete Employee" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
+													<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>employees?emp_id=<?php echo base64_encode($emp_val['id']);?>"  title = "Delete Employee" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 												</td>
 											</tr>
 										<?php

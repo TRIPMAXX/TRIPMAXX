@@ -201,7 +201,7 @@
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>view_hotel_details?hotel_id=<?php echo base64_encode($hotel_val['id']);?>" title = "View Hotel Details"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>rooms?hotel_id=<?php echo base64_encode($hotel_val['id']);?>" title = "View Room"><i class="fa fa-home fa-1x" ></i></a>&nbsp;&nbsp;
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_hotel?hotel_id=<?php echo base64_encode($hotel_val['id']);?>" title = "Edit Hotel"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>hotels?hotel_id=<?php echo base64_encode($hotel_val['id']);?>"  title = "Delete Hotel" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
+														<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>hotels?hotel_id=<?php echo base64_encode($hotel_val['id']);?>"  title = "Delete Hotel" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 													</td>
 												</tr>
 											<?php

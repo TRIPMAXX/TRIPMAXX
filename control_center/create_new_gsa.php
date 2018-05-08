@@ -1,7 +1,7 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
-	$white_list_array = array('type', 'company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'code', 'username', 'password', 'account_department_name', 'account_department_email', 'account_department_number', 'reservation_department_name', 'reservation_department_email', 'reservation_department_number', 'management_department_name', 'management_department_email', 'management_department_number', 'hotel_price', 'tour_price', 'transfer_price', 'package_price', 'status', 'token', 'id', 'btn_submit', 'confirm_password', 'credit_balance');
+	$white_list_array = array('employee_id', 'type', 'company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'code', 'username', 'password', 'account_department_name', 'account_department_email', 'account_department_number', 'reservation_department_name', 'reservation_department_email', 'reservation_department_number', 'management_department_name', 'management_department_email', 'management_department_number', 'hotel_price', 'tour_price', 'transfer_price', 'package_price', 'status', 'token', 'id', 'btn_submit', 'confirm_password', 'credit_balance');
 	$verify_token = "create_new_gsa";
 	$general_setting = tools::find("first", TM_SETTINGS, 'default_credit_balance', "WHERE id=:id ", array(":id"=>1));
 	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
@@ -106,6 +106,42 @@
 	else:
 		$_SESSION['SET_TYPE'] = 'error';
 		$_SESSION['SET_FLASH'] = "We are having some problem to authorize api.";
+	endif;
+
+	$autentication_data_employee=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."authorized.php"));
+	if(isset($autentication_data_employee->status)):
+		if($autentication_data_employee->status=="success"):
+			$post_data_employee['token']=array(
+				"token"=>$autentication_data_employee->results->token,
+				"token_timeout"=>$autentication_data_employee->results->token_timeout,
+				"token_generation_time"=>$autentication_data_employee->results->token_generation_time
+			);
+			$post_data_employee_str=json_encode($post_data_employee);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($ch, CURLOPT_HEADER, false);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."dmc/employee.php");
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_employee_str);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+			$return_data_employee = curl_exec($ch);
+			curl_close($ch);
+			$return_data_employee_arr=json_decode($return_data_employee, true);
+			$employee_data=array();
+			if($return_data_employee_arr['status']=="success"):
+				$employee_data=$return_data_employee_arr['results'];
+			//else:
+			//	$_SESSION['SET_TYPE'] = 'error';
+			//	$_SESSION['SET_FLASH'] = $return_data_employee_arr['msg'];
+			endif;
+		else:
+			//$_SESSION['SET_TYPE'] = 'error';
+			//$_SESSION['SET_FLASH'] = $autentication_data_employee->msg;
+		endif;
+	else:
+		//$_SESSION['SET_TYPE'] = 'error';
+		//$_SESSION['SET_FLASH'] = "We are having some problem to authorize api.";
 	endif;
 ?>
 <!DOCTYPE html>
@@ -247,6 +283,20 @@
 								</div>
 								<div class="box-body">
 									<div id="" class="row rows">
+										<div class="form-group col-md-12">
+											<label for="employee_id" class="form-label1">Select Employee <font color="#FF0000">*</font> :</label>
+											<select name="employee_id" id="employee_id" class="form-control form_input1 select_bg" tabindex="0">
+											<?php
+											if(isset($employee_data)):
+												foreach($employee_data as $emp_key=>$emp_val):
+											?>
+												<option value="<?php echo $emp_val['id'];?>" <?php echo(isset($_POST['employee_id']) && $_POST['employee_id']==$emp_val['id'] ? 'selected="selected"' : "");?>><?php echo $emp_val['first_name']." ".$emp_val['last_name']." - ".$emp_val['email_address']." - ".$emp_val['phone_number'];?></option>
+											<?php
+												endforeach;
+											endif;
+											?>
+											</select>
+										</div>
 										<div class="form-group col-md-6">
 											<label for="company_name" class="form-label1">Company Name <font color="#FF0000">*</font> :</label>
 											<input type="text" class="form-control form_input1 validate[required]" id="company_name" name="company_name" placeholder="Company Name" value="<?php echo(isset($_POST['company_name']) && $_POST['company_name']!='' ? $_POST['company_name'] : "");?>" tabindex="1">

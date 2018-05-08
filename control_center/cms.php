@@ -139,7 +139,7 @@ $cms_pages = tools::find("all", TM_CMS, '*', "WHERE :all ", array(":all"=>1));
 												</td>
 												<td class=" " data-title="Action">
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_cms?cms_id=<?php echo base64_encode($cms_val['id']);?>" title = "Edit CMS Templates"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>cms?cms_id=<?php echo base64_encode($cms_val['id']);?>"  title = "Delete CMS Templates" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
+													<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>cms?cms_id=<?php echo base64_encode($cms_val['id']);?>"  title = "Delete CMS Templates" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 												</td>
 											</tr>
 										<?php

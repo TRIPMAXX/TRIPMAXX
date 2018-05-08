@@ -1364,7 +1364,7 @@
 																	if(!empty($contry_list)):
 																		foreach($contry_list as $country_key=>$country_val):
 																	?>
-																		<option value = "<?php echo $country_val['id'];?>" <?php echo(isset($_POST['sel_nationality']) && $_POST['sel_nationality']==$country_val['id'] ? 'selected="selected"' : "");?>><?php echo $country_val['name'];?></option>
+																		<option value = "<?php echo $country_val['id'];?>" <?php echo(isset($_POST['sel_nationality']) && $_POST['sel_nationality']==$country_val['id'] ? 'selected="selected"' : (isset($booking_details_list['nationality']) && $booking_details_list['nationality']==$country_val['id'] ? 'selected="selected"' : ""));?>><?php echo $country_val['name'];?></option>
 																	<?php
 																		endforeach;
 																	endif;
@@ -1379,7 +1379,7 @@
 																if(!empty($contry_list)):
 																	foreach($contry_list as $country_key=>$country_val):
 																?>
-																	<option value = "<?php echo $country_val['id'];?>" <?php echo(isset($_POST['country_residance']) && $_POST['country_residance']==$country_val['id'] ? 'selected="selected"' : "");?>><?php echo $country_val['name'];?></option>
+																	<option value = "<?php echo $country_val['id'];?>" <?php echo(isset($_POST['country_residance']) && $_POST['country_residance']==$country_val['id'] ? 'selected="selected"' : (isset($booking_details_list['residance_country']) && $booking_details_list['residance_country']==$country_val['id'] ? 'selected="selected"' : ""));?>><?php echo $country_val['name'];?></option>
 																<?php
 																	endforeach;
 																endif;
@@ -1394,7 +1394,7 @@
 																if(!empty($currency_list)):
 																	foreach($currency_list as $currency_key=>$currency_val):
 																?>
-																	<option value = "<?php echo $currency_val['id'];?>" <?php echo(isset($_POST['sel_currency']) && $_POST['sel_currency']==$currency_val['id'] ? 'selected="selected"' : "");?>><?php echo $currency_val['currency_name']." (".$currency_val['currency_code'].")";?></option>
+																	<option value = "<?php echo $currency_val['id'];?>" <?php echo(isset($_POST['sel_currency']) && $_POST['sel_currency']==$currency_val['id'] ? 'selected="selected"' : (isset($booking_details_list['invoice_currency']) && $booking_details_list['invoice_currency']==$currency_val['id'] ? 'selected="selected"' : ""));?>><?php echo $currency_val['currency_name']." (".$currency_val['currency_code'].")";?></option>
 																<?php
 																	endforeach;
 																endif;
@@ -1409,7 +1409,7 @@
 																for($rooom_no=1;$rooom_no<=MAX_ROOM_NO;$rooom_no++)
 																{
 																?>
-																	<option label="<?php echo $rooom_no;?>" value="<?php echo $rooom_no;?>" <?php echo(isset($_POST['rooms']) && $_POST['rooms']==$rooom_no ? 'selected="selected"' : "");?>><?php echo $rooom_no;?></option>
+																	<option label="<?php echo $rooom_no;?>" value="<?php echo $rooom_no;?>" <?php echo(isset($_POST['rooms']) && $_POST['rooms']==$rooom_no ? 'selected="selected"' : (isset($booking_details_list['number_of_rooms']) && $booking_details_list['number_of_rooms']==$rooom_no ? 'selected="selected"' : ""));?>><?php echo $rooom_no;?></option>
 																<?php
 																}
 																?>
@@ -1417,6 +1417,7 @@
 															</div>
 															<div class="col-md-10 all_adult_child_div">
 															<?php
+															print_r(json_decode($booking_details_list['adult']));
 															if(isset($_POST['rooms']) && $_POST['rooms']!="")
 															{
 																for($i=0;$i<$_POST['rooms'];$i++)

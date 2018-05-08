@@ -239,7 +239,7 @@
 													</td>
 													<td class=" " data-title="Action">
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_transfer_offer?transfer_id=<?php echo base64_encode($transfer_data['id']);?>&offer_id=<?php echo base64_encode($offer_val['id']);?>" title = "Edit Tour Offer"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>transfer_offers?transfer_id=<?php echo base64_encode($transfer_data['id']);?>&offer_id=<?php echo base64_encode($offer_val['id']);?>"  title = "Delete Tour Offer" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
+														<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>transfer_offers?transfer_id=<?php echo base64_encode($transfer_data['id']);?>&offer_id=<?php echo base64_encode($offer_val['id']);?>"  title = "Delete Tour Offer" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 													</td>
 												</tr>
 											<?php

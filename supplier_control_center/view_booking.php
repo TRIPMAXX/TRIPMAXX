@@ -529,7 +529,7 @@
 											<td style = "text-align:center;font-weight:bold;">
 												PER CHILD
 												<br/>
-												<?php echo $booking_details_list['currency_code'].number_format($tour_price+$transfer_price, 2,".",",");?>
+												<?php echo $booking_details_list['currency_code'].number_format(0, 2,".",",");?>
 											</td>
 										</tr>
 									<?php
@@ -549,7 +549,7 @@
 									<tr class="odd">
 										<td style = "text-align:left;font-weight:bold;">Total Quantity</td>
 										<td style = "text-align:center;font-weight:bold;color:red;" colspan = "2">
-											<?php echo $booking_details_list['currency_code'].number_format($hotel_price+(($tour_price+$transfer_price)*$number_of_person), 2,".",",");?>
+											<?php echo $booking_details_list['currency_code'].number_format($hotel_price+(($tour_price+$transfer_price)*$number_of_adult), 2,".",",");?>
 										</td>
 									</tr>
 								</tbody>
