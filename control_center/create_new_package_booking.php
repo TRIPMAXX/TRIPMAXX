@@ -257,7 +257,7 @@
 											<label for="inputName" class="control-label">Select Booking Type<font color="#FF0000">*</font></label>
 											<select name = "booking_type" id = "booking_type" class="form-control validate[required]"  tabindex = "1" onchange = "manage_booking_type(this.value);">
 												<option value = "personal" <?php echo(isset($_POST['booking_type']) && $_POST['booking_type']=="personal" ? "selected='selected'" : "");?>>Personal Booking</option>
-												<option value = "agent" <?php echo(isset($_POST['booking_type']) && $_POST['booking_type']=="agent" ? "selected='selected'" :""));?>>Agent Booking</option>
+												<option value = "agent" <?php echo(isset($_POST['booking_type']) && $_POST['booking_type']=="agent" ? "selected='selected'" :"");?>>Agent Booking</option>
 											</select>
 										</div>
 										<div class="form-group col-md-6">

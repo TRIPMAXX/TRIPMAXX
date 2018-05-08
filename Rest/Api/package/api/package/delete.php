@@ -18,6 +18,13 @@
 					endif;
 				endforeach;
 			endif;
+			$find_bookings = tools::find("all", TM_BOOKINGS, '*', "WHERE package_id=:package_id", array(":package_id"=>base64_decode($_GET['package_id'])));
+			if(!empty($find_bookings)):
+				foreach($find_bookings as $booking):
+					tools::delete(TM_BOOKINGS, "WHERE id=:id", array(":id"=>$booking['id']));
+					tools::delete(TM_COSTS, "WHERE booking_id=:booking_id", array(":booking_id"=>$booking['id']));
+				endforeach;
+			endif;
 			if(tools::delete(TM_PACKAGES, "WHERE id=:id", array(":id"=>$find_package['id']))):
 				$return_data['status'] = 'success';
 				$return_data['msg'] = 'Package has been deleted successfully.';

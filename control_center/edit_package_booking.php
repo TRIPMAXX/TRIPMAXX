@@ -49,6 +49,64 @@
 					"token_timeout"=>$autentication_data->results->token_timeout,
 					"token_generation_time"=>$autentication_data->results->token_generation_time
 				);
+				if(isset($_GET['cost_id']) && $_GET['cost_id']!=""):
+					$post_data['data']=$_GET;
+					$post_data_str=json_encode($post_data);
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($ch, CURLOPT_HEADER, false);
+					curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+					curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.PACKAGE_API_PATH."cost/delete.php");
+					curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+					$return_data = curl_exec($ch);
+					curl_close($ch);
+					//print_r($return_data);
+					$return_data_arr=json_decode($return_data, true);
+					if(!isset($return_data_arr['status'])):
+						$_SESSION['SET_TYPE'] = 'error';
+						$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+					elseif($return_data_arr['status']=="success"):
+						$_SESSION['SET_TYPE'] = 'success';
+						$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+					else:
+						$_SESSION['SET_TYPE'] = 'error';
+						$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+					endif;
+					header("location:edit_package_booking?package_id=".$_GET['package_id']."&booking_id=".$_GET['booking_id']);
+					exit;
+				endif;
+				////////////////////////
+				$post_data['data']['booking_id']=$_GET['booking_id'];
+				$post_data_str=json_encode($post_data);
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+				curl_setopt($ch, CURLOPT_HEADER, false);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+				curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.PACKAGE_API_PATH."cost/read.php");
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+				$return_data1 = curl_exec($ch);
+				curl_close($ch);
+				//print_r($return_data1);
+				$return_data_arr1=json_decode($return_data1, true);
+				$cost_data=array();
+				if(!isset($return_data_arr1['status'])):
+					$_SESSION['SET_TYPE'] = 'error';
+					$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+					header("location:package_bookings.php?package_id=".$_GET['package_id']);
+					exit;
+				elseif($return_data_arr1['status']=="success"):
+					$cost_data=$return_data_arr1['results'];
+				else:
+					$_SESSION['SET_TYPE'] = 'error';
+					$_SESSION['SET_FLASH'] = $return_data_arr1['msg'];
+					header("location:package_bookings.php?package_id=".$_GET['package_id']);
+					exit;
+				endif;
+				//***************************//
 				$post_data['data']=$_GET;
 				$post_data_str=json_encode($post_data);
 				$ch = curl_init();
@@ -73,7 +131,7 @@
 					$booking_data=$return_data_arr1['results'];
 				else:
 					$_SESSION['SET_TYPE'] = 'error';
-					$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+					$_SESSION['SET_FLASH'] = $return_data_arr1['msg'];
 					header("location:package_bookings.php?package_id=".$_GET['package_id']);
 					exit;
 				endif;
@@ -94,7 +152,7 @@
 				if(!isset($return_data_arr['status'])):
 					$_SESSION['SET_TYPE'] = 'error';
 					$_SESSION['SET_FLASH']="Some error has been occure during execution.";
-					header("location:packages");
+					header("location:package_bookings.php?package_id=".$_GET['package_id']);
 					exit;
 				elseif($return_data_arr['status']=="success"):
 					$package_data=$return_data_arr['results'];	
@@ -346,7 +404,7 @@
 										<div id="" class="col-md-8"></div>
 										<div id="" class="col-md-4">
 											<div id="" class="row">
-												<a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_booking_cost?package_id=<?php echo $_GET['package_id'];?>"><button class="status_checks btn btn-success btn-md" type="submit" style="float:right; margin-bottom:10px;" value="" onclick="" >CREATE NEW BOOKING COST</button></a>
+												<a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_booking_cost?booking_id=<?php echo $_GET['booking_id'];?>&package_id=<?php echo $_GET['package_id'];?>"><button class="status_checks btn btn-success btn-md" type="submit" style="float:right; margin-bottom:10px;" value="" onclick="" >CREATE NEW BOOKING COST</button></a>
 											</div>
 										</div>
 									</div>
@@ -357,6 +415,7 @@
 											<thead>
 												<tr role="row">
 													<th>#</th>
+													<th>Created Date</th>
 													<th>Title</th>
 													<th>Description</th>
 													<th>Cost</th>
@@ -364,16 +423,31 @@
 												</tr>
 											</thead>
 											<tbody aria-relevant="all" aria-live="polite" role="alert">
+											<?php
+											if(!empty($cost_data)):
+												foreach($cost_data as $cost_key=>$cost_val):
+											?>
 												<tr class="odd">
-													<td class="  sorting_1">1</td>
-													<td class=" ">Title</td>
-													<td class=" ">Description</td>
-													<td class=" ">Cost</td>
+													<td class="  sorting_1"><?= $cost_key+1;?></td>
+													<td class=" "><?= date("Y-m-d", strtotime($cost_val['created']));?></td>
+													<td class=" "><?= $cost_val['title'];?></td>
+													<td class=" "><?= $cost_val['description'];?></td>
+													<td class=" "><?= $cost_val['cost'];?></td>
 													<td class=" " data-title="Action">
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_package?package_id=<?php //echo base64_encode($package_val['id']);?>" title = "Edit Booking Cost"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>packages?package_id=<?php //echo base64_encode($package_val['id']);?>"  title = "Delete Booking Cost" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
+														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_booking_cost?booking_id=<?php echo base64_encode($cost_val['booking_id']);?>&package_id=<?php echo base64_encode($package_data['id']);?>&cost_id=<?php echo base64_encode($cost_val['id']);?>" title = "Edit Booking Cost"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
+														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_package_booking?booking_id=<?php echo base64_encode($cost_val['booking_id']);?>&package_id=<?php echo base64_encode($package_data['id']);?>&cost_id=<?php echo base64_encode($cost_val['id']);?>"  title = "Delete Booking Cost" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a>
 													</td>
 												</tr>
+											<?php
+												endforeach;
+											else:
+											?>
+												<tr align="center">
+													<td colspan="100%">No record found</td>
+												</tr>
+											<?php
+											endif;
+											?>
 											</tbody>
 										</table>
 									</div>

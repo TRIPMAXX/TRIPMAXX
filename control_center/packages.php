@@ -22,7 +22,7 @@
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 				$return_data = curl_exec($ch);
 				curl_close($ch);
-				//print_r($return_data);
+				print_r($return_data);
 				$return_data_arr=json_decode($return_data, true);
 				if(!isset($return_data_arr['status'])):
 					$_SESSION['SET_TYPE'] = 'error';
