@@ -25,7 +25,7 @@
 				endif;
 				if($save_package_data = tools::module_form_submission("", TM_PACKAGES)):
 					$return_data['status'] = 'success';
-					$return_data['msg'] = 'package image has been deleted successfully.';
+					$return_data['msg'] = 'Package image has been deleted successfully.';
 				else:
 					$return_data['status'] = 'error';
 					$return_data['msg'] = 'We are having some probem. Please try again later.';

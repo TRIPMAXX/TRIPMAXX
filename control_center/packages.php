@@ -22,7 +22,7 @@
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 				$return_data = curl_exec($ch);
 				curl_close($ch);
-				print_r($return_data);
+				//print_r($return_data);
 				$return_data_arr=json_decode($return_data, true);
 				if(!isset($return_data_arr['status'])):
 					$_SESSION['SET_TYPE'] = 'error';
@@ -200,7 +200,7 @@
 														<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $package_val['status']==1 ? "btn-success" : "btn-danger";?>" onclick="change_status(<?= $package_val['id'];?>, $(this))"><?= $package_val['status']==1 ? "Active" : "Inactive";?></a>
 													</td>
 													<td class=" " data-title="Action">
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>package_bookings?package_id=<?php echo base64_encode($package_val['id']);?>" title = "Manage package bookings"><i class="fa fa-home fa-1x" ></i></a>&nbsp;&nbsp;
+														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>package_bookings?package_id=<?php echo base64_encode($package_val['id']);?>" title = "Manage package bookings"><i class="fa fa-cart-plus fa-1x" ></i></a>&nbsp;&nbsp;
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_package?package_id=<?php echo base64_encode($package_val['id']);?>" title = "Edit Package"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
 														<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>packages?package_id=<?php echo base64_encode($package_val['id']);?>"  title = "Delete Package" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 													</td>

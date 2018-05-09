@@ -18,7 +18,7 @@
 			$return_data['msg']="Data received successfully.";
 		else:
 			$return_data['status']="error";
-			$return_data['msg']="package id missing.";
+			$return_data['msg']="Package id missing.";
 		endif;
 	endif;
 	echo json_encode($return_data);	

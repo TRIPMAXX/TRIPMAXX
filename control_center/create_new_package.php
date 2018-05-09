@@ -1,7 +1,7 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
-	$white_list_array = array('country', 'state', 'city', 'package_title', 'no_of_days', 'description', 'package_price', 'discounted_price', 'package_images', 'status', 'token', 'btn_submit');
+	$white_list_array = array('country', 'state', 'city', 'currency', 'package_title', 'no_of_days', 'description', 'package_price', 'discounted_price', 'package_images', 'status', 'token', 'btn_submit');
 	$verify_token = "create_new_package";
 	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.PACKAGE_API_PATH."authorized.php"));
 	if(isset($autentication_data->status)):
@@ -82,6 +82,7 @@
 			};
 		endif;
 	endif;
+	$currency_list = tools::find("all", TM_CURRENCIES, '*', "WHERE status=:status ORDER BY serial_number ASC", array(":status"=>1));
 	//print_r($country_data);
 ?>
 <!DOCTYPE html>
@@ -260,9 +261,24 @@
 											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['package_title']) && $_POST['package_title']!='' ? $_POST['package_title'] : "");?>" name="package_title" id="package_title" placeholder="Package Title" tabindex = "4" />
 										</div>
 
-										<div class="form-group col-md-6">
+										<div class="form-group col-md-3">
 											<label for="tour_type" class="control-label">No Of Days<font color="#FF0000">*</font></label>
 											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['no_of_days']) && $_POST['no_of_days']!='' ? $_POST['no_of_days'] : "");?>" name="no_of_days" id="no_of_days" placeholder="No Of Days" tabindex = "5" />
+										</div>
+										<div class="form-group col-md-3">
+											<label for="currency" class="control-label">Currency<font color="#FF0000">*</font></label>
+											<select class="form-control validate[required]" name="currency" id="currency">
+												<option value="">Select</option>
+											<?php
+											if(!empty($currency_list)):
+												foreach($currency_list as $currency_key=>$currency_val):
+											?>
+												<option value = "<?php echo $currency_val['id'];?>" <?php echo(isset($_POST['currency']) && $_POST['currency']==$currency_val['id'] ? 'selected="selected"' : "");?>><?php echo $currency_val['currency_name']." (".$currency_val['currency_code'].")";?></option>
+											<?php
+												endforeach;
+											endif;
+											?>
+											</select>
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-12">
@@ -271,11 +287,11 @@
 										</div>
 										<div class="form-group col-md-6">
 											<label for="package_price" class="control-label">Package Price<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['package_price']) && $_POST['package_price']!='' ? $_POST['package_price'] : "");?>" name="package_price" id="package_price" placeholder="Package Price" tabindex = "7" />
+											<input type="text" class="form-control validate[required,custom[integer]]"  value="<?php echo(isset($_POST['package_price']) && $_POST['package_price']!='' ? $_POST['package_price'] : "");?>" name="package_price" id="package_price" placeholder="Package Price" tabindex = "7" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="discounted_price" class="control-label">Discounted Price<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['discounted_price']) && $_POST['discounted_price']!='' ? $_POST['discounted_price'] : "");?>" name="discounted_price" id="discounted_price" placeholder="Discounted Price" tabindex = "8" />
+											<input type="text" class="form-control"  value="<?php echo(isset($_POST['discounted_price']) && $_POST['discounted_price']!='' ? $_POST['discounted_price'] : "");?>" name="discounted_price" id="discounted_price" placeholder="Discounted Price" tabindex = "8" />
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">

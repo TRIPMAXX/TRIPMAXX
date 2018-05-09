@@ -16,7 +16,7 @@
 				<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>bookings"><i class="fa fa-circle-o"></i> LISTS OF BOOKINGS</a></li>
 				</ul>
 			</li>
-			<li class="">
+			<li class="<?php echo(($current_page_name == 'create_new_package.php' || $current_page_name == 'packages.php' || $current_page_name == 'edit_package.php' || $current_page_name == 'package_bookings.php' || $current_page_name == 'edit_package_booking.php' || $current_page_name == 'create_new_package_booking.php' || $current_page_name == 'create_new_booking_cost.php' || $current_page_name == 'edit_booking_cost.php') ? 'active' : '');?>">
 				<a href="javascript:void(0);">
 				<span>MANAGE PACKAGES</span>
 				<i class="fa fa-angle-left pull-right"></i>

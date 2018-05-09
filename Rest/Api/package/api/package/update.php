@@ -23,7 +23,7 @@
 				if(tools::module_data_exists_check("package_title = '".tools::stripcleantohtml($_POST['package_title'])."' AND id <> ".$find_package['id']."", '', TM_PACKAGES)) {
 					$check_flag=false;
 					$return_data['status']="error";
-					$return_data['msg'] = 'This tour title already exists.';		
+					$return_data['msg'] = 'This package title already exists.';		
 				}
 			endif;
 			if($check_flag==true):
@@ -44,7 +44,7 @@
 				if($save_tour_data = tools::module_form_submission("", TM_PACKAGES)):
 					$find_updated_package = tools::find("first", TM_PACKAGES, '*', "WHERE id=:id", array(":id"=>$find_package['id']));
 					$return_data['status'] = 'success';
-					$return_data['msg'] = 'Tour has been updated successfully.';
+					$return_data['msg'] = 'Package has been updated successfully.';
 					$return_data['results'] = $find_updated_package;
 				else:
 					$return_data['status'] = 'error';

@@ -226,7 +226,7 @@
 											?>
 												<tr class="odd">
 													<td class="  sorting_1"><?= $booking_key+1;?></td>
-													<td class=" "><?= $booking_val['booking_date'];?></td>
+													<td class=" "><?= tools::module_date_format($booking_val['booking_date'],"Y-m-d");?></td>
 													<td class=" ">
 														<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $booking_val['status']==1 ? "btn-success" : "btn-danger";?>" onclick="change_status(<?= $booking_val['id'];?>, $(this))"><?= $booking_val['status']==1 ? "Active" : "Inactive";?></a>
 													</td>

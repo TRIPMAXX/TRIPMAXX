@@ -12,4 +12,5 @@ define( "TM_COUNTRIES", "tm_countries" );
 define( "TM_STATES", "tm_states" );
 define( "TM_BOOKINGS", "tm_bookings" );
 define( "TM_COSTS", "tm_costs" );
+define( "TM_CURRENCIES", "tm_currencies" );
 ?>
