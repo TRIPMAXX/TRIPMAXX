@@ -180,17 +180,19 @@
 									<div class="col-md-1" style="font-weight:bold;">
 										<?php
 										if($offer_avaliability_status=="avaliable"):
+											$avalibility_status="A";
 										?>
 										<img src="assets/img/a_icon.png" border="0" alt="Avaliable" title="Avaliable">
 										<?php
 										elseif($offer_avaliability_status=="not avaliable"):
+											$avalibility_status="N";
 										?>
 										<img src="assets/img/r_icon.png" border="0" alt="On Request" title="On Request">
 										<?php
 										endif;
 										?>
 										<br>
-										<input type="radio" name="selected_offer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>]" class="selected_offer" onclick="change_offer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>">
+										<input type="radio" name="selected_offer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>]" class="selected_offer" onclick="change_offer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>">
 									</div>
 									<div class="col-md-3" style="font-weight:bold;">
 										<?= $offer_val['offer_title'];?>

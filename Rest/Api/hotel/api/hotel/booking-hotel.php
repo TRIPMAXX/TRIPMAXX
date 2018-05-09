@@ -86,6 +86,10 @@
 				$each_first_price="--";
 				$execute['co_id']=$counrty_val;
 				$execute['ci_id']=$server_data['data']['city'][$country_key];
+				if(isset($server_data['data']['booking_details_list']) && $server_data['data']['booking_details_list']!=""):
+					$booking_details_list=$server_data['data']['booking_details_list'];
+				endif;
+				$edit_avalibility_status="";
 				$hotel_list = tools::find("all", TM_HOTELS." as h, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci", 'h.*, co.name as co_name, s.name as s_name, ci.name as ci_name', "WHERE h.country=co.id AND h.state=s.id AND h.city=ci.id AND co.id=:co_id AND ci.id=:ci_id ".$search_query.$order_by." LIMIT ".$offset.", ".$limit." ", $execute);
 				if(!empty($hotel_list)):
 					$country_name=$hotel_list[0]['co_name'];
@@ -95,8 +99,23 @@
 						$room_list = tools::find("all", TM_ROOMS, '*', "WHERE hotel_id=:hotel_id ", array(":hotel_id"=>$hotel_val['id']));
 						$room_html='';
 						$hotel_avalibility_status="";
+						$hotel_edit_avalibility_status="";
 						if(!empty($room_list)):
 							foreach($room_list as $room_key=>$room_val):
+								$edit_avalibility_status="";
+								if(isset($booking_details_list) && !empty($booking_details_list)):
+									foreach($booking_details_list['booking_destination_list'] as $b_key=>$b_val):
+										if(isset($b_val['booking_hotel_list']) && !empty($b_val['booking_hotel_list'])):
+											foreach($b_val['booking_hotel_list'] as $h_key=>$h_val):
+												if($b_val['country_id']==$counrty_val && $b_val['city_id']==$server_data['data']['city'][$country_key] && $h_val['hotel_id']==$hotel_val['id'] && $h_val['room_id']==$room_val['id']):
+													$edit_avalibility_status=$h_val['avalibility_status'];
+													$hotel_edit_avalibility_status=$h_val['avalibility_status'];
+													break;
+												endif;
+											endforeach;
+										endif;
+									endforeach;
+								endif;
 								if(isset($server_data['data']['booking_type']) && $server_data['data']['booking_type']=="agent" && isset($server_data['data']['agent_name']) && $server_data['data']['agent_name']!=""):
 									$room_agent_markup = tools::find("first", TM_ROOM_AGENT_MARKUP, '*', "WHERE room_id=:room_id AND agent_id=:agent_id ", array(":agent_id"=>$server_data['data']['agent_name'], ":room_id"=>$room_val['id']));
 									if(!empty($room_agent_markup)):
@@ -207,18 +226,20 @@
 								<div style="padding:10px 0 10px 0;border:1px solid gray;">
 									<div class="col-md-1" style="font-weight:bold;">
 										<?php
-										if($room_avaliability_status=="avaliable"):
+										if($room_avaliability_status=="avaliable" || $edit_avalibility_status=="A"):
+											$avalibility_status="A";
 										?>
 										<img src="assets/img/a_icon.png" border="0" alt="Avaliable" title="Avaliable">
 										<?php
-										elseif($room_avaliability_status=="not avaliable"):
+										elseif($room_avaliability_status=="not avaliable" || $edit_avalibility_status=="N"):
+											$avalibility_status="N";
 										?>
 										<img src="assets/img/r_icon.png" border="0" alt="On Request" title="On Request">
 										<?php
 										endif;
 										?>
 										<br>
-										<input type="radio" name="selected_room[<?= $server_data['data']['city'][$country_key];?>]" class="selected_room" onclick="change_room_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$room_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision, 2,".",",");?>">
+										<input type="radio" name="selected_room[<?= $server_data['data']['city'][$country_key];?>]" class="selected_room" onclick="change_room_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$room_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision, 2,".",",");?>">
 									</div>
 									<div class="col-md-3" style="font-weight:bold;">
 										<?= $room_val['room_type'];?>
@@ -270,11 +291,11 @@
 									<div class="col-md-2" style="font-weight:bold;"><?php echo $city_name;?></div>
 									<div class="col-md-3" style="font-weight:bold;text-align:center;">
 										<?php
-										if($hotel_avalibility_status=="avaliable"):
+										if($hotel_avalibility_status=="avaliable" || $hotel_edit_avalibility_status=="A"):
 										?>
 										<button type="button" class="btn btn-success next-step">AVAILABLE</button>
 										<?php
-										elseif($hotel_avalibility_status=="not avaliable"):
+										elseif($hotel_avalibility_status=="not avaliable" || $hotel_edit_avalibility_status=="N"):
 										?>
 										<button type="button" class="btn btn-danger next-step">On Request</button>
 										<?php

@@ -15,6 +15,34 @@
 				$room_details = tools::find("first", TM_ROOMS, '*', "WHERE id=:id ", array(":id"=>$room_id));
 				$hotel_details = tools::find("first", TM_HOTELS, '*', "WHERE id=:id ", array(":id"=>$room_details['hotel_id']));
 				$markup_percentage=0.00;
+				if(isset($server_data['data']['booking_type']) && $server_data['data']['booking_type']=="agent" && isset($server_data['data']['agent_name']) && $server_data['data']['agent_name']!=""):
+					$autentication_data_agent=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
+					if(isset($autentication_data_agent->status)):
+						if($autentication_data_agent->status=="success"):
+							$post_data_agent['token']=array(
+								"token"=>$autentication_data_agent->results->token,
+								"token_timeout"=>$autentication_data_agent->results->token_timeout,
+								"token_generation_time"=>$autentication_data_agent->results->token_generation_time
+							);
+							$post_data_agent['data']['agent_id']=$server_data['data']['agent_name'];
+							$post_data_agent_str=json_encode($post_data_agent);
+							$ch = curl_init();
+							curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+							curl_setopt($ch, CURLOPT_HEADER, false);
+							curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+							curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+							curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/booking-agent.php");
+							curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_agent_str);
+							curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+							$return_data_agent = curl_exec($ch);
+							curl_close($ch);
+							$return_data_agent_arr=json_decode($return_data_agent, true);
+							if($return_data_agent_arr['status']=="success"):
+								$markup_percentage=$return_data_agent_arr['results']['hotel_price'];
+							endif;
+						endif;
+					endif;
+				endif;
 				if(isset($server_data['data']['step_1']['booking_type']) && $server_data['data']['step_1']['booking_type']=="agent" && isset($server_data['data']['step_1']['agent_name']) && $server_data['data']['step_1']['agent_name']!=""):
 					$room_agent_markup = tools::find("first", TM_ROOM_AGENT_MARKUP, '*', "WHERE room_id=:room_id AND agent_id=:agent_id ", array(":agent_id"=>$server_data['data']['step_1']['agent_name'], ":room_id"=>$room_details['id']));
 					if(!empty($room_agent_markup)):
@@ -47,6 +75,7 @@
 					$result['booking_start_date']=$checkin_date_on_city;
 					$result['booking_end_date']=$checkout_date_on_city;
 					$result['agent_markup_percentage']=$markup_percentage;
+					$result['avalibility_status']=$explode_room_data[1];
 				endif;
 			endforeach;
 			$default_currency=tools::find("first", TM_SETTINGS." as s, ".TM_CURRENCIES." as c", 'c.*', "WHERE c.id=s.default_currency ", array());

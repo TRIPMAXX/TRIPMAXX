@@ -27,6 +27,34 @@
 					$allow_dropoff_type=$transfer_attributes_dropoff['allow_dropoff_type'];
 				endif;
 				$markup_percentage=0.00;
+				if(isset($server_data['data']['booking_type']) && $server_data['data']['booking_type']=="agent" && isset($server_data['data']['agent_name']) && $server_data['data']['agent_name']!=""):
+					$autentication_data_agent=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
+					if(isset($autentication_data_agent->status)):
+						if($autentication_data_agent->status=="success"):
+							$post_data_agent['token']=array(
+								"token"=>$autentication_data_agent->results->token,
+								"token_timeout"=>$autentication_data_agent->results->token_timeout,
+								"token_generation_time"=>$autentication_data_agent->results->token_generation_time
+							);
+							$post_data_agent['data']['agent_id']=$server_data['data']['agent_name'];
+							$post_data_agent_str=json_encode($post_data_agent);
+							$ch = curl_init();
+							curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+							curl_setopt($ch, CURLOPT_HEADER, false);
+							curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+							curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+							curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/booking-agent.php");
+							curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_agent_str);
+							curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+							$return_data_agent = curl_exec($ch);
+							curl_close($ch);
+							$return_data_agent_arr=json_decode($return_data_agent, true);
+							if($return_data_agent_arr['status']=="success"):
+								$markup_percentage=$return_data_agent_arr['results']['hotel_price'];
+							endif;
+						endif;
+					endif;
+				endif;
 				$nationality_addon_percentage=0;
 				if(isset($server_data['data']['step_1']['booking_type']) && $server_data['data']['step_1']['booking_type']=="agent" && isset($server_data['data']['step_1']['agent_name']) && $server_data['data']['step_1']['agent_name']!=""):
 					$offer_agent_markup = tools::find("first", TM_OFFER_AGENT_MARKUP, '*', "WHERE offer_id=:offer_id AND agent_id=:agent_id ", array(":agent_id"=>$server_data['data']['step_1']['agent_name'], ":offer_id"=>$offer_details['id']));
@@ -71,6 +99,7 @@
 					$each_result['booking_end_date']=$checkout_date_on_city;
 					$each_result['agent_markup_percentage']=$markup_percentage;
 					$each_result['nationality_addon_percentage']=$nationality_addon_percentage;
+					$each_result['avalibility_status']=$explode_offer_data[1];
 					array_push($result, $each_result);
 				endif;
 			endforeach;

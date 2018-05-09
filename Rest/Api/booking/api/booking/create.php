@@ -100,6 +100,7 @@
 								$_POST['booking_start_date']=$return_data_arr_hotel['results']['booking_start_date'];
 								$_POST['booking_end_date']=$return_data_arr_hotel['results']['booking_end_date'];
 								$_POST['agent_markup_percentage']=$return_data_arr_hotel['results']['agent_markup_percentage'];
+								$_POST['avalibility_status']=$return_data_arr_hotel['results']['avalibility_status'];
 								$_POST['currency_id']=$return_data_arr_hotel['default_currency'];
 								$save_booking_hotel_details = tools::module_form_submission("", TM_BOOKING_HOTEL_DETAILS);
 								unset($_POST);
@@ -169,6 +170,7 @@
 										$_POST['agent_markup_percentage']=$result_val['agent_markup_percentage'];
 										$_POST['nationality_addon_percentage']=$result_val['nationality_addon_percentage'];
 										$_POST['currency_id']=$return_data_arr_tour['default_currency'];
+										$_POST['avalibility_status']=$result_val['avalibility_status'];
 										$save_booking_tour_details = tools::module_form_submission("", TM_BOOKING_TOUR_DETAILS);
 										unset($_POST);
 									endforeach;
@@ -228,6 +230,7 @@
 										$_POST['agent_markup_percentage']=$result_val['agent_markup_percentage'];
 										$_POST['nationality_addon_percentage']=$result_val['nationality_addon_percentage'];
 										$_POST['currency_id']=$return_data_arr_transfer['default_currency'];
+										$_POST['avalibility_status']=$result_val['avalibility_status'];
 										$save_booking_transfer_details = tools::module_form_submission("", TM_BOOKING_TRANSFER_DETAILS);
 										unset($_POST);
 									endforeach;
