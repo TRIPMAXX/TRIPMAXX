@@ -129,14 +129,20 @@
 		.cls_each_city_hotel_tab_div, .cls_each_city_tour_tab_div, .cls_each_city_transfer_tab_div{
 			padding: 5px;
 			text-align: center;
-			border:1px solid rgba(255, 0, 0, 0.32);
-			background: #868484;
-			color: white;
+			border-style:solid;
+			border-color:rgba(255, 0, 0, 0.32);
+			border-width:1px;
+			/*background: #868484;*/
+			color: #3c8dbc;
 			font-size: 18px;
 			cursor:pointer;
+			border-top-width:0px;
 		}
 		.cls_each_city_tab_div_active{
-			background: #5bc0de;
+			/*background: #5bc0de;*/
+			border-top-width:1px;
+			color: #000;
+			border-bottom-width:0px;
 		}
 	</style>
 	<!-- JAVASCRIPT CODE -->
@@ -464,9 +470,13 @@
 				else
 				{
 					$.ajax({
-						url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_booking_step5_execute";?>',
+						url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_edit_booking_step5_execute";?>',
 						type:"post",
-						data:$("#payment_method_form").serialize(),
+						data:{
+							sel_avlbl_hotel:$("#sel_avlbl_hotel").val(),
+							total_price:$("#total_price").val(),
+							<?php echo(isset($booking_details_list) && !empty($booking_details_list) ? "booking_details_list:".json_encode($booking_details_list) : "");?>
+						},
 						beforeSend:function(){
 							$(".loader_inner").fadeIn();
 						},
@@ -874,7 +884,8 @@
 					sort_order:sort_order,
 					city_id:city_id,
 					country_id:country_id,
-					search_val:search_val
+					search_val:search_val,
+					<?php echo(isset($booking_details_list) && !empty($booking_details_list) ? "booking_details_list:".json_encode($booking_details_list) : "");?>
 				},
 				beforeSend:function(){
 					$(".loader_inner").fadeIn();
@@ -934,7 +945,8 @@
 					sort_order:sort_order,
 					city_id:city_id,
 					country_id:country_id,
-					search_val:search_val
+					search_val:search_val,
+					<?php echo(isset($booking_details_list) && !empty($booking_details_list) ? "booking_details_list:".json_encode($booking_details_list) : "");?>
 				},
 				beforeSend:function(){
 					$(".loader_inner").fadeIn();
@@ -1068,6 +1080,7 @@
 	<!-- JAVASCRIPT CODE -->
 </head>
 <body class="skin-purple">
+	<div class="loader_inner"><img src="assets/img/spinner.gif" border="0" alt="Loading..."></div>
 	<div class="wrapper">
       
 		<!-- TOP HEADER -->
@@ -1663,7 +1676,7 @@
 											</div>
 											<ul class="list-inline pull-right">
 												<li><button type="button" class="btn btn-warning prev-step">Back To Hotel List</button></li>
-												<li><button type="button" class="btn btn-default next-step">Skip</button></li>
+												<li><button type="button" class="btn btn-default save_step3_data">Skip</button></li>
 												<li><button type="button" class="btn btn-primary btn-info-full save_step3_data">Save and continue</button></li>
 											</ul>
 										</div>
@@ -1677,7 +1690,7 @@
 											</div>
 											<ul class="list-inline pull-right">
 												<li><button type="button" class="btn btn-warning prev-step">Manage Tour</button></li>
-												<li><button type="button" class="btn btn-default next-step">Skip</button></li>
+												<li><button type="button" class="btn btn-default save_step4_data">Skip</button></li>
 												<li><button type="button" class="btn btn-primary btn-info-full save_step4_data">Save and continue</button></li>
 											</ul>
 										</div>
@@ -1693,7 +1706,7 @@
 															<label for="inputName" class="control-label">Quotation Name<font color="#FF0000">*</font></label>
 															<br/>
 															<div style = "float:left;">
-																<input type="text" class="form-control validate[required]"  value="" name="quotation_name" id="quotation_name" placeholder="Quotation Name" tabindex = "1"  />
+																<input type="text" class="form-control validate[required]"  value="<?php echo(isset($booking_details_list) && !empty($booking_details_list) && isset($booking_details_list['quotation_name']) && $booking_details_list['quotation_name']!="" ? $booking_details_list['quotation_name'] : "");?>" name="quotation_name" id="quotation_name" placeholder="Quotation Name" tabindex = "1"  />
 															</div>
 															<div style = "float:left;">
 																&nbsp;<button type="submit" class="btn btn-primary quotation_name_save_btn">Save</button>
@@ -1706,7 +1719,7 @@
 															<label for="inputName" class="control-label">Choose Payment Method<font color="#FF0000">*</font></label>
 															<br/>
 															<div style = "float:left;">
-																<select class="form-control validate[optional]" name="sel_avlbl_hotel">
+																<select class="form-control validate[optional]" name="sel_avlbl_hotel" id="sel_avlbl_hotel">
 																	<option value="Pay">Pay</option>
 																</select>
 																<input type="hidden" name="total_price" id="total_price" value="">

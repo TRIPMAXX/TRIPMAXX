@@ -30,6 +30,9 @@
 					$post_data['data']['city_id']=$_POST['city_id'];
 					$post_data['data']['country_id']=$_POST['country_id'];
 					$post_data['data']['search_val']=$_POST['search_val'];
+					if(isset($_POST['booking_details_list']) && $_POST['booking_details_list']!=""):
+						$post_data['data']['booking_details_list']=$_POST['booking_details_list'];
+					endif;
 					$post_data_str=json_encode($post_data);
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);

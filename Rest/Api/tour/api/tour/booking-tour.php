@@ -90,6 +90,10 @@
 				$each_first_price="--";
 				$execute['co_id']=$counrty_val;
 				$execute['ci_id']=$server_data['data']['city'][$country_key];
+				if(isset($server_data['data']['booking_details_list']) && $server_data['data']['booking_details_list']!=""):
+					$booking_details_list=$server_data['data']['booking_details_list'];
+				endif;
+				$edit_avalibility_status="";
 				$tour_list = tools::find("all", TM_TOURS." as t, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci", 't.*, co.name as co_name, s.name as s_name, ci.name as ci_name', "WHERE t.country=co.id AND t.state=s.id AND t.city=ci.id AND co.id=:co_id AND ci.id=:ci_id ".$search_query.$order_by." LIMIT ".$offset.", ".$limit." ", $execute);
 				if(!empty($tour_list)):
 					$country_name=$tour_list[0]['co_name'];
@@ -100,8 +104,23 @@
 						$offers_list = tools::find("all", TM_OFFERS, '*', "WHERE tour_id=:tour_id ", array(":tour_id"=>$tour_val['id']));
 						$offer_html='';
 						$tour_avalibility_status="";
+						$tour_edit_avalibility_status="";
 						if(!empty($offers_list)):
 							foreach($offers_list as $offer_key=>$offer_val):
+								$edit_avalibility_status="";
+								if(isset($booking_details_list) && !empty($booking_details_list)):
+									foreach($booking_details_list['booking_destination_list'] as $b_key=>$b_val):
+										if(isset($b_val['booking_tour_list']) && !empty($b_val['booking_tour_list'])):
+											foreach($b_val['booking_tour_list'] as $t_key=>$t_val):
+												if($b_val['country_id']==$counrty_val && $b_val['city_id']==$server_data['data']['city'][$country_key] && $t_val['tour_id']==$tour_val['id'] && $t_val['offer_id']==$offer_val['id']):
+													$edit_avalibility_status=$t_val['avalibility_status'];
+													$tour_edit_avalibility_status=$t_val['avalibility_status'];
+													break;
+												endif;
+											endforeach;
+										endif;
+									endforeach;
+								endif;
 								if(isset($server_data['data']['booking_type']) && $server_data['data']['booking_type']=="agent" && isset($server_data['data']['agent_name']) && $server_data['data']['agent_name']!=""):
 									$offer_agent_markup = tools::find("first", TM_OFFER_AGENT_MARKUP, '*', "WHERE offer_id=:offer_id AND agent_id=:agent_id ", array(":agent_id"=>$server_data['data']['agent_name'], ":offer_id"=>$offer_val['id']));
 									if(!empty($offer_agent_markup)):
@@ -179,12 +198,12 @@
 								<div style="padding:10px 0 10px 0;border:1px solid gray;">
 									<div class="col-md-1" style="font-weight:bold;">
 										<?php
-										if($offer_avaliability_status=="avaliable"):
+										if($offer_avaliability_status=="avaliable" || $edit_avalibility_status=="A"):
 											$avalibility_status="A";
 										?>
 										<img src="assets/img/a_icon.png" border="0" alt="Avaliable" title="Avaliable">
 										<?php
-										elseif($offer_avaliability_status=="not avaliable"):
+										elseif($offer_avaliability_status=="not avaliable" || $edit_avalibility_status=="N"):
 											$avalibility_status="N";
 										?>
 										<img src="assets/img/r_icon.png" border="0" alt="On Request" title="On Request">
@@ -192,7 +211,7 @@
 										endif;
 										?>
 										<br>
-										<input type="radio" name="selected_offer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>]" class="selected_offer" onclick="change_offer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>">
+										<input type="radio" name="selected_offer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>]" class="selected_offer" onclick="change_offer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>" <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?> <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?>>
 									</div>
 									<div class="col-md-3" style="font-weight:bold;">
 										<?= $offer_val['offer_title'];?>
@@ -227,11 +246,11 @@
 									<div class="col-md-2" style="font-weight:bold;"><?php echo $tour_val['tour_type'];?></div>
 									<div class="col-md-3" style="font-weight:bold;text-align:center;">
 										<?php
-										if($tour_avalibility_status=="avaliable"):
+										if($tour_avalibility_status=="avaliable" || $tour_edit_avalibility_status=="A"):
 										?>
 										<button type="button" class="btn btn-success next-step">AVAILABLE</button>
 										<?php
-										elseif($tour_avalibility_status=="not avaliable"):
+										elseif($tour_avalibility_status=="not avaliable" || $tour_edit_avalibility_status=="N"):
 										?>
 										<button type="button" class="btn btn-danger next-step">On Request</button>
 										<?php
@@ -290,7 +309,7 @@
 					$total_tour=0;
 				endif;
 				if(count($server_data['data']['country'])>1 && $server_data['data']['sort_order']=="" && $server_data['data']['type']!=3 && $server_data['data']['type']!=2):
-					$city_tab_html.='<div class="col-md-3 cls_each_city_tour_tab_div '.($country_key==0 ? "cls_each_city_tab_div_active" : "").'" data-tab_id="tour_city'.$server_data['data']['city'][$country_key].'" onclick="change_city_tour($(this))">'.$city_name.'</div>';
+					$city_tab_html.='<div class="col-sm-3 cls_each_city_tour_tab_div '.($country_key==0 ? "cls_each_city_tab_div_active" : "").'" data-tab_id="tour_city'.$server_data['data']['city'][$country_key].'" onclick="change_city_tour($(this))">'.$city_name.'</div>';
 				endif;
 				if($tour_list_html==""):
 					$tour_list_html='<div class="col-md-12 text-center no_rcd" style="padding:30px;color:red;">No '.($server_data['data']['type']==2 ? "more " : "").'record found</div>';

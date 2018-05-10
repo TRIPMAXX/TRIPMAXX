@@ -239,7 +239,7 @@
 										endif;
 										?>
 										<br>
-										<input type="radio" name="selected_room[<?= $server_data['data']['city'][$country_key];?>]" class="selected_room" onclick="change_room_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$room_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision, 2,".",",");?>">
+										<input type="radio" name="selected_room[<?= $server_data['data']['city'][$country_key];?>]" class="selected_room" onclick="change_room_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$room_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision, 2,".",",");?>" <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?>>
 									</div>
 									<div class="col-md-3" style="font-weight:bold;">
 										<?= $room_val['room_type'];?>
@@ -354,7 +354,7 @@
 					$total_hotel=0;
 				endif;
 				if(count($server_data['data']['country'])>1 && $server_data['data']['sort_order']=="" && $server_data['data']['type']!=3 && $server_data['data']['type']!=2):
-					$city_tab_html.='<div class="col-md-3 cls_each_city_hotel_tab_div '.($country_key==0 ? "cls_each_city_tab_div_active" : "").'" data-tab_id="city'.$server_data['data']['city'][$country_key].'" onclick="change_city_hotel($(this))">'.$city_name.'</div>';
+					$city_tab_html.='<div class="col-sm-3 cls_each_city_hotel_tab_div '.($country_key==0 ? "cls_each_city_tab_div_active" : "").'" data-tab_id="city'.$server_data['data']['city'][$country_key].'" onclick="change_city_hotel($(this))">'.$city_name.'</div>';
 				endif;
 				if($hotel_list_html==""):
 					$hotel_list_html='<div class="col-md-12 text-center no_rcd" style="padding:30px;color:red;">No '.($server_data['data']['type']==2 ? "more " : "").'record found</div>';

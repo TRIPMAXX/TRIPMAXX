@@ -107,7 +107,7 @@
 												"token_timeout"=>$autentication_data1->results->token_timeout,
 												"token_generation_time"=>$autentication_data1->results->token_generation_time
 											);
-											$post_data['data']['agent_id']=$return_data_arr['agent_id'];
+											$post_data['data']['agent_id']=base64_encode($return_data_arr['agent_id']);
 											$post_data_str=json_encode($post_data);
 											$ch = curl_init();
 											curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -127,7 +127,7 @@
 												//$data['msg']="Some error has been occure during execution.";
 											elseif($return_data_arr1['status']=="success"):
 												if($return_data_arr1['result']['type']=="A"):
-													$agent_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>17, ':status'=>1));
+													$agent_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>30, ':status'=>1));
 													if(!empty($agent_email_template)):
 														$agent_booking_details="
 															<b>Package Title :</b>".$package_data['package_title']."<br>
@@ -141,7 +141,7 @@
 														@tools::Send_SMTP_Mail($return_data_arr1['result']['email_address'], FROM_EMAIL, '', $agent_email_template['template_subject'], $agent_mail_Body);
 													endif;
 													if(isset($return_data_arr1['result_gsm']) && !empty($return_data_arr1['result_gsm'])):
-														$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>17, ':status'=>1));
+														$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>30, ':status'=>1));
 														if(!empty($gsm_email_template)):
 															$gsm_booking_details="
 																<b>Package Title :</b>".$package_data['package_title']."<br>
@@ -156,7 +156,7 @@
 														endif;
 													endif;
 												elseif($return_data_arr1['result']['type']=="G"):
-													$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>17, ':status'=>1));
+													$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>30, ':status'=>1));
 													if(!empty($gsm_email_template)):
 														$gsm_booking_details="
 															<b>Package Title :</b>".$package_data['package_title']."<br>

@@ -1481,7 +1481,7 @@
 												</div>
 												<ul class="list-inline pull-right">
 													<li><button type="button" class="btn btn-warning prev-step">Back To Hotel List</button></li>
-													<li><button type="button" class="btn btn-default next-step">Skip</button></li>
+													<li><button type="button" class="btn btn-default save_step3_data">Skip</button></li>
 													<li><button type="button" class="btn btn-primary btn-info-full save_step3_data">Save and continue</button></li>
 												</ul>
 											</div>
@@ -1495,7 +1495,7 @@
 												</div>
 												<ul class="list-inline pull-right">
 													<li><button type="button" class="btn btn-warning prev-step">Manage Tour</button></li>
-													<li><button type="button" class="btn btn-default next-step">Skip</button></li>
+													<li><button type="button" class="btn btn-default save_step4_data">Skip</button></li>
 													<li><button type="button" class="btn btn-primary btn-info-full save_step4_data">Save and continue</button></li>
 												</ul>
 											</div>

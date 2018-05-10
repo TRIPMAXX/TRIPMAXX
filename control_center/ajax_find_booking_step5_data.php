@@ -219,9 +219,13 @@
 							$fifth_section_html.='No of Guests';
 						$fifth_section_html.='</td>';
 						$fifth_section_html.='<td style = "text-align:center;font-weight:bold;">';
+							$fifth_section_html.='ADULT';
+							$fifth_section_html.='<br/>';
 							$fifth_section_html.=''.$number_of_adult;
 						$fifth_section_html.='</td>';
 						$fifth_section_html.='<td style = "text-align:center;font-weight:bold;">';
+							$fifth_section_html.='CHILD';
+							$fifth_section_html.='<br/>';
 							$fifth_section_html.=''.$number_of_child;
 						$fifth_section_html.='</td>';
 					$fifth_section_html.='</tr>';
