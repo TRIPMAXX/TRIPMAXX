@@ -52,7 +52,7 @@
 		$uploaded_file_json_data="";
 		if($save_hotel = tools::module_form_submission($uploaded_file_json_data, TM_BOOKINGS)) {
 			$return_data['status']="success";
-			$return_data['msg'] = 'Tour booking has been created successfully.';
+			$return_data['msg'] = 'Package booking has been created successfully.';
 			$return_data['results'] = $save_hotel;
 			$return_data['booking_type'] = $_POST['booking_type'];
 			$return_data['booking_date'] = $_POST['booking_date'];

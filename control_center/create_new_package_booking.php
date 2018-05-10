@@ -96,10 +96,23 @@
 							$return_data = curl_exec($ch);
 							curl_close($ch);
 							$return_data_arr=json_decode($return_data, true);
-							//print_r($return_data);
+							//print_r($return_data_arr);exit;
 							if($return_data_arr['status']=="success")
 							{
-								if(isset($return_data_arr['booking_type']) && $return_data_arr['booking_type']=='agent' && $return_data_arr['agent_id']>0):		
+								$dmc_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>30, ':status'=>1));
+								if(!empty($dmc_email_template)):
+									$dmc_booking_details="
+										<b>Package Title :</b>".$package_data['package_title']."<br>
+										<b>Country :</b>".$package_data['co_name']."<br>
+										<b>City :</b>".$package_data['ci_name']."<br>
+										<b>No Of Days :</b>".$package_data['no_of_days']."<br>
+										<b>Package Price :</b>".$package_data['package_price']."<br>
+										<b>Discounted Price :</b>".$package_data['discounted_price']."<br>
+										<b>Booking Date :</b>".tools::module_date_format($return_data_arr['booking_date'],"Y-m-d")."<br>";
+									$dmc_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS]"), array($_SESSION['SESSION_DATA']['first_name'], $_SESSION['SESSION_DATA']['last_name'], $dmc_booking_details), $dmc_email_template['template_body']);
+									@tools::Send_SMTP_Mail($_SESSION['SESSION_DATA']['email_address'], FROM_EMAIL, '', $dmc_email_template['template_subject'], $dmc_mail_Body);
+								endif;
+								if(isset($return_data_arr['booking_type']) && $return_data_arr['booking_type']=='agent'):	
 									if(isset($autentication_data1->status)):
 										if($autentication_data1->status=="success"):
 											$post_data1['token']=array(
@@ -107,26 +120,26 @@
 												"token_timeout"=>$autentication_data1->results->token_timeout,
 												"token_generation_time"=>$autentication_data1->results->token_generation_time
 											);
-											$post_data['data']['agent_id']=base64_encode($return_data_arr['agent_id']);
-											$post_data_str=json_encode($post_data);
+											$post_data1['data']['agent_id']=$return_data_arr['agent_id'];
+											$post_data_str1=json_encode($post_data1);
 											$ch = curl_init();
 											curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 											curl_setopt($ch, CURLOPT_HEADER, false);
 											curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
 											curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 											curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/booking-agent.php");
-											curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+											curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str1);
 											curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 											$return_data1 = curl_exec($ch);
 											curl_close($ch);
-											//print_r($return_data);
 											$return_data_arr1=json_decode($return_data1, true);
-											$tour_data=array();
+											//print_r($return_data_arr1);
 											if(!isset($return_data_arr1['status'])):
 												//$data['status'] = 'error';
 												//$data['msg']="Some error has been occure during execution.";
 											elseif($return_data_arr1['status']=="success"):
-												if($return_data_arr1['result']['type']=="A"):
+												if($return_data_arr1['results']['type']=="A"):
+													//print_r($return_data_arr1);
 													$agent_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>30, ':status'=>1));
 													if(!empty($agent_email_template)):
 														$agent_booking_details="
@@ -137,8 +150,8 @@
 															<b>Package Price :</b>".$package_data['package_price']."<br>
 															<b>Discounted Price :</b>".$package_data['discounted_price']."<br>
 															<b>Booking Date :</b>".tools::module_date_format($return_data_arr['booking_date'],"Y-m-d")."<br>";
-														$agent_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS]"), array($return_data_arr1['result']['first_name'], $return_data_arr1['result']['last_name'], $agent_booking_details), $agent_email_template['template_body']);
-														@tools::Send_SMTP_Mail($return_data_arr1['result']['email_address'], FROM_EMAIL, '', $agent_email_template['template_subject'], $agent_mail_Body);
+														$agent_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS]"), array($return_data_arr1['results']['first_name'], $return_data_arr1['results']['last_name'], $agent_booking_details), $agent_email_template['template_body']);
+														@tools::Send_SMTP_Mail($return_data_arr1['results']['email_address'], FROM_EMAIL, '', $agent_email_template['template_subject'], $agent_mail_Body);
 													endif;
 													if(isset($return_data_arr1['result_gsm']) && !empty($return_data_arr1['result_gsm'])):
 														$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>30, ':status'=>1));
@@ -155,7 +168,7 @@
 															@tools::Send_SMTP_Mail($return_data_arr1['result_gsm']['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
 														endif;
 													endif;
-												elseif($return_data_arr1['result']['type']=="G"):
+												elseif($return_data_arr1['results']['type']=="G"):
 													$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>30, ':status'=>1));
 													if(!empty($gsm_email_template)):
 														$gsm_booking_details="
@@ -166,12 +179,13 @@
 															<b>Package Price :</b>".$package_data['package_price']."<br>
 															<b>Discounted Price :</b>".$package_data['discounted_price']."<br>
 															<b>Booking Date :</b>".tools::module_date_format($return_data_arr['booking_date'],"Y-m-d")."<br>";
-														$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS]"), array($return_data_arr1['result']['first_name'], $return_data_arr1['result']['last_name'], $gsm_booking_details), $gsm_email_template['template_body']);
-														@tools::Send_SMTP_Mail($return_data_arr1['result']['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
+														$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS]"), array($return_data_arr1['results']['first_name'], $return_data_arr1['results']['last_name'], $gsm_booking_details), $gsm_email_template['template_body']);
+														@tools::Send_SMTP_Mail($return_data_arr1['results']['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
 													endif;
 												endif;
 												//$data['status'] = 'success';
 												//$data['msg']="Data received successfully";
+												
 											else:
 												//$data['status'] = 'error';
 												//$data['msg'] = $return_data_arr1['msg'];
@@ -221,7 +235,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>CREATE NEW package OFFER</title>
+	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>CREATE NEW BOOKING</title>
 	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
 	<!-- JAVASCRIPT CODE -->
 	<script type="text/javascript">

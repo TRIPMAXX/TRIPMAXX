@@ -88,7 +88,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>CREATE NEW package OFFER</title>
+	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>UPDATE BOOKING COST</title>
 	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
 	<!-- JAVASCRIPT CODE -->
 	<script type="text/javascript">
@@ -121,10 +121,10 @@
 		<!-- BODY -->
 		<div class="content-wrapper">
             <section class="content-header">
-               <h1>Create New Booking Cost</h1>
+               <h1>Update Booking Cost</h1>
                <ol class="breadcrumb">
                   <li><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
-                  <li class="active">Create New Booking Cost</li>
+                  <li class="active">Update Booking Cost</li>
                </ol>
             </section>
             <section class="content">
@@ -141,7 +141,7 @@
 										</div>
 										<div class="form-group col-md-6">
 											<label for="Cost" class="control-label">Cost<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['cost']) && $_POST['cost']!='' ? $_POST['cost'] : (isset($cost_data['cost']) && $cost_data['cost']!='' ? $cost_data['cost'] : ""));?>" name="cost" id="cost" placeholder="Cost date" tabindex = "2" />
+											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['cost']) && $_POST['cost']!='' ? $_POST['cost'] : (isset($cost_data['cost']) && $cost_data['cost']!='' ? $cost_data['cost'] : ""));?>" name="cost" id="cost" placeholder="Cost" tabindex = "2" />
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-12">

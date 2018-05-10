@@ -12,7 +12,7 @@
 		if(!empty($find_cost)):
 			if(tools::delete(TM_COSTS, "WHERE id=:id", array(":id"=>$find_cost['id']))):
 				$return_data['status'] = 'success';
-				$return_data['msg'] = 'cost has been deleted successfully.';
+				$return_data['msg'] = 'Booking cost has been deleted successfully.';
 				$return_data['results'] = array();
 			else:
 				$return_data['status'] = 'error';

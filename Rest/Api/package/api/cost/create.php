@@ -12,7 +12,7 @@
 		$uploaded_file_json_data="";
 		if($save_hotel = tools::module_form_submission($uploaded_file_json_data, TM_COSTS)) {
 			$return_data['status']="success";
-			$return_data['msg'] = 'Tour cost has been created successfully.';
+			$return_data['msg'] = 'Booking cost has been created successfully.';
 			$return_data['results'] = $save_hotel;
 		} else {
 			$return_data['status']="error";

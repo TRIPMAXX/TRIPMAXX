@@ -607,6 +607,11 @@ button.srch-btn {cursor: pointer; font-family: 'Montserrat'; font-size:11px; fon
 	display:inline-block;
 	width:100%;
 }
+/*======= Sanjoy 9/4/18 =======*/
+.help_btn1{
+    margin-top:8px;
+}
+/*==============================*/
 .mp-popular header p, .page-lbl p {font-style:italic;	display:inline-block; width:640px; font-family:'Lora';}
 .offer-slider-i {
 /*	width:254px;*/
@@ -3185,3 +3190,6 @@ nav ul,nav ul li {margin:0px;padding:0px;list-style:none;}
 @media(max-width:500px){
 .btn_custm{ margin-top:10px}
 }
+
+
+
