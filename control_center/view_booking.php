@@ -155,7 +155,7 @@
 								endif;
 							else:
 								//$data['status'] = 'error';
-								//$data['msg'] = $autentication_data->msg;
+								//$data['msg'] = $autentication_data_supplier->msg;
 							endif;
 							$_SESSION['SET_TYPE'] = 'success';
 							$_SESSION['SET_FLASH']="Booking supplier updated successfully.";
@@ -293,7 +293,7 @@
 								$return_hotel_ids=array();
 								if(isset($booking_details_list) && isset($booking_details_list['booking_destination_list']) && !empty($booking_details_list['booking_destination_list'])):
 									foreach($booking_details_list['booking_destination_list'] as $hotel_key=>$hotel_val):
-										array_push($return_hotel_ids, $hotel_val['booking_hotel_list'][0]);
+										array_push($return_hotel_ids, $hotel_val['booking_hotel_list'][0]['hotel_id']);
 									endforeach;
 								endif;
 								$autentication_data_hotel=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
@@ -344,89 +344,102 @@
 									//$data['status'] = 'error';
 									//$data['msg'] = $autentication_data->msg;
 								endif;
-								if(isset($booking_details_list['booking_type']) && $booking_details_list['booking_type']=="agent" && isset($booking_details_list['agent_id']) && $booking_details_list['agent_id']!=""):
-									$post_data['data']['agent_id']=$booking_details_list['agent_id'];
-									$post_data_str=json_encode($post_data);
-									$ch = curl_init();
-									curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-									curl_setopt($ch, CURLOPT_HEADER, false);
-									curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
-									curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-									curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/booking-agent.php");
-									curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
-									curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-									$return_data = curl_exec($ch);
-									curl_close($ch);
-									//print_r($return_data);
-									$return_data_arr=json_decode($return_data, true);
-									$tour_data=array();
-									if(!isset($return_data_arr['status'])):
-										//$data['status'] = 'error';
-										//$data['msg']="Some error has been occure during execution.";
-									elseif($return_data_arr['status']=="success"):
-										if($return_data_arr['results']['type']=="A"):
-											$agent_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>39, ':status'=>1));
-											if(!empty($agent_email_template)):
-												$agent_url_details="";
-												$agent_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_arr['results']['first_name'], $return_data_arr['results']['last_name'], $agent_url_details), $agent_email_template['template_body']);
-												@tools::Send_SMTP_Mail($return_data_arr['results']['email_address'], FROM_EMAIL, '', $agent_email_template['template_subject'], $agent_mail_Body);
-											endif;
-											if(isset($return_data_arr['result_gsm']) && !empty($return_data_arr['result_gsm'])):
-												$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>39, ':status'=>1));
-												if(!empty($gsm_email_template)):
-													$gsm_url_details="";
-													$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_arr['result_gsm']['first_name'], $return_data_arr['result_gsm']['last_name'], $gsm_url_details), $gsm_email_template['template_body']);
-													@tools::Send_SMTP_Mail($return_data_arr['result_gsm']['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
+								$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
+								if(isset($autentication_data->status)):
+									if($autentication_data->status=="success"):
+										$post_data['token']=array(
+											"token"=>$autentication_data->results->token,
+											"token_timeout"=>$autentication_data->results->token_timeout,
+											"token_generation_time"=>$autentication_data->results->token_generation_time
+										);
+										if(isset($booking_details_list['booking_type']) && $booking_details_list['booking_type']=="agent" && isset($booking_details_list['agent_id']) && $booking_details_list['agent_id']!=""):
+											$post_data['data']['agent_id']=$booking_details_list['agent_id'];
+											$post_data_str=json_encode($post_data);
+											$ch = curl_init();
+											curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+											curl_setopt($ch, CURLOPT_HEADER, false);
+											curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+											curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+											curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/booking-agent.php");
+											curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+											curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+											$return_data = curl_exec($ch);
+											curl_close($ch);
+											//print_r($return_data);
+											$return_data_arr=json_decode($return_data, true);
+											$tour_data=array();
+											if(!isset($return_data_arr['status'])):
+												//$data['status'] = 'error';
+												//$data['msg']="Some error has been occure during execution.";
+											elseif($return_data_arr['status']=="success"):
+												if($return_data_arr['results']['type']=="A"):
+													$agent_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>39, ':status'=>1));
+													if(!empty($agent_email_template)):
+														$agent_url_details="";
+														$agent_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_arr['results']['first_name'], $return_data_arr['results']['last_name'], $agent_url_details), $agent_email_template['template_body']);
+														@tools::Send_SMTP_Mail($return_data_arr['results']['email_address'], FROM_EMAIL, '', $agent_email_template['template_subject'], $agent_mail_Body);
+													endif;
+													if(isset($return_data_arr['result_gsm']) && !empty($return_data_arr['result_gsm'])):
+														$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>39, ':status'=>1));
+														if(!empty($gsm_email_template)):
+															$gsm_url_details="";
+															$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_arr['result_gsm']['first_name'], $return_data_arr['result_gsm']['last_name'], $gsm_url_details), $gsm_email_template['template_body']);
+															@tools::Send_SMTP_Mail($return_data_arr['result_gsm']['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
+														endif;
+													endif;
+												elseif($return_data_arr['results']['type']=="G"):
+													$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>39, ':status'=>1));
+													if(!empty($gsm_email_template)):
+														$gsm_url_details="";
+														$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_arr['results']['first_name'], $return_data_arr['results']['last_name'], $gsm_url_details), $gsm_email_template['template_body']);
+														@tools::Send_SMTP_Mail($return_data_arr['results']['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
+													endif;
 												endif;
-											endif;
-										elseif($return_data_arr['results']['type']=="G"):
-											$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>39, ':status'=>1));
-											if(!empty($gsm_email_template)):
-												$gsm_url_details="";
-												$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_arr['results']['first_name'], $return_data_arr['results']['last_name'], $gsm_url_details), $gsm_email_template['template_body']);
-												@tools::Send_SMTP_Mail($return_data_arr['results']['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
+												//$data['status'] = 'success';
+												//$data['msg']="Data received successfully";
+											else:
+												//$data['status'] = 'error';
+												//$data['msg'] = $return_data_arr['msg'];
 											endif;
 										endif;
-										//$data['status'] = 'success';
-										//$data['msg']="Data received successfully";
+										if(isset($booking_details_list['booking_type']) && $booking_details_list['booking_type']=="agent" && isset($booking_details_list['agent_id']) && $booking_details_list['agent_id']!="" && $_POST['booking_approval_status']==2):
+											$post_data['data']=array();
+											$post_data['data']['prev_agent_id']=$booking_details_list['agent_id'];
+											$post_data['data']['prev_total_price']=$booking_details_list['total_amount'];
+											$post_data['data']['prev_quotation_name']=$booking_details_list['quotation_name'];
+											$post_data_str=json_encode($post_data);
+											$ch = curl_init();
+											curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+											curl_setopt($ch, CURLOPT_HEADER, false);
+											curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+											curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+											curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/update-booking-agent-credit.php");
+											curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+											curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+											$return_data = curl_exec($ch);
+											curl_close($ch);
+											//print_r($return_data);
+											$return_data_arr=json_decode($return_data, true);
+											$tour_data=array();
+											if(!isset($return_data_arr['status'])):
+												//$data['status'] = 'error';
+												//$data['msg']="Some error has been occure during execution.";
+											elseif($return_data_arr['status']=="success"):
+												//$data['status'] = 'success';
+												//$data['msg']="Data received successfully";
+											else:
+												//$data['status'] = 'error';
+												//$data['msg'] = $return_data_arr['msg'];
+											endif;
+										endif;
+									endif;
 									else:
 										//$data['status'] = 'error';
-										//$data['msg'] = $return_data_arr['msg'];
+										//$data['msg'] = $autentication_data->msg;
 									endif;
 								endif;
-								if(isset($booking_details_list['booking_type']) && $booking_details_list['booking_type']=="agent" && isset($booking_details_list['agent_id']) && $booking_details_list['agent_id']!="" && $_POST['booking_approval_status']==2):
-									$post_data['data']=array();
-									$post_data['data']['prev_agent_id']=$booking_details_list['agent_id'];
-									$post_data['data']['prev_total_price']=$booking_details_list['total_amount'];
-									$post_data['data']['prev_quotation_name']=$booking_details_list['quotation_name'];
-									$post_data_str=json_encode($post_data);
-									$ch = curl_init();
-									curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-									curl_setopt($ch, CURLOPT_HEADER, false);
-									curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
-									curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-									curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/update-booking-agent-credit.php");
-									curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
-									curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-									$return_data = curl_exec($ch);
-									curl_close($ch);
-									print_r($return_data);
-									$return_data_arr=json_decode($return_data, true);
-									$tour_data=array();
-									if(!isset($return_data_arr['status'])):
-										//$data['status'] = 'error';
-										//$data['msg']="Some error has been occure during execution.";
-									elseif($return_data_arr['status']=="success"):
-										//$data['status'] = 'success';
-										//$data['msg']="Data received successfully";
-									else:
-										//$data['status'] = 'error';
-										//$data['msg'] = $return_data_arr['msg'];
-									endif;
-								endif;
-							endif;
-							//header("location:".DOMAIN_NAME_PATH_ADMIN.'view_booking?booking_id='.$_GET['booking_id']);
-							//exit;
+							header("location:".DOMAIN_NAME_PATH_ADMIN.'view_booking?booking_id='.$_GET['booking_id']);
+							exit;
 						else:
 							$_SESSION['SET_TYPE'] = 'error';
 							$_SESSION['SET_FLASH'] = $return_data_arr_booking_update['msg'];

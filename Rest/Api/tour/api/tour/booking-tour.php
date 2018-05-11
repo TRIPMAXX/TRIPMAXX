@@ -88,8 +88,8 @@
 				$checkout_date_on_city=date("Y-m-d", strtotime($checkin_date_on_city)+(24*60*60*$server_data['data']['number_of_night'][$country_key]));
 				$tour_list_html='';
 				$each_first_price="--";
-				$execute['co_id']=$counrty_val;
-				$execute['ci_id']=$server_data['data']['city'][$country_key];
+				$execute[':co_id']=$counrty_val;
+				$execute[':ci_id']=$server_data['data']['city'][$country_key];
 				if(isset($server_data['data']['booking_details_list']) && $server_data['data']['booking_details_list']!=""):
 					$booking_details_list=$server_data['data']['booking_details_list'];
 				endif;

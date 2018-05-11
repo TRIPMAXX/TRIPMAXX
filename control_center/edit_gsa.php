@@ -1,7 +1,7 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
-	$white_list_array = array('employee_id', 'type', 'company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'code', 'username', 'password', 'account_department_name', 'account_department_email', 'account_department_number', 'reservation_department_name', 'reservation_department_email', 'reservation_department_number', 'management_department_name', 'management_department_email', 'management_department_number', 'hotel_price', 'tour_price', 'transfer_price', 'package_price', 'status', 'token', 'id', 'btn_submit', 'confirm_password');
+	$white_list_array = array('employee_id', 'type', 'company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'code', 'username', 'password', 'account_department_employee_id', 'account_department_name', 'account_department_email', 'account_department_number', 'reservation_department_employee_id', 'reservation_department_name', 'reservation_department_email', 'reservation_department_number', 'management_department_employee_id', 'management_department_name', 'management_department_email', 'management_department_number', 'hotel_price', 'tour_price', 'transfer_price', 'package_price', 'status', 'token', 'id', 'btn_submit', 'confirm_password');
 	$verify_token = "edit_gsa";
 	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
 	if(isset($autentication_data->status)):
@@ -206,6 +206,21 @@
 		<?php
 		}
 		?>
+		$("#account_department_employee_id").change(function(){
+			$("#account_department_name").val($('#account_department_employee_id option:selected').attr("data-name"));
+			$("#account_department_email").val($('#account_department_employee_id option:selected').attr("data-email"));
+			$("#account_department_number").val($('#account_department_employee_id option:selected').attr("data-phone"));
+		});
+		$("#reservation_department_employee_id").change(function(){
+			$("#reservation_department_name").val($('#reservation_department_employee_id option:selected').attr("data-name"));
+			$("#reservation_department_email").val($('#reservation_department_employee_id option:selected').attr("data-email"));
+			$("#reservation_department_number").val($('#reservation_department_employee_id option:selected').attr("data-phone"));
+		});
+		$("#management_department_employee_id").change(function(){
+			$("#management_department_name").val($('#management_department_employee_id option:selected').attr("data-name"));
+			$("#management_department_email").val($('#management_department_employee_id option:selected').attr("data-email"));
+			$("#management_department_number").val($('#management_department_employee_id option:selected').attr("data-phone"));
+		});
 	});
 	function fetch_state(country_id)
 	{
@@ -313,20 +328,6 @@
 								</div>
 								<div class="box-body">
 									<div id="" class="row rows">
-										<div class="form-group col-md-12">
-											<label for="employee_id" class="form-label1">Select Employee <font color="#FF0000">*</font> :</label>
-											<select name="employee_id" id="employee_id" class="form-control form_input1 select_bg" tabindex="0">
-											<?php
-											if(isset($employee_data)):
-												foreach($employee_data as $emp_key=>$emp_val):
-											?>
-												<option value="<?php echo $emp_val['id'];?>" <?php echo(isset($_POST['employee_id']) && $_POST['employee_id']==$emp_val['id'] ? 'selected="selected"' : (isset($gsa_data['employee_id']) && $gsa_data['employee_id']==$emp_val['id'] ? 'selected="selected"' : ""));?>><?php echo $emp_val['first_name']." ".$emp_val['last_name']." - ".$emp_val['email_address']." - ".$emp_val['phone_number'];?></option>
-											<?php
-												endforeach;
-											endif;
-											?>
-											</select>
-										</div>
 										<div class="form-group col-md-6">
 											<label for="company_name" class="form-label1">Company Name <font color="#FF0000">*</font> :</label>
 											<input type="text" class="form-control form_input1 validate[required]" id="company_name" name="company_name" placeholder="Company Name" value="<?php echo(isset($_POST['company_name']) && $_POST['company_name']!='' ? $_POST['company_name'] : (isset($gsa_data['company_name']) && $gsa_data['company_name']!='' ? $gsa_data['company_name'] : ""));?>" tabindex="1">
@@ -522,19 +523,35 @@
 										</div>
 										<div id="" class="col-md-8">
 											<div class="row rows">
-												<div id="" class="col-md-4">
+												<div id="" class="col-md-3">
 													<div class="form-group fancy-form">
-														<input type="text" class="form-control form_input1 validate[required]" id="account_department_name" name="account_department_name" placeholder="Name" value="<?php echo(isset($_POST['account_department_name']) && $_POST['account_department_name']!='' ? $_POST['account_department_name'] : (isset($gsa_data['account_department_name']) && $gsa_data['account_department_name']!='' ? $gsa_data['account_department_name'] : ""));?>" tabindex="25">
+														<select name="account_department_employee_id" id="account_department_employee_id" class="form-control form_input1 validate[required]" tabindex="25">
+															<option value="" data-name="" data-email="" data-phone="">Select</option>
+														<?php
+														if(isset($employee_data)):
+															foreach($employee_data as $emp_key=>$emp_val):
+														?>
+															<option value="<?php echo $emp_val['id'];?>" <?php echo(isset($_POST['account_department_employee_id']) && $_POST['account_department_employee_id']==$emp_val['id'] ? 'selected="selected"' : (isset($gsa_data['account_department_employee_id']) && $gsa_data['account_department_employee_id']==$emp_val['id'] ? 'selected="selected"' : ""));?> data-name="<?php echo $emp_val['first_name']." ".$emp_val['last_name'];?>" data-email="<?php echo $emp_val['email_address'];?>" data-phone="<?php echo $emp_val['phone_number'];?>"><?php echo $emp_val['first_name']." ".$emp_val['last_name']." - ".$emp_val['email_address']." - ".$emp_val['phone_number'];?></option>
+														<?php
+															endforeach;
+														endif;
+														?>
+														</select>
 													</div>
 												</div>
-												<div id="" class="col-md-4">
+												<div id="" class="col-md-3">
 													<div class="form-group fancy-form">
-														<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="account_department_email" name="account_department_email" placeholder="Email" value="<?php echo(isset($_POST['account_department_email']) && $_POST['account_department_email']!='' ? $_POST['account_department_email'] : (isset($gsa_data['account_department_email']) && $gsa_data['account_department_email']!='' ? $gsa_data['account_department_email'] : ""));?>" tabindex="26">
+														<input type="text" class="form-control form_input1 validate[required]" id="account_department_name" name="account_department_name" placeholder="Name" value="<?php echo(isset($_POST['account_department_name']) && $_POST['account_department_name']!='' ? $_POST['account_department_name'] : (isset($gsa_data['account_department_name']) && $gsa_data['account_department_name']!='' ? $gsa_data['account_department_name'] : ""));?>" tabindex="26" readonly>
 													</div>
 												</div>
-												<div id="" class="col-md-4">
+												<div id="" class="col-md-3">
 													<div class="form-group fancy-form">
-														<input type="text" class="form-control form_input1 validate[required]" id="account_department_number" name="account_department_number" placeholder="Contact Number" value="<?php echo(isset($_POST['account_department_number']) && $_POST['account_department_number']!='' ? $_POST['account_department_number'] : (isset($gsa_data['account_department_number']) && $gsa_data['account_department_number']!='' ? $gsa_data['account_department_number'] : ""));?>" tabindex="27">
+														<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="account_department_email" name="account_department_email" placeholder="Email" value="<?php echo(isset($_POST['account_department_email']) && $_POST['account_department_email']!='' ? $_POST['account_department_email'] : (isset($gsa_data['account_department_email']) && $gsa_data['account_department_email']!='' ? $gsa_data['account_department_email'] : ""));?>" tabindex="27" readonly>
+													</div>
+												</div>
+												<div id="" class="col-md-3">
+													<div class="form-group fancy-form">
+														<input type="text" class="form-control form_input1 validate[required]" id="account_department_number" name="account_department_number" placeholder="Contact Number" value="<?php echo(isset($_POST['account_department_number']) && $_POST['account_department_number']!='' ? $_POST['account_department_number'] : (isset($gsa_data['account_department_number']) && $gsa_data['account_department_number']!='' ? $gsa_data['account_department_number'] : ""));?>" tabindex="28" readonly>
 													</div>
 												</div>
 											</div>
@@ -547,19 +564,35 @@
 										</div>
 										<div id="" class="col-md-8">
 											<div class="row rows">
-												<div id="" class="col-md-4">
+												<div id="" class="col-md-3">
 													<div class="form-group fancy-form">
-														<input type="text" class="form-control form_input1 validate[required]" id="reservation_department_name" name="reservation_department_name" placeholder="Name" value="<?php echo(isset($_POST['reservation_department_name']) && $_POST['reservation_department_name']!='' ? $_POST['reservation_department_name'] : (isset($gsa_data['reservation_department_name']) && $gsa_data['reservation_department_name']!='' ? $gsa_data['reservation_department_name'] : ""));?>" tabindex="28">
+														<select name="reservation_department_employee_id" id="reservation_department_employee_id" class="form-control form_input1 validate[required]" tabindex="29">
+															<option value="" data-name="" data-email="" data-phone="">Select</option>
+														<?php
+														if(isset($employee_data)):
+															foreach($employee_data as $emp_key=>$emp_val):
+														?>
+															<option value="<?php echo $emp_val['id'];?>" <?php echo(isset($_POST['reservation_department_employee_id']) && $_POST['reservation_department_employee_id']==$emp_val['id'] ? 'selected="selected"' : (isset($gsa_data['reservation_department_employee_id']) && $gsa_data['reservation_department_employee_id']==$emp_val['id'] ? 'selected="selected"' : ""));?> data-name="<?php echo $emp_val['first_name']." ".$emp_val['last_name'];?>" data-email="<?php echo $emp_val['email_address'];?>" data-phone="<?php echo $emp_val['phone_number'];?>"><?php echo $emp_val['first_name']." ".$emp_val['last_name']." - ".$emp_val['email_address']." - ".$emp_val['phone_number'];?></option>
+														<?php
+															endforeach;
+														endif;
+														?>
+														</select>
 													</div>
 												</div>
-												<div id="" class="col-md-4">
+												<div id="" class="col-md-3">
 													<div class="form-group fancy-form">
-														<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="reservation_department_email" name="reservation_department_email" placeholder="Email" value="<?php echo(isset($_POST['reservation_department_email']) && $_POST['reservation_department_email']!='' ? $_POST['reservation_department_email'] : (isset($gsa_data['reservation_department_email']) && $gsa_data['reservation_department_email']!='' ? $gsa_data['reservation_department_email'] : ""));?>" tabindex="29">
+														<input type="text" class="form-control form_input1 validate[required]" id="reservation_department_name" name="reservation_department_name" placeholder="Name" value="<?php echo(isset($_POST['reservation_department_name']) && $_POST['reservation_department_name']!='' ? $_POST['reservation_department_name'] : (isset($gsa_data['reservation_department_name']) && $gsa_data['reservation_department_name']!='' ? $gsa_data['reservation_department_name'] : ""));?>" tabindex="30" readonly>
 													</div>
 												</div>
-												<div id="" class="col-md-4">
+												<div id="" class="col-md-3">
 													<div class="form-group fancy-form">
-														<input type="text" class="form-control form_input1 validate[required]" id="reservation_department_number" name="reservation_department_number" placeholder="Contact Number" value="<?php echo(isset($_POST['reservation_department_number']) && $_POST['reservation_department_number']!='' ? $_POST['reservation_department_number'] : (isset($gsa_data['reservation_department_number']) && $gsa_data['reservation_department_number']!='' ? $gsa_data['reservation_department_number'] : ""));?>" tabindex="30">
+														<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="reservation_department_email" name="reservation_department_email" placeholder="Email" value="<?php echo(isset($_POST['reservation_department_email']) && $_POST['reservation_department_email']!='' ? $_POST['reservation_department_email'] : (isset($gsa_data['reservation_department_email']) && $gsa_data['reservation_department_email']!='' ? $gsa_data['reservation_department_email'] : ""));?>" tabindex="31" readonly>
+													</div>
+												</div>
+												<div id="" class="col-md-3">
+													<div class="form-group fancy-form">
+														<input type="text" class="form-control form_input1 validate[required]" id="reservation_department_number" name="reservation_department_number" placeholder="Contact Number" value="<?php echo(isset($_POST['reservation_department_number']) && $_POST['reservation_department_number']!='' ? $_POST['reservation_department_number'] : (isset($gsa_data['reservation_department_number']) && $gsa_data['reservation_department_number']!='' ? $gsa_data['reservation_department_number'] : ""));?>" tabindex="32" readonly>
 													</div>
 												</div>
 											</div>
@@ -573,19 +606,35 @@
 												</div>
 												<div id="" class="col-md-8">
 													<div class="row rows">
-														<div id="" class="col-md-4">
+														<div id="" class="col-md-3">
 															<div class="form-group fancy-form">
-																<input type="text" class="form-control form_input1 validate[required]" id="management_department_name" name="management_department_name" placeholder="Name" value="<?php echo(isset($_POST['management_department_name']) && $_POST['management_department_name']!='' ? $_POST['management_department_name'] : (isset($gsa_data['management_department_name']) && $gsa_data['management_department_name']!='' ? $gsa_data['management_department_name'] : ""));?>" tabindex="31">
+																<select name="management_department_employee_id" id="management_department_employee_id" class="form-control form_input1 validate[required]" tabindex="33">
+																	<option value="" data-name="" data-email="" data-phone="">Select</option>
+																<?php
+																if(isset($employee_data)):
+																	foreach($employee_data as $emp_key=>$emp_val):
+																?>
+																	<option value="<?php echo $emp_val['id'];?>" <?php echo(isset($_POST['management_department_employee_id']) && $_POST['management_department_employee_id']==$emp_val['id'] ? 'selected="selected"' : (isset($gsa_data['management_department_employee_id']) && $gsa_data['management_department_employee_id']==$emp_val['id'] ? 'selected="selected"' : ""));?> data-name="<?php echo $emp_val['first_name']." ".$emp_val['last_name'];?>" data-email="<?php echo $emp_val['email_address'];?>" data-phone="<?php echo $emp_val['phone_number'];?>"><?php echo $emp_val['first_name']." ".$emp_val['last_name']." - ".$emp_val['email_address']." - ".$emp_val['phone_number'];?></option>
+																<?php
+																	endforeach;
+																endif;
+																?>
+																</select>
 															</div>
 														</div>
-														<div id="" class="col-md-4">
+														<div id="" class="col-md-3">
 															<div class="form-group fancy-form">
-																<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="management_department_email" name="management_department_email" placeholder="Email" value="<?php echo(isset($_POST['management_department_email']) && $_POST['management_department_email']!='' ? $_POST['management_department_email'] : (isset($gsa_data['management_department_email']) && $gsa_data['management_department_email']!='' ? $gsa_data['management_department_email'] : ""));?>" tabindex="32">
+																<input type="text" class="form-control form_input1 validate[required]" id="management_department_name" name="management_department_name" placeholder="Name" value="<?php echo(isset($_POST['management_department_name']) && $_POST['management_department_name']!='' ? $_POST['management_department_name'] : (isset($gsa_data['management_department_name']) && $gsa_data['management_department_name']!='' ? $gsa_data['management_department_name'] : ""));?>" tabindex="34" readonly>
 															</div>
 														</div>
-														<div id="" class="col-md-4">
+														<div id="" class="col-md-3">
 															<div class="form-group fancy-form">
-																<input type="text" class="form-control form_input1 validate[required]" id="management_department_number" name="management_department_number" placeholder="Contact Number" value="<?php echo(isset($_POST['management_department_number']) && $_POST['management_department_number']!='' ? $_POST['management_department_number'] : (isset($gsa_data['management_department_number']) && $gsa_data['management_department_number']!='' ? $gsa_data['management_department_number'] : ""));?>" tabindex="33">
+																<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="management_department_email" name="management_department_email" placeholder="Email" value="<?php echo(isset($_POST['management_department_email']) && $_POST['management_department_email']!='' ? $_POST['management_department_email'] : (isset($gsa_data['management_department_email']) && $gsa_data['management_department_email']!='' ? $gsa_data['management_department_email'] : ""));?>" tabindex="35" readonly>
+															</div>
+														</div>
+														<div id="" class="col-md-3">
+															<div class="form-group fancy-form">
+																<input type="text" class="form-control form_input1 validate[required]" id="management_department_number" name="management_department_number" placeholder="Contact Number" value="<?php echo(isset($_POST['management_department_number']) && $_POST['management_department_number']!='' ? $_POST['management_department_number'] : (isset($gsa_data['management_department_number']) && $gsa_data['management_department_number']!='' ? $gsa_data['management_department_number'] : ""));?>" tabindex="36" readonly>
 															</div>
 														</div>
 													</div>
@@ -607,19 +656,19 @@
 									<div id="" class="row rows">
 										<div class="form-group col-md-3">
 											<label for="hotel_price" class="form-label1">Hotel :</label>
-											<input type="text" class="form-control form_input1" id="hotel_price" name="hotel_price" placeholder="Hotel" value="<?php echo(isset($_POST['hotel_price']) && $_POST['hotel_price']!='' ? $_POST['hotel_price'] : (isset($gsa_data['hotel_price']) && $gsa_data['hotel_price']!='' ? $gsa_data['hotel_price'] : ""));?>" tabindex="34">
+											<input type="text" class="form-control form_input1" id="hotel_price" name="hotel_price" placeholder="Hotel" value="<?php echo(isset($_POST['hotel_price']) && $_POST['hotel_price']!='' ? $_POST['hotel_price'] : (isset($gsa_data['hotel_price']) && $gsa_data['hotel_price']!='' ? $gsa_data['hotel_price'] : ""));?>" tabindex="37">
 										</div>
 										<div class="form-group col-md-3">
 											<label for="tour_price" class="form-label1">Tour :</label>
-											<input type="text" class="form-control form_input1" id="tour_price" name="tour_price" placeholder="Tour" value="<?php echo(isset($_POST['tour_price']) && $_POST['tour_price']!='' ? $_POST['tour_price'] : (isset($gsa_data['tour_price']) && $gsa_data['tour_price']!='' ? $gsa_data['tour_price'] : ""));?>" tabindex="35">
+											<input type="text" class="form-control form_input1" id="tour_price" name="tour_price" placeholder="Tour" value="<?php echo(isset($_POST['tour_price']) && $_POST['tour_price']!='' ? $_POST['tour_price'] : (isset($gsa_data['tour_price']) && $gsa_data['tour_price']!='' ? $gsa_data['tour_price'] : ""));?>" tabindex="38">
 										</div>
 										<div class="form-group col-md-3">
 											<label for="transfer_price" class="form-label1">Transfer :</label>
-											<input type="text" class="form-control form_input1" id="transfer_price" name="transfer_price" placeholder="Transfer" value="<?php echo(isset($_POST['transfer_price']) && $_POST['transfer_price']!='' ? $_POST['transfer_price'] : (isset($gsa_data['transfer_price']) && $gsa_data['transfer_price']!='' ? $gsa_data['transfer_price'] : ""));?>" tabindex="36">
+											<input type="text" class="form-control form_input1" id="transfer_price" name="transfer_price" placeholder="Transfer" value="<?php echo(isset($_POST['transfer_price']) && $_POST['transfer_price']!='' ? $_POST['transfer_price'] : (isset($gsa_data['transfer_price']) && $gsa_data['transfer_price']!='' ? $gsa_data['transfer_price'] : ""));?>" tabindex="39">
 										</div>
 										<div class="form-group col-md-3">
 											<label for="package_price" class="form-label1">Package :</label>
-											<input type="text" class="form-control form_input1" id="package_price" name="package_price" placeholder="Package" value="<?php echo(isset($_POST['package_price']) && $_POST['package_price']!='' ? $_POST['package_price'] : (isset($gsa_data['package_price']) && $gsa_data['package_price']!='' ? $gsa_data['package_price'] : ""));?>" tabindex="37">
+											<input type="text" class="form-control form_input1" id="package_price" name="package_price" placeholder="Package" value="<?php echo(isset($_POST['package_price']) && $_POST['package_price']!='' ? $_POST['package_price'] : (isset($gsa_data['package_price']) && $gsa_data['package_price']!='' ? $gsa_data['package_price'] : ""));?>" tabindex="40">
 										</div>
 									</div>
 								</div>
@@ -629,7 +678,7 @@
 
 						<div class="box-footer">
 							<input type="hidden" name="token" value="<?php echo(tools::generateFormToken($verify_token)); ?>" />
-							<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex="38">UPDATE</button>
+							<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex="41">UPDATE</button>
 						</div>
 					</div>
 				</div>

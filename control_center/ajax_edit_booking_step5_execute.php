@@ -93,12 +93,52 @@
 							$dmc_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($_SESSION['SESSION_DATA']['first_name'], $_SESSION['SESSION_DATA']['last_name'], $dmc_url_details), $dmc_email_template['template_body']);
 							@tools::Send_SMTP_Mail($_SESSION['SESSION_DATA']['email_address'], FROM_EMAIL, '', $dmc_email_template['template_subject'], $dmc_mail_Body);
 						endif;
+						//print_r($_POST['booking_details_list']);
 						if(isset($_POST['booking_details_list']) && isset($_POST['booking_details_list']['booking_supplier_list']) && !empty($_POST['booking_details_list']['booking_supplier_list'])):
-							$supplier_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>35, ':status'=>1));
-							if(!empty($supplier_email_template)):
-								$supplier_url_details='<a href="'.DOMAIN_NAME_PATH_SUPPLIER.'login?auto_login_id='.base64_encode(SECURITY_SALT.$_POST['booking_details_list']['booking_supplier_list'][0]['id']."supplier".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_id).'" title="View Order">'.DOMAIN_NAME_PATH_SUPPLIER.'login?auto_login_id='.base64_encode(SECURITY_SALT.$_POST['booking_details_list']['booking_supplier_list'][0]['id']."supplier".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_id).'</a>';
-								$supplier_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($_POST['booking_details_list']['booking_supplier_list'][0]['first_name'], $_POST['booking_details_list']['booking_supplier_list'][0]['last_name'], $supplier_url_details), $supplier_email_template['template_body']);
-								@tools::Send_SMTP_Mail($_POST['booking_details_list']['booking_supplier_list'][0]['email_address'], FROM_EMAIL, '', $supplier_email_template['template_subject'], $supplier_mail_Body);
+							$autentication_data_supplier=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."authorized.php"));
+							if(isset($autentication_data_supplier->status)):
+								if($autentication_data_supplier->status=="success"):
+									$post_data_supplier['token']=array(
+										"token"=>$autentication_data_supplier->results->token,
+										"token_timeout"=>$autentication_data_supplier->results->token_timeout,
+										"token_generation_time"=>$autentication_data_supplier->results->token_generation_time
+									);
+									$post_data_supplier['data']['supplier_id']=base64_encode($_POST['booking_details_list']['booking_supplier_list'][0]['supplier_id']);
+									$post_data_str_supplier=json_encode($post_data_supplier);
+									$ch = curl_init();
+									curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+									curl_setopt($ch, CURLOPT_HEADER, false);
+									curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+									curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+									curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."supplier/read.php");
+									curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str_supplier);
+									curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+									$return_data_supplier = curl_exec($ch);
+									curl_close($ch);
+									//print_r($return_data_supplier);
+									$return_data_arr_supplier=json_decode($return_data_supplier, true);
+									if(!isset($return_data_arr_supplier['status'])):
+										//$data['status'] = 'error';
+										//$data['msg']="Some error has been occure during execution.";
+									elseif($return_data_arr_supplier['status']=="success"):
+										if(!empty($return_data_arr_supplier['results'])):
+											$supplier_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>35, ':status'=>1));
+											if(!empty($supplier_email_template)):
+												$supplier_url_details='<a href="'.DOMAIN_NAME_PATH_SUPPLIER.'login?auto_login_id='.base64_encode(SECURITY_SALT.$return_data_arr_supplier['results']['id']."supplier".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_id).'" title="View Order">'.DOMAIN_NAME_PATH_SUPPLIER.'login?auto_login_id='.base64_encode(SECURITY_SALT.$return_data_arr_supplier['results']['id']."supplier".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_id).'</a>';
+												$supplier_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_arr_supplier['results']['first_name'], $return_data_arr_supplier['results']['last_name'], $supplier_url_details), $supplier_email_template['template_body']);
+												@tools::Send_SMTP_Mail($return_data_arr_supplier['results']['email_address'], FROM_EMAIL, '', $supplier_email_template['template_subject'], $supplier_mail_Body);
+											endif;
+										endif;
+										//$data['status'] = 'success';
+										//$data['msg']="Data received successfully";
+									else:
+										//$data['status'] = 'error';
+										//$data['msg'] = $return_data_arr_supplier['msg'];
+									endif;
+								endif;
+							else:
+								//$data['status'] = 'error';
+								//$data['msg'] = $autentication_data->msg;
 							endif;
 						else:
 							$autentication_data_supplier=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.SUPPLIER_API_PATH."authorized.php"));

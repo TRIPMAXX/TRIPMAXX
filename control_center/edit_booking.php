@@ -111,6 +111,7 @@
 <head>
 	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>EDIT BOOKING</title>
 	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
+	<script src="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>assets/raty/jquery.raty.js" type="text/javascript"></script>
 	<style type="text/css">
 		.hide_age_div, .each_hotel_tab_content, .each_tour_tab_content, .each_transfer_tab_content{display:none;}
 		.active_each_tab_content{display:block;}

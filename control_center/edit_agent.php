@@ -1,7 +1,7 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
-	$white_list_array = array('employee_id', 'company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'code', 'username', 'password', 'account_department_name', 'account_department_email', 'account_department_number', 'reservation_department_name', 'reservation_department_email', 'reservation_department_number', 'management_department_name', 'management_department_email', 'management_department_number', 'hotel_price', 'tour_price', 'transfer_price', 'package_price', 'status', 'token', 'id', 'btn_submit', 'confirm_password');
+	$white_list_array = array('employee_id', 'company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'code', 'username', 'password', 'account_department_employee_id', 'account_department_name', 'account_department_email', 'account_department_number', 'reservation_department_employee_id', 'reservation_department_name', 'reservation_department_email', 'reservation_department_number', 'management_department_employee_id', 'management_department_name', 'management_department_email', 'management_department_number', 'hotel_price', 'tour_price', 'transfer_price', 'package_price', 'status', 'token', 'id', 'btn_submit', 'confirm_password');
 	$verify_token = "edit_agent";
 	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
 	if(isset($autentication_data->status)):
@@ -212,6 +212,21 @@
 		<?php
 		}
 		?>
+		$("#account_department_employee_id").change(function(){
+			$("#account_department_name").val($('#account_department_employee_id option:selected').attr("data-name"));
+			$("#account_department_email").val($('#account_department_employee_id option:selected').attr("data-email"));
+			$("#account_department_number").val($('#account_department_employee_id option:selected').attr("data-phone"));
+		});
+		$("#reservation_department_employee_id").change(function(){
+			$("#reservation_department_name").val($('#reservation_department_employee_id option:selected').attr("data-name"));
+			$("#reservation_department_email").val($('#reservation_department_employee_id option:selected').attr("data-email"));
+			$("#reservation_department_number").val($('#reservation_department_employee_id option:selected').attr("data-phone"));
+		});
+		$("#management_department_employee_id").change(function(){
+			$("#management_department_name").val($('#management_department_employee_id option:selected').attr("data-name"));
+			$("#management_department_email").val($('#management_department_employee_id option:selected').attr("data-email"));
+			$("#management_department_number").val($('#management_department_employee_id option:selected').attr("data-phone"));
+		});
 	});
 	function fetch_state(country_id)
 	{
@@ -528,19 +543,35 @@
 										</div>
 										<div id="" class="col-md-8">
 											<div class="row rows">
-												<div id="" class="col-md-4">
+												<div id="" class="col-md-3">
 													<div class="form-group fancy-form">
-														<input type="text" class="form-control form_input1 validate[required]" id="account_department_name" name="account_department_name" placeholder="Name" value="<?php echo(isset($_POST['account_department_name']) && $_POST['account_department_name']!='' ? $_POST['account_department_name'] : (isset($agent_data['account_department_name']) && $agent_data['account_department_name']!='' ? $agent_data['account_department_name'] : ""));?>" tabindex="25">
+														<select name="account_department_employee_id" id="account_department_employee_id" class="form-control form_input1 validate[required]" tabindex="25">
+															<option value="" data-name="" data-email="" data-phone="">Select</option>
+														<?php
+														if(isset($employee_data)):
+															foreach($employee_data as $emp_key=>$emp_val):
+														?>
+															<option value="<?php echo $emp_val['id'];?>" <?php echo(isset($_POST['account_department_employee_id']) && $_POST['account_department_employee_id']==$emp_val['id'] ? 'selected="selected"' : (isset($agent_data['account_department_employee_id']) && $agent_data['account_department_employee_id']==$emp_val['id'] ? 'selected="selected"' : ""));?> data-name="<?php echo $emp_val['first_name']." ".$emp_val['last_name'];?>" data-email="<?php echo $emp_val['email_address'];?>" data-phone="<?php echo $emp_val['phone_number'];?>"><?php echo $emp_val['first_name']." ".$emp_val['last_name']." - ".$emp_val['email_address']." - ".$emp_val['phone_number'];?></option>
+														<?php
+															endforeach;
+														endif;
+														?>
+														</select>
 													</div>
 												</div>
-												<div id="" class="col-md-4">
+												<div id="" class="col-md-3">
 													<div class="form-group fancy-form">
-														<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="account_department_email" name="account_department_email" placeholder="Email" value="<?php echo(isset($_POST['account_department_email']) && $_POST['account_department_email']!='' ? $_POST['account_department_email'] : (isset($agent_data['account_department_email']) && $agent_data['account_department_email']!='' ? $agent_data['account_department_email'] : ""));?>" tabindex="26">
+														<input type="text" class="form-control form_input1 validate[required]" id="account_department_name" name="account_department_name" placeholder="Name" value="<?php echo(isset($_POST['account_department_name']) && $_POST['account_department_name']!='' ? $_POST['account_department_name'] : (isset($agent_data['account_department_name']) && $agent_data['account_department_name']!='' ? $agent_data['account_department_name'] : ""));?>" tabindex="26" readonly>
 													</div>
 												</div>
-												<div id="" class="col-md-4">
+												<div id="" class="col-md-3">
 													<div class="form-group fancy-form">
-														<input type="text" class="form-control form_input1 validate[required]" id="account_department_number" name="account_department_number" placeholder="Contact Number" value="<?php echo(isset($_POST['account_department_number']) && $_POST['account_department_number']!='' ? $_POST['account_department_number'] : (isset($agent_data['account_department_number']) && $agent_data['account_department_number']!='' ? $agent_data['account_department_number'] : ""));?>" tabindex="27">
+														<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="account_department_email" name="account_department_email" placeholder="Email" value="<?php echo(isset($_POST['account_department_email']) && $_POST['account_department_email']!='' ? $_POST['account_department_email'] : (isset($agent_data['account_department_email']) && $agent_data['account_department_email']!='' ? $agent_data['account_department_email'] : ""));?>" tabindex="27" readonly>
+													</div>
+												</div>
+												<div id="" class="col-md-3">
+													<div class="form-group fancy-form">
+														<input type="text" class="form-control form_input1 validate[required]" id="account_department_number" name="account_department_number" placeholder="Contact Number" value="<?php echo(isset($_POST['account_department_number']) && $_POST['account_department_number']!='' ? $_POST['account_department_number'] : (isset($agent_data['account_department_number']) && $agent_data['account_department_number']!='' ? $agent_data['account_department_number'] : ""));?>" tabindex="28" readonly>
 													</div>
 												</div>
 											</div>
@@ -553,19 +584,35 @@
 										</div>
 										<div id="" class="col-md-8">
 											<div class="row rows">
-												<div id="" class="col-md-4">
+												<div id="" class="col-md-3">
 													<div class="form-group fancy-form">
-														<input type="text" class="form-control form_input1 validate[required]" id="reservation_department_name" name="reservation_department_name" placeholder="Name" value="<?php echo(isset($_POST['reservation_department_name']) && $_POST['reservation_department_name']!='' ? $_POST['reservation_department_name'] : (isset($agent_data['reservation_department_name']) && $agent_data['reservation_department_name']!='' ? $agent_data['reservation_department_name'] : ""));?>" tabindex="28">
+														<select name="reservation_department_employee_id" id="reservation_department_employee_id" class="form-control form_input1 validate[required]" tabindex="29">
+															<option value="" data-name="" data-email="" data-phone="">Select</option>
+														<?php
+														if(isset($employee_data)):
+															foreach($employee_data as $emp_key=>$emp_val):
+														?>
+															<option value="<?php echo $emp_val['id'];?>" <?php echo(isset($_POST['reservation_department_employee_id']) && $_POST['reservation_department_employee_id']==$emp_val['id'] ? 'selected="selected"' : (isset($agent_data['reservation_department_employee_id']) && $agent_data['reservation_department_employee_id']==$emp_val['id'] ? 'selected="selected"' : ""));?> data-name="<?php echo $emp_val['first_name']." ".$emp_val['last_name'];?>" data-email="<?php echo $emp_val['email_address'];?>" data-phone="<?php echo $emp_val['phone_number'];?>"><?php echo $emp_val['first_name']." ".$emp_val['last_name']." - ".$emp_val['email_address']." - ".$emp_val['phone_number'];?></option>
+														<?php
+															endforeach;
+														endif;
+														?>
+														</select>
 													</div>
 												</div>
-												<div id="" class="col-md-4">
+												<div id="" class="col-md-3">
 													<div class="form-group fancy-form">
-														<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="reservation_department_email" name="reservation_department_email" placeholder="Email" value="<?php echo(isset($_POST['reservation_department_email']) && $_POST['reservation_department_email']!='' ? $_POST['reservation_department_email'] : (isset($agent_data['reservation_department_email']) && $agent_data['reservation_department_email']!='' ? $agent_data['reservation_department_email'] : ""));?>" tabindex="29">
+														<input type="text" class="form-control form_input1 validate[required]" id="reservation_department_name" name="reservation_department_name" placeholder="Name" value="<?php echo(isset($_POST['reservation_department_name']) && $_POST['reservation_department_name']!='' ? $_POST['reservation_department_name'] : (isset($agent_data['reservation_department_name']) && $agent_data['reservation_department_name']!='' ? $agent_data['reservation_department_name'] : ""));?>" tabindex="30" readonly>
 													</div>
 												</div>
-												<div id="" class="col-md-4">
+												<div id="" class="col-md-3">
 													<div class="form-group fancy-form">
-														<input type="text" class="form-control form_input1 validate[required]" id="reservation_department_number" name="reservation_department_number" placeholder="Contact Number" value="<?php echo(isset($_POST['reservation_department_number']) && $_POST['reservation_department_number']!='' ? $_POST['reservation_department_number'] : (isset($agent_data['reservation_department_number']) && $agent_data['reservation_department_number']!='' ? $agent_data['reservation_department_number'] : ""));?>" tabindex="30">
+														<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="reservation_department_email" name="reservation_department_email" placeholder="Email" value="<?php echo(isset($_POST['reservation_department_email']) && $_POST['reservation_department_email']!='' ? $_POST['reservation_department_email'] : (isset($agent_data['reservation_department_email']) && $agent_data['reservation_department_email']!='' ? $agent_data['reservation_department_email'] : ""));?>" tabindex="31" readonly>
+													</div>
+												</div>
+												<div id="" class="col-md-3">
+													<div class="form-group fancy-form">
+														<input type="text" class="form-control form_input1 validate[required]" id="reservation_department_number" name="reservation_department_number" placeholder="Contact Number" value="<?php echo(isset($_POST['reservation_department_number']) && $_POST['reservation_department_number']!='' ? $_POST['reservation_department_number'] : (isset($agent_data['reservation_department_number']) && $agent_data['reservation_department_number']!='' ? $agent_data['reservation_department_number'] : ""));?>" tabindex="32" readonly>
 													</div>
 												</div>
 											</div>
@@ -579,19 +626,35 @@
 												</div>
 												<div id="" class="col-md-8">
 													<div class="row rows">
-														<div id="" class="col-md-4">
+														<div id="" class="col-md-3">
 															<div class="form-group fancy-form">
-																<input type="text" class="form-control form_input1 validate[required]" id="management_department_name" name="management_department_name" placeholder="Name" value="<?php echo(isset($_POST['management_department_name']) && $_POST['management_department_name']!='' ? $_POST['management_department_name'] : (isset($agent_data['management_department_name']) && $agent_data['management_department_name']!='' ? $agent_data['management_department_name'] : ""));?>" tabindex="31">
+																<select name="management_department_employee_id" id="management_department_employee_id" class="form-control form_input1 validate[required]" tabindex="33">
+																	<option value="" data-name="" data-email="" data-phone="">Select</option>
+																<?php
+																if(isset($employee_data)):
+																	foreach($employee_data as $emp_key=>$emp_val):
+																?>
+																	<option value="<?php echo $emp_val['id'];?>" <?php echo(isset($_POST['management_department_employee_id']) && $_POST['management_department_employee_id']==$emp_val['id'] ? 'selected="selected"' : (isset($agent_data['management_department_employee_id']) && $agent_data['management_department_employee_id']==$emp_val['id'] ? 'selected="selected"' : ""));?> data-name="<?php echo $emp_val['first_name']." ".$emp_val['last_name'];?>" data-email="<?php echo $emp_val['email_address'];?>" data-phone="<?php echo $emp_val['phone_number'];?>"><?php echo $emp_val['first_name']." ".$emp_val['last_name']." - ".$emp_val['email_address']." - ".$emp_val['phone_number'];?></option>
+																<?php
+																	endforeach;
+																endif;
+																?>
+																</select>
 															</div>
 														</div>
-														<div id="" class="col-md-4">
+														<div id="" class="col-md-3">
 															<div class="form-group fancy-form">
-																<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="management_department_email" name="management_department_email" placeholder="Email" value="<?php echo(isset($_POST['management_department_email']) && $_POST['management_department_email']!='' ? $_POST['management_department_email'] : (isset($agent_data['management_department_email']) && $agent_data['management_department_email']!='' ? $agent_data['management_department_email'] : ""));?>" tabindex="32">
+																<input type="text" class="form-control form_input1 validate[required]" id="management_department_name" name="management_department_name" placeholder="Name" value="<?php echo(isset($_POST['management_department_name']) && $_POST['management_department_name']!='' ? $_POST['management_department_name'] : (isset($agent_data['management_department_name']) && $agent_data['management_department_name']!='' ? $agent_data['management_department_name'] : ""));?>" tabindex="34" readonly>
 															</div>
 														</div>
-														<div id="" class="col-md-4">
+														<div id="" class="col-md-3">
 															<div class="form-group fancy-form">
-																<input type="text" class="form-control form_input1 validate[required]" id="management_department_number" name="management_department_number" placeholder="Contact Number" value="<?php echo(isset($_POST['management_department_number']) && $_POST['management_department_number']!='' ? $_POST['management_department_number'] : (isset($agent_data['management_department_number']) && $agent_data['management_department_number']!='' ? $agent_data['management_department_number'] : ""));?>" tabindex="33">
+																<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="management_department_email" name="management_department_email" placeholder="Email" value="<?php echo(isset($_POST['management_department_email']) && $_POST['management_department_email']!='' ? $_POST['management_department_email'] : (isset($agent_data['management_department_email']) && $agent_data['management_department_email']!='' ? $agent_data['management_department_email'] : ""));?>" tabindex="35" readonly>
+															</div>
+														</div>
+														<div id="" class="col-md-3">
+															<div class="form-group fancy-form">
+																<input type="text" class="form-control form_input1 validate[required]" id="management_department_number" name="management_department_number" placeholder="Contact Number" value="<?php echo(isset($_POST['management_department_number']) && $_POST['management_department_number']!='' ? $_POST['management_department_number'] : (isset($agent_data['management_department_number']) && $agent_data['management_department_number']!='' ? $agent_data['management_department_number'] : ""));?>" tabindex="36" readonly>
 															</div>
 														</div>
 													</div>

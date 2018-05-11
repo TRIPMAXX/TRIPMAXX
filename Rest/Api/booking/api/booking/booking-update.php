@@ -55,6 +55,7 @@
 		$_POST['total_amount']=$server_data['data']['total_price'];
 		$_POST['id']=$server_data['data']['booking_details_list']['id'];
 		if($save_booking = tools::module_form_submission("", TM_BOOKING_MASTERS)):
+			$return_data['booking_id']=$_POST['id'];
 			//Delete previous data start
 			$delete_booking_destination = tools::find("first", TM_BOOKING_DESTINATION, 'GROUP_CONCAT(id) as destination_ids', "WHERE booking_master_id=:booking_master_id ", array(":booking_master_id"=>$server_data['data']['booking_details_list']['id']));
 			tools::delete(TM_BOOKING_HOTEL_DETAILS, "WHERE booking_destination_id IN (".$delete_booking_destination['destination_ids'].")", array());
@@ -71,7 +72,6 @@
 				$_POST['hotel_rating']=implode(",", $server_data['data']['step_1']['hotel_ratings'][$country_key]);
 				$save_booking_destination = tools::module_form_submission("", TM_BOOKING_DESTINATION);
 				if($save_booking_destination > 0):
-					$return_data['booking_id']=$save_booking_destination;
 					$return_hotel_ids=array();
 					$autentication_data_hotel=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
 					if(isset($autentication_data_hotel->status)):

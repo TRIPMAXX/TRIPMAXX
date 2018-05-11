@@ -84,13 +84,14 @@
 				$checkout_date_on_city=date("Y-m-d", strtotime($checkin_date_on_city)+(24*60*60*$server_data['data']['number_of_night'][$country_key]));
 				$hotel_list_html='';
 				$each_first_price="--";
-				$execute['co_id']=$counrty_val;
-				$execute['ci_id']=$server_data['data']['city'][$country_key];
+				$execute[':co_id']=$counrty_val;
+				$execute[':ci_id']=$server_data['data']['city'][$country_key];
+				$hotel_ratings=implode(",", $server_data['data']['hotel_ratings'][$country_key]);
 				if(isset($server_data['data']['booking_details_list']) && $server_data['data']['booking_details_list']!=""):
 					$booking_details_list=$server_data['data']['booking_details_list'];
 				endif;
 				$edit_avalibility_status="";
-				$hotel_list = tools::find("all", TM_HOTELS." as h, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci", 'h.*, co.name as co_name, s.name as s_name, ci.name as ci_name', "WHERE h.country=co.id AND h.state=s.id AND h.city=ci.id AND co.id=:co_id AND ci.id=:ci_id ".$search_query.$order_by." LIMIT ".$offset.", ".$limit." ", $execute);
+				$hotel_list = tools::find("all", TM_HOTELS." as h, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci", 'h.*, co.name as co_name, s.name as s_name, ci.name as ci_name', "WHERE h.country=co.id AND h.state=s.id AND h.city=ci.id AND co.id=:co_id AND ci.id=:ci_id AND h.rating IN (".$hotel_ratings.") ".$search_query.$order_by." LIMIT ".$offset.", ".$limit." ", $execute);
 				if(!empty($hotel_list)):
 					$country_name=$hotel_list[0]['co_name'];
 					$city_name=$hotel_list[0]['ci_name'];

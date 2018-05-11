@@ -49,6 +49,7 @@
 		$_POST['total_amount']=$server_data['data']['total_price'];
 		if($save_booking = tools::module_form_submission("", TM_BOOKING_MASTERS)):
 			unset($_POST);
+			$return_data['booking_id']=$save_booking;
 			foreach($server_data['data']['step_1']['country'] as $country_key=>$country_val):
 				$_POST['booking_master_id']=$save_booking;
 				$_POST['country_id']=$country_val;
@@ -57,7 +58,6 @@
 				$_POST['hotel_rating']=implode(",", $server_data['data']['step_1']['hotel_ratings'][$country_key]);
 				$save_booking_destination = tools::module_form_submission("", TM_BOOKING_DESTINATION);
 				if($save_booking_destination > 0):
-					$return_data['booking_id']=$save_booking_destination;
 					$return_hotel_ids=array();
 					$autentication_data_hotel=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
 					if(isset($autentication_data_hotel->status)):
