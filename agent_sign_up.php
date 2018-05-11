@@ -87,17 +87,17 @@
 		if(tools::verify_token($white_list_array, $_POST, $verify_token)) {
 			$uploaded_file_json_data='{"uploaded_file_data":[{"form_field_name":"image","form_field_name_hidden":"image_hidden","file_path":"agent_control_center/assets/upload/agent/","width":"310","height":"60","file_type":"image"}]}';
 			if(tools::module_data_exists_check("company_name = '".tools::stripcleantohtml($_POST['company_name'])."'", '', TM_AGENT)) {
-				$return_data['status']="error";
-				$return_data['msg'] = 'This company name already exists.';		
+				$_SESSION['SET_TYPE']="error";
+				$_SESSION['SET_FLASH'] = 'This company name already exists.';		
 			}elseif(tools::module_data_exists_check("email_address = '".tools::stripcleantohtml($_POST['email_address'])."'", '', TM_AGENT)) {
-				$return_data['status']="error";
-				$return_data['msg'] = 'This email address already exists.';		
+				$_SESSION['SET_TYPE']="error";
+				$_SESSION['SET_FLASH'] = 'This email address already exists.';		
 			}elseif(tools::module_data_exists_check("code = '".tools::stripcleantohtml($_POST['code'])."'", '', TM_AGENT)) {
-				$return_data['status']="error";
-				$return_data['msg'] = 'This code already exists.';		
+				$_SESSION['SET_TYPE']="error";
+				$_SESSION['SET_FLASH'] = 'This code already exists.';		
 			}elseif(tools::module_data_exists_check("username = '".tools::stripcleantohtml($_POST['username'])."'", '', TM_AGENT)) {
-				$return_data['status']="error";
-				$return_data['msg'] = 'This username already exists.';		
+				$_SESSION['SET_TYPE']="error";
+				$_SESSION['SET_FLASH'] = 'This username already exists.';		
 			} else {
 				if($save_agent = tools::module_form_submission($uploaded_file_json_data, TM_AGENT)) {
 					$credit_balance=$_POST['credit_balance'];
@@ -110,31 +110,20 @@
 					$_POST['amount']=$credit_balance;
 					$_POST['note']="Default Credit";
 					$save_agent = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
-					$return_data['status']="success";
-					$return_data['msg'] = 'Agent has been created successfully.';
-					$return_data['results'] = $save_agent;
+					if(!empty($tm_agent_template)):
+						$tm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[USERNAME]", "[PASSWORD]"), array($first_name, $last_name, $username, $password), $tm_agent_template['template_body']);
+						//print_r($tm_mail_Body);exit;
+						@tools::Send_SMTP_Mail($_POST['email_address'], FROM_EMAIL, '', $tm_agent_template['template_subject'], $tm_mail_Body);
+					endif;
+					$_SESSION['SET_TYPE']="success";
+					$_SESSION['SET_FLASH'] = 'Agent has been created successfully.';
+					header("location:index.php");
+					exit;
 				} else {
-					$return_data['status']="error";
-					$return_data['msg'] = 'We are having some probem. Please try again later.';
+					$_SESSION['SET_TYPE']="error";
+					$_SESSION['SET_FLASH'] = 'We are having some probem. Please try again later.';
 				};
 			};
-			if($return_data['status']=="success")
-			{
-				if(!empty($tm_agent_template)):
-					$tm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[USERNAME]", "[PASSWORD]"), array($first_name, $last_name, $username, $password), $tm_agent_template['template_body']);
-					//print_r($tm_mail_Body);exit;
-					@tools::Send_SMTP_Mail($_POST['email_address'], FROM_EMAIL, '', $tm_agent_template['template_subject'], $tm_mail_Body);
-				endif;
-				$_SESSION['SET_TYPE'] = 'success';
-				$_SESSION['SET_FLASH'] = $return_data['msg'];
-				header("location:index.php");
-				exit;
-			}
-			else
-			{
-				$_SESSION['SET_TYPE'] = 'error';
-				$_SESSION['SET_FLASH'] = $return_data['msg'];
-			}
 		}
 	};
 ?>
@@ -174,7 +163,7 @@
 	function fetch_state(country_id)
 	{
 		$.ajax({
-			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_state_fetch.php";?>",
+			url:"<?= DOMAIN_NAME_PATH."ajax_state_fetch.php";?>",
 			type:"post",
 			data:{
 				country_id:country_id
@@ -205,12 +194,12 @@
 			}
 		}).done(function(){
 			$("#state").val('<?php echo(isset($_POST['state']) && $_POST['state']!="" ? $_POST['state'] : "");?>');
-		});;
+		});
 	}
 	function fetch_city(state_id)
 	{
 		$.ajax({
-			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_city_fetch.php";?>",
+			url:"<?= DOMAIN_NAME_PATH."ajax_city_fetch.php";?>",
 			type:"post",
 			data:{
 				state_id:state_id
@@ -331,7 +320,7 @@
 									</div>
 									<div id="" class="col-md-3">
 										<div class="form-group fancy-form">
-											<input type="email" class="form-control form_input1 validate[required]" id="email_address" name="email_address" placeholder="Email" value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : "");?>" tabindex="6">
+											<input type="email" class="form-control form_input1 validate[required,custom[email]]" id="email_address" name="email_address" placeholder="Email" value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : "");?>" tabindex="6">
 										</div>
 									</div>
 									<div id="" class="col-md-3">
@@ -475,7 +464,7 @@
 											<?php
 												$time_zone_arr=tools::generate_timezone_list();
 											?>
-											<select name="timezone" name="timezone" class="form-control form_input1 select_bg validate[required]" tabindex="16">
+											<select name="timezone" name="timezone" class="form-control form_input1 select_bg validate[required]" tabindex="16" style="background:rgba(255,255,255) url('img/dropdown_arrow.png') no-repeat 98% center !important; background-size:30px !important">
 												<option value="" class="form-control form_input1">- Select Timezone -</option>
 											<?php
 											foreach($time_zone_arr as $time_key=>$time_val)

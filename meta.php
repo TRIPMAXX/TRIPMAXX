@@ -8,6 +8,8 @@
 	<link rel="stylesheet" href="<?php echo(DOMAIN_NAME_PATH);?>css/swiper.css">
 	<link rel="stylesheet" href="<?php echo(DOMAIN_NAME_PATH);?>css/style.css" />
 	<link rel="stylesheet" href="<?php echo(DOMAIN_NAME_PATH);?>css/style1.css" />
+	<link rel="stylesheet" href="<?php echo(DOMAIN_NAME_PATH);?>css/backend.min.css" />
+	<link rel="stylesheet" href="<?php echo(DOMAIN_NAME_PATH);?>css/font-awesome/css/font-awesome.min.css"/>
 	<link rel="stylesheet" href="<?php echo(DOMAIN_NAME_PATH);?>css/mycss.css" />
 	<link href="<?php echo(DOMAIN_NAME_PATH);?>css/notifyBar.css" rel="stylesheet" type="text/css" />
 	<link href="<?php echo(DOMAIN_NAME_PATH);?>css/validationEngine.jquery.css" rel="stylesheet" type="text/css" />
