@@ -1,83 +1,10 @@
 <?php
 	require_once('loader.inc');
-	$white_list_array = array('employee_id', 'company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'image_hidden', 'code', 'username', 'password', 'account_department_name', 'account_department_email', 'account_department_number', 'reservation_department_name', 'reservation_department_email', 'reservation_department_number', 'management_department_name', 'management_department_email', 'management_department_number', 'hotel_price', 'tour_price', 'transfer_price', 'package_price', 'status', 'token', 'id', 'btn_submit', 'confirm_password', 'credit_balance');
+	$white_list_array = array('company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'image_hidden', 'code', 'username', 'password', 'token', 'btn_submit', 'confirm_password', 'credit_balance');
 	$verify_token = "create_new_agent";
-	//$general_setting = tools::find("first", TM_SETTINGS, 'default_credit_balance', "WHERE id=:id ", array(":id"=>1));
-	if(isset($_POST['btn_submit'])) {
-		if(tools::verify_token($white_list_array, $_POST, $verify_token)) {
-			$uploaded_file_json_data='{"uploaded_file_data":[{"form_field_name":"image","form_field_name_hidden":"image_hidden","file_path":"agent_control_center/assets/upload/agent/","width":"310","height":"60","file_type":"image"}]}';
-			if(tools::module_data_exists_check("company_name = '".tools::stripcleantohtml($_POST['company_name'])."'", '', TM_AGENT)) {
-				$return_data['status']="error";
-				$return_data['msg'] = 'This company name already exists.';		
-			}elseif(tools::module_data_exists_check("email_address = '".tools::stripcleantohtml($_POST['email_address'])."'", '', TM_AGENT)) {
-				$return_data['status']="error";
-				$return_data['msg'] = 'This email address already exists.';		
-			}elseif(tools::module_data_exists_check("code = '".tools::stripcleantohtml($_POST['code'])."'", '', TM_AGENT)) {
-				$return_data['status']="error";
-				$return_data['msg'] = 'This code already exists.';		
-			}elseif(tools::module_data_exists_check("username = '".tools::stripcleantohtml($_POST['username'])."'", '', TM_AGENT)) {
-				$return_data['status']="error";
-				$return_data['msg'] = 'This username already exists.';		
-			} else {
-				$gsa_check_flag=true;
-				if(isset($_POST['parent_id']) && $_POST['parent_id']!=""):
-					$find_gse = tools::find("first", TM_AGENT, '*', "WHERE id=:id AND type=:type", array(":id"=>$_POST['parent_id'], ":type"=>"G"));
-					if(!empty($find_gse)):
-						//do nothing
-						$gsa_check_flag=true;
-					else:
-						$gsa_check_flag=false;
-					endif;
-				endif;
-				if($gsa_check_flag==true):
-					if($save_agent = tools::module_form_submission($uploaded_file_json_data, TM_AGENT)) {
-						$credit_balance=$_POST['credit_balance'];
-						unset($_POST);
-						$_POST['agent_id']=$save_agent;
-						$_POST['amount']=$credit_balance;
-						$_POST['note']="Default Credit";
-						$save_agent = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
-						$return_data['status']="success";
-						$return_data['msg'] = 'Agent has been created successfully.';
-						if(isset($_POST['type']) && $_POST['type']=="G")
-							$return_data['msg'] = 'GSA has been created successfully.';
-						$return_data['results'] = $save_agent;
-					} else {
-						$return_data['status']="error";
-						$return_data['msg'] = 'We are having some probem. Please try again later.';
-					};
-				else:
-					$return_data['status']="error";
-					$return_data['msg'] = 'Invalid gsa id.';
-				endif;
-			};
-
-
-
-			if($return_data_arr['status']=="success")
-			{
-				$tm_agent_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>18, ':status'=>1));
-				if(!empty($tm_agent_template)):
-					$tm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[USERNAME]", "[PASSWORD]"), array($_POST['first_name'], $_POST['last_name'], $_POST['username'], $_POST['password']), $tm_agent_template['template_body']);
-					//print_r($tm_mail_Body);exit;
-					@tools::Send_SMTP_Mail($_POST['email_address'], FROM_EMAIL, '', $tm_agent_template['template_subject'], $tm_mail_Body);
-				endif;
-				$_SESSION['SET_TYPE'] = 'success';
-				$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
-				if(isset($_GET['gse_id']) && $_GET['gse_id']!=""):
-					header("location:sub_agents?gsa_id=".$_GET['gse_id']);
-				else:
-					header("location:agents");
-				endif;
-				exit;
-			}
-			else
-			{
-				$_SESSION['SET_TYPE'] = 'error';
-				$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
-			}
-		}
-	};
+	
+	$country_data = tools::find("all", TM_COUNTRIES, '*', "WHERE 1", array());
+	$currency_data = tools::find("all", TM_CURRENCIES, '*', "WHERE 1", array());
 	$autentication_data_employee=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."authorized.php"));
 	if(isset($autentication_data_employee->status)):
 		if($autentication_data_employee->status=="success"):
@@ -105,6 +32,49 @@
 			//	$_SESSION['SET_TYPE'] = 'error';
 			//	$_SESSION['SET_FLASH'] = $return_data_employee_arr['msg'];
 			endif;
+			// ***** EMAIL TEMPLATES ****** //
+			$post_data_employee['data']['email_template_id']=18;
+			$post_data_email_template_str=json_encode($post_data_employee);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($ch, CURLOPT_HEADER, false);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."email-templates/booking-update-email.php");
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_email_template_str);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+			$return_data_email_template = curl_exec($ch);
+			curl_close($ch);
+			$tm_agent_template_arr=json_decode($return_data_email_template, true);
+			$tm_agent_template=array();
+			if($tm_agent_template_arr['status']=="success"):
+				$tm_agent_template=$tm_agent_template_arr['email_template'];
+			//else:
+			//	$_SESSION['SET_TYPE'] = 'error';
+			//	$_SESSION['SET_FLASH'] = $return_data_employee_arr['msg'];
+			endif;
+			// Settings //
+			$post_data_employee['data']['setting_id']=1;
+			$post_setting_str=json_encode($post_data_employee);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($ch, CURLOPT_HEADER, false);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."settings/read.php");
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_setting_str);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+			$return_data_setting = curl_exec($ch);
+			curl_close($ch);
+			//print_r($return_data_setting);exit;
+			$return_data_setting_arr=json_decode($return_data_setting, true);
+			$general_setting =array();
+			if($return_data_setting_arr['status']=="success"):
+				$general_setting =$return_data_setting_arr['results'];
+			//else:
+			//	$_SESSION['SET_TYPE'] = 'error';
+			//	$_SESSION['SET_FLASH'] = $return_data_employee_arr['msg'];
+			endif;
 		else:
 			//$_SESSION['SET_TYPE'] = 'error';
 			//$_SESSION['SET_FLASH'] = $autentication_data_employee->msg;
@@ -113,6 +83,60 @@
 		//$_SESSION['SET_TYPE'] = 'error';
 		//$_SESSION['SET_FLASH'] = "We are having some problem to authorize api.";
 	endif;
+	if(isset($_POST['btn_submit'])) {
+		if(tools::verify_token($white_list_array, $_POST, $verify_token)) {
+			$uploaded_file_json_data='{"uploaded_file_data":[{"form_field_name":"image","form_field_name_hidden":"image_hidden","file_path":"agent_control_center/assets/upload/agent/","width":"310","height":"60","file_type":"image"}]}';
+			if(tools::module_data_exists_check("company_name = '".tools::stripcleantohtml($_POST['company_name'])."'", '', TM_AGENT)) {
+				$return_data['status']="error";
+				$return_data['msg'] = 'This company name already exists.';		
+			}elseif(tools::module_data_exists_check("email_address = '".tools::stripcleantohtml($_POST['email_address'])."'", '', TM_AGENT)) {
+				$return_data['status']="error";
+				$return_data['msg'] = 'This email address already exists.';		
+			}elseif(tools::module_data_exists_check("code = '".tools::stripcleantohtml($_POST['code'])."'", '', TM_AGENT)) {
+				$return_data['status']="error";
+				$return_data['msg'] = 'This code already exists.';		
+			}elseif(tools::module_data_exists_check("username = '".tools::stripcleantohtml($_POST['username'])."'", '', TM_AGENT)) {
+				$return_data['status']="error";
+				$return_data['msg'] = 'This username already exists.';		
+			} else {
+				if($save_agent = tools::module_form_submission($uploaded_file_json_data, TM_AGENT)) {
+					$credit_balance=$_POST['credit_balance'];
+					$first_name=$_POST['first_name'];
+					$last_name=$_POST['last_name']; 
+					$username=$_POST['username'];
+					$password=$_POST['password'];
+					unset($_POST);
+					$_POST['agent_id']=$save_agent;
+					$_POST['amount']=$credit_balance;
+					$_POST['note']="Default Credit";
+					$save_agent = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+					$return_data['status']="success";
+					$return_data['msg'] = 'Agent has been created successfully.';
+					$return_data['results'] = $save_agent;
+				} else {
+					$return_data['status']="error";
+					$return_data['msg'] = 'We are having some probem. Please try again later.';
+				};
+			};
+			if($return_data['status']=="success")
+			{
+				if(!empty($tm_agent_template)):
+					$tm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[USERNAME]", "[PASSWORD]"), array($first_name, $last_name, $username, $password), $tm_agent_template['template_body']);
+					//print_r($tm_mail_Body);exit;
+					@tools::Send_SMTP_Mail($_POST['email_address'], FROM_EMAIL, '', $tm_agent_template['template_subject'], $tm_mail_Body);
+				endif;
+				$_SESSION['SET_TYPE'] = 'success';
+				$_SESSION['SET_FLASH'] = $return_data['msg'];
+				header("location:index.php");
+				exit;
+			}
+			else
+			{
+				$_SESSION['SET_TYPE'] = 'error';
+				$_SESSION['SET_FLASH'] = $return_data['msg'];
+			}
+		}
+	};
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -150,7 +174,7 @@
 	function fetch_state(country_id)
 	{
 		$.ajax({
-			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_state_fetch";?>",
+			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_state_fetch.php";?>",
 			type:"post",
 			data:{
 				country_id:country_id
@@ -186,7 +210,7 @@
 	function fetch_city(state_id)
 	{
 		$.ajax({
-			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_city_fetch";?>",
+			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_city_fetch.php";?>",
 			type:"post",
 			data:{
 				state_id:state_id
@@ -248,7 +272,8 @@
 						</div>
 						<div id="" class="form_wrapper agent_form_wrapper">
 							<form name="agent_signe_up" id="agent_signe_up" method="POST" enctype="multipart/form-data">
-
+								
+								<div id="notify_msg_div"></div>
 								<div id="" class="row rows">
 									<div id="" class="col-md-12">
 										<h1>Company Details</h1>
@@ -380,7 +405,7 @@
 									</div>
 									<div id="" class="col-md-3">
 										<div class="form-group fancy-form">
-											<select name = "country" id="country" class="form-control form_input1 select_bg validate[required]" tabindex = "11">
+											<select name = "country" id="country" class="form-control form_input1 select_bg validate[required]" tabindex = "11" style="background:rgba(255,255,255) url('img/dropdown_arrow.png') no-repeat 98% center !important; background-size:30px !important">
 												<option value = "">Select Country</option>
 												<?php
 												if(!empty($country_data)):
@@ -401,7 +426,7 @@
 									</div>
 									<div id="" class="col-md-3">
 										<div class="form-group fancy-form">
-											<select name = "state" id="state" class="form-control form_input1 select_bg validate[required]" tabindex = "12">
+											<select name = "state" id="state" class="form-control form_input1 select_bg validate[required]" tabindex = "12" style="background:rgba(255,255,255) url('img/dropdown_arrow.png') no-repeat 98% center !important; background-size:30px !important">
 												<option value = "">Select State / Region</option>
 											</select>
 										</div>
@@ -415,19 +440,9 @@
 									</div>
 									<div id="" class="col-md-3">
 										<div class="form-group fancy-form">
-											<select name = "city" id="city" class="form-control form_input1 select_bg validate[required]" tabindex = "13">
+											<select name = "city" id="city" class="form-control form_input1 select_bg validate[required]" tabindex = "13" style="background:rgba(255,255,255) url('img/dropdown_arrow.png') no-repeat 98% center !important; background-size:30px !important">
 												<option value = "">Select City</option>
 											</select>
-										</div>
-									</div>
-									<div id="" class="col-md-3">
-										<div class="form-group fancy-form">
-											<label for="pwd" class="form-label1">Pincode/Zipcode/Postcode<span class="">*</span> :</label>
-										</div>
-									</div>
-									<div id="" class="col-md-3">
-										<div class="form-group fancy-form">
-											<input type="text" class="form-control form_input1 validate[required]" id="zipcode" name="zipcode" placeholder="Pincode/Zipcode/Postcode" value="<?php echo(isset($_POST['zipcode']) && $_POST['zipcode']!='' ? $_POST['zipcode'] : "");?>" tabindex="14">
 										</div>
 									</div>
 									<div id="" class="col-md-3">
@@ -438,6 +453,16 @@
 									<div id="" class="col-md-3">
 										<div class="form-group fancy-form">
 											<textarea class="form-control form_input1 validate[required]" rows="5" id="address" name="address" tabindex="15"><?php echo(isset($_POST['address']) && $_POST['address']!='' ? $_POST['address'] : "");?></textarea>
+										</div>
+									</div>
+									<div id="" class="col-md-3">
+										<div class="form-group fancy-form">
+											<label for="pwd" class="form-label1">Pincode/Zipcode/Postcode<span class="">*</span> :</label>
+										</div>
+									</div>
+									<div id="" class="col-md-3">
+										<div class="form-group fancy-form">
+											<input type="text" class="form-control form_input1 validate[required]" id="zipcode" name="zipcode" placeholder="Pincode/Zipcode/Postcode" value="<?php echo(isset($_POST['zipcode']) && $_POST['zipcode']!='' ? $_POST['zipcode'] : "");?>" tabindex="14">
 										</div>
 									</div>
 									<div id="" class="col-md-3">
@@ -559,120 +584,10 @@
 										</div>
 									</div>
 								</div>
-
-
-
-
-								<div id="" class="row rows">
-									<div id="" class="col-md-12">
-										<h1>Access Details</h1>
-									</div>
-									<!-- <div id="" class="col-md-3">
-										<div class="form-group fancy-form">
-
-										</div>
-									</div>
-									<div id="" class="col-md-9">
-										<div class="row rows">
-											<div id="" class="col-md-4">
-												<div class="form-group fancy-form">
-													<label for="pwd" class="form-label1">Name</label>
-												</div>
-											</div>
-											<div id="" class="col-md-4">
-												<div class="form-group fancy-form">
-													<label for="pwd" class="form-label1">Email</label>
-												</div>
-											</div>
-											<div id="" class="col-md-4">
-												<div class="form-group fancy-form">
-													<label for="pwd" class="form-label1">Contact Number</label>
-												</div>
-											</div>
-										</div>
-									</div> -->
-									<div id="" class="col-md-3">
-										<div class="form-group fancy-form">
-											<label for="pwd" class="form-label1">Account Department :</label>
-										</div>
-									</div>
-									<div id="" class="col-md-9">
-										<div class="row rows">
-											<div id="" class="col-md-4">
-												<div class="form-group fancy-form">
-													<input type="text" class="form-control form_input1" id="text" placeholder="Name">
-												</div>
-											</div>
-											<div id="" class="col-md-4">
-												<div class="form-group fancy-form">
-													<input type="text" class="form-control form_input1" id="text" placeholder="Email">
-												</div>
-											</div>
-											<div id="" class="col-md-4">
-												<div class="form-group fancy-form">
-													<input type="text" class="form-control form_input1" id="text" placeholder="Contact Number">
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<div id="" class="col-md-3">
-										<div class="form-group fancy-form">
-											<label for="pwd" class="form-label1">Reservations/Operations Department:</label>
-										</div>
-									</div>
-									<div id="" class="col-md-9">
-										<div class="row rows">
-											<div id="" class="col-md-4">
-												<div class="form-group fancy-form">
-													<input type="text" class="form-control form_input1" id="text" placeholder="Name">
-												</div>
-											</div>
-											<div id="" class="col-md-4">
-												<div class="form-group fancy-form">
-													<input type="text" class="form-control form_input1" id="text" placeholder="Email">
-												</div>
-											</div>
-											<div id="" class="col-md-4">
-												<div class="form-group fancy-form">
-													<input type="text" class="form-control form_input1" id="text" placeholder="Contact Number">
-												</div>
-											</div>
-										</div>
-									</div>
-									<div id="" class="col-md-12">
-										<div id="" class="row rows">
-											<div id="" class="col-md-3">
-												<div class="form-group fancy-form">
-													<label for="pwd" class="form-label1">Management Department:</label>
-												</div>
-											</div>
-											<div id="" class="col-md-9">
-												<div class="row rows">
-													<div id="" class="col-md-4">
-														<div class="form-group fancy-form">
-															<input type="text" class="form-control form_input1" id="text" placeholder="Name">
-														</div>
-													</div>
-													<div id="" class="col-md-4">
-														<div class="form-group fancy-form">
-															<input type="text" class="form-control form_input1" id="text" placeholder="Email">
-														</div>
-													</div>
-													<div id="" class="col-md-4">
-														<div class="form-group fancy-form">
-															<input type="text" class="form-control form_input1" id="text" placeholder="Contact Number">
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-
-
 								<div id="" class="btn_form">
 									<div class="form-group">
+										<input type="hidden" name="credit_balance" id="credit_balance" value="<?php echo $general_setting['default_credit_balance'];?>">
+										<input type="hidden" name="token" value="<?php echo(tools::generateFormToken($verify_token)); ?>" />
 										<button type="submit" class="btn_top btn_styl_3 select_area_btn" name="btn_submit">SUBMIT</button>
 									</div>
 								</div>
