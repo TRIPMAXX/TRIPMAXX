@@ -11,7 +11,7 @@
 				"token_generation_time"=>$autentication_data_employee->results->token_generation_time
 			);
 			// ***** EMAIL TEMPLATES ****** //
-			$post_data_employee['data']['email_template_id']=18;
+			$post_data_employee['data']['email_template_id']=3;
 			$post_data_email_template_str=json_encode($post_data_employee);
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -41,13 +41,12 @@
 	endif;
 	if(isset($_POST['btn_submit'])) {
 		if(tools::verify_token($white_list_array, $_POST, $verify_token)) {
-			if($user_data = tools::find("first", TM_DMC, $value='id, first_name, last_name, email_address, username, phone_number', "WHERE email_address = '".tools::stripcleantohtml($_POST['username'])."' OR username = '".tools::stripcleantohtml($_POST['username'])."'", array())) {
+			if($user_data = tools::find("first", TM_AGENT, $value='id, first_name, last_name, email_address, username, telephone', "WHERE email_address = '".tools::stripcleantohtml($_POST['email_address'])."' OR username = '".tools::stripcleantohtml($_POST['email_address'])."'", array())) {
 				$password = tools::create_password(5);
 				$encrypted_password = tools::hash_password($password);
-				tools::update(TM_DMC, 'password=:password', 'WHERE id=:id', array(':password'=>tools::stripcleantohtml($encrypted_password), ':id'=>$user_data['id']));
-				$email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='template_subject, template_body', "WHERE id = 3", array());
-				$email_body = tools::recurring_replace(array('[FIRST_NAME]', '[LAST_NAME]', '[USERNAME]', '[PASSWORD]'), array($user_data['first_name'], $user_data['last_name'], $user_data['username'], $password), $email_template['template_body']);
-				@tools::Send_SMTP_Mail($user_data['email_address'], $general_settings['from_email_address'], '', $email_template['template_subject'], $email_body);
+				tools::update(TM_AGENT, 'password=:password', 'WHERE id=:id', array(':password'=>tools::stripcleantohtml($encrypted_password), ':id'=>$user_data['id']));
+				$email_body = tools::recurring_replace(array('[FIRST_NAME]', '[LAST_NAME]', '[USERNAME]', '[PASSWORD]'), array($user_data['first_name'], $user_data['last_name'], $user_data['username'], $password), $tm_agent_template['template_body']);
+				@tools::Send_SMTP_Mail($user_data['email_address'], FROM_EMAIL, '', $tm_agent_template['template_subject'], $email_body);
 				$_SESSION['SET_TYPE'] = 'success';
 				$_SESSION['SET_FLASH'] = 'We have emailed you temporary access details. Please check.';
 			} else {
@@ -90,28 +89,25 @@
 			<div id="" class="row rows">
 				<div id="" class="col-md-12">
 					<div id="" class="form_full_width">
-						<div id="" class="form_text_wrapper agent_form_text_wrapper">
-							<div class="offer-slider-lbl">AGENT FORGOT PASSWORD</div>
-						</div>
 						<div id="" class="form_wrapper agent_form_wrapper">
 							<form name="agent_forgot_password" id="agent_forgot_password" method="POST">
 								
 								<div id="notify_msg_div"></div>
 								<div id="" class="row rows">
-									<div id="" class="col-md-12">
-										<h1>Please enter your email address to receive your new password</h1>
-									</div>
 									<div id="" class="col-md-3">
+									</div>
+									<div id="" class="col-md-6">
+										<h1>Please enter your email address to receive your new password</h1>
 										<div class="form-group fancy-form">
-											<label for="pwd" class="form-label1">Please enter your email address to receive your new password :</label>
-											<input type="email" class="form-control form_input1 validate[required]" id="email_address" name="email_address" placeholder="Email" value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : "");?>" tabindex="6">
+											<input type="email" class="form-control form_input1 validate[required,custom[email]]" id="email_address" name="email_address" placeholder="Email" value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : "");?>" tabindex="1">
 										</div>
+										<a href="index.php" tabindex="2"><font size="" color="#0066cc"><i class="fa fa-arrow-circle-left"></i>&nbsp;&nbsp;Back to Login</font></a>
 									</div>
 								</div>
 								<div id="" class="btn_form">
 									<div class="form-group">
 										<input type="hidden" name="token" value="<?php echo(tools::generateFormToken($verify_token)); ?>" />
-										<button type="submit" class="btn_top btn_styl_3 select_area_btn" name="btn_submit">SUBMIT</button>
+										<button type="submit" class="btn_top btn_styl_3 select_area_btn" name="btn_submit" tabindex="3">SUBMIT</button>
 									</div>
 								</div>
 							</form> 

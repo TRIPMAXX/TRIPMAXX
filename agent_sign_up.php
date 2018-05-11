@@ -331,7 +331,7 @@
 									</div>
 									<div id="" class="col-md-3">
 										<div class="form-group fancy-form">
-											<input type="email" class="form-control form_input1 validate[required]" id="email_address" name="email_address" placeholder="Email" value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : "");?>" tabindex="6">
+											<input type="email" class="form-control form_input1 validate[required,custom[email]]" id="email_address" name="email_address" placeholder="Email" value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : "");?>" tabindex="6">
 										</div>
 									</div>
 									<div id="" class="col-md-3">

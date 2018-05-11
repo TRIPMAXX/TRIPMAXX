@@ -24,7 +24,7 @@ class front_control extends tools {
 		$execute_array[':password']=tools::stripcleantohtml($password);
 		$where_clause = "WHERE (username = :username OR email_address = :email_address) AND password = :password AND code=:code";
 		if($login_check = tools::find("first", TM_AGENT, $value='id, first_name, last_name, email_address, username, code, telephone, creation_date, last_updated, status', $where_clause, $execute_array)) {
-			$_SESSION['SESSION_DATA'] = $login_check;
+			$_SESSION['AGENT_SESSION_DATA'] = $login_check;
 			return true;
 		} else {
 			return false;
