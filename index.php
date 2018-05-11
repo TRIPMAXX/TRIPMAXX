@@ -2,17 +2,23 @@
 require_once('loader.inc');
 $white_list_array = array('username', 'password', 'code', 'token', 'btn_login');
 $verify_token = "front_login";
-//print_r($_SESSION['SESSION_DATA']);exit;
+if(isset($_SESSION['AGENT_SESSION_DATA']) && !empty($_SESSION['AGENT_SESSION_DATA']))
+{
+	$_SESSION['SET_TYPE'] = 'error';
+	$_SESSION['SET_FLASH'] = 'You are already logged in.';
+	header("location:dashboard.php");
+	exit;
+}
 if(isset($_POST['btn_login']))
 {
 	$object_control_center = new front_control();
 	if($object_control_center->front_control_login()) {
 		if(tools::verify_token($white_list_array, $_POST, $verify_token)) {
-				//print_r($_SESSION['SESSION_DATA']);exit;
-			if($_SESSION['SESSION_DATA']['status'] == 1) {
-				header("location:index.php");
+				//print_r($_SESSION['AGENT_SESSION_DATA']);exit;
+			if($_SESSION['AGENT_SESSION_DATA']['status'] == 1) {
+				header("location:dashboard.php");
 			} else {
-				unset($_SESSION['SESSION_DATA']);
+				unset($_SESSION['AGENT_SESSION_DATA']);
 				$_SESSION['SET_TYPE'] = 'error';
 				$_SESSION['SET_FLASH'] = 'Your account is inactive. Please contact DMC.';
 			}
@@ -71,10 +77,10 @@ if(isset($_POST['btn_login']))
 													<input type="text" class="styl1 validate[required]" id="username" name="username" placeholder="YOUR USERNAME" value="<?php echo(isset($_POST['username']) && $_POST['username']!='' ? $_POST['username'] : "");?>" tabindex="2">
 													<input type="password" class="styl1 validate[required]" id="password" name="password" placeholder="YOUR PASSWORD" value="" tabindex="3">
 												</div>
-												<p><a href="agent_forgot_password.php">Forget Password?</a></p>
+												<p><a href="<?php echo DOMAIN_NAME_PATH."agent_forgot_password.php";?>" tabindex="4">Forget Password?</a></p>
 												<div class="select_box_btn">
 													<input type="hidden" name="token" value="<?php echo(tools::generateFormToken($verify_token)); ?>" />
-													<button type="submit" class="btn_styl_3 select_area_btn" name="btn_login">LOGIN</button>
+													<button type="submit" class="btn_styl_3 select_area_btn" name="btn_login" tabindex="5">LOGIN</button>
 												</div>
 											</form> 
 										</div>

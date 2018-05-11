@@ -262,7 +262,7 @@
 			}
 		}).done(function(){
 			$("#state").val('<?php echo(isset($_POST['state']) && $_POST['state']!="" ? $_POST['state'] : (isset($agent_data['state']) && $agent_data['state']!="" ? $agent_data['state'] : ""));?>');
-		});;
+		});
 	}
 	function fetch_city(state_id)
 	{

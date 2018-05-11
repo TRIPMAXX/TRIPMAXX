@@ -84,4 +84,8 @@ define("TOKEN_TIMEOUT", 1000);
 define("TOKEN_SECRET_KEY", "tripmaxjwtkey");
 
 define("FROM_EMAIL", "noreply@neocoderztechnologies.com");
+
+
+
+define("AGENT_IMAGE_PATH", DOMAIN_NAME_PATH."agent_control_center/assets/upload/agent/");
 ?>
