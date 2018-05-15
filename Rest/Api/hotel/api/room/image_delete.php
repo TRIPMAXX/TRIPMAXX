@@ -23,6 +23,9 @@
 				if($_POST['image_name']!="" && file_exists(ROOM_IMAGES.$_POST['image_name'])):
 					unlink(ROOM_IMAGES.$_POST['image_name']);
 				endif;
+				if($_POST['image_name']!="" && file_exists(ROOM_IMAGES."thumb/".$_POST['image_name'])):
+					unlink(ROOM_IMAGES."thumb/".$_POST['image_name']);
+				endif;
 				if($save_room_data = tools::module_form_submission("", TM_ROOMS)):
 					$return_data['status'] = 'success';
 					$return_data['msg'] = 'Room image has been deleted successfully.';

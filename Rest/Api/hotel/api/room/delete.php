@@ -16,6 +16,9 @@
 					if($img_val!="" && file_exists(ROOM_IMAGES.$img_val)):
 						unlink(ROOM_IMAGES.$img_val);
 					endif;
+					if($img_val!="" && file_exists(ROOM_IMAGES."thumb/".$img_val)):
+						unlink(ROOM_IMAGES."thumb/".$img_val);
+					endif;
 				endforeach;
 			endif;
 			tools::delete(TM_ROOM_PRICES, "WHERE room_id=:room_id", array(":room_id"=>$find_room['id']));

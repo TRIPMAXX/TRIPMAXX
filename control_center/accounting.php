@@ -158,6 +158,7 @@
 												<th>#</th>
 												<th>Date</th>
 												<th>Debit/Credit</th>
+												<th>Transaction Id</th>
 												<th>Amount</th>
 												<th>Note</th>
 												<th>Action</th>
@@ -184,6 +185,7 @@
 												endif;
 												?>
 												</td>
+												<td class=" "><?= $accounting_val['transaction_id'];?></td>
 												<td class=" "><?= $accounting_val['amount'];?></td>
 												<td class=" "><?= nl2br($accounting_val['note']);?></td>
 												<td class=" " data-title="Action">

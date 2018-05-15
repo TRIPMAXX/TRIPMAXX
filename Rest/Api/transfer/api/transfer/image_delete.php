@@ -23,6 +23,9 @@
 				if($_POST['image_name']!="" && file_exists(TRANSFER_IMAGES.$_POST['image_name'])):
 					unlink(TRANSFER_IMAGES.$_POST['image_name']);
 				endif;
+				if($_POST['image_name']!="" && file_exists(TRANSFER_IMAGES."thumb/".$_POST['image_name'])):
+					unlink(TRANSFER_IMAGES."thumb/".$_POST['image_name']);
+				endif;
 				if($save_transfer_data = tools::module_form_submission("", TM_TRANSFER)):
 					$return_data['status'] = 'success';
 					$return_data['msg'] = 'Transfer image has been deleted successfully.';

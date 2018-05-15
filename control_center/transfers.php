@@ -175,7 +175,7 @@
 														$image_arr=explode(",", $transfer_val['transfer_images']);
 														//if($image_arr[0]!="" && file_exists(TRANSFER_IMAGE_PATH.$image_arr[0])):
 													?>
-														<img src = "<?php echo(TRANSFER_IMAGE_PATH.$image_arr[0]);?>" border = "0" alt = "" width = "250" height = "150" onerror="this.remove;"/>
+														<img src = "<?php echo(TRANSFER_IMAGE_PATH."thumb/".$image_arr[0]);?>" border = "0" alt = "" width = "250" height = "150" onerror="this.remove;"/>
 													<?php
 														/*else:
 															echo "N/A";

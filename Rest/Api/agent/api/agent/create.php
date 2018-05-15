@@ -53,7 +53,11 @@
 					$_POST['agent_id']=$save_agent;
 					$_POST['amount']=$credit_balance;
 					$_POST['note']="Default Credit";
-					$save_agent = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+					$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+					unset($_POST);
+					$_POST['transaction_id']=tools::generate_transaction_id("TM-".$save_agent_accounting);
+					$_POST['id']=$save_agent_accounting;
+					$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
 					$return_data['status']="success";
 					$return_data['msg'] = 'Agent has been created successfully.';
 					if(isset($_POST['type']) && $_POST['type']=="G")

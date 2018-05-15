@@ -25,6 +25,9 @@
 					if($img_val!="" && file_exists(TOUR_IMAGES.$img_val)):
 						unlink(TOUR_IMAGES.$img_val);
 					endif;
+					if($img_val!="" && file_exists(TOUR_IMAGES."thumb/".$img_val)):
+						unlink(TOUR_IMAGES."thumb/".$img_val);
+					endif;
 				endforeach;
 			endif;
 			if(tools::delete(TM_TOURS, "WHERE id=:id", array(":id"=>$find_tour['id']))):

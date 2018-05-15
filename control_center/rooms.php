@@ -236,7 +236,7 @@ $ajax_hotel_id= base64_decode($_GET['hotel_id']);
 														$image_arr=explode(",", $room_val['room_images']);
 														//if($image_arr[0]!="" && file_exists(HOTEL_IMAGE_PATH.$image_arr[0])):
 													?>
-														<img src = "<?php echo(ROOM_IMAGE_PATH.$image_arr[0]);?>" border = "0" alt = "" width = "250" height = "150" onerror="this.remove;"/>
+														<img src = "<?php echo(ROOM_IMAGE_PATH."thumb/".$image_arr[0]);?>" border = "0" alt = "" width = "250" height = "150" onerror="this.remove;"/>
 													<?php
 														/*else:
 															echo "N/A";

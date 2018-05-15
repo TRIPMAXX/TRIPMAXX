@@ -32,6 +32,11 @@
 					file_put_contents(HOTEL_IMAGES.$file_name, $data_img_str);
 					//move_uploaded_file($file_val['name'], HOTEL_IMAGES.$file_name);
 					$_POST['hotel_images'].=($_POST['hotel_images']!="" ? "," : "").$file_name;
+					$filepath=HOTEL_IMAGES.$file_name;
+					$thumbpath=HOTEL_IMAGES."thumb/".$file_name;
+					$thumbnail_width=250;
+					$thumbnail_height=150;
+					tools::createThumbnail($filepath, $thumbpath, $thumbnail_width, $thumbnail_height);
 				endforeach;
 			}
 			if($save_hotel = tools::module_form_submission($uploaded_file_json_data, TM_HOTELS)) {

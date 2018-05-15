@@ -1177,5 +1177,9 @@ class tools {
 
 		return $timezone_list;
 	}
+	public static function generate_transaction_id($prefix)
+	{
+		return strtoupper(uniqid($prefix));
+	}
 }
 ?>

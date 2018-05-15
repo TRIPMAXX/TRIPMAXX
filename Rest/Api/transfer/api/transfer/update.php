@@ -39,6 +39,11 @@
 						$data_img_str = base64_decode($img);
 						file_put_contents(TRANSFER_IMAGES.$file_name, $data_img_str);
 						$_POST['transfer_images'].=($_POST['transfer_images']!="" ? "," : "").$file_name;
+						$filepath=TRANSFER_IMAGES.$file_name;
+						$thumbpath=TRANSFER_IMAGES."thumb/".$file_name;
+						$thumbnail_width=250;
+						$thumbnail_height=150;
+						tools::createThumbnail($filepath, $thumbpath, $thumbnail_width, $thumbnail_height);
 					endforeach;
 				}
 				if($save_transfer_data = tools::module_form_submission("", TM_TRANSFER)):

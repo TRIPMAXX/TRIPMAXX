@@ -178,7 +178,7 @@
 														$image_arr=explode(",", $hotel_val['hotel_images']);
 														//if($image_arr[0]!="" && file_exists(HOTEL_IMAGE_PATH.$image_arr[0])):
 													?>
-														<img src = "<?php echo(HOTEL_IMAGE_PATH.$image_arr[0]);?>" border = "0" alt = "" width = "250" height = "150" onerror="this.remove;"/>
+														<img src = "<?php echo(HOTEL_IMAGE_PATH."thumb/".$image_arr[0]);?>" border = "0" alt = "" width = "250" height = "150" onerror="this.remove;"/>
 													<?php
 														/*else:
 															echo "N/A";

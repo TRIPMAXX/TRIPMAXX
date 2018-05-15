@@ -19,7 +19,11 @@
 					$_POST['amount']=$server_data['data']['prev_total_price'];
 					$_POST['note']="Credit refund money for booking with quotation name:".$server_data['data']['prev_quotation_name'];
 					$_POST['debit_or_credit']="Credit";
-					tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+					$save_agent_credit=tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+					unset($_POST);
+					$_POST['transaction_id']=tools::generate_transaction_id("TM-".$save_agent_credit);
+					$_POST['id']=$save_agent_credit;
+					$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
 					$return_data['status'] = 'success';
 					$return_data['msg'] = 'Agent has been updated successfully.';
 				else:
@@ -41,7 +45,11 @@
 					$_POST['amount']=$server_data['data']['total_price'];
 					$_POST['note']="Debit money for booking with quotation name:".$server_data['data']['quotation_name'];
 					$_POST['debit_or_credit']="Debit";
-					tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+					$save_agent_credit=tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+					unset($_POST);
+					$_POST['transaction_id']=tools::generate_transaction_id("TM-".$save_agent_credit);
+					$_POST['id']=$save_agent_credit;
+					$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
 					$return_data['status'] = 'success';
 					$return_data['msg'] = 'Agent has been updated successfully.';
 				else:

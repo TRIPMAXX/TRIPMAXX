@@ -23,6 +23,9 @@
 				if($_POST['image_name']!="" && file_exists(HOTEL_IMAGES.$_POST['image_name'])):
 					unlink(HOTEL_IMAGES.$_POST['image_name']);
 				endif;
+				if($_POST['image_name']!="" && file_exists(HOTEL_IMAGES."thumb/".$_POST['image_name'])):
+					unlink(HOTEL_IMAGES."thumb/".$_POST['image_name']);
+				endif;
 				if($save_hotel_data = tools::module_form_submission("", TM_HOTELS)):
 					$return_data['status'] = 'success';
 					$return_data['msg'] = 'Hotel image has been deleted successfully.';

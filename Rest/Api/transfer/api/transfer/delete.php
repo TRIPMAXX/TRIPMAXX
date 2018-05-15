@@ -25,6 +25,9 @@
 					if($img_val!="" && file_exists(TRANSFER_IMAGES.$img_val)):
 						unlink(TRANSFER_IMAGES.$img_val);
 					endif;
+					if($img_val!="" && file_exists(TRANSFER_IMAGES."thumb/".$img_val)):
+						unlink(TRANSFER_IMAGES."thumb/".$img_val);
+					endif;
 				endforeach;
 			endif;			
 			if(tools::delete(TM_TRANSFER, "WHERE id=:id", array(":id"=>$find_transfer['id']))):

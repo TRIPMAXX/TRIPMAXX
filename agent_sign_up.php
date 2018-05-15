@@ -4,7 +4,7 @@
 	$verify_token = "create_new_agent";
 	
 	$country_data = tools::find("all", TM_COUNTRIES, '*', "WHERE 1", array());
-	$currency_data = tools::find("all", TM_CURRENCIES, '*', "WHERE 1", array());
+	$currency_data = tools::find("all", TM_CURRENCIES, '*', "WHERE  status=:status ORDER BY serial_number ASC ", array(':status'=>1));
 	$autentication_data_employee=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."authorized.php"));
 	if(isset($autentication_data_employee->status)):
 		if($autentication_data_employee->status=="success"):
@@ -109,7 +109,11 @@
 					$_POST['agent_id']=$save_agent;
 					$_POST['amount']=$credit_balance;
 					$_POST['note']="Default Credit";
-					$save_agent = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+					$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+					unset($_POST);
+					$_POST['transaction_id']=tools::generate_transaction_id("TM-".$save_agent_accounting);
+					$_POST['id']=$save_agent_accounting;
+					$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
 					if(!empty($tm_agent_template)):
 						$tm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[USERNAME]", "[PASSWORD]"), array($first_name, $last_name, $username, $password), $tm_agent_template['template_body']);
 						//print_r($tm_mail_Body);exit;
