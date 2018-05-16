@@ -24,6 +24,7 @@
 			$add_day=0;
 			$default_currency=tools::find("first", TM_SETTINGS." as s, ".TM_CURRENCIES." as c", 'c.*', "WHERE c.id=s.default_currency ", array());
 			$markup_percentage=0;
+			$hotel_first_row=1;
 			if(isset($server_data['data']['booking_type']) && $server_data['data']['booking_type']=="agent" && isset($server_data['data']['agent_name']) && $server_data['data']['agent_name']!=""):
 				$autentication_data_agent=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
 				if(isset($autentication_data_agent->status)):
@@ -53,6 +54,7 @@
 				endif;
 			endif;
 			foreach($server_data['data']['country'] as $country_key=>$counrty_val):	
+				$hotel_first_row=1;
 				$order_by='ORDER BY h.id DESC';
 				if(isset($server_data['data']['city_id']) && $server_data['data']['city_id']!=""):
 					if(isset($server_data['data']['country_id']) && $server_data['data']['country_id']!="" && $counrty_val==$server_data['data']['country_id'] && $server_data['data']['city_id']==$server_data['data']['city'][$country_key]):
@@ -86,12 +88,18 @@
 				$each_first_price="--";
 				$execute[':co_id']=$counrty_val;
 				$execute[':ci_id']=$server_data['data']['city'][$country_key];
+				$execute[':status']=1;
 				$hotel_ratings=implode(",", $server_data['data']['hotel_ratings'][$country_key]);
 				if(isset($server_data['data']['booking_details_list']) && $server_data['data']['booking_details_list']!=""):
 					$booking_details_list=$server_data['data']['booking_details_list'];
 				endif;
+				if(isset($server_data['data']['first_page_hotel']) && isset($server_data['data']['first_page_hotel'][$country_key]) && $server_data['data']['first_page_hotel'][$country_key]!=""):
+					$search_query.=" AND h.id=:first_hotel_id ";
+					$execute[':first_hotel_id']=$server_data['data']['first_page_hotel'][$country_key];
+				endif;
 				$edit_avalibility_status="";
-				$hotel_list = tools::find("all", TM_HOTELS." as h, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci", 'h.*, co.name as co_name, s.name as s_name, ci.name as ci_name', "WHERE h.country=co.id AND h.state=s.id AND h.city=ci.id AND co.id=:co_id AND ci.id=:ci_id AND h.rating IN (".$hotel_ratings.") ".$search_query.$order_by." LIMIT ".$offset.", ".$limit." ", $execute);
+				$hotel_list = tools::find("all", TM_HOTELS." as h, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci", 'h.*, co.name as co_name, s.name as s_name, ci.name as ci_name', "WHERE h.country=co.id AND h.state=s.id AND h.city=ci.id AND co.id=:co_id AND ci.id=:ci_id AND h.rating IN (".$hotel_ratings.") AND h.status=:status ".$search_query.$order_by." LIMIT ".$offset.", ".$limit." ", $execute);
+				//print_r($hotel_list);
 				if(!empty($hotel_list)):
 					$country_name=$hotel_list[0]['co_name'];
 					$city_name=$hotel_list[0]['ci_name'];
@@ -329,7 +337,7 @@
 										<a href="<?php echo DOMAIN_NAME_PATH_ADMIN;?>view_hotel_details?hotel_id=<?php echo base64_encode($hotel_val['id']);?>" target="_blank" style="font-size:16px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_rooms('hotel<?php echo $hotel_val['id'];?>');" style="font-size:16px;"><b>VIEW AVAILABLE ROOMS</b></a>
 									</div>
 									<div class="clearfix"></div>
-									<div id="hotel<?php echo $hotel_val['id'];?>" style="display:none;">
+									<div id="hotel<?php echo $hotel_val['id'];?>" <?php echo($hotel_first_row==1 && $offset==0 ? '' : 'style="display:none;"');?>>
 										<div style="border:1px solid gray;background-color:gray;margin-top:10px;">
 											<div class="col-md-1" style="font-weight:bold;color:#fff;">#</div>
 											<div class="col-md-3" style="font-weight:bold;color:#fff;">Room Type</div>
@@ -346,6 +354,7 @@
 						endif;
 						$each_hotel_list_html=ob_get_clean();
 						$hotel_list_html.=$each_hotel_list_html;
+						$hotel_first_row++;
 					endforeach;
 				else:
 					$contry_list = tools::find("first", TM_COUNTRIES, '*', "WHERE id=:id ORDER BY name ASC ", array(":id"=>$counrty_val));

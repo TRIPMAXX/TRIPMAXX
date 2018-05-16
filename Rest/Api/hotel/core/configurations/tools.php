@@ -29,6 +29,7 @@ class tools {
 		} else {
 			$sql = "SELECT ".$value." FROM ".$table;
 		}
+		//echo $sql;print_r($execute);
 		$prepare_sql = $db->prepare($sql);
 		foreach($execute As $key=>$value) {
 			$execute[$key] = stripslashes($value);
