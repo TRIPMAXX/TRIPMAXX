@@ -336,12 +336,12 @@
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="package_title" class="control-label">Package Title<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['package_title']) && $_POST['package_title']!='' ? $_POST['package_title'] : (isset($package_data['package_title']) && $package_data['package_title']!='' ? $package_data['package_title'] : ""));?>" name="package_title" id="package_title" placeholder="Package Title" tabindex = "4" />
+											<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['package_title']) && $_POST['package_title']!='' ? $_POST['package_title'] : (isset($package_data['package_title']) && $package_data['package_title']!='' ? $package_data['package_title'] : ""));?>" name="package_title" id="package_title" placeholder="Package Title" tabindex = "4" />
 										</div>
 
 										<div class="form-group col-md-3">
 											<label for="package_type" class="control-label">No Of Days<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['no_of_days']) && $_POST['no_of_days']!='' ? $_POST['no_of_days'] : (isset($package_data['no_of_days']) && $package_data['no_of_days']!='' ? $package_data['no_of_days'] : ""));?>" name="no_of_days" id="no_of_days" placeholder="No Of Days" tabindex = "5" />
+											<input type="text" class="form-control validate[required, custom[onlyNumberSp]]"  value="<?php echo(isset($_POST['no_of_days']) && $_POST['no_of_days']!='' ? $_POST['no_of_days'] : (isset($package_data['no_of_days']) && $package_data['no_of_days']!='' ? $package_data['no_of_days'] : ""));?>" name="no_of_days" id="no_of_days" placeholder="No Of Days" tabindex = "5" />
 										</div>
 										<div class="form-group col-md-3">
 											<label for="currency" class="control-label">Currency<font color="#FF0000">*</font></label>
@@ -365,11 +365,11 @@
 										</div>
 										<div class="form-group col-md-6">
 											<label for="package_price" class="control-label">Package Price<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required,custom[integer]]"  value="<?php echo(isset($_POST['package_price']) && $_POST['package_price']!='' ? $_POST['package_price'] : (isset($package_data['package_price']) && $package_data['package_price']!='' ? $package_data['package_price'] : ""));?>" name="package_price" id="package_price" placeholder="Package Price" tabindex = "7" />
+											<input type="text" class="form-control validate[required, custom[number]]"  value="<?php echo(isset($_POST['package_price']) && $_POST['package_price']!='' ? $_POST['package_price'] : (isset($package_data['package_price']) && $package_data['package_price']!='' ? $package_data['package_price'] : ""));?>" name="package_price" id="package_price" placeholder="Package Price" tabindex = "7" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="discounted_price" class="control-label">Discounted Price<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control"  value="<?php echo(isset($_POST['discounted_price']) && $_POST['discounted_price']!='' ? $_POST['discounted_price'] : (isset($package_data['discounted_price']) && $package_data['discounted_price']!='' ? $package_data['discounted_price'] : ""));?>" name="discounted_price" id="discounted_price" placeholder="Discounted Price" tabindex = "8" />
+											<input type="text" class="form-control validate[optional, custom[number]]"  value="<?php echo(isset($_POST['discounted_price']) && $_POST['discounted_price']!='' ? $_POST['discounted_price'] : (isset($package_data['discounted_price']) && $package_data['discounted_price']!='' ? $package_data['discounted_price'] : ""));?>" name="discounted_price" id="discounted_price" placeholder="Discounted Price" tabindex = "8" />
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">

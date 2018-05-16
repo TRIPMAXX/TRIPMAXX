@@ -10,6 +10,10 @@
 <link href="<?php echo(CONTROL_CENTER_CSS_PATH);?>jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link href="<?php echo(CONTROL_CENTER_CSS_PATH);?>tab.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo(CONTROL_CENTER_CSS_PATH);?>select2.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+	#cke_15{display:none;}
+</style>
 <!-- CSS FILES -->
 
 <!-- JAVASCRIPT FILES -->
@@ -26,4 +30,12 @@
 <script src="<?php echo(CONTROL_CENTER_JS_PATH);?>jquery.dataTables.min.js" type="text/javascript"></script>
 <script src="<?php echo(CONTROL_CENTER_CKEDITOR_PATH);?>ckeditor.js" type="text/javascript"></script>
 <script src="<?php echo(CONTROL_CENTER_JS_PATH);?>tab.js" type="text/javascript"></script>
+<script src="<?php echo(CONTROL_CENTER_JS_PATH);?>select2.js" type="text/javascript"></script>
+<script type="text/javascript">
+<!--
+	$(function(){
+		$('select').select2();
+	});
+//-->
+</script>
 <!-- JAVASCRIPT FILES -->

@@ -230,7 +230,7 @@
 									<div class="box-body">
 										<div class="form-group col-md-6">
 											<label for="country" class="control-label">Country<font color="#FF0000">*</font></label>
-											<select name = "country" id="country" class="form-control form_input1 select_bg validate[required]" tabindex = "1">
+											<select name = "country" id="country" class="validate[required]  form-control form_input1 select_bg " tabindex = "1">
 												<option value = "">Select Country</option>
 												<?php
 												if(!empty($country_data)):
@@ -245,29 +245,29 @@
 										</div>
 										<div class="form-group col-md-3">
 											<label for="state" class="control-label">State / Region<font color="#FF0000">*</font></label>
-											<select name = "state" id="state" class="form-control form_input1 select_bg validate[required]" tabindex = "2">
+											<select name = "state" id="state" class="form-control form_input1 select_bg validate[required] " tabindex = "2">
 												<option value = "">Select State / Region</option>
 											</select>
 										</div>
 										<div class="form-group col-md-3">
 											<label for="city" class="control-label">City<font color="#FF0000">*</font></label>
-											<select name = "city" id="city" class="form-control form_input1 select_bg validate[required]" tabindex = "3">
+											<select name = "city" id="city" class="form-control form_input1 select_bg validate[required] " tabindex = "3">
 												<option value = "">Select City</option>
 											</select>
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="package_title" class="control-label">Package Title<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['package_title']) && $_POST['package_title']!='' ? $_POST['package_title'] : "");?>" name="package_title" id="package_title" placeholder="Package Title" tabindex = "4" />
+											<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['package_title']) && $_POST['package_title']!='' ? $_POST['package_title'] : "");?>" name="package_title" id="package_title" placeholder="Package Title" tabindex = "4" />
 										</div>
 
 										<div class="form-group col-md-3">
 											<label for="tour_type" class="control-label">No Of Days<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['no_of_days']) && $_POST['no_of_days']!='' ? $_POST['no_of_days'] : "");?>" name="no_of_days" id="no_of_days" placeholder="No Of Days" tabindex = "5" />
+											<input type="text" class="form-control validate[required, custom[onlyNumberSp]]"  value="<?php echo(isset($_POST['no_of_days']) && $_POST['no_of_days']!='' ? $_POST['no_of_days'] : "");?>" name="no_of_days" id="no_of_days" placeholder="No Of Days" tabindex = "5" />
 										</div>
 										<div class="form-group col-md-3">
 											<label for="currency" class="control-label">Currency<font color="#FF0000">*</font></label>
-											<select class="form-control validate[required]" name="currency" id="currency">
+											<select class="form-control validate[required] " name="currency" id="currency">
 												<option value="">Select</option>
 											<?php
 											if(!empty($currency_list)):
@@ -287,11 +287,11 @@
 										</div>
 										<div class="form-group col-md-6">
 											<label for="package_price" class="control-label">Package Price<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required,custom[integer]]"  value="<?php echo(isset($_POST['package_price']) && $_POST['package_price']!='' ? $_POST['package_price'] : "");?>" name="package_price" id="package_price" placeholder="Package Price" tabindex = "7" />
+											<input type="text" class="form-control validate[required, custom[number]]"  value="<?php echo(isset($_POST['package_price']) && $_POST['package_price']!='' ? $_POST['package_price'] : "");?>" name="package_price" id="package_price" placeholder="Package Price" tabindex = "7" />
 										</div>
 										<div class="form-group col-md-6">
-											<label for="discounted_price" class="control-label">Discounted Price<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control"  value="<?php echo(isset($_POST['discounted_price']) && $_POST['discounted_price']!='' ? $_POST['discounted_price'] : "");?>" name="discounted_price" id="discounted_price" placeholder="Discounted Price" tabindex = "8" />
+											<label for="discounted_price" class="control-label">Discounted Price</label>
+											<input type="text" class="form-control validate[optional, custom[number]]"  value="<?php echo(isset($_POST['discounted_price']) && $_POST['discounted_price']!='' ? $_POST['discounted_price'] : "");?>" name="discounted_price" id="discounted_price" placeholder="Discounted Price" tabindex = "8" />
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">

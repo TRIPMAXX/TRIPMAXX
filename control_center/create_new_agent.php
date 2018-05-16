@@ -304,16 +304,16 @@
 									<div id="" class="row rows">
 										<div class="form-group col-md-6">
 											<label for="company_name" class="form-label1">Company Name <font color="#FF0000">*</font> :</label>
-											<input type="text" class="form-control form_input1 validate[required]" id="company_name" name="company_name" placeholder="Company Name" value="<?php echo(isset($_POST['company_name']) && $_POST['company_name']!='' ? $_POST['company_name'] : "");?>" tabindex="1">
+											<input type="text" class="form-control form_input1 validate[required, custom[onlyLetterSp]]" id="company_name" name="company_name" placeholder="Company Name" value="<?php echo(isset($_POST['company_name']) && $_POST['company_name']!='' ? $_POST['company_name'] : "");?>" tabindex="1">
 										</div>
 										<div class="form-group col-md-6">
 											<label for="accounting_name" class="form-label1">Company Accounting Name <font color="#FF0000">*</font> :</label>
-											<input type="text" class="form-control form_input1 validate[required]" id="accounting_name" name="accounting_name" placeholder="Company Accounting Name" value="<?php echo(isset($_POST['accounting_name']) && $_POST['accounting_name']!='' ? $_POST['accounting_name'] : "");?>" tabindex="2">
+											<input type="text" class="form-control form_input1 validate[required, custom[onlyLetterSp]]" id="accounting_name" name="accounting_name" placeholder="Company Accounting Name" value="<?php echo(isset($_POST['accounting_name']) && $_POST['accounting_name']!='' ? $_POST['accounting_name'] : "");?>" tabindex="2">
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-4">
 											<label for="first_name" class="form-label1">First Name <font color="#FF0000">*</font> :</label>
-											<input type="text" class="form-control form_input1 validate[required]" id="first_name" name="first_name" placeholder="First Name" value="<?php echo(isset($_POST['first_name']) && $_POST['first_name']!='' ? $_POST['first_name'] : "");?>" tabindex="3">
+											<input type="text" class="form-control form_input1 validate[required, custom[onlyLetterSp]]" id="first_name" name="first_name" placeholder="First Name" value="<?php echo(isset($_POST['first_name']) && $_POST['first_name']!='' ? $_POST['first_name'] : "");?>" tabindex="3">
 										</div>
 										<div class="form-group col-md-4">
 											<label for="middle_name" class="form-label1">Middle Name :</label>
@@ -322,12 +322,12 @@
 												
 										<div class="form-group col-md-4">
 											<label for="last_name" class="form-label1">Last Name <font color="#FF0000">*</font> :</label>
-											<input type="text" class="form-control form_input1 validate[required]" id="last_name" name="last_name" placeholder="Last Name" value="<?php echo(isset($_POST['last_name']) && $_POST['last_name']!='' ? $_POST['last_name'] : "");?>" tabindex="5">
+											<input type="text" class="form-control form_input1 validate[required, custom[onlyLetterSp]]" id="last_name" name="last_name" placeholder="Last Name" value="<?php echo(isset($_POST['last_name']) && $_POST['last_name']!='' ? $_POST['last_name'] : "");?>" tabindex="5">
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="email_address" class="form-label1">Email <font color="#FF0000">*</font> :</label>
-											<input type="email" class="form-control form_input1 validate[required]" id="email_address" name="email_address" placeholder="Email" value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : "");?>" tabindex="6">
+											<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="email_address" name="email_address" placeholder="Email" value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : "");?>" tabindex="6">
 										</div>
 										<div class="form-group col-md-6">
 											<label for="designation" class="form-label1">Designation :</label>

@@ -108,11 +108,11 @@
 									<div class="box-body">
 										<div class="form-group col-md-6">
 											<label for="Title" class="control-label">Title<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['title']) && $_POST['title']!='' ? $_POST['title'] : "");?>" name="title" id="title" placeholder="Title" tabindex = "1" />
+											<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['title']) && $_POST['title']!='' ? $_POST['title'] : "");?>" name="title" id="title" placeholder="Title" tabindex = "1" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="Cost" class="control-label">Cost<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['cost']) && $_POST['cost']!='' ? $_POST['cost'] : "");?>" name="cost" id="cost" placeholder="Cost" tabindex = "2" />
+											<input type="text" class="form-control validate[required, custom[number]]"  value="<?php echo(isset($_POST['cost']) && $_POST['cost']!='' ? $_POST['cost'] : "");?>" name="cost" id="cost" placeholder="Cost" tabindex = "2" />
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-12">
