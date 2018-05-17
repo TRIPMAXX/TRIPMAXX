@@ -258,6 +258,7 @@
 					adult_child_html+='</div>';
 				}
 				$(".all_adult_child_div").html(adult_child_html);
+				$('select').select2();
 			});
 			$(".save_step2_data").click(function(){
 				if($('.each_hotel_tab_content').length != $('input[class="selected_room"]:checked').length)
@@ -563,6 +564,7 @@
 				}
 				$(".all_child_age_div"+index).html(child_number_html);
 				$('.all_child_age_div'+index).show();
+				$('select').select2();
 			}
 			else {
 				$(".all_child_age_div"+index).html(child_number_html);
@@ -1036,14 +1038,67 @@
 				}
 			});
 		}
-
+		function find_hotel_name(cur)
+		{
+			if(cur.val()!="")
+			{
+				$.ajax({
+					url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_find_city_hotel_data";?>',
+					type:"post",
+					data:{
+						city_id:cur.val()
+					},
+					beforeSend:function(){
+						$(".loader_inner").fadeIn();
+					},
+					dataType:"json",
+					success:function(response){
+						//console.log(response);
+						//console.log(JSON.stringify(response, null, 4));
+						if(response.status=="success")
+						{
+							if(response.results.length > 0)
+							{
+								var city_hotel_html='<option value="">Select Hotel</option>';
+								$.each(response.results, function(key, val){
+									city_hotel_html+='<option value="'+val['id']+'" data-hotel_rating="'+val['rating']+'">'+val['hotel_name']+'</option>';
+								});
+								//alert(cur.parents(".each_city_row").find(".first_page_hotel").html())
+								//alert(city_hotel_html);
+								cur.parents(".each_city_row").find(".first_page_hotel").html(city_hotel_html);
+								//alert(cur.parents(".each_city_row").find(".first_page_hotel").html())
+							}
+							else
+							{
+								cur.parents(".each_city_row").find(".first_page_hotel").html('<option value="">Select Hotel</option>');
+							}
+						}
+						else
+						{
+							//showError(response.msg);
+							cur.parents(".each_city_row").find(".first_page_hotel").html('<option value="">Select Hotel</option>');
+						}
+						$(".loader_inner").fadeOut();
+					},
+					error:function(){
+						//showError("We are having some problem. Please try later.");
+						cur.parents(".each_city_row").find(".first_page_hotel").html('<option value="">Select Hotel</option>');
+						$(".loader_inner").fadeOut();
+					}
+				});
+			}
+			else
+			{
+				cur.parents(".each_city_row").find(".first_page_hotel").html('<option value="">Select Hotel</option>');
+			}
+		}
 			$(document).ready(function(){
 				$(".add-row").click(function(){
 					var new_row_key=$(this).attr("data-attr_key");
 					$(this).attr("data-attr_key", eval(new_row_key)+1);
 					var markup = '';
-					markup+='<div class="form-group col-md-12 appended_row">';
-						markup+='<div class="form-group col-md-3">';
+					markup+='<div class="form-group col-md-12 appended_row each_city_row">';
+						markup+='<div class="form-group col-md-2">';
 							markup+='<input type="checkbox" name="record"/>&nbsp;&nbsp;<label for="inputName" class="control-label">Country<font color="#FF0000">*</font></label>';
 							markup+='<select name="country['+new_row_key+']" class="form-control validate[required]" id="country'+new_row_key+'" onchange="fetch_city($(this).val(), '+new_row_key+');">';
 								markup+='<option value="">Select Country</option>';
@@ -1058,18 +1113,25 @@
 								?>
 							markup+='</select>';
 						markup+='</div>';
-						markup+='<div class="form-group col-md-3">';
+						markup+='<div class="form-group col-md-2">';
 							markup+='<label for="inputName" class="control-label">City<font color="#FF0000">*</font></label>';
-							markup+='<select class="form-control validate[required]" name="city['+new_row_key+']" id="city'+new_row_key+'">';
+							markup+='<select class="form-control validate[required]" name="city['+new_row_key+']" id="city'+new_row_key+'" onchange="find_hotel_name($(this))">';
 								markup+='<option value="">Select City</option>';
 							markup+='</select>';
 						markup+='</div>';
-						markup+='<div class="form-group col-md-3"><label for="inputName" class="control-label">For No Of Nights<font color="#FF0000">*</font></label><input type="text" class="form-control number_of_night validate[required]"  value="" name="number_of_night['+new_row_key+']" id="number_of_night'+new_row_key+'" placeholder="Number Of Nights" tabindex = "4" onblur="check_night()"/></div>';
+						markup+='<div class="form-group col-md-2"><label for="inputName" class="control-label">For No Of Nights<font color="#FF0000">*</font></label><input type="text" class="form-control number_of_night validate[required]"  value="" name="number_of_night['+new_row_key+']" id="number_of_night'+new_row_key+'" placeholder="Number Of Nights" tabindex = "4" onblur="check_night()"/></div>';
 						markup+='<div class="form-group col-md-3"><label for="inputName" class="control-label">Hotel Ratings<font color="#FF0000">*</font></label><br/><input type="checkbox" name="all_checkbox" class="all_checkbox" onclick="check_all_rating($(this))">&nbsp;All&nbsp;&nbsp;<input type="checkbox" value="1" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;1&nbsp;&nbsp;<input type="checkbox" value="2" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;2&nbsp;&nbsp;<input type="checkbox"  value="3" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;3&nbsp;&nbsp;<input type="checkbox" value="4" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;4&nbsp;&nbsp;<input type="checkbox" value="5" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;5</div>';
+						markup+='<div class="form-group col-md-3" style="">';
+							markup+='<label for="inputName" class="control-label">Hotels</label>';
+							markup+='<select class="form-control first_page_hotel" name="first_page_hotel['+new_row_key+']" id="first_page_hotel'+new_row_key+'" onchange="checked_hotel_rating($(this))">';
+								markup+='<option value="">Select Hotel</option>';
+							markup+='</select>';
+						markup+='</div>';
 					markup+='</div>';
 					markup+='<div class="clearfix"></div>';
 					$("#sample").append(markup);
 					match_night();
+					$('select').select2();
 				});
 				
 				// Find and remove selected table rows
@@ -1087,6 +1149,28 @@
 					match_night();
 				});
 			});
+		function checked_hotel_rating(cur)
+		{
+			if(cur.val()!="" && cur.find("option:selected").attr("data-hotel_rating")!="")
+			{
+				cur.parents(".each_city_row").find('input[type="checkbox"][value='+cur.find("option:selected").attr("data-hotel_rating")+']').prop('checked', true);
+			}
+			else
+			{
+				cur.parents(".each_city_row").find('input[type="checkbox"]').prop('checked', false);
+			}
+		}    
+		function check_all_rating(cur)
+		{
+			if(cur.is(":checked")==true)
+			{
+				cur.parent("div").find('input[type="checkbox"]').prop("checked", true);
+			}
+			else
+			{
+				cur.parent("div").find('input[type="checkbox"]').prop("checked", false);
+			}
+		}
 	//-->
 	</script>
 	<!-- JAVASCRIPT CODE -->
@@ -1212,7 +1296,7 @@
 															foreach($_POST['country'] as $post_country_key=>$post_country_val)
 															{
 														?>
-														<div class="form-group col-md-12 <?php echo($post_country_key > 0 ? "appended_row" : "");?>">
+														<div class="form-group col-md-12 <?php echo($post_country_key > 0 ? "appended_row" : "");?> each_city_row">
 															<div class="form-group col-md-3">
 																<?php
 																if($post_country_key > 0)
@@ -1266,6 +1350,12 @@
 																<input type="checkbox" name="all_checkbox" class="all_checkbox" onclick="check_all_rating($(this))">&nbsp;All&nbsp;&nbsp;
 																<input type="checkbox" value="1" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(1, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;1&nbsp;&nbsp;<input type="checkbox" value="2" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(2, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;2&nbsp;&nbsp;<input type="checkbox"  value="3" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(3, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;3&nbsp;&nbsp;<input type="checkbox" value="4" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(4, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;4&nbsp;&nbsp;<input type="checkbox" value="5" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(5, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;5
 															</div>
+															<div class="form-group col-md-3" style="">
+																<label for="inputName" class="control-label">Hotels</label>
+																<select class="form-control first_page_hotel" name="first_page_hotel[0]" id="first_page_hotel0" onchange="checked_hotel_rating($(this))">
+																	<option value="">Select Hotel</option>
+																</select>
+															</div>
 														</div>
 														<?php
 															}
@@ -1276,8 +1366,8 @@
 															foreach($booking_details_list['booking_destination_list'] as $destination_key=>$destination_val):
 																$hotel_rating_arr=explode(",", $destination_val['hotel_rating']);
 														?>
-														<div class="form-group col-md-12 <?php echo($destination_key > 0 ? "appended_row" : "");?>">
-															<div class="form-group col-md-3">
+														<div class="form-group col-md-12 <?php echo($destination_key > 0 ? "appended_row" : "");?> each_city_row">
+															<div class="form-group col-md-2">
 																<?php
 																if($destination_key > 0)
 																{
@@ -1300,7 +1390,7 @@
 																?>
 																</select>
 															</div>
-															<div class="form-group col-md-3">
+															<div class="form-group col-md-2">
 																<label for="inputName" class="control-label">City<font color="#FF0000">*</font></label>
 																<select class="form-control validate[required]" name="city[<?php echo $destination_key;?>]" id="city<?php echo $destination_key;?>">
 																	<option value="">Select City</option>
@@ -1320,7 +1410,7 @@
 																?>
 																</select>
 															</div>
-															<div class="form-group col-md-3">
+															<div class="form-group col-md-2">
 																<label for="inputName" class="control-label">For No Of Nights<font color="#FF0000">*</font></label>
 																<input type="text" class="form-control number_of_night validate[required]"  value="<?php echo(isset($destination_val['no_of_night']) && $destination_val['no_of_night']!='' ? $destination_val['no_of_night'] : "");?>" name="number_of_night[<?php echo $destination_key;?>]" id="number_of_night<?php echo $destination_key;?>" placeholder="Number Of Nights" tabindex = "4" onblur="check_night()"/>
 															</div>
@@ -1329,6 +1419,60 @@
 																<br/>
 																<input type="checkbox" name="all_checkbox" class="all_checkbox" onclick="check_all_rating($(this))">&nbsp;All&nbsp;&nbsp;
 																<input type="checkbox" value="1" name="hotel_ratings[<?php echo $destination_key;?>][]" <?php echo(isset($hotel_rating_arr) && !empty($hotel_rating_arr) && in_array(1, $hotel_rating_arr) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;1&nbsp;&nbsp;<input type="checkbox" value="2" name="hotel_ratings[<?php echo $destination_key;?>][]" <?php echo(isset($hotel_rating_arr) && !empty($hotel_rating_arr) && in_array(2, $hotel_rating_arr) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;2&nbsp;&nbsp;<input type="checkbox"  value="3" name="hotel_ratings[<?php echo $destination_key;?>][]" <?php echo(isset($hotel_rating_arr) && !empty($hotel_rating_arr) && in_array(3, $hotel_rating_arr) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;3&nbsp;&nbsp;<input type="checkbox" value="4" name="hotel_ratings[<?php echo $destination_key;?>][]" <?php echo(isset($hotel_rating_arr) && !empty($hotel_rating_arr) && in_array(4, $hotel_rating_arr) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;4&nbsp;&nbsp;<input type="checkbox" value="5" name="hotel_ratings[<?php echo $destination_key;?>][]" <?php echo(isset($hotel_rating_arr) && !empty($hotel_rating_arr) && in_array(5, $hotel_rating_arr) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;5
+															</div>
+															<div class="form-group col-md-3" style="">
+																<?php
+																$hotel_data=array();
+																$autentication_data_hotel=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
+																if(isset($autentication_data_hotel->status)):
+																	if($autentication_data_hotel->status=="success"):
+																		$post_data_hotel['token']=array(
+																			"token"=>$autentication_data_hotel->results->token,
+																			"token_timeout"=>$autentication_data_hotel->results->token_timeout,
+																			"token_generation_time"=>$autentication_data_hotel->results->token_generation_time
+																		);
+																		$post_data_hotel['data']['city_id']=$destination_val['city_id'];
+																		$post_data_hotel_str=json_encode($post_data_hotel);
+																		$ch = curl_init();
+																		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+																		curl_setopt($ch, CURLOPT_HEADER, false);
+																		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+																		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+																		curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."hotel/find-city-hotel.php");
+																		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_hotel_str);
+																		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+																		$return_data_hotel = curl_exec($ch);
+																		curl_close($ch);
+																		$return_data_hotel_arr=json_decode($return_data_hotel, true);
+																		if(!isset($return_data_hotel_arr['status'])):
+																			//$data['msg']="Some error has been occure during execution.";
+																		elseif($return_data_hotel_arr['status']=="success"):
+																			//$data['status'] = 'success';
+																			//$data['msg'] = $return_data_hotel_arr['msg'];
+																			$hotel_data = $return_data_hotel_arr['results'];
+																		else:
+																			//$data['msg'] = $return_data_hotel_arr['msg'];
+																		endif;
+																	else:
+																		//$data['msg'] = $autentication_data_hotel->msg;
+																	endif;
+																else:
+																	//$data['msg'] = "We are having some problem to authorize api.";
+																endif;
+																?>
+																<label for="inputName" class="control-label">Hotels</label>
+																<select class="form-control first_page_hotel" name="first_page_hotel[<?php echo $destination_key;?>]" id="first_page_hotel<?php echo $destination_key;?>" onchange="checked_hotel_rating($(this))">
+																	<option value="">Select Hotel</option>
+																<?php
+																if(isset($hotel_data) && !empty($hotel_data)):
+																	foreach($hotel_data as $hotel_key=>$hotel_data):
+																?>
+																	<option value="<?php echo $hotel_data['id'];?>" <?php echo(isset($destination_val['booking_hotel_list']) && !empty($destination_val['booking_hotel_list']) && $destination_val['booking_hotel_list'][0]['hotel_id']== $hotel_data['id'] ? 'selected="selected"' : "");?>><?php echo $hotel_data['hotel_name'];?></option>
+																<?php
+																	endforeach;
+																endif;
+																?>
+																</select>
 															</div>
 														</div>
 														<?php
@@ -1339,7 +1483,7 @@
 														{
 															$next_index=1;
 														?>
-														<div class="form-group col-md-12">
+														<div class="form-group col-md-12 each_city_row">
 															<div class="form-group col-md-3">
 																<label for="inputName" class="control-label">Country<font color="#FF0000">*</font></label>
 																<select name="country[0]" class="form-control validate[required]" id="country0" onchange="fetch_city($(this).val(), 0);">
@@ -1370,6 +1514,12 @@
 																<br/>
 																<input type="checkbox" name="all_checkbox" class="all_checkbox" onclick="check_all_rating($(this))">&nbsp;All&nbsp;&nbsp;
 																<input type="checkbox" value="1" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>&nbsp;1&nbsp;&nbsp;<input type="checkbox" value="2" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>&nbsp;2&nbsp;&nbsp;<input type="checkbox"  value="3" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>&nbsp;3&nbsp;&nbsp;<input type="checkbox" value="4" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>&nbsp;4&nbsp;&nbsp;<input type="checkbox" class="validate[minCheckbox[1]]"value="5" name="hotel_ratings[0][]" />&nbsp;5
+															</div>
+															<div class="form-group col-md-3" style="">
+																<label for="inputName" class="control-label">Hotels</label>
+																<select class="form-control first_page_hotel" name="first_page_hotel[0]" id="first_page_hotel0" onchange="checked_hotel_rating($(this))">
+																	<option value="">Select Hotel</option>
+																</select>
 															</div>
 														</div>
 														<?php

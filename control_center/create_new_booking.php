@@ -1038,17 +1038,6 @@
 			cur.parents(".each_city_row").find(".first_page_hotel").html('<option value="">Select Hotel</option>');
 		}
 	}
-	function checked_hotel_rating(cur)
-	{
-		if(cur.find("option:selected").attr("data-hotel_rating")!="")
-		{
-			cur.parents(".each_city_row").find('input[type="checkbox"][value='+cur.find("option:selected").attr("data-hotel_rating")+']').prop('checked', true);
-		}
-		else
-		{
-			cur.parents(".each_city_row").find('input[type="checkbox"]').prop('checked', false);
-		}
-	}
 		$(document).ready(function(){
 			$(".add-row").click(function(){
 				var new_row_key=$(this).attr("data-attr_key");
@@ -1105,7 +1094,18 @@
 				}
 				match_night();
 			});
-		});    
+		});
+		function checked_hotel_rating(cur)
+		{
+			if(cur.val()!="" && cur.find("option:selected").attr("data-hotel_rating")!="")
+			{
+				cur.parents(".each_city_row").find('input[type="checkbox"][value='+cur.find("option:selected").attr("data-hotel_rating")+']').prop('checked', true);
+			}
+			else
+			{
+				cur.parents(".each_city_row").find('input[type="checkbox"]').prop('checked', false);
+			}
+		}    
 		function check_all_rating(cur)
 		{
 			if(cur.is(":checked")==true)
