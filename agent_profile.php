@@ -284,7 +284,7 @@
 									</div>
 									<div id="" class="col-md-3">
 										<div class="form-group fancy-form">
-											<input type="text" class="form-control form_input1 validate[required]" id="company_name" name="company_name" placeholder="Company Name" value="<?php echo(isset($_POST['company_name']) && $_POST['company_name']!='' ? $_POST['company_name'] : (isset($agent_data['company_name']) && $agent_data['company_name']!='' ? $agent_data['company_name'] : ""));?>" tabindex="1">
+											<input type="text" class="form-control form_input1 validate[required, custom[onlyLetterNumber]]" id="company_name" name="company_name" placeholder="Company Name" value="<?php echo(isset($_POST['company_name']) && $_POST['company_name']!='' ? $_POST['company_name'] : (isset($agent_data['company_name']) && $agent_data['company_name']!='' ? $agent_data['company_name'] : ""));?>" tabindex="1">
 										</div>
 									</div>
 									<div id="" class="col-md-3">
@@ -294,7 +294,7 @@
 									</div>
 									<div id="" class="col-md-3">
 										<div class="form-group fancy-form">
-											<input type="text" class="form-control form_input1 validate[required]" id="accounting_name" name="accounting_name" placeholder="Company Accounting Name" value="<?php echo(isset($_POST['accounting_name']) && $_POST['accounting_name']!='' ? $_POST['accounting_name'] : (isset($agent_data['accounting_name']) && $agent_data['accounting_name']!='' ? $agent_data['accounting_name'] : ""));?>" tabindex="2">
+											<input type="text" class="form-control form_input1 validate[required, custom[onlyLetterNumber]]" id="accounting_name" name="accounting_name" placeholder="Company Accounting Name" value="<?php echo(isset($_POST['accounting_name']) && $_POST['accounting_name']!='' ? $_POST['accounting_name'] : (isset($agent_data['accounting_name']) && $agent_data['accounting_name']!='' ? $agent_data['accounting_name'] : ""));?>" tabindex="2">
 										</div>
 									</div>
 									<div id="" class="col-md-3">
@@ -306,17 +306,17 @@
 										<div id="" class="row rows">
 											<div id="" class="col-md-4">
 												<div class="form-group fancy-form">
-													<input type="text" class="form-control form_input1 validate[required]" id="first_name" name="first_name" placeholder="First Name" value="<?php echo(isset($_POST['first_name']) && $_POST['first_name']!='' ? $_POST['first_name'] : (isset($agent_data['first_name']) && $agent_data['first_name']!='' ? $agent_data['first_name'] : ""));?>" tabindex="3">
+													<input type="text" class="form-control form_input1 validate[required, custom[onlyLetterSp]]" id="first_name" name="first_name" placeholder="First Name" value="<?php echo(isset($_POST['first_name']) && $_POST['first_name']!='' ? $_POST['first_name'] : (isset($agent_data['first_name']) && $agent_data['first_name']!='' ? $agent_data['first_name'] : ""));?>" tabindex="3">
 												</div>
 											</div>
 											<div id="" class="col-md-4">
 												<div class="form-group fancy-form">
-													<input type="text" class="form-control form_input1" id="middle_name" name="middle_name" placeholder="Middle Name" value="<?php echo(isset($_POST['middle_name']) && $_POST['middle_name']!='' ? $_POST['middle_name'] : (isset($agent_data['middle_name']) && $agent_data['middle_name']!='' ? $agent_data['middle_name'] : ""));?>" tabindex="4">
+													<input type="text" class="form-control form_input1 validate[optional, custom[onlyLetterSp]]" id="middle_name" name="middle_name" placeholder="Middle Name" value="<?php echo(isset($_POST['middle_name']) && $_POST['middle_name']!='' ? $_POST['middle_name'] : (isset($agent_data['middle_name']) && $agent_data['middle_name']!='' ? $agent_data['middle_name'] : ""));?>" tabindex="4">
 												</div>
 											</div>
 											<div id="" class="col-md-4">
 												<div class="form-group fancy-form">
-													<input type="text" class="form-control form_input1 validate[required]" id="last_name" name="last_name" placeholder="Last Name" value="<?php echo(isset($_POST['last_name']) && $_POST['last_name']!='' ? $_POST['last_name'] :(isset($agent_data['last_name']) && $agent_data['last_name']!='' ? $agent_data['last_name'] : ""));?>" tabindex="5">
+													<input type="text" class="form-control form_input1 validate[required, custom[onlyLetterSp]]" id="last_name" name="last_name" placeholder="Last Name" value="<?php echo(isset($_POST['last_name']) && $_POST['last_name']!='' ? $_POST['last_name'] :(isset($agent_data['last_name']) && $agent_data['last_name']!='' ? $agent_data['last_name'] : ""));?>" tabindex="5">
 												</div>
 											</div>
 										</div>
@@ -451,7 +451,7 @@
 									</div>
 									<div id="" class="col-md-3">
 										<div class="form-group fancy-form">
-											<textarea class="form-control form_input1 validate[required]" rows="5" id="address" name="address" tabindex="15"><?php echo(isset($_POST['address']) && $_POST['address']!='' ? $_POST['address'] : (isset($agent_data['address']) && $agent_data['address']!='' ? $agent_data['address'] : ""));?></textarea>
+											<textarea class="form-control form_input1 validate[required, custom[onlyLetterNumber]]" rows="5" id="address" name="address" tabindex="15"><?php echo(isset($_POST['address']) && $_POST['address']!='' ? $_POST['address'] : (isset($agent_data['address']) && $agent_data['address']!='' ? $agent_data['address'] : ""));?></textarea>
 										</div>
 									</div>
 									<div id="" class="col-md-3">
@@ -461,7 +461,7 @@
 									</div>
 									<div id="" class="col-md-3">
 										<div class="form-group fancy-form">
-											<input type="text" class="form-control form_input1 validate[required]" id="zipcode" name="zipcode" placeholder="Pincode/Zipcode/Postcode" value="<?php echo(isset($_POST['zipcode']) && $_POST['zipcode']!='' ? $_POST['zipcode'] : (isset($agent_data['zipcode']) && $agent_data['zipcode']!='' ? $agent_data['zipcode'] : ""));?>" tabindex="14">
+											<input type="text" class="form-control form_input1 validate[required, custom[zip]]" id="zipcode" name="zipcode" placeholder="Pincode/Zipcode/Postcode" value="<?php echo(isset($_POST['zipcode']) && $_POST['zipcode']!='' ? $_POST['zipcode'] : (isset($agent_data['zipcode']) && $agent_data['zipcode']!='' ? $agent_data['zipcode'] : ""));?>" tabindex="14">
 										</div>
 									</div>
 									<div id="" class="col-md-3">
@@ -499,7 +499,7 @@
 											<label for="pwd" class="form-label1">This number will be used for contact purposes.</label>
 										</div>
 										<div class="form-group fancy-form">
-											<input type="text" class="form-control form_input1 validate[required]" id="telephone" name="telephone" placeholder="Telephone" value="<?php echo(isset($_POST['telephone']) && $_POST['telephone']!='' ? $_POST['telephone'] : (isset($agent_data['telephone']) && $agent_data['telephone']!='' ? $agent_data['telephone'] : ""));?>" tabindex="17">
+											<input type="text" class="form-control form_input1 validate[required, custom[phone]]" id="telephone" name="telephone" placeholder="Telephone" value="<?php echo(isset($_POST['telephone']) && $_POST['telephone']!='' ? $_POST['telephone'] : (isset($agent_data['telephone']) && $agent_data['telephone']!='' ? $agent_data['telephone'] : ""));?>" tabindex="17">
 										</div>
 									</div>
 									<div id="" class="col-md-3">
@@ -509,7 +509,7 @@
 									</div>
 									<div id="" class="col-md-3">
 										<div class="form-group fancy-form">
-											<input type="text" class="form-control form_input1 validate[required]" id="mobile_number" name="mobile_number" placeholder="Mobile Number" value="<?php echo(isset($_POST['mobile_number']) && $_POST['mobile_number']!='' ? $_POST['mobile_number'] : (isset($agent_data['mobile_number']) && $agent_data['mobile_number']!='' ? $agent_data['mobile_number'] : ""));?>" tabindex="18">
+											<input type="text" class="form-control form_input1 validate[required, custom[phone]]" id="mobile_number" name="mobile_number" placeholder="Mobile Number" value="<?php echo(isset($_POST['mobile_number']) && $_POST['mobile_number']!='' ? $_POST['mobile_number'] : (isset($agent_data['mobile_number']) && $agent_data['mobile_number']!='' ? $agent_data['mobile_number'] : ""));?>" tabindex="18">
 										</div>
 									</div>
 

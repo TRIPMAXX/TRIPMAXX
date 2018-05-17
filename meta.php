@@ -20,6 +20,10 @@
 	<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700&amp;subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Lato:400,700&amp;subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700&amp;subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+	<link href="<?php echo(DOMAIN_NAME_PATH);?>css/select2.css" rel="stylesheet" type="text/css" />
+	<style type="text/css">
+		#cke_15{display:none;}
+	</style>
 	<!-- CSS FILES -->
 
 	<!-- JAVASCRIPT FILES -->
@@ -36,4 +40,12 @@
 	<script type="text/javascript" src="<?php echo(DOMAIN_NAME_PATH);?>js/twitterfeed.js"></script> 
 	<script src="<?php echo(DOMAIN_NAME_PATH);?>js/jquery.validationEngine.js" type="text/javascript"></script>
 	<script src="<?php echo(DOMAIN_NAME_PATH);?>js/jquery.validationEngine-en.js" type="text/javascript"></script>
+	<script src="<?php echo(CONTROL_CENTER_JS_PATH);?>js/select2.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	<!--
+		$(function(){
+			$('select').select2();
+		});
+	//-->
+	</script>
 	<!-- JAVASCRIPT FILES -->
