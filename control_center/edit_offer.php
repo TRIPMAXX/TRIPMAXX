@@ -129,7 +129,7 @@ endif;
 									<div class="box-body">
 										<div class="form-group col-md-12">
 											<label for="offer_title">Offer Title <font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['offer_title']) && $_POST['offer_title']!='' ? $_POST['offer_title'] : $promotional_offer['offer_title']);?>" name="offer_title" id="offer_title" placeholder="Offer Title" tabindex = "1" />
+											<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['offer_title']) && $_POST['offer_title']!='' ? $_POST['offer_title'] : $promotional_offer['offer_title']);?>" name="offer_title" id="offer_title" placeholder="Offer Title" tabindex = "1" />
 										</div>
 										<div class="form-group col-md-12">
 											<label for="offer_code">Offer Code <font color="#FF0000">*</font></label>
@@ -137,7 +137,7 @@ endif;
 										</div>
 										<div class="form-group col-md-12">
 											<label for="offer_description">Offer Description <font color="#FF0000">*</font></label>
-											<textarea class="form-control validate[required]" name="offer_description" id="offer_description" placeholder="Offer Description" tabindex = "3"><?php echo(isset($_POST['offer_description']) && $_POST['offer_description']!='' ? $_POST['offer_description'] : $promotional_offer['offer_description']);?></textarea>
+											<textarea class="form-control validate[required, custom[onlyLetterNumber]]" name="offer_description" id="offer_description" placeholder="Offer Description" tabindex = "3"><?php echo(isset($_POST['offer_description']) && $_POST['offer_description']!='' ? $_POST['offer_description'] : $promotional_offer['offer_description']);?></textarea>
 										</div>
 										<div class="form-group col-md-6">
 											<label for="start_date" class="control-label">Start Date</label>

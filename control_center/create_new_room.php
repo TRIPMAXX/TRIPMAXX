@@ -193,7 +193,7 @@ endif;
 									<div class="box-body">
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Room Type<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['room_type']) && $_POST['room_type']!='' ? $_POST['room_type'] : "");?>" name="room_type" id="room_type" placeholder="Room Type" tabindex = "1" />
+											<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['room_type']) && $_POST['room_type']!='' ? $_POST['room_type'] : "");?>" name="room_type" id="room_type" placeholder="Room Type" tabindex = "1" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Room Images</label>
@@ -204,7 +204,7 @@ endif;
 										<div class="clearfix"></div>
 										<div class="form-group col-md-12">
 											<label for="inputName" class="control-label">Room Description<font color="#FF0000">*</font></label>
-											<textarea class="form-control ckeditor validate[required]" name="room_description" id="room_description" placeholder="Room Description" tabindex = "3"><?php echo(isset($_POST['room_description']) && $_POST['room_description']!='' ? $_POST['room_description'] : "");?></textarea>
+											<textarea class="form-control ckeditor validate[required, custom[onlyLetterNumber]]" name="room_description" id="room_description" placeholder="Room Description" tabindex = "3"><?php echo(isset($_POST['room_description']) && $_POST['room_description']!='' ? $_POST['room_description'] : "");?></textarea>
 										</div>
 										<div class="form-group col-md-12">
 											<label for="inputName" class="control-label">Available Facilities<font color="#FF0000">*</font></label>
@@ -222,11 +222,11 @@ endif;
 										</div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Default Price<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['price']) && $_POST['price']!='' ? $_POST['price'] : "");?>" name="price" id="price" placeholder="Default Price" tabindex = "4" />
+											<input type="text" class="form-control validate[required, custom[number]]"  value="<?php echo(isset($_POST['price']) && $_POST['price']!='' ? $_POST['price'] : "");?>" name="price" id="price" placeholder="Default Price" tabindex = "4" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Default Number Of Rooms<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['number_of_rooms']) && $_POST['number_of_rooms']!='' ? $_POST['number_of_rooms'] : "");?>" name="number_of_rooms" id="number_of_rooms" placeholder="Default Number Of Rooms" tabindex = "5" />
+											<input type="text" class="form-control validate[required, custom[integer]]"  value="<?php echo(isset($_POST['number_of_rooms']) && $_POST['number_of_rooms']!='' ? $_POST['number_of_rooms'] : "");?>" name="number_of_rooms" id="number_of_rooms" placeholder="Default Number Of Rooms" tabindex = "5" />
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">

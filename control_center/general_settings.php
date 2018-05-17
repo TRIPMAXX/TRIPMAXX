@@ -99,19 +99,19 @@ $currency_details = tools::find("all", TM_CURRENCIES, '*', "WHERE status=:status
 										<div class="form-group col-md-6">
 											<label for="contact_person_name" class="control-label">Contact Person Name<font color="#FF0000">*</font></label>
 											<div class="input-icon right">
-												<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['contact_person_name']) && $_POST['contact_person_name']!='' ? $_POST['contact_person_name'] : $general_setting['contact_person_name']);?>" name="contact_person_name" id="contact_person_name" placeholder="Contact Person Name" tabindex = "3" />
+												<input type="text" class="form-control validate[required, custom[onlyLetterSp]]"  value="<?php echo(isset($_POST['contact_person_name']) && $_POST['contact_person_name']!='' ? $_POST['contact_person_name'] : $general_setting['contact_person_name']);?>" name="contact_person_name" id="contact_person_name" placeholder="Contact Person Name" tabindex = "3" />
 											</div>
 										</div>
 										<div class="form-group col-md-6">
-											<label for="contact_email_address" class="control-label">Contact Email Address</label>
+											<label for="contact_email_address" class="control-label">Contact Email Address<font color="#FF0000">*</font></label>
 											<div class="input-icon right">
-												<input type="text" class="form-control"  value="<?php echo(isset($_POST['contact_email_address']) && $_POST['contact_email_address']!='' ? $_POST['contact_email_address'] : $general_setting['contact_email_address']);?>" name="contact_email_address" id="contact_email_address" placeholder="Contact Email Address" tabindex = "4" />
+												<input type="text" class="form-control  validate[required, custom[email]]"  value="<?php echo(isset($_POST['contact_email_address']) && $_POST['contact_email_address']!='' ? $_POST['contact_email_address'] : $general_setting['contact_email_address']);?>" name="contact_email_address" id="contact_email_address" placeholder="Contact Email Address" tabindex = "4" />
 											</div>
 										</div>
 										<div class="form-group col-md-6">
 											<label for="contact_phone_number" class="control-label">Contact Phone Number<font color="#FF0000">*</font></label>
 											<div class="input-icon right">
-												<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['contact_phone_number']) && $_POST['contact_phone_number']!='' ? $_POST['contact_phone_number'] : $general_setting['contact_phone_number']);?>" name="contact_phone_number" id="contact_phone_number" placeholder="Contact Phone Number" tabindex = "5" />
+												<input type="text" class="form-control validate[required, custom[phone]]"  value="<?php echo(isset($_POST['contact_phone_number']) && $_POST['contact_phone_number']!='' ? $_POST['contact_phone_number'] : $general_setting['contact_phone_number']);?>" name="contact_phone_number" id="contact_phone_number" placeholder="Contact Phone Number" tabindex = "5" />
 											</div>
 										</div>
 										<div class="form-group col-md-6">
@@ -184,7 +184,7 @@ $currency_details = tools::find("all", TM_CURRENCIES, '*', "WHERE status=:status
 										<div class="form-group col-md-6">
 											<label for="default_credit_balance" class="control-label">Default Credit Balance<font color="#FF0000">*</font></label>
 											<div class="input-icon right">
-												<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['default_credit_balance']) && $_POST['default_credit_balance']!='' ? $_POST['default_credit_balance'] : $general_setting['default_credit_balance']);?>" name="default_credit_balance" id="default_credit_balance" placeholder="Default Credit Balance" tabindex = "15" />
+												<input type="text" class="form-control validate[required, custom[number]]"  value="<?php echo(isset($_POST['default_credit_balance']) && $_POST['default_credit_balance']!='' ? $_POST['default_credit_balance'] : $general_setting['default_credit_balance']);?>" name="default_credit_balance" id="default_credit_balance" placeholder="Default Credit Balance" tabindex = "15" />
 											</div>
 										</div>
 									</div>

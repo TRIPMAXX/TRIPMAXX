@@ -350,30 +350,30 @@
 										</div>
 										<div class="form-group col-md-6">
 											<label for="company_name" class="form-label1">Company Name <font color="#FF0000">*</font> :</label>
-											<input type="text" class="form-control form_input1 validate[required]" id="company_name" name="company_name" placeholder="Company Name" value="<?php echo(isset($_POST['company_name']) && $_POST['company_name']!='' ? $_POST['company_name'] : (isset($agent_data['company_name']) && $agent_data['company_name']!='' ? $agent_data['company_name'] : ""));?>" tabindex="1">
+											<input type="text" class="form-control form_input1 validate[required, custom[onlyLetterSp]]" id="company_name" name="company_name" placeholder="Company Name" value="<?php echo(isset($_POST['company_name']) && $_POST['company_name']!='' ? $_POST['company_name'] : (isset($agent_data['company_name']) && $agent_data['company_name']!='' ? $agent_data['company_name'] : ""));?>" tabindex="1">
 										</div>
 										<div class="form-group col-md-6">
 											<label for="accounting_name" class="form-label1">Company Accounting Name <font color="#FF0000">*</font> :</label>
-											<input type="text" class="form-control form_input1 validate[required]" id="accounting_name" name="accounting_name" placeholder="Company Accounting Name" value="<?php echo(isset($_POST['accounting_name']) && $_POST['accounting_name']!='' ? $_POST['accounting_name'] : (isset($agent_data['accounting_name']) && $agent_data['accounting_name']!='' ? $agent_data['accounting_name'] : ""));?>" tabindex="2">
+											<input type="text" class="form-control form_input1 validate[required, custom[onlyLetterSp]]" id="accounting_name" name="accounting_name" placeholder="Company Accounting Name" value="<?php echo(isset($_POST['accounting_name']) && $_POST['accounting_name']!='' ? $_POST['accounting_name'] : (isset($agent_data['accounting_name']) && $agent_data['accounting_name']!='' ? $agent_data['accounting_name'] : ""));?>" tabindex="2">
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-4">
 											<label for="first_name" class="form-label1">First Name <font color="#FF0000">*</font> :</label>
-											<input type="text" class="form-control form_input1 validate[required]" id="first_name" name="first_name" placeholder="First Name" value="<?php echo(isset($_POST['first_name']) && $_POST['first_name']!='' ? $_POST['first_name'] : (isset($agent_data['first_name']) && $agent_data['first_name']!='' ? $agent_data['first_name'] : ""));?>" tabindex="3">
+											<input type="text" class="form-control form_input1 validate[required, custom[onlyLetterSp]]" id="first_name" name="first_name" placeholder="First Name" value="<?php echo(isset($_POST['first_name']) && $_POST['first_name']!='' ? $_POST['first_name'] : (isset($agent_data['first_name']) && $agent_data['first_name']!='' ? $agent_data['first_name'] : ""));?>" tabindex="3">
 										</div>
 										<div class="form-group col-md-4">
 											<label for="middle_name" class="form-label1">Middle Name :</label>
-											<input type="text" class="form-control form_input1" id="middle_name" name="middle_name" placeholder="Middle Name" value="<?php echo(isset($_POST['middle_name']) && $_POST['middle_name']!='' ? $_POST['middle_name'] : (isset($agent_data['middle_name']) && $agent_data['middle_name']!='' ? $agent_data['middle_name'] : ""));?>" tabindex="4">
+											<input type="text" class="form-control form_input1 validate[optional, custom[onlyLetterSp]]" id="middle_name" name="middle_name" placeholder="Middle Name" value="<?php echo(isset($_POST['middle_name']) && $_POST['middle_name']!='' ? $_POST['middle_name'] : (isset($agent_data['middle_name']) && $agent_data['middle_name']!='' ? $agent_data['middle_name'] : ""));?>" tabindex="4">
 										</div>
 												
 										<div class="form-group col-md-4">
 											<label for="last_name" class="form-label1">Last Name <font color="#FF0000">*</font> :</label>
-											<input type="text" class="form-control form_input1 validate[required]" id="last_name" name="last_name" placeholder="Last Name" value="<?php echo(isset($_POST['last_name']) && $_POST['last_name']!='' ? $_POST['last_name'] : (isset($agent_data['last_name']) && $agent_data['last_name']!='' ? $agent_data['last_name'] : ""));?>" tabindex="5">
+											<input type="text" class="form-control form_input1 validate[required, custom[onlyLetterSp]]" id="last_name" name="last_name" placeholder="Last Name" value="<?php echo(isset($_POST['last_name']) && $_POST['last_name']!='' ? $_POST['last_name'] : (isset($agent_data['last_name']) && $agent_data['last_name']!='' ? $agent_data['last_name'] : ""));?>" tabindex="5">
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="email_address" class="form-label1">Email <font color="#FF0000">*</font> :</label>
-											<input type="email" class="form-control form_input1 validate[required]" id="email_address" name="email_address" placeholder="Email" value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : (isset($agent_data['email_address']) && $agent_data['email_address']!='' ? $agent_data['email_address'] : ""));?>" tabindex="6">
+											<input type="email" class="form-control form_input1 validate[required, custom[email]]" id="email_address" name="email_address" placeholder="Email" value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : (isset($agent_data['email_address']) && $agent_data['email_address']!='' ? $agent_data['email_address'] : ""));?>" tabindex="6">
 										</div>
 										<div class="form-group col-md-6">
 											<label for="designation" class="form-label1">Designation :</label>
@@ -443,12 +443,12 @@
 										</div>
 										<div class="form-group col-md-6">
 											<label for="zipcode" class="form-label1">Pincode/Zipcode/Postcode <font color="#FF0000">*</font> :</label>
-											<input type="text" class="form-control form_input1 validate[required]" id="zipcode" name="zipcode" placeholder="Pincode/Zipcode/Postcode" value="<?php echo(isset($_POST['zipcode']) && $_POST['zipcode']!='' ? $_POST['zipcode'] : (isset($agent_data['zipcode']) && $agent_data['zipcode']!='' ? $agent_data['zipcode'] : ""));?>" tabindex="14">
+											<input type="text" class="form-control form_input1 validate[required, custom[zip]]" id="zipcode" name="zipcode" placeholder="Pincode/Zipcode/Postcode" value="<?php echo(isset($_POST['zipcode']) && $_POST['zipcode']!='' ? $_POST['zipcode'] : (isset($agent_data['zipcode']) && $agent_data['zipcode']!='' ? $agent_data['zipcode'] : ""));?>" tabindex="14">
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-12">
 											<label for="address" class="form-label1">Address <font color="#FF0000">*</font> :</label>
-											<textarea class="form-control form_input1 validate[required]" rows="5" id="address" name="address" tabindex="15"><?php echo(isset($_POST['address']) && $_POST['address']!='' ? $_POST['address'] : (isset($agent_data['address']) && $agent_data['address']!='' ? $agent_data['address'] : ""));?></textarea>
+											<textarea class="form-control form_input1 validate[required, custom[onlyLetterNumber]]" rows="5" id="address" name="address" tabindex="15"><?php echo(isset($_POST['address']) && $_POST['address']!='' ? $_POST['address'] : (isset($agent_data['address']) && $agent_data['address']!='' ? $agent_data['address'] : ""));?></textarea>
 										</div>
 										<div class="form-group col-md-6">
 											<label for="timezone" class="form-label1">Time Zone <font color="#FF0000">*</font> :</label>
@@ -469,12 +469,12 @@
 										</div>
 										<div class="form-group col-md-6">
 											<label for="telephone" class="form-label1">Telephone <font color="#FF0000">*</font> :</label>
-											<input type="text" class="form-control form_input1 validate[required]" id="telephone" name="telephone" placeholder="Telephone" value="<?php echo(isset($_POST['telephone']) && $_POST['telephone']!='' ? $_POST['telephone'] : (isset($agent_data['telephone']) && $agent_data['telephone']!='' ? $agent_data['telephone'] : ""));?>" tabindex="17">
+											<input type="text" class="form-control form_input1 validate[required, custom[phone]]" id="telephone" name="telephone" placeholder="Telephone" value="<?php echo(isset($_POST['telephone']) && $_POST['telephone']!='' ? $_POST['telephone'] : (isset($agent_data['telephone']) && $agent_data['telephone']!='' ? $agent_data['telephone'] : ""));?>" tabindex="17">
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="mobile_number" class="form-label1">Mobile Number <font color="#FF0000">*</font> :</label>
-											<input type="text" class="form-control form_input1 validate[required]" id="mobile_number" name="mobile_number" placeholder="Mobile Number" value="<?php echo(isset($_POST['mobile_number']) && $_POST['mobile_number']!='' ? $_POST['mobile_number'] : (isset($agent_data['mobile_number']) && $agent_data['mobile_number']!='' ? $agent_data['mobile_number'] : ""));?>" tabindex="18">
+											<input type="text" class="form-control form_input1 validate[required, custom[phone]]" id="mobile_number" name="mobile_number" placeholder="Mobile Number" value="<?php echo(isset($_POST['mobile_number']) && $_POST['mobile_number']!='' ? $_POST['mobile_number'] : (isset($agent_data['mobile_number']) && $agent_data['mobile_number']!='' ? $agent_data['mobile_number'] : ""));?>" tabindex="18">
 										</div>
 										<div class="form-group col-md-6">
 											<label for="website" class="form-label1">Website :</label>
@@ -676,19 +676,19 @@
 									<div id="" class="row rows">
 										<div class="form-group col-md-3">
 											<label for="hotel_price" class="form-label1">Hotel :</label>
-											<input type="text" class="form-control form_input1" id="hotel_price" name="hotel_price" placeholder="Hotel" value="<?php echo(isset($_POST['hotel_price']) && $_POST['hotel_price']!='' ? $_POST['hotel_price'] : (isset($agent_data['hotel_price']) && $agent_data['hotel_price']!='' ? $agent_data['hotel_price'] : ""));?>" tabindex="34">
+											<input type="text" class="form-control form_input1 validate[optional, custom[number]]" id="hotel_price" name="hotel_price" placeholder="Hotel" value="<?php echo(isset($_POST['hotel_price']) && $_POST['hotel_price']!='' ? $_POST['hotel_price'] : (isset($agent_data['hotel_price']) && $agent_data['hotel_price']!='' ? $agent_data['hotel_price'] : ""));?>" tabindex="34">
 										</div>
 										<div class="form-group col-md-3">
 											<label for="tour_price" class="form-label1">Tour :</label>
-											<input type="text" class="form-control form_input1" id="tour_price" name="tour_price" placeholder="Tour" value="<?php echo(isset($_POST['tour_price']) && $_POST['tour_price']!='' ? $_POST['tour_price'] : (isset($agent_data['tour_price']) && $agent_data['tour_price']!='' ? $agent_data['tour_price'] : ""));?>" tabindex="35">
+											<input type="text" class="form-control form_input1 validate[optional, custom[number]]" id="tour_price" name="tour_price" placeholder="Tour" value="<?php echo(isset($_POST['tour_price']) && $_POST['tour_price']!='' ? $_POST['tour_price'] : (isset($agent_data['tour_price']) && $agent_data['tour_price']!='' ? $agent_data['tour_price'] : ""));?>" tabindex="35">
 										</div>
 										<div class="form-group col-md-3">
 											<label for="transfer_price" class="form-label1">Transfer :</label>
-											<input type="text" class="form-control form_input1" id="transfer_price" name="transfer_price" placeholder="Transfer" value="<?php echo(isset($_POST['transfer_price']) && $_POST['transfer_price']!='' ? $_POST['transfer_price'] : (isset($agent_data['transfer_price']) && $agent_data['transfer_price']!='' ? $agent_data['transfer_price'] : ""));?>" tabindex="36">
+											<input type="text" class="form-control form_input1 validate[optional, custom[number]]" id="transfer_price" name="transfer_price" placeholder="Transfer" value="<?php echo(isset($_POST['transfer_price']) && $_POST['transfer_price']!='' ? $_POST['transfer_price'] : (isset($agent_data['transfer_price']) && $agent_data['transfer_price']!='' ? $agent_data['transfer_price'] : ""));?>" tabindex="36">
 										</div>
 										<div class="form-group col-md-3">
 											<label for="package_price" class="form-label1">Package :</label>
-											<input type="text" class="form-control form_input1" id="package_price" name="package_price" placeholder="Package" value="<?php echo(isset($_POST['package_price']) && $_POST['package_price']!='' ? $_POST['package_price'] : (isset($agent_data['package_price']) && $agent_data['package_price']!='' ? $agent_data['package_price'] : ""));?>" tabindex="37">
+											<input type="text" class="form-control form_input1 validate[optional, custom[number]]" id="package_price" name="package_price" placeholder="Package" value="<?php echo(isset($_POST['package_price']) && $_POST['package_price']!='' ? $_POST['package_price'] : (isset($agent_data['package_price']) && $agent_data['package_price']!='' ? $agent_data['package_price'] : ""));?>" tabindex="37">
 										</div>
 									</div>
 								</div>

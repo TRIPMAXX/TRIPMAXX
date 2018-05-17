@@ -265,13 +265,13 @@ endif;
 										<div class="form-group col-md-6">
 											<label for="currency_name" class="control-label">Currency Title<font color="#FF0000">*</font></label>
 											<div class="input-icon right">
-												<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['currency_name']) && $_POST['currency_name']!='' ? $_POST['currency_name'] : $find_currency['currency_name']);?>" name="currency_name" id="currency_name" placeholder="Currency Title" tabindex = "1" />
+												<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['currency_name']) && $_POST['currency_name']!='' ? $_POST['currency_name'] : $find_currency['currency_name']);?>" name="currency_name" id="currency_name" placeholder="Currency Title" tabindex = "1" />
 											</div>
 										</div>
 										<div class="form-group col-md-6">
 											<label for="currency_code" class="control-label">Currency Short Code<font color="#FF0000">*</font></label>
 											<div class="input-icon right">
-												<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['currency_code']) && $_POST['currency_code']!='' ? $_POST['currency_code'] : $find_currency['currency_code']);?>" name="currency_code" id="currency_code" placeholder="Currency Short Code" tabindex = "2" />
+												<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['currency_code']) && $_POST['currency_code']!='' ? $_POST['currency_code'] : $find_currency['currency_code']);?>" name="currency_code" id="currency_code" placeholder="Currency Short Code" tabindex = "2" />
 											</div>
 										</div>
 										<div class="form-group col-md-6">
@@ -283,7 +283,7 @@ endif;
 										<div class="form-group col-md-6">
 											<label for="serial_number" class="control-label">Serial Number</label>
 											<div class="input-icon right">
-												<input type="text" class="form-control"  value="<?php echo(isset($_POST['serial_number']) && $_POST['serial_number']!='' ? $_POST['serial_number'] : $find_currency['serial_number']);?>" name="serial_number" id="serial_number" placeholder="Serial Number" tabindex = "4" />
+												<input type="text" class="form-control validate[optional, custom[integer]]"  value="<?php echo(isset($_POST['serial_number']) && $_POST['serial_number']!='' ? $_POST['serial_number'] : $find_currency['serial_number']);?>" name="serial_number" id="serial_number" placeholder="Serial Number" tabindex = "4" />
 											</div>
 										</div>
 										<div class="form-group col-md-6">

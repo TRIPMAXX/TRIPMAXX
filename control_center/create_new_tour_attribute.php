@@ -98,11 +98,11 @@
 									<div class="box-body">
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Tour Type Title<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['attribute_name']) && $_POST['attribute_name']!='' ? $_POST['attribute_name'] : "");?>" name="attribute_name" id="attribute_name" placeholder="Tour Type Title" tabindex = "1" />
+											<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['attribute_name']) && $_POST['attribute_name']!='' ? $_POST['attribute_name'] : "");?>" name="attribute_name" id="attribute_name" placeholder="Tour Type Title" tabindex = "1" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Serial Number<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['serial_number']) && $_POST['serial_number']!='' ? $_POST['serial_number'] : "");?>" name="serial_number" id="serial_number" placeholder="Serial Number" tabindex = "2" />
+											<input type="text" class="form-control validate[required, custom[integer]]"  value="<?php echo(isset($_POST['serial_number']) && $_POST['serial_number']!='' ? $_POST['serial_number'] : "");?>" name="serial_number" id="serial_number" placeholder="Serial Number" tabindex = "2" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Status</label>

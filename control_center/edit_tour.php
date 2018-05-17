@@ -353,7 +353,7 @@
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="tour_title" class="control-label">Tour Title<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['tour_title']) && $_POST['tour_title']!='' ? $_POST['tour_title'] : (isset($tour_data['tour_title']) && $tour_data['tour_title']!='' ? $tour_data['tour_title'] : ""));?>" name="tour_title" id="tour_title" placeholder="Tour Title" tabindex = "4" />
+											<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['tour_title']) && $_POST['tour_title']!='' ? $_POST['tour_title'] : (isset($tour_data['tour_title']) && $tour_data['tour_title']!='' ? $tour_data['tour_title'] : ""));?>" name="tour_title" id="tour_title" placeholder="Tour Title" tabindex = "4" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="tour_type" class="control-label">Tour Type<font color="#FF0000">*</font></label>

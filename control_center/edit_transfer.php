@@ -395,7 +395,7 @@
 										</div>
 										<div class="form-group col-md-6">
 											<label for="transfer_title" class="control-label">Transfer Title<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['transfer_title']) && $_POST['transfer_title']!='' ? $_POST['transfer_title'] : (isset($transfer_data['transfer_title']) && $transfer_data['transfer_title']!='' ? $transfer_data['transfer_title'] : ""));?>" name="transfer_title" id="transfer_title" placeholder="Transfer Title" tabindex = "6" />
+											<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['transfer_title']) && $_POST['transfer_title']!='' ? $_POST['transfer_title'] : (isset($transfer_data['transfer_title']) && $transfer_data['transfer_title']!='' ? $transfer_data['transfer_title'] : ""));?>" name="transfer_title" id="transfer_title" placeholder="Transfer Title" tabindex = "6" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="transfer_service" class="control-label">Service Type<font color="#FF0000">*</font></label>
@@ -469,7 +469,7 @@
 										</div>
 										<div class="form-group col-md-4">
 											<label for="guide_language" class="control-label">Guide Language</label>
-											<input type="text" class="form-control"  value="<?php echo(isset($_POST['guide_language']) && $_POST['guide_language']!='' ? $_POST['guide_language'] : (isset($transfer_data['guide_language']) && $transfer_data['guide_language']!='' ? $transfer_data['guide_language'] : ""));?>" name="guide_language" id="guide_language" placeholder="Guide Language" tabindex = "15" />
+											<input type="text" class="form-control  validate[optional, custom[onlyLetterSp]]"  value="<?php echo(isset($_POST['guide_language']) && $_POST['guide_language']!='' ? $_POST['guide_language'] : (isset($transfer_data['guide_language']) && $transfer_data['guide_language']!='' ? $transfer_data['guide_language'] : ""));?>" name="guide_language" id="guide_language" placeholder="Guide Language" tabindex = "15" />
 										</div>
 										<div class="form-group col-md-4">
 											<label for="status" class="control-label">Status<font color="#FF0000">*</font></label>

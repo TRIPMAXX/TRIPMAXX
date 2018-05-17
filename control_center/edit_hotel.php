@@ -332,7 +332,7 @@ endif;
 									<div class="box-body">
 										<div class="form-group col-md-6">
 											<label for="hotel_name" class="control-label">Hotel Name<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['hotel_name']) && $_POST['hotel_name']!='' ? $_POST['hotel_name'] : (isset($hotel_data['hotel_name']) && $hotel_data['hotel_name']!='' ? $hotel_data['hotel_name'] : ""));?>" name="hotel_name" id="hotel_name" placeholder="Hotel Name" tabindex = "1" />
+											<input type="text" class="form-control validate[required, custom[onlyLetterSp]]"  value="<?php echo(isset($_POST['hotel_name']) && $_POST['hotel_name']!='' ? $_POST['hotel_name'] : (isset($hotel_data['hotel_name']) && $hotel_data['hotel_name']!='' ? $hotel_data['hotel_name'] : ""));?>" name="hotel_name" id="hotel_name" placeholder="Hotel Name" tabindex = "1" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="hotel_images" class="control-label">Hotel Images</label>
@@ -371,7 +371,7 @@ endif;
 										<div class="clearfix"></div>
 										<div class="form-group col-md-12">
 											<label for="inputName" class="control-label">Hotel Address<font color="#FF0000">*</font></label>
-											<textarea class="form-control validate[required]"  value="" name="hotel_address" id="hotel_address" placeholder="Hotel Address" tabindex = "6"><?php echo(isset($_POST['hotel_address']) && $_POST['hotel_address']!='' ? $_POST['hotel_address'] : (isset($hotel_data['hotel_address']) && $hotel_data['hotel_address']!='' ? $hotel_data['hotel_address'] : ""));?></textarea>
+											<textarea class="form-control validate[required, custom[onlyLetterNumber]]"  value="" name="hotel_address" id="hotel_address" placeholder="Hotel Address" tabindex = "6"><?php echo(isset($_POST['hotel_address']) && $_POST['hotel_address']!='' ? $_POST['hotel_address'] : (isset($hotel_data['hotel_address']) && $hotel_data['hotel_address']!='' ? $hotel_data['hotel_address'] : ""));?></textarea>
 										</div>
 										<div class="form-group col-md-3">
 											<label for="country" class="control-label">Country<font color="#FF0000">*</font></label>
@@ -402,16 +402,16 @@ endif;
 										</div>
 										<div class="form-group col-md-3">
 											<label for="postal_code" class="control-label">Postal Code<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['postal_code']) && $_POST['postal_code']!='' ? $_POST['postal_code'] : (isset($hotel_data['postal_code']) && $hotel_data['postal_code']!='' ? $hotel_data['postal_code'] : ""));?>" name="postal_code" id="postal_code" placeholder="Postal Code" tabindex = "10" />
+											<input type="text" class="form-control validate[required, custom[zip]]"  value="<?php echo(isset($_POST['postal_code']) && $_POST['postal_code']!='' ? $_POST['postal_code'] : (isset($hotel_data['postal_code']) && $hotel_data['postal_code']!='' ? $hotel_data['postal_code'] : ""));?>" name="postal_code" id="postal_code" placeholder="Postal Code" tabindex = "10" />
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="phone_number" class="control-label">Phone Number<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['phone_number']) && $_POST['phone_number']!='' ? $_POST['phone_number'] : (isset($hotel_data['phone_number']) && $hotel_data['phone_number']!='' ? $hotel_data['phone_number'] : ""));?>" name="phone_number" id="phone_number" placeholder="Phone Number" tabindex = "11" />
+											<input type="text" class="form-control validate[required, custom[phone]]"  value="<?php echo(isset($_POST['phone_number']) && $_POST['phone_number']!='' ? $_POST['phone_number'] : (isset($hotel_data['phone_number']) && $hotel_data['phone_number']!='' ? $hotel_data['phone_number'] : ""));?>" name="phone_number" id="phone_number" placeholder="Phone Number" tabindex = "11" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="alternate_phone_number" class="control-label">Altername Phone Number</label>
-											<input type="text" class="form-control"  value="<?php echo(isset($_POST['alternate_phone_number']) && $_POST['alternate_phone_number']!='' ? $_POST['alternate_phone_number'] : (isset($hotel_data['alternate_phone_number']) && $hotel_data['alternate_phone_number']!='' ? $hotel_data['alternate_phone_number'] : ""));?>" name="alternate_phone_number" id="alternate_phone_number" placeholder="Altername Phone Number" tabindex = "12" />
+											<input type="text" class="form-control validate[optional, custom[phone]]"  value="<?php echo(isset($_POST['alternate_phone_number']) && $_POST['alternate_phone_number']!='' ? $_POST['alternate_phone_number'] : (isset($hotel_data['alternate_phone_number']) && $hotel_data['alternate_phone_number']!='' ? $hotel_data['alternate_phone_number'] : ""));?>" name="alternate_phone_number" id="alternate_phone_number" placeholder="Altername Phone Number" tabindex = "12" />
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-12">

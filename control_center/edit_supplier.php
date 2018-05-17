@@ -159,11 +159,11 @@ endif;
 									<div class="box-body">
 										<div class="form-group col-md-6">
 											<label for="first_name">First Name <font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['first_name']) && $_POST['first_name']!='' ? $_POST['first_name'] : (isset($supplier_data['first_name']) && $supplier_data['first_name']!='' ? $supplier_data['first_name'] : ""));?>" name="first_name" id="first_name" placeholder="First Name" tabindex = "1" />
+											<input type="text" class="form-control validate[required, custom[onlyLetterSp]]"  value="<?php echo(isset($_POST['first_name']) && $_POST['first_name']!='' ? $_POST['first_name'] : (isset($supplier_data['first_name']) && $supplier_data['first_name']!='' ? $supplier_data['first_name'] : ""));?>" name="first_name" id="first_name" placeholder="First Name" tabindex = "1" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="last_name">Last Name <font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['last_name']) && $_POST['last_name']!='' ? $_POST['last_name'] : (isset($supplier_data['last_name']) && $supplier_data['last_name']!='' ? $supplier_data['last_name'] : ""));?>" name="last_name" id="last_name" placeholder="Last Name" tabindex = "2" />
+											<input type="text" class="form-control validate[required, custom[onlyLetterSp]]"  value="<?php echo(isset($_POST['last_name']) && $_POST['last_name']!='' ? $_POST['last_name'] : (isset($supplier_data['last_name']) && $supplier_data['last_name']!='' ? $supplier_data['last_name'] : ""));?>" name="last_name" id="last_name" placeholder="Last Name" tabindex = "2" />
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
@@ -202,7 +202,7 @@ endif;
 										<div class="clearfix"></div>
 										<div class="form-group col-md-12">
 											<label for="address" class="control-label">Contact Address <font color="#FF0000">*</font></label>
-											<textarea class="form-control validate[required]"  placeholder = "Contact Address" name="address" id="address" tabindex = "9"><?php echo(isset($_POST['address']) && $_POST['address']!='' ? $_POST['address'] : (isset($supplier_data['address']) && $supplier_data['address']!='' ? $supplier_data['address'] : ""));?></textarea>
+											<textarea class="form-control validate[required, custom[onlyLetterNumber]]"  placeholder = "Contact Address" name="address" id="address" tabindex = "9"><?php echo(isset($_POST['address']) && $_POST['address']!='' ? $_POST['address'] : (isset($supplier_data['address']) && $supplier_data['address']!='' ? $supplier_data['address'] : ""));?></textarea>
 										</div>
 										<div class="form-group col-md-6">
 											<label for="country" class="control-label">Operating Country <font color="#FF0000">*</font></label>

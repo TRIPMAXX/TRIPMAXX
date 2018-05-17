@@ -378,11 +378,11 @@
 									<div class="box-body">
 										<div class="form-group col-md-4">
 											<label for="offer_title" class="control-label">Offer Title<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['offer_title']) && $_POST['offer_title']!='' ? $_POST['offer_title'] : (isset($offer_data['offer_title']) && $offer_data['offer_title']!='' ? $offer_data['offer_title'] : ""));?>" name="offer_title" id="offer_title" placeholder="Offer Title" tabindex = "1" />
+											<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['offer_title']) && $_POST['offer_title']!='' ? $_POST['offer_title'] : (isset($offer_data['offer_title']) && $offer_data['offer_title']!='' ? $offer_data['offer_title'] : ""));?>" name="offer_title" id="offer_title" placeholder="Offer Title" tabindex = "1" />
 										</div>
 										<div class="form-group col-md-4">
 											<label for="offer_capacity" class="control-label">Capacity<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['offer_capacity']) && $_POST['offer_capacity']!='' ? $_POST['offer_capacity'] : (isset($offer_data['offer_capacity']) && $offer_data['offer_capacity']!='' ? $offer_data['offer_capacity'] : ""));?>" name="offer_capacity" id="offer_capacity" placeholder="Capacity" tabindex = "2" />
+											<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['offer_capacity']) && $_POST['offer_capacity']!='' ? $_POST['offer_capacity'] : (isset($offer_data['offer_capacity']) && $offer_data['offer_capacity']!='' ? $offer_data['offer_capacity'] : ""));?>" name="offer_capacity" id="offer_capacity" placeholder="Capacity" tabindex = "2" />
 										</div>
 										<div class="form-group col-md-4">
 											<label for="service_type" class="control-label">Service Type<font color="#FF0000">*</font></label>
@@ -395,7 +395,7 @@
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="price_per_person" class="control-label">Default Price Per Person<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['price_per_person']) && $_POST['price_per_person']!='' ? $_POST['price_per_person'] : (isset($offer_data['price_per_person']) && $offer_data['price_per_person']!='' ? $offer_data['price_per_person'] : ""));?>" name="price_per_person" id="price_per_person" placeholder="Default Price Per Person" tabindex = "4" />
+											<input type="text" class="form-control validate[required, custom[number]]"  value="<?php echo(isset($_POST['price_per_person']) && $_POST['price_per_person']!='' ? $_POST['price_per_person'] : (isset($offer_data['price_per_person']) && $offer_data['price_per_person']!='' ? $offer_data['price_per_person'] : ""));?>" name="price_per_person" id="price_per_person" placeholder="Default Price Per Person" tabindex = "4" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="status" class="control-label">Status<font color="#FF0000">*</font></label>
@@ -461,7 +461,7 @@
 															<input type="text" class="form-control datepicker"  value="<?php echo(isset($_POST['end_date'.$i]) && $_POST['end_date'.$i]!='' ? $_POST['end_date'.$i] : (isset($offer_price_data[$arr_index]) && $offer_price_data[$arr_index]['end_date']!='' ? tools::module_date_format($offer_price_data[$arr_index]['end_date']) : ""));?>" name="end_date<?php echo $i;?>" id="end_date<?php echo $i;?>" placeholder="End Date" readonly />
 														</td>
 														<td class=" ">
-															<input type="text" class="form-control "  value="<?php echo(isset($_POST['price_per_person'.$i]) && $_POST['price_per_person'.$i]!='' ? $_POST['price_per_person'.$i] : (isset($offer_price_data[$arr_index]) && $offer_price_data[$arr_index]['price_per_person']!='' ? $offer_price_data[$arr_index]['price_per_person'] : ""));?>" name="price_per_person<?php echo $i;?>" id="price_per_person<?php echo $i;?>" placeholder="Price / Person"/>
+															<input type="text" class="form-control validate[optional, custom[number]]"  value="<?php echo(isset($_POST['price_per_person'.$i]) && $_POST['price_per_person'.$i]!='' ? $_POST['price_per_person'.$i] : (isset($offer_price_data[$arr_index]) && $offer_price_data[$arr_index]['price_per_person']!='' ? $offer_price_data[$arr_index]['price_per_person'] : ""));?>" name="price_per_person<?php echo $i;?>" id="price_per_person<?php echo $i;?>" placeholder="Price / Person"/>
 														</td>
 													</tr>
 												<?php
@@ -535,7 +535,7 @@
 															endif;
 															?>
 															<input type="hidden" value="<?= $agent_val['id'];?>" name="agent_id_arr[]" tabindex = "1" />
-															<input type="text" class="form-control"  value="<?php echo($flag_agent==true ? $agent_markup_val : "");?>" name="agent_markup[]" placeholder="Markup in %" tabindex = "1" />
+															<input type="text" class="form-control validate[optional, custom[number]]"  value="<?php echo($flag_agent==true ? $agent_markup_val : "");?>" name="agent_markup[]" placeholder="Markup in %" tabindex = "1" />
 														</td>
 													</tr>
 												<?php

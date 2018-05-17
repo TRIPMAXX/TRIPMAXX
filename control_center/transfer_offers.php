@@ -115,7 +115,7 @@
 		header("location:transfers");
 		exit;
 	endif;
-	$$ajax_transfer_id=base64_decode($_GET['transfer_id']);
+	$ajax_transfer_id=base64_decode($_GET['transfer_id']);
 ?>
 <!DOCTYPE html>
 <html>

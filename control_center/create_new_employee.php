@@ -82,16 +82,16 @@ if(isset($_POST['btn_submit'])) {
 								<div class="box-body">
 									<div class="form-group col-md-6">
 										<label for="first_name"><font color="#FF0000">*</font>First Name</label>
-										<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['first_name']) && $_POST['first_name']!='' ? $_POST['first_name'] : "");?>" name="first_name" id="first_name" placeholder="First Name"  tabindex = "1" />
+										<input type="text" class="form-control validate[required, custom[onlyLetterSp]]"  value="<?php echo(isset($_POST['first_name']) && $_POST['first_name']!='' ? $_POST['first_name'] : "");?>" name="first_name" id="first_name" placeholder="First Name"  tabindex = "1" />
 									</div>
 									<div class="form-group col-md-6">
 										<label for="last_name"><font color="#FF0000">*</font>Last Name</label>
-										<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['last_name']) && $_POST['last_name']!='' ? $_POST['last_name'] : "");?>" name="last_name" id="last_name" placeholder="Last Name"  tabindex = "2" />
+										<input type="text" class="form-control validate[required, custom[onlyLetterSp]]"  value="<?php echo(isset($_POST['last_name']) && $_POST['last_name']!='' ? $_POST['last_name'] : "");?>" name="last_name" id="last_name" placeholder="Last Name"  tabindex = "2" />
 									</div>
 									<div class="clearfix"></div>
 									<div class="form-group col-md-6">
 										<label for="email_address"><font color="#FF0000">*</font>Email</label>
-										<input type="text" class="form-control validate[required], custom[email]"  value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : "");?>" name="email_address" id="email_address" placeholder="Email Address" tabindex = "3" />
+										<input type="text" class="form-control validate[required, custom[email]], custom[email]"  value="<?php echo(isset($_POST['email_address']) && $_POST['email_address']!='' ? $_POST['email_address'] : "");?>" name="email_address" id="email_address" placeholder="Email Address" tabindex = "3" />
 									</div>
 									<div class="form-group col-md-6">
 										<label for="username"><font color="#FF0000">*</font>Username</label>

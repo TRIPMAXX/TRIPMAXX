@@ -390,7 +390,7 @@ endif;
 									<div class="box-body">
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Room Type<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['room_type']) && $_POST['room_type']!='' ? $_POST['room_type'] : (isset($room_data['room_type']) && $room_data['room_type']!='' ? $room_data['room_type'] : ""));?>" name="room_type" id="room_type" placeholder="Room Type" tabindex = "1" />
+											<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['room_type']) && $_POST['room_type']!='' ? $_POST['room_type'] : (isset($room_data['room_type']) && $room_data['room_type']!='' ? $room_data['room_type'] : ""));?>" name="room_type" id="room_type" placeholder="Room Type" tabindex = "1" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Room Images</label>
@@ -422,7 +422,7 @@ endif;
 										?>
 										<div class="form-group col-md-12">
 											<label for="inputName" class="control-label">Room Description<font color="#FF0000">*</font></label>
-											<textarea class="form-control ckeditor validate[required]" name="room_description" id="room_description" placeholder="Room Description" tabindex = "3"><?php echo(isset($_POST['room_description']) && $_POST['room_description']!='' ? $_POST['room_description'] : (isset($room_data['room_description']) && $room_data['room_description']!='' ? $room_data['room_description'] : ""));?></textarea>
+											<textarea class="form-control ckeditor validate[required, custom[onlyLetterNumber]]" name="room_description" id="room_description" placeholder="Room Description" tabindex = "3"><?php echo(isset($_POST['room_description']) && $_POST['room_description']!='' ? $_POST['room_description'] : (isset($room_data['room_description']) && $room_data['room_description']!='' ? $room_data['room_description'] : ""));?></textarea>
 										</div>
 										<div class="form-group col-md-12">
 											<label for="inputName" class="control-label">Available Facilities<font color="#FF0000">*</font></label>
@@ -444,11 +444,11 @@ endif;
 										</div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Default Price<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['price']) && $_POST['price']!='' ? $_POST['price'] : (isset($room_data['price']) && $room_data['price']!='' ? $room_data['price'] : ""));?>" name="price" id="price" placeholder="Default Price" tabindex = "4" />
+											<input type="text" class="form-control validate[required, custom[number]]"  value="<?php echo(isset($_POST['price']) && $_POST['price']!='' ? $_POST['price'] : (isset($room_data['price']) && $room_data['price']!='' ? $room_data['price'] : ""));?>" name="price" id="price" placeholder="Default Price" tabindex = "4" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Default Number Of Rooms<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['number_of_rooms']) && $_POST['number_of_rooms']!='' ? $_POST['number_of_rooms'] : (isset($room_data['number_of_rooms']) && $room_data['number_of_rooms']!='' ? $room_data['number_of_rooms'] : ""));?>" name="number_of_rooms" id="number_of_rooms" placeholder="Default Number Of Rooms" tabindex = "5" />
+											<input type="text" class="form-control validate[required, custom[integer]]"  value="<?php echo(isset($_POST['number_of_rooms']) && $_POST['number_of_rooms']!='' ? $_POST['number_of_rooms'] : (isset($room_data['number_of_rooms']) && $room_data['number_of_rooms']!='' ? $room_data['number_of_rooms'] : ""));?>" name="number_of_rooms" id="number_of_rooms" placeholder="Default Number Of Rooms" tabindex = "5" />
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
@@ -515,7 +515,7 @@ endif;
 															<input type="text" class="form-control datepicker"  value="<?php echo(isset($_POST['end_date'.$i]) && $_POST['end_date'.$i]!='' ? $_POST['end_date'.$i] : (isset($room_price_data[$arr_index]) && $room_price_data[$arr_index]['end_date']!='' ? tools::module_date_format($room_price_data[$arr_index]['end_date']) : ""));?>" name="end_date<?php echo $i;?>" id="end_date<?php echo $i;?>" placeholder="End Date" readonly />
 														</td>
 														<td class=" ">
-															<input type="text" class="form-control"  value="<?php echo(isset($_POST['price_per_night'.$i]) && $_POST['price_per_night'.$i]!='' ? $_POST['price_per_night'.$i] : (isset($room_price_data[$arr_index]) && $room_price_data[$arr_index]['price_per_night']!='' ? $room_price_data[$arr_index]['price_per_night'] : ""));?>" name="price_per_night<?php echo $i;?>" id="price_per_night<?php echo $i;?>" placeholder="Room Price  / Night"/>
+															<input type="text" class="form-control validate[required, custom[number]]"  value="<?php echo(isset($_POST['price_per_night'.$i]) && $_POST['price_per_night'.$i]!='' ? $_POST['price_per_night'.$i] : (isset($room_price_data[$arr_index]) && $room_price_data[$arr_index]['price_per_night']!='' ? $room_price_data[$arr_index]['price_per_night'] : ""));?>" name="price_per_night<?php echo $i;?>" id="price_per_night<?php echo $i;?>" placeholder="Room Price  / Night"/>
 														</td>
 													</tr>
 												<?php
@@ -589,7 +589,7 @@ endif;
 															endif;
 															?>
 															<input type="hidden" value="<?= $agent_val['id'];?>" name="agent_id_arr[]" tabindex = "1" />
-															<input type="text" class="form-control"  value="<?php echo($flag_agent==true ? $agent_markup_val : "");?>" name="agent_markup[]" placeholder="Markup in %" tabindex = "1" />
+															<input type="text" class="form-control validate[required, custom[number]]"  value="<?php echo($flag_agent==true ? $agent_markup_val : "");?>" name="agent_markup[]" placeholder="Markup in %" tabindex = "1" />
 														</td>
 													</tr>
 												<?php

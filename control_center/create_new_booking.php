@@ -1065,7 +1065,7 @@
 							markup+='<option value="">Select City</option>';
 						markup+='</select>';
 					markup+='</div>';
-					markup+='<div class="form-group col-md-2"><label for="inputName" class="control-label">For No Of Nights<font color="#FF0000">*</font></label><input type="text" class="form-control number_of_night validate[required]"  value="" name="number_of_night['+new_row_key+']" id="number_of_night'+new_row_key+'" placeholder="Number Of Nights" tabindex = "4" onblur="check_night()"/></div>';
+					markup+='<div class="form-group col-md-2"><label for="inputName" class="control-label">For No Of Nights<font color="#FF0000">*</font></label><input type="text" class="form-control number_of_night validate[required, custom[integer]]"  value="" name="number_of_night['+new_row_key+']" id="number_of_night'+new_row_key+'" placeholder="Number Of Nights" tabindex = "4" onblur="check_night()"/></div>';
 					markup+='<div class="form-group col-md-3"><label for="inputName" class="control-label">Hotel Ratings<font color="#FF0000">*</font></label><br/><input type="checkbox" name="all_checkbox" class="all_checkbox" onclick="check_all_rating($(this))">&nbsp;All&nbsp;&nbsp;<input type="checkbox" value="1" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;1&nbsp;&nbsp;<input type="checkbox" value="2" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;2&nbsp;&nbsp;<input type="checkbox"  value="3" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;3&nbsp;&nbsp;<input type="checkbox" value="4" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;4&nbsp;&nbsp;<input type="checkbox" value="5" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;5</div>';
 					markup+='<div class="form-group col-md-3" style="">';
 						markup+='<label for="inputName" class="control-label">Hotels</label>';
@@ -1288,7 +1288,7 @@
 																</div>
 																<div class="form-group col-md-2">
 																	<label for="inputName" class="control-label">For No Of Nights<font color="#FF0000">*</font></label>
-																	<input type="text" class="form-control number_of_night validate[required]"  value="<?php echo(isset($_POST['number_of_night'][$post_country_key]) && $_POST['number_of_night'][$post_country_key]!='' ? $_POST['number_of_night'][$post_country_key] : "");?>" name="number_of_night[<?php echo $post_country_key;?>]" id="number_of_night<?php echo $post_country_key;?>" placeholder="Number Of Nights" tabindex = "4" onblur="check_night()"/>
+																	<input type="text" class="form-control number_of_night validate[required, custom[integer]]"  value="<?php echo(isset($_POST['number_of_night'][$post_country_key]) && $_POST['number_of_night'][$post_country_key]!='' ? $_POST['number_of_night'][$post_country_key] : "");?>" name="number_of_night[<?php echo $post_country_key;?>]" id="number_of_night<?php echo $post_country_key;?>" placeholder="Number Of Nights" tabindex = "4" onblur="check_night()"/>
 																</div>
 																<div class="form-group col-md-3">
 																	<label for="inputName" class="control-label">Hotel Ratings<font color="#FF0000">*</font></label>
@@ -1608,7 +1608,7 @@
 																<label for="inputName" class="control-label">Quotation Name<font color="#FF0000">*</font></label>
 																<br/>
 																<div style = "float:left;">
-																	<input type="text" class="form-control validate[required]"  value="" name="quotation_name" id="quotation_name" placeholder="Quotation Name" tabindex = "1"  />
+																	<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="" name="quotation_name" id="quotation_name" placeholder="Quotation Name" tabindex = "1"  />
 																</div>
 																<div style = "float:left;">
 																	&nbsp;<button type="submit" class="btn btn-primary quotation_name_save_btn">Save</button>
