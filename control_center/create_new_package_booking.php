@@ -1,7 +1,7 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
-	$white_list_array = array('package_id', 'booking_date', 'booking_type', 'dmc_id', 'agent_id', 'status', 'token', 'btn_submit');
+	$white_list_array = array('package_id', 'booking_date', 'booking_type', 'dmc_id', 'agent_id', 'status', 'booking_pax', 'booking_price', 'token', 'btn_submit');
 	$verify_token = "create_new_package_booking";
 	if(isset($_GET['package_id']) && $_GET['package_id']!=""):
 		$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.PACKAGE_API_PATH."authorized.php"));
@@ -231,6 +231,9 @@
 		header("location:packages");
 		exit;
 	endif;
+	
+	$package_currency = tools::find("first", TM_CURRENCIES, '*', "WHERE id=:id ", array(":id"=>$package_data['currency']));
+	//print_r($package_currency['currency_code']);
 ?>
 <!DOCTYPE html>
 <html>
@@ -256,6 +259,16 @@
 			document.getElementById('agent_name').disabled = true;
 			$("#agent_name").val("");
 		}
+	}
+	function manage_booking_pax($this) {		
+		var price = $this.find(':selected').attr('data-value');
+		if(price != "") {
+			$("#booking_price").val(price);
+		}
+		/*else
+		{
+			$("#booking_price").val("");
+		}*/
 	}
 	//-->
 	</script>
@@ -295,20 +308,47 @@
 														<tr role="row">
 															<th>Package Title</th>
 															<th>Country</th>
-															<th>City</th>
 															<th>No Of Days</th>
-															<th>Package Price</th>
-															<th>Discounted Price</th>
+															<th>Pax</th>
+															<th>Price (<?=$package_currency['currency_code']?>)</th>
 														</tr>
 													</thead>
 													<tbody aria-relevant="all" aria-live="polite" role="alert">
 														<tr class="odd">
 															<td class=" "><?= $package_data['package_title'];?></td>
 															<td class=" "><?= $package_data['co_name'];?></td>
-															<td class=" "><?= $package_data['ci_name'];?></td>
 															<td class=" "><?= $package_data['no_of_days'];?></td>
-															<td class=" "><?= $package_data['package_price'];?></td>
-															<td class=" "><?= $package_data['discounted_price'];?></td>
+															<td class=" ">
+																<table class="table table-bordered table-striped dataTable">
+																	<?php $package_data_pax=explode(',',$package_data['pax']);
+																	if(!empty($package_data_pax)):
+																		foreach($package_data_pax as $pax_key =>$pax_value):
+																	?>
+																	<tr class="odd">
+																		<td><?=$pax_value?></td>
+																	</tr>
+																	<?php 
+																		endforeach;
+																	endif;
+																	?>
+																</table>
+															</td>
+															<td class=" ">
+															
+																<table class="table table-bordered table-striped dataTable">
+																	<?php $package_data_price=explode(',',$package_data['price']);
+																	if(!empty($package_data_price)):
+																		foreach($package_data_price as $price_key =>$price_value):
+																	?>
+																	<tr class="odd">
+																		<td><?=$price_value?></td>
+																	</tr>
+																	<?php 
+																		endforeach;
+																	endif;
+																	?>
+																</table>
+															</td>
 														</tr>
 													</tbody>
 												</table>
@@ -356,14 +396,14 @@
 							<div class="box box-primary">
 								<div class="col-md-12 row">
 									<div class="box-body">
-										<div class="form-group col-md-6">
+										<div class="form-group col-md-4">
 											<label for="inputName" class="control-label">Select Booking Type<font color="#FF0000">*</font></label>
 											<select name = "booking_type" id = "booking_type" class="form-control validate[required]"  tabindex = "1" onchange = "manage_booking_type(this.value);">
 												<option value = "personal" <?php echo(isset($_POST['booking_type']) && $_POST['booking_type']=="personal" ? "selected='selected'" : "");?>>Personal Booking</option>
 												<option value = "agent" <?php echo(isset($_POST['booking_type']) && $_POST['booking_type']=="agent" ? "selected='selected'" :"");?>>Agent Booking</option>
 											</select>
 										</div>
-										<div class="form-group col-md-6">
+										<div class="form-group col-md-4">
 											<label for="inputName" class="control-label">Select Agent<font color="#FF0000">*</font></label>
 											<select name = "agent_id" id = "agent_name" class="form-control validate[required]"  tabindex = "2" <?php echo(isset($_POST['agent_id']) && $_POST['agent_id']!="" ? '' : 'disabled');?>>
 												<option value = "">Select Agent</option>
@@ -376,6 +416,24 @@
 												endforeach;
 											endif;
 											?>
+											</select>
+										</div>
+										<div class="form-group col-md-4">
+											<label for="inputName" class="control-label">Select Pax/Price<font color="#FF0000">*</font></label>
+											<input type="hidden" name="booking_price" id="booking_price">
+											<select name = "booking_pax" id = "booking_pax" class="form-control validate[required]"  tabindex = "1" onchange = "manage_booking_pax($(this));">
+												<option data-value="" value = "" selected='selected'>Select Pax/Price</option>
+												<?php 
+												$package_data_pax=explode(',',$package_data['pax']);
+												$package_data_price=explode(',',$package_data['price']);
+												if(!empty($package_data_pax)):
+													foreach($package_data_pax as $pax_key =>$pax_value):
+												?>
+												<option data-value="<?=$package_data_price[$pax_key]?>" value = "<?=$pax_value?>" <?php echo(isset($_POST['booking_pax']) && $_POST['booking_pax']==$pax_value ? "selected='selected'" : "");?>><?="Pax- ".$pax_value.", Price- ".$package_data_price[$pax_key]." ( ".$package_currency['currency_code']." )"?></option>
+												<?php 
+													endforeach;
+												endif;
+												?>
 											</select>
 										</div>
 										<div class="clearfix"></div>

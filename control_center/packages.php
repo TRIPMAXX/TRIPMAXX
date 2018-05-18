@@ -158,11 +158,10 @@
 													<th>#</th>
 													<th>Package Image</th>
 													<th>Country</th>
-													<th>City</th>
 													<th>Package Title</th>
 													<th>No Of Days</th>
-													<th>Package Price</th>
-													<th>Discounted Price</th>
+													<th>Pax</th>
+													<th>Price</th>
 													<th>Status</th>
 													<th>Action</th>
 												</tr>
@@ -191,11 +190,10 @@
 													?>
 													</td>
 													<td class=" "><?= $package_val['co_name'];?></td>
-													<td class=" "><?= $package_val['ci_name'];?></td>
 													<td class=" "><?= $package_val['package_title'];?></td>
 													<td class=" "><?= $package_val['no_of_days'];?></td>
-													<td class=" "><?= $package_val['package_price'];?></td>
-													<td class=" "><?= $package_val['discounted_price'];?></td>
+													<td class=" "><?= $package_val['pax'];?></td>
+													<td class=" "><?= $package_val['price'];?></td>
 													<td class=" ">
 														<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $package_val['status']==1 ? "btn-success" : "btn-danger";?>" onclick="change_status(<?= $package_val['id'];?>, $(this))"><?= $package_val['status']==1 ? "Active" : "Inactive";?></a>
 													</td>

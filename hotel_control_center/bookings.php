@@ -48,9 +48,55 @@
 	<!-- JAVASCRIPT CODE -->
 	<script type="text/javascript">
 	<!--
-	$(document).ready(function() {
+	/*$(document).ready(function() {
 		$('#example').DataTable();
-	} );
+	} );*/
+	/* Custom filtering function which will search data in column four between two values */
+$.fn.dataTable.ext.search.push(
+    function( settings, data, dataIndex ) {
+        var min = parseInt( $('#min').val(), 10 );
+        var max = parseInt( $('#max').val(), 10 );
+        var age = parseFloat( data[3] ) || 0; // use data for the age column
+ 
+        if ( ( isNaN( min ) && isNaN( max ) ) ||
+             ( isNaN( min ) && age <= max ) ||
+             ( min <= age   && isNaN( max ) ) ||
+             ( min <= age   && age <= max ) )
+        {
+            return true;
+        }
+        return false;
+    }
+);
+ 
+$(document).ready(function() {
+    var table = $('#example').DataTable();
+     
+    // Event listener to the two range filtering inputs to redraw on input
+    $('#min, #max').keyup( function() {
+        table.draw();
+    } );
+} );
+ $(function() {	   
+	$("#min").datepicker({
+		dateFormat: 'dd/mm/yy',
+		//minDate:0,
+		onSelect:function(selectedDate){
+			$("#max").datepicker( "option", "minDate", selectedDate);
+			var table = $(#example).DataTable();
+			table.search( $(this).val() ).draw();}
+		}
+	});
+	$("#max").datepicker({
+		dateFormat: 'dd/mm/yy',
+		//minDate:0,
+		onSelect:function(selectedDate){
+			$("#min").datepicker( "option", "maxDate", selectedDate);
+			var table = $(#example).DataTable();
+			table.search( $(this).val() ).draw();}
+		}
+	});
+ });
 	</script>
 </head>
 <body class="skin-purple">
@@ -80,6 +126,16 @@
 							<div class="box-body">
 								<div id="example1_wrapper" class="dataTables_wrapper form-inline" role="grid">
 									<div id="no-more-tables">
+										<div id="" class="box-body">
+											<div class="col-md-2"></div>
+											<div class="form-group col-md-2">
+												<input id="min" name="min" type="text" class="form-control" placeholder="Start Date" style="width: 100%;">
+											</div>
+											<div class="form-group col-md-2">
+												<input id="max" name="max" type="text" class="form-control" placeholder="End Date" style="width: 100%;" >
+											</div>
+											<div class="clearfix"></div>
+										</div>
 										<table aria-describedby="example1_info" class="table table-bordered table-striped dataTable" id="example">
 											<thead>
 												<tr role="row">

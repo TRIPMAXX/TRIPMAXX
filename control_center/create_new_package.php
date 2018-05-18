@@ -1,7 +1,7 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
-	$white_list_array = array('country', 'state', 'city', 'currency', 'package_title', 'no_of_days', 'description', 'package_price', 'discounted_price', 'package_images', 'status', 'token', 'btn_submit');
+	$white_list_array = array('country', 'currency', 'package_title', 'no_of_days', 'description', 'pax', 'price', 'package_images', 'status', 'token', 'btn_submit');
 	$verify_token = "create_new_package";
 	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.PACKAGE_API_PATH."authorized.php"));
 	if(isset($autentication_data->status)):
@@ -32,7 +32,7 @@
 			//	$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
 			endif;		
 			if(isset($_POST['btn_submit'])) {
-				//print_r($_POST);
+				//print_r($_POST);exit;
 				if(tools::verify_token($white_list_array, $_POST, $verify_token)) {
 					$_POST['uploaded_files']=array();
 					if(isset($_FILES["package_images"])){
@@ -84,6 +84,7 @@
 	endif;
 	$currency_list = tools::find("all", TM_CURRENCIES, '*', "WHERE status=:status ORDER BY serial_number ASC", array(":status"=>1));
 	//print_r($country_data);
+	$currency_val="";
 ?>
 <!DOCTYPE html>
 <html>
@@ -95,100 +96,49 @@
 	<!--
 	$(function(){
 		$("#form_create_package").validationEngine();
-		$("#country").change(function(){
-			fetch_state($(this).val());
-		});
-		$("#state").change(function(){
-			fetch_city($(this).val());
-		});
-		<?php 
-		if(isset($_POST['country']) && $_POST['country']!="")
-		{
-		?>
-			fetch_state(<?php echo $_POST['country'];?>);
-		<?php
-		}
-		?>
-		<?php 
-		if(isset($_POST['state']) && $_POST['state']!="")
-		{
-		?>
-			fetch_city(<?php echo $_POST['state'];?>);
-		<?php
-		}
-		?>
 	});
-	function fetch_state(country_id)
-	{
-		$.ajax({
-			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_state_fetch_for_package.php";?>",
-			type:"post",
-			data:{
-				country_id:country_id
-			},
-			beforeSend:function(){
-				$("#city").html('<option value = "">Select City</option>');
-				$("#state").html('<option value = "">Select State / Region</option>');
-			},
-			dataType:"json",
-			success:function(response){
-				//console.log(response);
-				if(response.status=="success")
-				{
-					if(response.results.length > 0)
-					{
-						$.each(response.results, function(state_key, state_val){
-							$("#state").append('<option value = "'+state_val['id']+'">'+state_val['name']+'</option>');
-						});
-					}
-				}
-				else
-				{
-					//showError(response.msg);
-				}
-			},
-			error:function(){
-				//showError("We are having some problem. Please try later.");
-			}
-		}).done(function(){
-			$("#state").val('<?php echo(isset($_POST['state']) && $_POST['state']!="" ? $_POST['state'] : "");?>');
-		});;
+	
+	function manage_currency_val($this) {
+		var val = $this.find(':selected').attr('data-value');
+		$(".currency_code").html("("+val+")");
+		$(".add-row").attr("data-attr_currency", "("+val+")");
 	}
-	function fetch_city(state_id)
-	{
-		$.ajax({
-			url:"<?= DOMAIN_NAME_PATH_ADMIN."ajax_city_fetch_for_package.php";?>",
-			type:"post",
-			data:{
-				state_id:state_id
-			},
-			beforeSend:function(){
-				$("#city").html('<option value = "">Select City</option>');
-			},
-			dataType:"json",
-			success:function(response){
-				//console.log(response);
-				if(response.status=="success")
+		$(document).ready(function(){
+			$(".add-row").click(function(){
+				var new_row_key=$(this).attr("data-attr_key");
+				var currency_code=$(this).attr("data-attr_currency");
+				$(this).attr("data-attr_key", eval(new_row_key)+1);
+				var markup = '';
+				markup+='<div class="appended_row">';
+					markup+='<div class="form-group col-md-6">';
+						markup+='<input type="checkbox" name="record"/>&nbsp;&nbsp;<label for="pax" class="control-label">Pax<font color="#FF0000">*</font></label>';
+						markup+='<input type="text" class="form-control  validate[required]"  value="" name="pax['+new_row_key+']" id="pax'+new_row_key+'" placeholder="Pax" tabindex = "7" />';
+					markup+='</div>';
+					markup+='<div class="form-group col-md-6">';
+						markup+='<label for="price" class="control-label">Price <span class="currency_code">'+currency_code+'</span><font color="#FF0000">*</font></label>';
+						markup+='<input type="text" class="form-control validate[required]"  value="" name="price['+new_row_key+']" id="price'+new_row_key+'" placeholder="Price" tabindex = "8" />';
+					markup+='</div>';
+					markup+='<div class="clearfix"></div>';
+				markup+='</div>';
+				//alert(new_row_key);
+				$("#sample").append(markup);
+			});
+			
+			// Find and remove selected table rows
+			$(".delete-row").click(function(){
+				if($("#sample").find('input[name="record"]:checked').length > 0)
 				{
-					if(response.results.length > 0)
-					{
-						$.each(response.results, function(city_key, city_val){
-							$("#city").append('<option value = "'+city_val['id']+'">'+city_val['name']+'</option>');
-						});
-					}
+					$("#sample").find('input[name="record"]:checked').each(function(){
+						$(this).parents("div.appended_row").remove();
+					});
 				}
 				else
 				{
-					//showError(response.msg);
+					showError("Please select checkbox to delete row.");
 				}
-			},
-			error:function(){
-				//showError("We are having some problem. Please try later.");
-			}
-		}).done(function(){
-			$("#city").val('<?php echo(isset($_POST['city']) && $_POST['city']!="" ? $_POST['city'] : "");?>');
+				match_night();
+			});
 		});
-	}
 	//-->
 	</script>
 	<script type="text/javascript">
@@ -243,37 +193,25 @@
 												?>
 											</select>
 										</div>
-										<div class="form-group col-md-3">
-											<label for="state" class="control-label">State / Region<font color="#FF0000">*</font></label>
-											<select name = "state" id="state" class="form-control form_input1 select_bg validate[required] " tabindex = "2">
-												<option value = "">Select State / Region</option>
-											</select>
-										</div>
-										<div class="form-group col-md-3">
-											<label for="city" class="control-label">City<font color="#FF0000">*</font></label>
-											<select name = "city" id="city" class="form-control form_input1 select_bg validate[required] " tabindex = "3">
-												<option value = "">Select City</option>
-											</select>
-										</div>
-										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="package_title" class="control-label">Package Title<font color="#FF0000">*</font></label>
 											<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['package_title']) && $_POST['package_title']!='' ? $_POST['package_title'] : "");?>" name="package_title" id="package_title" placeholder="Package Title" tabindex = "4" />
 										</div>
+										<div class="clearfix"></div>
 
-										<div class="form-group col-md-3">
+										<div class="form-group col-md-6">
 											<label for="tour_type" class="control-label">No Of Days<font color="#FF0000">*</font></label>
 											<input type="text" class="form-control validate[required, custom[onlyNumberSp]]"  value="<?php echo(isset($_POST['no_of_days']) && $_POST['no_of_days']!='' ? $_POST['no_of_days'] : "");?>" name="no_of_days" id="no_of_days" placeholder="No Of Days" tabindex = "5" />
 										</div>
-										<div class="form-group col-md-3">
+										<div class="form-group col-md-6">
 											<label for="currency" class="control-label">Currency<font color="#FF0000">*</font></label>
-											<select class="form-control validate[required] " name="currency" id="currency">
-												<option value="">Select</option>
+											<select class="form-control validate[required] " name="currency" id="currency" onchange = "manage_currency_val($(this));">
+												<option value="" data-value="">Select</option>
 											<?php
 											if(!empty($currency_list)):
 												foreach($currency_list as $currency_key=>$currency_val):
 											?>
-												<option value = "<?php echo $currency_val['id'];?>" <?php echo(isset($_POST['currency']) && $_POST['currency']==$currency_val['id'] ? 'selected="selected"' : "");?>><?php echo $currency_val['currency_name']." (".$currency_val['currency_code'].")";?></option>
+												<option data-value="<?=$currency_val['currency_code']?>" value = "<?php echo $currency_val['id'];?>" <?php echo(isset($_POST['currency']) && $_POST['currency']==$currency_val['id'] ? 'selected="selected"' : "");?>><?php echo $currency_val['currency_name']." (".$currency_val['currency_code'].")";?></option>
 											<?php
 												endforeach;
 											endif;
@@ -285,15 +223,45 @@
 											<label for="description" class="control-label">Description</label>
 											<textarea class="form-control ckeditor" name="description" id="description" placeholder="Description" tabindex = "6"><?php echo(isset($_POST['description']) && $_POST['description']!='' ? $_POST['description'] : "");?></textarea>
 										</div>
+									</div>
+									<div class="box-body" id="sample">
+										<?php if(!empty($_POST['pax'])):
+											foreach($_POST['pax'] as $pax_key => $pax_val):
+										?>
 										<div class="form-group col-md-6">
-											<label for="package_price" class="control-label">Package Price<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required, custom[number]]"  value="<?php echo(isset($_POST['package_price']) && $_POST['package_price']!='' ? $_POST['package_price'] : "");?>" name="package_price" id="package_price" placeholder="Package Price" tabindex = "7" />
+											<label for="pax" class="control-label">Pax<font color="#FF0000">*</font></label>
+											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['pax'][$pax_key]) && $_POST['pax'][$pax_key]!='' ? $_POST['pax'][$pax_key] : "");?>" name="pax[<?=$pax_key?>]" id="pax<?=$pax_key?>" placeholder="Pax" tabindex = "7" />
 										</div>
 										<div class="form-group col-md-6">
-											<label for="discounted_price" class="control-label">Discounted Price</label>
-											<input type="text" class="form-control validate[optional, custom[number]]"  value="<?php echo(isset($_POST['discounted_price']) && $_POST['discounted_price']!='' ? $_POST['discounted_price'] : "");?>" name="discounted_price" id="discounted_price" placeholder="Discounted Price" tabindex = "8" />
+											<label for="price" class="control-label">Price <span class="currency_code"></span><font color="#FF0000">*</font></label>
+											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['price'][$pax_key]) && $_POST['price'][$pax_key]!='' ? $_POST['price'][$pax_key] : "");?>" name="price[<?=$pax_key?>]" id="price<?=$pax_key?>" placeholder="Price" tabindex = "8" />
 										</div>
 										<div class="clearfix"></div>
+										<?php 
+											endforeach;
+										else:
+										$pax_key=0;
+										?>
+										<div class="form-group col-md-6">
+											<label for="pax" class="control-label">Pax<font color="#FF0000">*</font></label>
+											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['pax'][$pax_key]) && $_POST['pax'][$pax_key]!='' ? $_POST['pax'][$pax_key] : "");?>" name="pax[<?=$pax_key?>]" id="pax<?=$pax_key?>" placeholder="Pax" tabindex = "7" />
+										</div>
+										<div class="form-group col-md-6">
+											<label for="price" class="control-label">Price <span class="currency_code"></span><font color="#FF0000">*</font></label>
+											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['price'][$pax_key]) && $_POST['price'][$pax_key]!='' ? $_POST['price'][$pax_key] : "");?>" name="price[<?=$pax_key?>]" id="price<?=$pax_key?>" placeholder="Price" tabindex = "8" />
+										</div>
+										<div class="clearfix"></div>
+										<?php 
+										endif;
+										$new_index=$pax_key+1;
+										?>
+									</div>
+									<div class="box-body">
+										<div class="form-group col-md-12">
+											<a href = "javascript:void(0);" class="add-row" data-attr_key="<?=$new_index?>"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>plus-icon.png" border = "0" alt = "" /></a>&nbsp;&nbsp;<b>ADD ANOTHER PRICE</b>&nbsp;&nbsp;<a href = "javascript:void(0);" class="delete-row"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>minus-icon.png" border = "0" alt = "" /></a>
+										</div>
+									</div>
+									<div class="box-body">
 										<div class="form-group col-md-6">
 											<label for="package_images" class="control-label">Package Images<font color="#FF0000">*</font></label>
 											<input type="file" class="form-control validate[required]"  value="" name="package_images[]" id="package_images" placeholder="Package Images" tabindex = "9" multiple/>
