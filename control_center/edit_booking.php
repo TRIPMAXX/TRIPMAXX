@@ -176,6 +176,8 @@
 								$("#agent_name").attr("disabled", true);
 							if(response.status=="success")
 							{
+								$(".nav-tabs li:eq(0)").addClass("completed_booking_step");
+								$(".nav-tabs li:gt(0)").removeClass("completed_booking_step");
 								var page=1;
 								var type=1;
 								fetch_step2_rcd(page, type);
@@ -288,10 +290,12 @@
 							{
 								var page=1;
 								var type=1;
-								fetch_step3_rcd(page, type);
+								fetch_step4_rcd(page, type);
 								var $active = $('.wizard .nav-tabs li.active');
 								$active.next().removeClass('disabled');
 								$active.next().find('a[data-toggle="tab"]').click();
+								$(".nav-tabs li:eq(1)").addClass("completed_booking_step");
+								$(".nav-tabs li:gt(1)").removeClass("completed_booking_step").removeClass("uncompleted_booking_step");
 							}
 							else
 							{
@@ -307,8 +311,12 @@
 			});
 			$(".save_step3_data").click(function(){
 				var tour_offer_arr=[];
+				var tour_offer_city_arr=[];
 				$('input[class="selected_offer"]:checked').each(function(){
 					tour_offer_arr.push($(this).val());
+					var city_id=$(this).val().split("-");
+					if($.inArray(city_id[0], tour_offer_city_arr) < 0)
+						tour_offer_city_arr.push(city_id[0]);
 				});
 				$.ajax({
 					url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_booking_step3_execute";?>',
@@ -327,10 +335,18 @@
 						{
 							var page=1;
 							var type=1;
-							fetch_step4_rcd(page, type);
+							fetch_step5_data();
 							var $active = $('.wizard .nav-tabs li.active');
 							$active.next().removeClass('disabled');
 							$active.next().find('a[data-toggle="tab"]').click();
+							if($('.each_tour_tab_content').length == tour_offer_city_arr.length)
+							{
+								$(".nav-tabs li:eq(3)").addClass("completed_booking_step").removeClass("uncompleted_booking_step");
+							}
+							else
+							{
+								$(".nav-tabs li:eq(3)").addClass("uncompleted_booking_step").removeClass("completed_booking_step");
+							}
 						}
 						else
 						{
@@ -345,8 +361,12 @@
 			});
 			$(".save_step4_data").click(function(){
 				var transfer_offer_arr=[];
+				var transfer_offer_city_arr=[];
 				$('input[class="selected_transfer"]:checked').each(function(){
 					transfer_offer_arr.push($(this).val());
+					var city_id=$(this).val().split("-");
+					if($.inArray(city_id[0], transfer_offer_city_arr) < 0)
+						transfer_offer_city_arr.push(city_id[0]);
 				});
 				$.ajax({
 					url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_booking_step4_execute";?>',
@@ -363,10 +383,21 @@
 						//console.log(JSON.stringify(response, null, 4));
 						if(response.status=="success")
 						{
+							var page=1;
+							var type=1;
 							var $active = $('.wizard .nav-tabs li.active');
 							$active.next().removeClass('disabled');
 							$active.next().find('a[data-toggle="tab"]').click();
-							fetch_step5_data();
+							fetch_step3_rcd(page, type);
+							$(".nav-tabs li:gt(2)").removeClass("completed_booking_step").removeClass("uncompleted_booking_step");
+							if($('.each_transfer_tab_content').length == transfer_offer_city_arr.length)
+							{
+								$(".nav-tabs li:eq(2)").addClass("completed_booking_step").removeClass("uncompleted_booking_step");
+							}
+							else
+							{
+								$(".nav-tabs li:eq(2)").addClass("uncompleted_booking_step").removeClass("completed_booking_step");
+							}
 						}
 						else
 						{
@@ -1171,6 +1202,57 @@
 				cur.parent("div").find('input[type="checkbox"]').prop("checked", false);
 			}
 		}
+		function select_radio_row(cur)
+		{
+			if(cur.hasClass("radio_button_row_background"))
+			{
+				cur.removeClass("radio_button_row_background");
+				cur.find('input[type="radio"]').prop("checked", false);
+				showSuccess("Room deselected successfully.");
+			}
+			else
+			{
+				cur.parents(".each_hotel_tab_content").find(".radio_button_row").removeClass("radio_button_row_background");
+				cur.parents(".each_hotel_tab_content").find(".radio_button_row").find('input[type="radio"]').removeAttr("checked");
+				cur.addClass("radio_button_row_background");
+				cur.find('input[type="radio"]').prop("checked", true);
+				showSuccess("Room selected successfully.");
+			}
+		}
+		function select_transfer_radio_row(cur)
+		{
+			if(cur.hasClass("radio_button_row_background"))
+			{
+				cur.removeClass("radio_button_row_background");
+				cur.find('input[type="radio"]').prop("checked", false);
+				showSuccess("Transfer deselected successfully.");
+			}
+			else
+			{
+				cur.parent(".transfer_offer_cls").find(".radio_button_row").removeClass("radio_button_row_background");
+				cur.parent(".transfer_offer_cls").find(".radio_button_row").find('input[type="radio"]').removeAttr("checked");
+				cur.addClass("radio_button_row_background");
+				cur.find('input[type="radio"]').prop("checked", true);
+				showSuccess("Transfer selected successfully.");
+			}
+		}
+		function select_tour_radio_row(cur)
+		{
+			if(cur.hasClass("radio_button_row_background"))
+			{
+				cur.removeClass("radio_button_row_background");
+				cur.find('input[type="radio"]').prop("checked", false);
+				showSuccess("Tour deselected successfully.");
+			}
+			else
+			{
+				cur.parent(".tour_offer_cls").find(".radio_button_row").removeClass("radio_button_row_background");
+				cur.parent(".tour_offer_cls").find(".radio_button_row").find('input[type="radio"]').removeAttr("checked");
+				cur.addClass("radio_button_row_background");
+				cur.find('input[type="radio"]').prop("checked", true);
+				showSuccess("Tour selected successfully.");
+			}
+		}
 	//-->
 	</script>
 	<!-- JAVASCRIPT CODE -->
@@ -1223,7 +1305,7 @@
 											</li>
 
 											<li role="presentation">
-												<a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="Select Transfer">
+												<a href="#step4" data-toggle="tab" aria-controls="step4" role="tab" title="Select Tour">
 												<span class="round-tab">
 													<i class="fa fa-car fa-1x" ></i>
 												</span>
@@ -1231,7 +1313,7 @@
 											</li>
 
 											<li role="presentation">
-												<a href="#step4" data-toggle="tab" aria-controls="step4" role="tab" title="Select Tour">
+												<a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="Select Transfer">
 												<span class="round-tab">
 													<i class="fa fa-road fa-1x" ></i>
 												</span>
@@ -1392,7 +1474,7 @@
 															</div>
 															<div class="form-group col-md-2">
 																<label for="inputName" class="control-label">City<font color="#FF0000">*</font></label>
-																<select class="form-control validate[required]" name="city[<?php echo $destination_key;?>]" id="city<?php echo $destination_key;?>">
+																<select class="form-control validate[required]" name="city[<?php echo $destination_key;?>]" id="city<?php echo $destination_key;?>" onchange="find_hotel_name($(this))">
 																	<option value="">Select City</option>
 																<?php
 																$state_list = tools::find("first", TM_STATES, 'GROUP_CONCAT(id) as state_ids', "WHERE country_id=:country_id ORDER BY name ASC ", array(":country_id"=>$destination_val['country_id']));
@@ -1831,20 +1913,6 @@
 												<li><button type="button" class="btn btn-primary save_step2_data">Save and continue</button></li>
 											</ul>
 										</div>
-										<div class="tab-pane" role="tabpanel" id="step3">
-											<h3>Search Tour</h3>
-											<div class="tour_city_tab_button_div">
-												<!-- Tour City Tab -->
-											</div>
-											<div class="main_tab_content_outer tour_tab_all_data_div">
-												<!-- All tour tab content -->
-											</div>
-											<ul class="list-inline pull-right">
-												<li><button type="button" class="btn btn-warning prev-step">Back To Hotel List</button></li>
-												<li><button type="button" class="btn btn-default save_step3_data">Skip</button></li>
-												<li><button type="button" class="btn btn-primary btn-info-full save_step3_data">Save and continue</button></li>
-											</ul>
-										</div>
 										<div class="tab-pane" role="tabpanel" id="step4">
 											<h3>Search Transfers</h3>
 											<div class="transfer_city_tab_button_div">
@@ -1854,9 +1922,23 @@
 												<!-- All Transfer tab content -->
 											</div>
 											<ul class="list-inline pull-right">
-												<li><button type="button" class="btn btn-warning prev-step">Manage Tour</button></li>
+												<li><button type="button" class="btn btn-warning prev-step">Manage Hotel List</button></li>
 												<li><button type="button" class="btn btn-default save_step4_data">Skip</button></li>
 												<li><button type="button" class="btn btn-primary btn-info-full save_step4_data">Save and continue</button></li>
+											</ul>
+										</div>
+										<div class="tab-pane" role="tabpanel" id="step3">
+											<h3>Search Tour</h3>
+											<div class="tour_city_tab_button_div">
+												<!-- Tour City Tab -->
+											</div>
+											<div class="main_tab_content_outer tour_tab_all_data_div">
+												<!-- All tour tab content -->
+											</div>
+											<ul class="list-inline pull-right">
+												<li><button type="button" class="btn btn-warning prev-step">Back To Transfers</button></li>
+												<li><button type="button" class="btn btn-default save_step3_data">Skip</button></li>
+												<li><button type="button" class="btn btn-primary btn-info-full save_step3_data">Save and continue</button></li>
 											</ul>
 										</div>
 										<div class="tab-pane" role="tabpanel" id="complete">

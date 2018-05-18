@@ -236,7 +236,7 @@
 				$fifth_section_html.='</tbody>';
 			$fifth_section_html.='</table>';
 		$fifth_section_html.='</div>';
-		$data['booking_html']=$first_section_html.$secend_section_html.$third_section_html.$fourth_section_html.$fifth_section_html;
+		$data['booking_html']=$first_section_html.$secend_section_html.$fourth_section_html.$third_section_html.$fifth_section_html;
 		$data['total_price']=$hotel_price+(($tour_price+$transfer_price)*$number_of_adult);
 		$data['status']="success";
 		$data['msg']="Saved to session.";

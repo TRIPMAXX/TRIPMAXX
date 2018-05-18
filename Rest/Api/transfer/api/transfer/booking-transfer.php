@@ -5,7 +5,7 @@
 	$return_data['status']="error";
 	$return_data['msg']="Token is not verified.";
 	$server_data=json_decode(file_get_contents("php://input"), true);
-	//$server_data=json_decode('{"token":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE1MjQyMTY1OTksImp0aSI6ImVcL3NJSjBnQW80WjZ1dHM2dEpNZU40UzRqUVwvOXFQWGZjcUF4ZFJRNXNvdz0iLCJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL3RyaXBtYXh4XC9SZXN0XC9BcGlcL3RvdXJcL2FwaVwvIiwibmJmIjoxNTI0MjE2NTk5LCJleHAiOjE1MjQyMTY2OTksImRhdGEiOnsiZmlsZV9uYW1lIjoiMTUyNDIxNjU5OV8zMTk5OS50eHQifX0.UbAeYxqyBhyRw-bHf5w3qKkoCgzEKQCkcttHATzekLHTI53tFmegaPl_znhemZfcX4gy51V1ajVrCgu9HUg4Og","token_timeout":100,"token_generation_time":1524216599},"data":{"booking_type":"personal","agent_name":"","checkin":"20\/04\/2018","checkout":"23\/04\/2018","country":["101","101"],"city":["5312","5313"],"number_of_night":["2","2"],"hotel_ratings":[["2","3"],["2","3"]],"sel_nationality":"10","country_residance":"4","sel_currency":"1","rooms":"1","adult":["1"],"child":[""],"offset":0,"record_per_page":10,"type":"1","sort_order":"","city_id":"5312","country_id":"101","search_val":"aaaaa"}}', true);
+	//$server_data=json_decode('{"token":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE1MjY2Mjk4MzEsImp0aSI6Ik40cEhHS2FhcGI5bEp5UG1mcThnK3V2cUZncWVqVkhEbUxLWTNuWSs1XC9rPSIsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdFwvdHJpcG1heHhcL1Jlc3RcL0FwaVwvdHJhbnNmZXJcL2FwaVwvIiwibmJmIjoxNTI2NjI5ODMxLCJleHAiOjE1MjY2Mjk5MzEsImRhdGEiOnsiZmlsZV9uYW1lIjoiMTUyNjYyOTgzMV8xNzAudHh0In19.aRVwTqi-ZZWPgMj7cs8G_gkeyn6GPr8dHD9dWQTVVLSSN2-hzf-fWSDuHSdv3sgC6USj6V_DL2OvXRvDauE8NA","token_timeout":100,"token_generation_time":1526629831},"data":{"booking_type":"personal","agent_name":"","checkin":"18\/05\/2018","checkout":"22\/05\/2018","country":["101","101"],"city":["5312","5313"],"number_of_night":["2","2"],"hotel_ratings":[["3"],["2"]],"first_page_hotel":["2","4"],"sel_nationality":"101","country_residance":"101","sel_currency":"1","rooms":"1","adult":["1"],"child":[""],"offset":0,"record_per_page":10,"type":"1","sort_order":"","city_id":"","country_id":"","search_val":"","booking_details_list":{"id":"34","booking_number":"","quotation_name":"kkkk","checkin_date":"2018-05-18","checkout_date":"2018-05-22","booking_type":"personal","dmc_id":"1","agent_id":"0","nationality":"101","residance_country":"101","invoice_currency":"1","number_of_rooms":"1","adult":"[\"1\"]","child":"[]","total_amount":"330.00","status":"0","is_deleted":"N","creation_date":"2018-05-18 12:40:14","last_updated":"2018-05-18 12:40:14","currency_code":"INR","currency_name":"Indian","booking_supplier_list":[{"id":"15","booking_master_id":"34","supplier_id":"7","status":"0","creation_date":"2018-05-10 16:35:40","last_updated":"2018-05-10 16:35:40"},{"id":"35","booking_master_id":"34","supplier_id":"7","status":"0","creation_date":"2018-05-18 12:40:17","last_updated":"2018-05-18 12:40:17"}],"booking_destination_list":[{"id":"78","booking_master_id":"34","country_id":"101","city_id":"5312","no_of_night":"2","hotel_rating":"3","creation_date":"2018-05-18 12:40:14","last_updated":"2018-05-18 12:40:14","co_name":"India","ci_name":"24 Parganas (n)","booking_hotel_list":[{"id":"78","booking_destination_id":"78","hotel_id":"2","room_id":"5","price":"20.00","booking_start_date":"2018-05-18","booking_end_date":"2018-05-20","agent_markup_percentage":"0","currency_id":"1","avalibility_status":"N","status":"0","creation_date":"2018-05-18 12:40:14","last_updated":"2018-05-18 12:40:14"}],"booking_tour_list":[{"id":"90","booking_destination_id":"78","tour_id":"3","offer_id":"4","price":"200.00","number_of_person":"1","booking_start_date":"2018-05-18","booking_end_date":"2018-05-20","agent_markup_percentage":"0","nationality_addon_percentage":"0","avalibility_status":"N","creation_date":"2018-05-18 12:40:15","last_updated":"2018-05-18 12:40:15"}],"booking_transfer_list":[{"id":"44","booking_destination_id":"78","transfer_id":"5","offer_id":"8","price":"20.00","number_of_person":"1","booking_start_date":"2018-05-18","booking_end_date":"2018-05-20","agent_markup_percentage":"0","nationality_addon_percentage":"0","avalibility_status":"A","creation_date":"2018-05-18 12:40:15","last_updated":"2018-05-18 12:40:15"}]},{"id":"79","booking_master_id":"34","country_id":"101","city_id":"5313","no_of_night":"2","hotel_rating":"2","creation_date":"2018-05-18 12:40:15","last_updated":"2018-05-18 12:40:15","co_name":"India","ci_name":"24 Parganas (s)","booking_hotel_list":[{"id":"79","booking_destination_id":"79","hotel_id":"4","room_id":"9","price":"20.00","booking_start_date":"2018-05-20","booking_end_date":"2018-05-22","agent_markup_percentage":"0","currency_id":"1","avalibility_status":"N","status":"0","creation_date":"2018-05-18 12:40:15","last_updated":"2018-05-18 12:40:15"}],"booking_tour_list":[{"id":"91","booking_destination_id":"79","tour_id":"4","offer_id":"6","price":"30.00","number_of_person":"1","booking_start_date":"2018-05-20","booking_end_date":"2018-05-22","agent_markup_percentage":"0","nationality_addon_percentage":"0","avalibility_status":"A","creation_date":"2018-05-18 12:40:15","last_updated":"2018-05-18 12:40:15"}],"booking_transfer_list":[{"id":"45","booking_destination_id":"79","transfer_id":"6","offer_id":"9","price":"40.00","number_of_person":"1","booking_start_date":"2018-05-20","booking_end_date":"2018-05-22","agent_markup_percentage":"0","nationality_addon_percentage":"0","avalibility_status":"A","creation_date":"2018-05-18 12:40:15","last_updated":"2018-05-18 12:40:15"}]}]}}}', true);
 	if(isset($server_data['token']) && isset($server_data['token']['token']) && isset($server_data['token']['token_timeout']) && isset($server_data['token']['token_generation_time']) && tools::jwtTokenDecode($server_data['token']['token']) && ($server_data['token']['token_generation_time']+$server_data['token']['token_timeout']) > time()):
 		if(isset($server_data['data']) && isset($server_data['data']['country']) && !empty($server_data['data']['country'])):
 			$offset=0;
@@ -61,6 +61,7 @@
 				endif;
 			endif;
 			foreach($server_data['data']['country'] as $country_key=>$counrty_val):	
+				$transfer_first_row=1;
 				$order_by='ORDER BY t.id DESC';
 				if(isset($server_data['data']['city_id']) && $server_data['data']['city_id']!=""):
 					if(isset($server_data['data']['country_id']) && $server_data['data']['country_id']!="" && $counrty_val==$server_data['data']['country_id'] && $server_data['data']['city_id']==$server_data['data']['city'][$country_key]):
@@ -111,9 +112,9 @@
 								$edit_avalibility_status="";
 								if(isset($booking_details_list) && !empty($booking_details_list)):
 									foreach($booking_details_list['booking_destination_list'] as $b_key=>$b_val):
-										if(isset($b_val['booking_tour_list']) && !empty($b_val['booking_tour_list'])):
-											foreach($b_val['booking_tour_list'] as $t_key=>$t_val):
-												if($b_val['country_id']==$counrty_val && $b_val['city_id']==$server_data['data']['city'][$country_key] && $t_val['tour_id']==$transfer_val['id'] && $t_val['offer_id']==$offer_val['id']):
+										if(isset($b_val['booking_transfer_list']) && !empty($b_val['booking_transfer_list'])):
+											foreach($b_val['booking_transfer_list'] as $t_key=>$t_val):
+												if($b_val['country_id']==$counrty_val && $b_val['city_id']==$server_data['data']['city'][$country_key] && $t_val['transfer_id']==$transfer_val['id'] && $t_val['offer_id']==$offer_val['id'] && $edit_avalibility_status==""):
 													$edit_avalibility_status=$t_val['avalibility_status'];
 													$transfer_edit_avalibility_status=$t_val['avalibility_status'];
 													break;
@@ -196,7 +197,7 @@
 								endfor;
 								$nationality_charge=($total_price * $nationality_addon_percentage)/100;
 								?>
-								<div style="padding:10px 0 10px 0;border:1px solid gray;">
+								<div class="radio_button_row <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'radio_button_row_background' : "");?>" onclick="select_transfer_radio_row($(this))">
 									<div class="col-md-1" style="font-weight:bold;">
 										<?php
 										if($offer_avaliability_status=="avaliable" || $edit_avalibility_status=="A"):
@@ -212,7 +213,7 @@
 										endif;
 										?>
 										<br>
-										<input type="radio" name="selected_transfer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>]" class="selected_transfer" onclick="change_transfer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>">
+										<input type="radio" name="selected_transfer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>]" class="selected_transfer" onclick="change_transfer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>"  <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?> <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?>>
 									</div>
 									<div class="col-md-3" style="font-weight:bold;">
 										<?= $offer_val['offer_title'];?>
@@ -284,7 +285,7 @@
 										<a href="<?php echo DOMAIN_NAME_PATH_ADMIN;?>edit_transfer?transfer_id=<?php echo base64_encode($transfer_val['id']);?>" target="_blank" style="font-size:16px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_transfers('transfer<?php echo $transfer_val['id'];?>');" style="font-size:16px;"><b>VIEW AVAILABLE OFFERS</b></a>
 									</div>
 									<div class="clearfix"></div>
-									<div id="transfer<?php echo $transfer_val['id'];?>" style="display:none;">
+									<div id="transfer<?php echo $transfer_val['id'];?>" <?php echo($transfer_first_row==1 && $offset==0 ? '' : 'style="display:none;"');?>  class="transfer_offer_cls">
 										<div style="border:1px solid gray;background-color:gray;margin-top:10px;">
 											<div class="col-md-1" style="font-weight:bold;color:#fff;">#</div>
 											<div class="col-md-3" style="font-weight:bold;color:#fff;">Offer Title</div>
@@ -301,6 +302,7 @@
 						endif;
 						$each_transfer_list_html=ob_get_clean();
 						$transfer_list_html.=$each_transfer_list_html;
+						$transfer_first_row++;
 					endforeach;
 				else:
 					$contry_list = tools::find("first", TM_COUNTRIES, '*', "WHERE id=:id ORDER BY name ASC ", array(":id"=>$counrty_val));

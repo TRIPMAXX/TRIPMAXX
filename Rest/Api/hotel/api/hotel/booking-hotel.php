@@ -232,7 +232,7 @@
 									$i=$i+(24*60*60);
 								endfor;
 ?>
-								<div style="padding:10px 0 10px 0;border:1px solid gray;">
+								<div class="radio_button_row <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'radio_button_row_background' : "");?>" onclick="select_radio_row($(this))">
 									<div class="col-md-1" style="font-weight:bold;">
 										<?php
 										if($room_avaliability_status=="avaliable" || $edit_avalibility_status=="A"):

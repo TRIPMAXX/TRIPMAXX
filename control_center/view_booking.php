@@ -950,22 +950,6 @@
 							endif;
 							?>
 							<?php
-							if(isset($tour_html) && $tour_html!=""):
-							?>
-							<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
-								<thead>
-									<tr role="row">
-										<th style = "text-align:left;">Tour Sites</th>
-									</tr>
-								</thead>
-								<tbody aria-relevant="all" aria-live="polite" role="alert">
-									<?php echo $tour_html;?>
-								</tbody>
-							</table>
-							<?php
-							endif;
-							?>
-							<?php
 							if(isset($transfer_html) && $transfer_html!=""):
 							?>
 							<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
@@ -976,6 +960,22 @@
 								</thead>
 								<tbody aria-relevant="all" aria-live="polite" role="alert">
 									<?php echo $transfer_html;?>
+								</tbody>
+							</table>
+							<?php
+							endif;
+							?>
+							<?php
+							if(isset($tour_html) && $tour_html!=""):
+							?>
+							<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
+								<thead>
+									<tr role="row">
+										<th style = "text-align:left;">Tour Sites</th>
+									</tr>
+								</thead>
+								<tbody aria-relevant="all" aria-live="polite" role="alert">
+									<?php echo $tour_html;?>
 								</tbody>
 							</table>
 							<?php
