@@ -260,15 +260,22 @@
 			$("#agent_name").val("");
 		}
 	}
-	function manage_booking_pax($this) {		
-		var price = $this.find(':selected').attr('data-value');
-		if(price != "") {
-			$("#booking_price").val(price);
-		}
-		/*else
-		{
-			$("#booking_price").val("");
-		}*/
+	function manage_booking_pax(val) {
+		var pax_str = "<?=$package_data['pax']?>" ;
+		var pax_array = pax_str.split(",");
+		var pax_price = "<?=$package_data['price']?>" ;
+		var pax_price_array = pax_price.split(",");
+		$.each(pax_array, function(key, value){
+			var pax_val = value.split("-");
+			//alert(val);
+			//alert(pax_val[0]);
+			//alert(pax_val[1]);
+			if(eval(pax_val[0]) <= val && eval(pax_val[1]) >= val)
+			{
+				//alert(key);
+				$("#booking_price").val(pax_price_array[key]);
+			}
+		});
 	}
 	//-->
 	</script>
@@ -396,14 +403,14 @@
 							<div class="box box-primary">
 								<div class="col-md-12 row">
 									<div class="box-body">
-										<div class="form-group col-md-4">
+										<div class="form-group col-md-3">
 											<label for="inputName" class="control-label">Select Booking Type<font color="#FF0000">*</font></label>
 											<select name = "booking_type" id = "booking_type" class="form-control validate[required]"  tabindex = "1" onchange = "manage_booking_type(this.value);">
 												<option value = "personal" <?php echo(isset($_POST['booking_type']) && $_POST['booking_type']=="personal" ? "selected='selected'" : "");?>>Personal Booking</option>
 												<option value = "agent" <?php echo(isset($_POST['booking_type']) && $_POST['booking_type']=="agent" ? "selected='selected'" :"");?>>Agent Booking</option>
 											</select>
 										</div>
-										<div class="form-group col-md-4">
+										<div class="form-group col-md-3">
 											<label for="inputName" class="control-label">Select Agent<font color="#FF0000">*</font></label>
 											<select name = "agent_id" id = "agent_name" class="form-control validate[required]"  tabindex = "2" <?php echo(isset($_POST['agent_id']) && $_POST['agent_id']!="" ? '' : 'disabled');?>>
 												<option value = "">Select Agent</option>
@@ -418,32 +425,22 @@
 											?>
 											</select>
 										</div>
-										<div class="form-group col-md-4">
-											<label for="inputName" class="control-label">Select Pax/Price<font color="#FF0000">*</font></label>
-											<input type="hidden" name="booking_price" id="booking_price">
-											<select name = "booking_pax" id = "booking_pax" class="form-control validate[required]"  tabindex = "1" onchange = "manage_booking_pax($(this));">
-												<option data-value="" value = "" selected='selected'>Select Pax/Price</option>
-												<?php 
-												$package_data_pax=explode(',',$package_data['pax']);
-												$package_data_price=explode(',',$package_data['price']);
-												if(!empty($package_data_pax)):
-													foreach($package_data_pax as $pax_key =>$pax_value):
-												?>
-												<option data-value="<?=$package_data_price[$pax_key]?>" value = "<?=$pax_value?>" <?php echo(isset($_POST['booking_pax']) && $_POST['booking_pax']==$pax_value ? "selected='selected'" : "");?>><?="Pax- ".$pax_value.", Price- ".$package_data_price[$pax_key]." ( ".$package_currency['currency_code']." )"?></option>
-												<?php 
-													endforeach;
-												endif;
-												?>
-											</select>
+										<div class="form-group col-md-3">
+											<label for="inputName" class="control-label">Booking Pax<font color="#FF0000">*</font></label>
+											<input type="text" class="form-control validate[required, custom[integer]]"  value="<?php echo(isset($_POST['booking_pax']) && $_POST['booking_pax']!='' ? $_POST['booking_pax'] : "");?>" name="booking_pax" id="booking_pax" placeholder="Booking Pax" tabindex = "3" onblur="manage_booking_pax(this.value);"/>
+										</div>
+										<div class="form-group col-md-3">
+											<label for="inputName" class="control-label">Booking Price<font color="#FF0000">*</font></label>
+											<input type="text" class="form-control"  value="<?php echo(isset($_POST['booking_price']) && $_POST['booking_price']!='' ? $_POST['booking_price'] : "");?>" name="booking_price" id="booking_price" placeholder="Booking date" tabindex = "" readonly/>
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Booking date<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['booking_date']) && $_POST['booking_date']!='' ? date('d/m/Y',strtotime($_POST['booking_date'])) : "");?>" name="booking_date" id="booking_date" placeholder="Booking date" tabindex = "3" />
+											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['booking_date']) && $_POST['booking_date']!='' ? date('d/m/Y',strtotime($_POST['booking_date'])) : "");?>" name="booking_date" id="booking_date" placeholder="Booking date" tabindex = "4" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="status" class="control-label">Status<font color="#FF0000">*</font></label>
-											<select class="form-control validate[required]" name="status" id="status" tabindex = "4">
+											<select class="form-control validate[required]" name="status" id="status" tabindex = "5">
 												<option value = "1" <?php echo(isset($_POST['status']) && $_POST['status']==1 ? 'selected="selected"' : "");?>>Active</option>
 												<option value = "0" <?php echo(isset($_POST['status']) && $_POST['status']==0 ? 'selected="selected"' : "");?>>Inactive</option>
 											</select>
@@ -453,7 +450,7 @@
 									<div class="col-md-12 row">
 										<div class="box-footer">
 											<input type="hidden" name="token" value="<?php echo(tools::generateFormToken($verify_token)); ?>" />
-											<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex = "5">CREATE</button>
+											<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex = "6">CREATE</button>
 										</div>
 									</div>
 								</div>

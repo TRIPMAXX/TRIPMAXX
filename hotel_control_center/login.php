@@ -53,7 +53,7 @@ if(isset($_POST['btn_login']))
 			}
 
 			if($_SESSION['SESSION_DATA_HOTEL']['status'] == 1) {
-				tools::module_redirect(DOMAIN_NAME_PATH_HOTEL.'dashboard');
+				tools::module_redirect(DOMAIN_NAME_PATH_HOTEL.'bookings');
 			} else {
 				$_SESSION['SET_TYPE'] = 'error';
 				$_SESSION['SET_FLASH'] = 'Your account is inactive. Please contact DMC.';

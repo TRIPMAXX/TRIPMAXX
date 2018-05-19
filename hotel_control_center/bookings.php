@@ -77,23 +77,32 @@ $(document).ready(function() {
         table.draw();
     } );
 } );
- $(function() {	   
+ $(function() {	
+	$('#table-filter').on('change', function(){
+		var table = $('#example').DataTable();
+		table.search(this.value).draw(); 
+	});
 	$("#min").datepicker({
 		dateFormat: 'dd/mm/yy',
 		//minDate:0,
 		onSelect:function(selectedDate){
 			$("#max").datepicker( "option", "minDate", selectedDate);
-			var table = $(#example).DataTable();
-			table.search( $(this).val() ).draw();}
+		},
+		onClose:function(selectedDate){
+			var table = $('#example').DataTable();
+			table.draw();
 		}
+
 	});
 	$("#max").datepicker({
 		dateFormat: 'dd/mm/yy',
 		//minDate:0,
 		onSelect:function(selectedDate){
 			$("#min").datepicker( "option", "maxDate", selectedDate);
-			var table = $(#example).DataTable();
-			table.search( $(this).val() ).draw();}
+		},
+		onClose:function(selectedDate){
+			var table = $('#example').DataTable();
+			table.draw();
 		}
 	});
  });
@@ -127,12 +136,20 @@ $(document).ready(function() {
 								<div id="example1_wrapper" class="dataTables_wrapper form-inline" role="grid">
 									<div id="no-more-tables">
 										<div id="" class="box-body">
-											<div class="col-md-2"></div>
+											<div class="col-md-3"></div>
 											<div class="form-group col-md-2">
 												<input id="min" name="min" type="text" class="form-control" placeholder="Start Date" style="width: 100%;">
 											</div>
 											<div class="form-group col-md-2">
 												<input id="max" name="max" type="text" class="form-control" placeholder="End Date" style="width: 100%;" >
+											</div>
+											<div class="form-group col-md-2">
+												<select name="status" id="table-filter" class="form-control" style="width: 100%;">
+													<option value="" class="">Status</option>
+													<option value="Pending" class="btn-warning">Pending</option>
+													<option value="Accept" class="btn-success">Accept</option>
+													<option value="Reject" class="btn-danger">Reject</option>
+												</select>
 											</div>
 											<div class="clearfix"></div>
 										</div>
@@ -148,7 +165,7 @@ $(document).ready(function() {
 													<th>Destination</th>
 													<!-- <th>Room Type</th> -->
 													<th>Total Price</th>
-													<!-- <th>Status</th> -->
+													<th>Status</th>
 													<th>Action</th>
 												</tr>
 											</thead>
@@ -280,9 +297,9 @@ $(document).ready(function() {
 														<td class=" "><?php echo $destination_str;?></td>
 														<!-- <td class=" "><?php echo implode(", ", $service_arr);?></td> -->
 														<td class=" "><?php echo $book_val['currency_code'].number_format($book_val['total_amount'], 2, ".", ",");?></td>
-														<!-- <td class=" ">
+														<td class=" ">
 															<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $book_val['status']==1 ? "btn-success" : "btn-warning";?>"><?= $book_val['status']==1 ? "Completed" : "Pending";?></a>
-														</td> -->
+														</td>
 														<td class=" " data-title="Action">
 															<a href = "<?php echo(DOMAIN_NAME_PATH_HOTEL);?>view_booking?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "View Booking Details"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
 														</td>
