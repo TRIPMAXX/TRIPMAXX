@@ -12,7 +12,7 @@
 <link href="<?php echo(CONTROL_CENTER_CSS_PATH);?>tab.css" rel="stylesheet" type="text/css" />
 <link href="<?php echo(CONTROL_CENTER_CSS_PATH);?>select2.css" rel="stylesheet" type="text/css" />
 <style type="text/css">
-	#cke_15{display:none;}
+	.cke_button__source{display:none !important;}
 </style>
 <!-- CSS FILES -->
 

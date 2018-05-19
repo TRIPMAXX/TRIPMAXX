@@ -1,7 +1,7 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
-	$white_list_array = array('hotel_name', 'hotel_images', 'email_address', 'password', 'confirm_password', 'hotel_address', 'country', 'state', 'city', 'postal_code', 'phone_number', 'alternate_phone_number', 'short_description', 'long_description', 'checkin_time', 'checkout_time', 'rating', 'is_cancellation_policy_applied', 'cancellation_charge', 'cancellation_allowed_days', 'other_policy', 'amenities', 'amenities_arr', 'status', 'token', 'id', 'btn_submit');
+	$white_list_array = array('hotel_name', 'hotel_images', 'email_address', 'password', 'confirm_password', 'hotel_address', 'country', 'state', 'city', 'postal_code', 'phone_number', 'alternate_phone_number', 'short_description', 'long_description', 'checkin_time', 'checkout_time', 'rating', 'is_cancellation_policy_applied', 'cancellation_charge', 'cancellation_allowed_days', 'other_policy', 'amenities', 'amenities_arr', 'hotel_type_arr', 'hotel_type', 'status', 'token', 'id', 'btn_submit');
 	$verify_token = "edit_hotel";
 	if(isset($_GET['hotel_id']) && $_GET['hotel_id']!=""):
 		$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
@@ -54,61 +54,71 @@
 			endif;
 			if(isset($_POST['btn_submit'])) {
 				$_POST['id']=base64_decode($_GET['hotel_id']);
-				if(tools::verify_token($white_list_array, $_POST, $verify_token)) {
-					$_POST['uploaded_files']=array();
-					if(isset($_FILES["hotel_images"])){
-						foreach($_FILES["hotel_images"]['name'] as $file_key=>$file_val):
-							$extension = pathinfo($file_val, PATHINFO_EXTENSION);
-							//$splited_name=explode(".", $file_val);
-							//$extension = end($splited_name);
-							$validation_array = array('jpg', 'jpeg', 'png', 'gif', 'bmp');
-							if(in_array(strtolower($extension), $validation_array)) {
-								$data = file_get_contents($_FILES["hotel_images"]['tmp_name'][$file_key]);
-								$base64 = 'data:image/' . $extension . ';base64,' . base64_encode($data);
-								array_push($_POST['uploaded_files'], curl_file_create($base64, $_FILES["hotel_images"]['type'][$file_key], $_FILES["hotel_images"]['name'][$file_key]));
-							}
-						endforeach;
-					}
-					$post_data['data']=$_POST;
-					$post_data_str=json_encode($post_data);
-					$ch = curl_init();
-					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-					curl_setopt($ch, CURLOPT_HEADER, false);
-					curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
-					curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
-					curl_setopt($ch, CURLOPT_POST, true);
-					curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
-					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-					curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."hotel/update.php");
-					curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-					$return_data = curl_exec($ch);
-					curl_close($ch);
-					$return_data_arr=json_decode($return_data, true);
-					//print_r($return_data_arr);
-					if($return_data_arr['status']=="success")
-					{
-						if(isset($_POST['password']) && $_POST['password']!=""):
-							$hotel_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>29, ':status'=>1));
-							if(!empty($hotel_email_template)):
-								$hotel_mail_Body=str_replace(array("[HOTEL_NAME]", "[EMAIL]", "[PASSWORD]"), array($_POST['hotel_name'], $_POST['email_address'], $_POST['password']), $hotel_email_template['template_body']);
-								//print_r($hotel_mail_Body);exit;
-								@tools::Send_SMTP_Mail($_POST['email_address'], FROM_EMAIL, '', $hotel_email_template['template_subject'], $hotel_mail_Body);
-							endif;
-						endif;
-						$_SESSION['SET_TYPE'] = 'success';
-						$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
-						header("location:hotels");
-						exit;
-					}
-					else
-					{
-						$_SESSION['SET_TYPE'] = 'error';
-						$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
-					}
-				} else {
+				if(!isset($_POST['amenities_arr'])):
 					$_SESSION['SET_TYPE'] = 'error';
-					$_SESSION['SET_FLASH'] = 'Access token mismatch. Please reload the page & try again.';
-				}
+					$_SESSION['SET_FLASH'] = "Please select amenities.";
+				elseif(!isset($_POST['hotel_type_arr'])):
+					$_SESSION['SET_TYPE'] = 'error';
+					$_SESSION['SET_FLASH'] = "Please select hotel type.";
+				else:
+					$_POST['amenities']=implode(",", $_POST['amenities_arr']);
+					$_POST['hotel_type']=implode(",", $_POST['hotel_type_arr']);
+					if(tools::verify_token($white_list_array, $_POST, $verify_token)) {
+						$_POST['uploaded_files']=array();
+						if(isset($_FILES["hotel_images"])){
+							foreach($_FILES["hotel_images"]['name'] as $file_key=>$file_val):
+								$extension = pathinfo($file_val, PATHINFO_EXTENSION);
+								//$splited_name=explode(".", $file_val);
+								//$extension = end($splited_name);
+								$validation_array = array('jpg', 'jpeg', 'png', 'gif', 'bmp');
+								if(in_array(strtolower($extension), $validation_array)) {
+									$data = file_get_contents($_FILES["hotel_images"]['tmp_name'][$file_key]);
+									$base64 = 'data:image/' . $extension . ';base64,' . base64_encode($data);
+									array_push($_POST['uploaded_files'], curl_file_create($base64, $_FILES["hotel_images"]['type'][$file_key], $_FILES["hotel_images"]['name'][$file_key]));
+								}
+							endforeach;
+						}
+						$post_data['data']=$_POST;
+						$post_data_str=json_encode($post_data);
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+						curl_setopt($ch, CURLOPT_HEADER, false);
+						curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+						curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
+						curl_setopt($ch, CURLOPT_POST, true);
+						curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+						curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+						curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."hotel/update.php");
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+						$return_data = curl_exec($ch);
+						curl_close($ch);
+						$return_data_arr=json_decode($return_data, true);
+						//print_r($return_data_arr);
+						if($return_data_arr['status']=="success")
+						{
+							if(isset($_POST['password']) && $_POST['password']!=""):
+								$hotel_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>29, ':status'=>1));
+								if(!empty($hotel_email_template)):
+									$hotel_mail_Body=str_replace(array("[HOTEL_NAME]", "[EMAIL]", "[PASSWORD]"), array($_POST['hotel_name'], $_POST['email_address'], $_POST['password']), $hotel_email_template['template_body']);
+									//print_r($hotel_mail_Body);exit;
+									@tools::Send_SMTP_Mail($_POST['email_address'], FROM_EMAIL, '', $hotel_email_template['template_subject'], $hotel_mail_Body);
+								endif;
+							endif;
+							$_SESSION['SET_TYPE'] = 'success';
+							$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+							header("location:hotels");
+							exit;
+						}
+						else
+						{
+							$_SESSION['SET_TYPE'] = 'error';
+							$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+						}
+					} else {
+						$_SESSION['SET_TYPE'] = 'error';
+						$_SESSION['SET_FLASH'] = 'Access token mismatch. Please reload the page & try again.';
+					}
+				endif;
 			}
 			$post_data['data']=$_GET;
 			$post_data_str=json_encode($post_data);
@@ -330,6 +340,25 @@ endif;
 							<form name="profile" name="form_edit_hotel" id="form_edit_hotel" method="POST" enctype="multipart/form-data">
 								<div class="col-md-12 row">
 									<div class="box-body">
+										<div class="form-group col-md-12">
+											<label for="inputName" class="control-label">Hotel Type<font color="#FF0000">*</font></label>
+											<br/>
+											<?php
+											if(isset($global_hotel_type_arr) && !empty($global_hotel_type_arr))
+											{
+												foreach($global_hotel_type_arr as $hotel_type_key=>$hotel_type_val):
+													if(isset($hotel_data['hotel_type']) && $hotel_data['hotel_type']!="")
+													{
+														$hotel_type_data_arr=explode(",", $hotel_data['hotel_type']);
+													}
+											?>
+											<input type = "checkbox" id="hotel_type<?php echo $hotel_type_key;?>" class=" validate[required]" name = "hotel_type_arr[]" value="<?= $hotel_type_key;?>" <?php echo(isset($_POST['hotel_type_arr']) && in_array($hotel_type_key, $_POST['hotel_type_arr']) ? 'checked="checked"' : (isset($hotel_type_data_arr) && in_array($hotel_type_key, $hotel_type_data_arr) ? 'checked="checked"' : ""));?>>&nbsp;<?= $hotel_type_val;?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											<?php
+												endforeach;
+											}
+											?>
+										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="hotel_name" class="control-label">Hotel Name<font color="#FF0000">*</font></label>
 											<input type="text" class="form-control validate[required, custom[onlyLetterSp]]"  value="<?php echo(isset($_POST['hotel_name']) && $_POST['hotel_name']!='' ? $_POST['hotel_name'] : (isset($hotel_data['hotel_name']) && $hotel_data['hotel_name']!='' ? $hotel_data['hotel_name'] : ""));?>" name="hotel_name" id="hotel_name" placeholder="Hotel Name" tabindex = "1" />

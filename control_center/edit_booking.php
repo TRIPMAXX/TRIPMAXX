@@ -1069,15 +1069,32 @@
 				}
 			});
 		}
-		function find_hotel_name(cur)
+		function find_hotel_name(cur, type='')
 		{
-			if(cur.val()!="")
+			if(type!="" && cur.parents(".each_city_row").find(".form-group:eq(1) select").val()=="")
 			{
+				showError("Please select city first");
+			}
+			else if(cur.val()!="" || type!="")
+			{
+				var hotel_type="";
+				var city_id="";
+				if(type!="")
+				{
+					hotel_type=cur.val();
+					city_id=cur.parents(".each_city_row").find(".form-group:eq(1) select").val();
+				}
+				else
+				{
+					city_id=cur.val();
+					hotel_type=cur.parents(".each_city_row").find(".form-group:eq(3) select").val();
+				}
 				$.ajax({
 					url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_find_city_hotel_data";?>',
 					type:"post",
 					data:{
-						city_id:cur.val()
+						city_id:city_id,
+						hotel_type:hotel_type
 					},
 					beforeSend:function(){
 						$(".loader_inner").fadeIn();
@@ -1151,8 +1168,23 @@
 							markup+='</select>';
 						markup+='</div>';
 						markup+='<div class="form-group col-md-2"><label for="inputName" class="control-label">For No Of Nights<font color="#FF0000">*</font></label><input type="text" class="form-control number_of_night validate[required, custom[integer]]"  value="" name="number_of_night['+new_row_key+']" id="number_of_night'+new_row_key+'" placeholder="Number Of Nights" tabindex = "4" onblur="check_night()"/></div>';
-						markup+='<div class="form-group col-md-3"><label for="inputName" class="control-label">Hotel Ratings<font color="#FF0000">*</font></label><br/><input type="checkbox" name="all_checkbox" class="all_checkbox" onclick="check_all_rating($(this))">&nbsp;All&nbsp;&nbsp;<input type="checkbox" value="1" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;1&nbsp;&nbsp;<input type="checkbox" value="2" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;2&nbsp;&nbsp;<input type="checkbox"  value="3" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;3&nbsp;&nbsp;<input type="checkbox" value="4" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;4&nbsp;&nbsp;<input type="checkbox" value="5" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;5</div>';
-						markup+='<div class="form-group col-md-3" style="">';
+						markup+='<div class="form-group col-md-2" style="">';
+							markup+='<label for="inputName" class="control-label">Hotel Type</label>';
+							markup+='<select class="form-control hotel_type" name="hotel_type['+new_row_key+']" id="first_hotel_type'+new_row_key+'" onchange="find_hotel_name($(this), \'type\')">';
+								markup+='<option value="">All</option>';
+						<?php
+						if(isset($global_hotel_type_arr) && !empty($global_hotel_type_arr)):
+							foreach($global_hotel_type_arr as $hotel_type_key=>$hotel_type_val):
+						?>
+								markup+='<option value="<?php echo $hotel_type_key;?>" ><?php echo $hotel_type_val;?></option>';
+						<?php
+							endforeach;
+						endif;
+						?>
+							markup+='</select>';
+						markup+='</div>';
+						markup+='<div class="form-group col-md-2"><label for="inputName" class="control-label">Hotel Ratings<font color="#FF0000">*</font></label><br/><input type="checkbox" name="all_checkbox" class="all_checkbox" onclick="check_all_rating($(this))">&nbsp;All&nbsp;&nbsp;<input type="checkbox" value="1" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;1&nbsp;&nbsp;<input type="checkbox" value="2" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;2&nbsp;&nbsp;<input type="checkbox"  value="3" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;3&nbsp;&nbsp;<input type="checkbox" value="4" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;4&nbsp;&nbsp;<input type="checkbox" value="5" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;5</div>';
+						markup+='<div class="form-group col-md-2" style="">';
 							markup+='<label for="inputName" class="control-label">Hotels</label>';
 							markup+='<select class="form-control first_page_hotel" name="first_page_hotel['+new_row_key+']" id="first_page_hotel'+new_row_key+'" onchange="checked_hotel_rating($(this))">';
 								markup+='<option value="">Select Hotel</option>';
@@ -1379,7 +1411,7 @@
 															{
 														?>
 														<div class="form-group col-md-12 <?php echo($post_country_key > 0 ? "appended_row" : "");?> each_city_row">
-															<div class="form-group col-md-3">
+															<div class="form-group col-md-2">
 																<?php
 																if($post_country_key > 0)
 																{
@@ -1402,7 +1434,7 @@
 																?>
 																</select>
 															</div>
-															<div class="form-group col-md-3">
+															<div class="form-group col-md-2">
 																<label for="inputName" class="control-label">City<font color="#FF0000">*</font></label>
 																<select class="form-control validate[required]" name="city[<?php echo $post_country_key;?>]" id="city<?php echo $post_country_key;?>">
 																	<option value="">Select City</option>
@@ -1422,17 +1454,32 @@
 																?>
 																</select>
 															</div>
-															<div class="form-group col-md-3">
+															<div class="form-group col-md-2">
 																<label for="inputName" class="control-label">For No Of Nights<font color="#FF0000">*</font></label>
 																<input type="text" class="form-control number_of_night validate[required, custom[integer]]"  value="<?php echo(isset($_POST['number_of_night'][$post_country_key]) && $_POST['number_of_night'][$post_country_key]!='' ? $_POST['number_of_night'][$post_country_key] : "");?>" name="number_of_night[<?php echo $post_country_key;?>]" id="number_of_night<?php echo $post_country_key;?>" placeholder="Number Of Nights" tabindex = "4" onblur="check_night()"/>
 															</div>
-															<div class="form-group col-md-3">
+															<div class="form-group col-md-2" style="">
+																<label for="inputName" class="control-label">Hotel Type</label>
+																<select class="form-control hotel_type" name="hotel_type[<?php echo $post_country_key;?>]" id="first_hotel_type<?php echo $post_country_key;?>" onchange="find_hotel_name($(this))">
+																	<option value="">All</option>
+															<?php
+															if(isset($global_hotel_type_arr) && !empty($global_hotel_type_arr)):
+																foreach($global_hotel_type_arr as $hotel_type_key=>$hotel_type_val):
+															?>
+																	<option value="<?php echo $hotel_type_key;?>" <?php echo(isset($_POST['hotel_type']) && !empty($_POST['hotel_type']) && $_POST['hotel_type'][$post_country_key]==$hotel_type_key ? 'selected="selected"' : "");?>><?php echo $hotel_type_val;?></option>
+															<?php
+																endforeach;
+															endif;
+															?>
+																</select>
+															</div>
+															<div class="form-group col-md-2">
 																<label for="inputName" class="control-label">Hotel Ratings<font color="#FF0000">*</font></label>
 																<br/>
 																<input type="checkbox" name="all_checkbox" class="all_checkbox" onclick="check_all_rating($(this))">&nbsp;All&nbsp;&nbsp;
 																<input type="checkbox" value="1" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(1, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;1&nbsp;&nbsp;<input type="checkbox" value="2" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(2, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;2&nbsp;&nbsp;<input type="checkbox"  value="3" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(3, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;3&nbsp;&nbsp;<input type="checkbox" value="4" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(4, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;4&nbsp;&nbsp;<input type="checkbox" value="5" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(5, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;5
 															</div>
-															<div class="form-group col-md-3" style="">
+															<div class="form-group col-md-2" style="">
 																<label for="inputName" class="control-label">Hotels</label>
 																<select class="form-control first_page_hotel" name="first_page_hotel[0]" id="first_page_hotel0" onchange="checked_hotel_rating($(this))">
 																	<option value="">Select Hotel</option>
@@ -1496,13 +1543,28 @@
 																<label for="inputName" class="control-label">For No Of Nights<font color="#FF0000">*</font></label>
 																<input type="text" class="form-control number_of_night validate[required, custom[integer]]"  value="<?php echo(isset($destination_val['no_of_night']) && $destination_val['no_of_night']!='' ? $destination_val['no_of_night'] : "");?>" name="number_of_night[<?php echo $destination_key;?>]" id="number_of_night<?php echo $destination_key;?>" placeholder="Number Of Nights" tabindex = "4" onblur="check_night()"/>
 															</div>
-															<div class="form-group col-md-3">
+															<div class="form-group col-md-2" style="">
+																<label for="inputName" class="control-label">Hotel Type</label>
+																<select class="form-control hotel_type" name="hotel_type[<?php echo $post_country_key;?>]" id="first_hotel_type<?php echo $post_country_key;?>" onchange="find_hotel_name($(this))">
+																	<option value="">All</option>
+															<?php
+															if(isset($global_hotel_type_arr) && !empty($global_hotel_type_arr)):
+																foreach($global_hotel_type_arr as $hotel_type_key=>$hotel_type_val):
+															?>
+																	<option value="<?php echo $hotel_type_key;?>"><?php echo $hotel_type_val;?></option>
+															<?php
+																endforeach;
+															endif;
+															?>
+																</select>
+															</div>
+															<div class="form-group col-md-2">
 																<label for="inputName" class="control-label">Hotel Ratings<font color="#FF0000">*</font></label>
 																<br/>
 																<input type="checkbox" name="all_checkbox" class="all_checkbox" onclick="check_all_rating($(this))">&nbsp;All&nbsp;&nbsp;
 																<input type="checkbox" value="1" name="hotel_ratings[<?php echo $destination_key;?>][]" <?php echo(isset($hotel_rating_arr) && !empty($hotel_rating_arr) && in_array(1, $hotel_rating_arr) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;1&nbsp;&nbsp;<input type="checkbox" value="2" name="hotel_ratings[<?php echo $destination_key;?>][]" <?php echo(isset($hotel_rating_arr) && !empty($hotel_rating_arr) && in_array(2, $hotel_rating_arr) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;2&nbsp;&nbsp;<input type="checkbox"  value="3" name="hotel_ratings[<?php echo $destination_key;?>][]" <?php echo(isset($hotel_rating_arr) && !empty($hotel_rating_arr) && in_array(3, $hotel_rating_arr) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;3&nbsp;&nbsp;<input type="checkbox" value="4" name="hotel_ratings[<?php echo $destination_key;?>][]" <?php echo(isset($hotel_rating_arr) && !empty($hotel_rating_arr) && in_array(4, $hotel_rating_arr) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;4&nbsp;&nbsp;<input type="checkbox" value="5" name="hotel_ratings[<?php echo $destination_key;?>][]" <?php echo(isset($hotel_rating_arr) && !empty($hotel_rating_arr) && in_array(5, $hotel_rating_arr) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;5
 															</div>
-															<div class="form-group col-md-3" style="">
+															<div class="form-group col-md-2" style="">
 																<?php
 																$hotel_data=array();
 																$autentication_data_hotel=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
@@ -1566,7 +1628,7 @@
 															$next_index=1;
 														?>
 														<div class="form-group col-md-12 each_city_row">
-															<div class="form-group col-md-3">
+															<div class="form-group col-md-2">
 																<label for="inputName" class="control-label">Country<font color="#FF0000">*</font></label>
 																<select name="country[0]" class="form-control validate[required]" id="country0" onchange="fetch_city($(this).val(), 0);">
 																	<option value = "">Select Country</option>
@@ -1581,23 +1643,38 @@
 																?>
 																</select>
 															</div>
-															<div class="form-group col-md-3">
+															<div class="form-group col-md-2">
 																<label for="inputName" class="control-label">City<font color="#FF0000">*</font></label>
 																<select class="form-control validate[required]" name="city[0]" id="city0">
 																	<option value="">Select City</option>
 																</select>
 															</div>
-															<div class="form-group col-md-3">
+															<div class="form-group col-md-2">
 																<label for="inputName" class="control-label">For No Of Nights<font color="#FF0000">*</font></label>
 																<input type="text" class="form-control number_of_night validate[required, custom[integer]]"  value="" name="number_of_night[0]" id="number_of_night0" placeholder="Number Of Nights" tabindex = "4" onblur="check_night()"/>
 															</div>
-															<div class="form-group col-md-3">
+															<div class="form-group col-md-2" style="">
+																<label for="inputName" class="control-label">Hotel Type</label>
+																<select class="form-control hotel_type" name="hotel_type[0]" id="first_hotel_type0" onchange="find_hotel_name($(this), 'type')">
+																	<option value="">All</option>
+															<?php
+															if(isset($global_hotel_type_arr) && !empty($global_hotel_type_arr)):
+																foreach($global_hotel_type_arr as $hotel_type_key=>$hotel_type_val):
+															?>
+																	<option value="<?php echo $hotel_type_key;?>" ><?php echo $hotel_type_val;?></option>
+															<?php
+																endforeach;
+															endif;
+															?>
+																</select>
+															</div>
+															<div class="form-group col-md-2">
 																<label for="inputName" class="control-label">Hotel Ratings<font color="#FF0000">*</font></label>
 																<br/>
 																<input type="checkbox" name="all_checkbox" class="all_checkbox" onclick="check_all_rating($(this))">&nbsp;All&nbsp;&nbsp;
 																<input type="checkbox" value="1" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>&nbsp;1&nbsp;&nbsp;<input type="checkbox" value="2" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>&nbsp;2&nbsp;&nbsp;<input type="checkbox"  value="3" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>&nbsp;3&nbsp;&nbsp;<input type="checkbox" value="4" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>&nbsp;4&nbsp;&nbsp;<input type="checkbox" class="validate[minCheckbox[1]]"value="5" name="hotel_ratings[0][]" />&nbsp;5
 															</div>
-															<div class="form-group col-md-3" style="">
+															<div class="form-group col-md-2" style="">
 																<label for="inputName" class="control-label">Hotels</label>
 																<select class="form-control first_page_hotel" name="first_page_hotel[0]" id="first_page_hotel0" onchange="checked_hotel_rating($(this))">
 																	<option value="">Select Hotel</option>

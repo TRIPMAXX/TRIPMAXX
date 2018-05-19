@@ -97,6 +97,10 @@
 					$search_query.=" AND h.id=:first_hotel_id ";
 					$execute[':first_hotel_id']=$server_data['data']['first_page_hotel'][$country_key];
 				endif;
+				if(isset($server_data['data']['hotel_type']) && isset($server_data['data']['hotel_type'][$country_key]) && $server_data['data']['hotel_type'][$country_key]!=""):
+					$search_query.=" AND CONCAT(',', h.hotel_type, ',') LIKE :hotel_type ";
+					$execute[':hotel_type']="%,".$server_data['data']['hotel_type'][$country_key].",%";
+				endif;
 				$edit_avalibility_status="";
 				$hotel_list = tools::find("all", TM_HOTELS." as h, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci", 'h.*, co.name as co_name, s.name as s_name, ci.name as ci_name', "WHERE h.country=co.id AND h.state=s.id AND h.city=ci.id AND co.id=:co_id AND ci.id=:ci_id AND h.rating IN (".$hotel_ratings.") AND h.status=:status ".$search_query.$order_by." LIMIT ".$offset.", ".$limit." ", $execute);
 				//print_r($hotel_list);
@@ -281,24 +285,39 @@
 							endforeach;
 						endif;
 						ob_start();
-						if($room_html!=""):
+						//if($room_html!=""):
 ?>
 							<div class="form-group col-md-12">
 								<div style="border:1px solid red;background-color:red;">
-									<div class="col-md-3" style="font-weight:bold;color:#fff;">Hotel Name</div>
+									<div class="col-md-2" style="font-weight:bold;color:#fff;">Hotel Type</div>
+									<div class="col-md-2" style="font-weight:bold;color:#fff;">Hotel Name</div>
 									<div class="col-md-2" style="font-weight:bold;color:#fff;">Rating</div>
 									<div class="col-md-2" style="font-weight:bold;color:#fff;">Location</div>
-									<div class="col-md-3" style="font-weight:bold;color:#fff;text-align:center;">Availability</div>
+									<div class="col-md-2" style="font-weight:bold;color:#fff;text-align:center;">Availability</div>
 									<div class="col-md-2" style="font-weight:bold;color:#fff;text-align:center;">Rate</div>
 									<div class="clearfix"></div>
 								</div>
 								<div style="padding:20px 0 0 0;border:1px solid red;">
-									<div class="col-md-3" style="font-weight:bold;"><?php echo $hotel_val['hotel_name'];?></div>
+									<div class="col-md-2" style="font-weight:bold;">
+										<?php
+										if($hotel_val['hotel_type']!=""):
+											$hotel_type_arr=explode(",", $hotel_val['hotel_type']);
+											$hotel_type_str="";
+											foreach($hotel_type_arr as $type_val):
+												$hotel_type_str.=($hotel_type_str!="" ? ", " : "").$global_hotel_type_arr[$type_val];
+											endforeach;
+											echo $hotel_type_str;
+										else:
+											echo "N/A";
+										endif;
+										?>
+									</div>
+									<div class="col-md-2" style="font-weight:bold;"><?php echo $hotel_val['hotel_name'];?></div>
 									<div class="col-md-2" style="font-weight:bold;">
 										<div class="rate_content_div" data-rate="<?php echo $hotel_val['rating'];?>"></div>
 									</div>
 									<div class="col-md-2" style="font-weight:bold;"><?php echo $city_name;?></div>
-									<div class="col-md-3" style="font-weight:bold;text-align:center;">
+									<div class="col-md-2" style="font-weight:bold;text-align:center;">
 										<?php
 										if($hotel_avalibility_status=="avaliable" || $hotel_edit_avalibility_status=="A"):
 										?>
@@ -325,7 +344,7 @@
 												echo "N/A";
 											endif;*/
 										else:
-											echo "N/A";
+											//echo "N/A";
 										endif;
 										?>
 									</div>
@@ -346,12 +365,21 @@
 											<div class="col-md-2" style="font-weight:bold;color:#fff;text-align:center;">Total Amount</div>
 											<div class="clearfix"></div>
 										</div>
-										<?php echo $room_html;?>
+										<?php
+										if($room_html!=""):
+											echo $room_html;
+										else:
+										?>
+											<div class="col-md-12 text-center no_rcd" style="padding:30px;color:red;">No room avaliable</div>
+											<div class="clearfix"></div>
+										<?php
+										endif;
+										?>
 									</div>
 								</div>
 							</div>
 <?php
-						endif;
+						//endif;
 						$each_hotel_list_html=ob_get_clean();
 						$hotel_list_html.=$each_hotel_list_html;
 						$hotel_first_row++;

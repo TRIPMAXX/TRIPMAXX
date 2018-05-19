@@ -14,6 +14,7 @@
 			<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
 				<thead>
 					<tr role="row">
+						<th style = "text-align:left;">Hotel Type</th>
 						<th style = "text-align:left;">Hotel</th>
 						<th style = "text-align:center;">Room Type</th>
 						<th style = "text-align:center;">Check In</th>
@@ -58,6 +59,20 @@
 				$total_hotel_price=$total_hotel_price+$total_price+$agent_commision;
 ?>
 				<tr class="odd">
+					<td style = "text-align:left;">
+						<?php
+						if($hotel_details['hotel_type']!=""):
+							$hotel_type_arr=explode(",", $hotel_details['hotel_type']);
+							$hotel_type_str="";
+							foreach($hotel_type_arr as $type_val):
+								$hotel_type_str.=($hotel_type_str!="" ? ", " : "").$global_hotel_type_arr[$type_val];
+							endforeach;
+							echo $hotel_type_str;
+						else:
+							echo "N/A";
+						endif;
+						?>
+					</td>
 					<td style = "text-align:left;"><?php echo $hotel_details['hotel_name'];?></td>
 					<td style = "text-align:center;">
 						<?= $room_details['room_type'];?>

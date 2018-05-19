@@ -67,6 +67,16 @@
 		$_SESSION['SET_TYPE'] = 'error';
 		$_SESSION['SET_FLASH'] = "We are having some problem to authorize api.";
 	endif;
+	$autentication_booking_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."authorized.php"));
+	if(isset($autentication_booking_data->status)):
+		if($autentication_booking_data->status=="success"):
+			$post_booking_data['token']=array(
+				"token"=>$autentication_booking_data->results->token,
+				"token_timeout"=>$autentication_booking_data->results->token_timeout,
+				"token_generation_time"=>$autentication_booking_data->results->token_generation_time
+			);
+		endif;
+	endif;
 ?>
 <!DOCTYPE html>
 <html>
@@ -201,13 +211,45 @@
 												<td class=" "><?= $gsa_val['telephone'];?></td>
 												<td class=" "><?= $gsa_val['company_name'];?></td>
 												<td class=" ">
-													<b>ACTIVE BOOKING: 5
+												<?php
+												$post_booking_data['data']['agent_id']=$gsa_val['id'];
+												$post_booking_data_str=json_encode($post_booking_data);
+												$ch = curl_init();
+												curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+												curl_setopt($ch, CURLOPT_HEADER, false);
+												curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+												curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+												curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."booking/agent-booking-counter.php");
+												curl_setopt($ch, CURLOPT_POSTFIELDS, $post_booking_data_str);
+												curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+												$return_booking_data = curl_exec($ch);
+												curl_close($ch);
+												//print_r($return_booking_data);
+												$return_booking_data_arr=json_decode($return_booking_data, true);
+												$agent_data=array();
+												if(!isset($return_data_arr['status'])):
+													//$_SESSION['SET_TYPE'] = 'error';
+													//$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+												elseif($return_data_arr['status']=="success"):
+													$agent_booking_data=$return_booking_data_arr['results'];
+												else:
+													//$_SESSION['SET_TYPE'] = 'error';
+													//$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+												endif;
+												if(!empty($agent_booking_data)):
+												?>
+													<b>ACTIVE BOOKING: <?php echo $agent_booking_data['total_active'];?>
 													<br/>
-													COMPLETE BOOKING: 20
+													COMPLETE BOOKING: <?php echo $agent_booking_data['total_completed'];?>
 													<br/>
-													CANCELLED BOOKING: 4
+													CANCELLED BOOKING: <?php echo $agent_booking_data['total_cancelled'];?>
 													<br/>
-													TOTAL EARNING: $2000.00</b>
+													TOTAL BOOOKING AMOUNT: <?php echo $gsa_val['currency_code'].number_format($agent_booking_data['total_amount'], 2, ".", ",");?></b>
+												<?php
+												else:
+													echo "N/A";
+												endif;
+												?>
 												</td>
 												<td class=" ">
 													<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $gsa_val['status']==1 ? "btn-success" : "btn-danger";?>" onclick="change_status(<?= $gsa_val['id'];?>, $(this))"><?= $gsa_val['status']==1 ? "Active" : "Inactive";?></a>

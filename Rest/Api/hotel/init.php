@@ -10,4 +10,5 @@ $link = $db_connection->db_connect();
 if(!$link){
 	exit;
 }
+$global_hotel_type_arr=array("1"=>"Family", "2"=>"Honeymoon", "3"=>"Joiner");
 ?>

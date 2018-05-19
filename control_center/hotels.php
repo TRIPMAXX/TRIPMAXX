@@ -155,6 +155,7 @@
 												<tr role="row">
 													<th>#</th>
 													<th>Hotel Image</th>
+													<th>Hotel Type</th>
 													<th>Hotel Name</th>
 													<th>Email Address</th>
 													<th>Phone Number</th>
@@ -187,6 +188,20 @@
 														echo "N/A";
 													endif;
 													?>
+													</td>
+													<td class=" ">
+														<?php
+														if($hotel_val['hotel_type']!=""):
+															$hotel_type_arr=explode(",", $hotel_val['hotel_type']);
+															$hotel_type_str="";
+															foreach($hotel_type_arr as $type_val):
+																$hotel_type_str.=($hotel_type_str!="" ? ", " : "").$global_hotel_type_arr[$type_val];
+															endforeach;
+															echo $hotel_type_str;
+														else:
+															echo "N/A";
+														endif;
+														?>
 													</td>
 													<td class=" "><?= $hotel_val['hotel_name'];?></td>
 													<td class=" "><?= $hotel_val['email_address'];?></td>

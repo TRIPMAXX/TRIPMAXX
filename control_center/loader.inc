@@ -12,4 +12,5 @@ if(!$link){
 }
 $current_page_name = tools::current_page();
 $general_settings = tools::find("first", TM_SETTINGS, $value='*', "WHERE id = 1", array());
+$global_hotel_type_arr=array("1"=>"Family", "2"=>"Honeymoon", "3"=>"Joiner");
 ?>
