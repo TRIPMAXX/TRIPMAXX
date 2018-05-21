@@ -1,7 +1,7 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['AGENT_SESSION_DATA']['id'], DOMAIN_NAME_PATH.'');
-	$white_list_array = array('company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'image_hidden', 'code', 'username', 'password', 'token', 'btn_submit', 'confirm_password', 'credit_balance');
+	$white_list_array = array('company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'image_hidden', 'code', 'username', 'password', 'token', 'btn_submit', 'confirm_password', 'credit_balance', 'pay_within_days', 'payment_type');
 	$verify_token = "create_new_agent";
 	$country_data = tools::find("all", TM_COUNTRIES, '*', "WHERE 1", array());
 	$currency_data = tools::find("all", TM_CURRENCIES, '*', "WHERE status=:status ORDER BY serial_number ASC ", array(':status'=>1));

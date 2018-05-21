@@ -1,7 +1,7 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['AGENT_SESSION_DATA']['id'], DOMAIN_NAME_PATH.'');
-	$white_list_array = array('company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'image_hidden', 'code', 'username', 'password', 'token', 'btn_submit', 'confirm_password', 'credit_balance');
+	$white_list_array = array('company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'image_hidden', 'code', 'username', 'password', 'token', 'btn_submit', 'confirm_password', 'credit_balance', 'pay_within_days', 'payment_type');
 	$verify_token = "create_new_agent";
 	$country_data = tools::find("all", TM_COUNTRIES, '*', "WHERE 1", array());
 	$currency_data = tools::find("all", TM_CURRENCIES, '*', "WHERE status=:status ORDER BY serial_number ASC ", array(':status'=>1));
@@ -144,6 +144,14 @@
 		<!--
 		$(function(){
 			$("#form_new_agent").validationEngine();
+			// HIDE & SHOW
+			$("#credit").change(function(){
+				$("#pay_within_days").hide();
+			});
+			$("#cash").change(function(){
+				$("#pay_within_days").show();
+			});
+			// HIDE & SHOW
 			$("#country").change(function(){
 				fetch_state($(this).val());
 			});
@@ -406,6 +414,28 @@
 												<div class="form-group col-md-6">
 													<label for="code" class="form-label1">Type The Code Shown <font color="#FF0000">*</font> :</label>
 													<input type="text" class="form-control form_input1 validate[required]" id="code" name="code" placeholder="Type The Code Shown" value="<?php echo(isset($_POST['code']) && $_POST['code']!='' ? $_POST['code'] : "");?>" tabindex="21">
+												</div>
+												<div class="clearfix"></div>
+												<div class="form-group col-md-6">
+													<label for="website" class="form-label1">Your Payment Type :</label>
+													<div class="radio">
+													  <label class="form-label1"><input type="radio" name="payment_type" id="credit" checked value="credit">Credit</label>&nbsp;&nbsp;&nbsp;
+													  <label><input type="radio" name="payment_type" id="cash" value="cash">Cash</label>
+													</div>
+												</div>
+												<div class="form-group col-md-6" id="pay_within_days" style="display:none;">
+													<label for="pwd" class="form-label1">You Can Pay Within (Day)<font color="#FF0000">*</font> :</label>
+													<select name="pay_within_days" class="form-control form_input1 select_bg validate[required]"  style="width:100%;">
+														<option value="" class="form-control form_input1">- Select Day -</option>
+													<?php
+													$payment_days=range(1,100);
+													foreach($payment_days as $day_key=>$day_val):
+													?>
+														<option value = "<?php echo $day_val;?>" <?php echo(isset($_POST['pay_within_days']) && $_POST['pay_within_days']==$day_val ? 'selected="selected"' : "");?>><?php echo $day_val;?></option>
+													<?php
+													endforeach;
+													?>
+													</select>
 												</div>
 												<div class="clearfix"></div>
 											</div>

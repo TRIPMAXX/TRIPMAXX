@@ -436,7 +436,9 @@
 															<td class=" " data-title="Action">
 																<a href = "<?php echo(DOMAIN_NAME_PATH);?>create_new_booking.php" title = "Create New Bookings"><i class="fa fa-plus-square fa-1x" ></i></a>&nbsp;&nbsp;
 																<a href = "<?php echo(DOMAIN_NAME_PATH);?>booking.php?sub_agent_id=<?php echo base64_encode($agent_val['id']);?>" title = "Lists Of Bookings"><i class="fa fa-plane fa-1x" ></i></a>&nbsp;&nbsp;
-																<a href = "<?php echo(DOMAIN_NAME_PATH);?>accounting.php?sub_agent_id=<?php echo base64_encode($agent_val['id']);?>" title = "Accounting"><i class="fa fa-usd fa-1x" ></i></a>&nbsp;&nbsp;
+																<?php if(isset($agent_val['payment_type']) && $agent_val['payment_type']!='cash'){;?>
+																<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>accounting?agent_id=<?php echo base64_encode($agent_val['id']);?>" title = "Accounting"><i class="fa fa-usd fa-1x" ></i></a>&nbsp;&nbsp;
+																<?php };?>
 																<a href = "<?php echo(DOMAIN_NAME_PATH);?>edit_agent.php?agent_id=<?php echo base64_encode($agent_val['id']);?>" title = "Edit Agent"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
 															</td>
 														</tr>

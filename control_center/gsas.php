@@ -258,7 +258,9 @@
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_booking?agent_id=<?php echo base64_encode($gsa_val['id']);?>" title = "Create New Bookings"><i class="fa fa-plus-square fa-1x" ></i></a>&nbsp;&nbsp;
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>bookings?agent_id=<?php echo base64_encode($gsa_val['id']);?>" title = "Lists Of Bookings"><i class="fa fa-plane fa-1x" ></i></a>&nbsp;&nbsp;
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>sub_agents?gsa_id=<?php echo base64_encode($gsa_val['id']);?>" title = "Lists Of Sub Agents"><i class="fa fa-align-justify fa-1x" ></i></a>&nbsp;&nbsp;
+													<?php if(isset($gsa_val['payment_type']) && $gsa_val['payment_type']!='cash'){;?>
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>accounting?agent_id=<?php echo base64_encode($gsa_val['id']);?>" title = "Accounting"><i class="fa fa-usd fa-1x" ></i></a>&nbsp;&nbsp;
+													<?php };?>
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_gsa?gsa_id=<?php echo base64_encode($gsa_val['id']);?>" title = "Edit GSA"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
 													<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>gsas?gsa_id=<?php echo base64_encode($gsa_val['id']);?>"  title = "Delete GSA" onclick = "confirm('Are you sure you want to delete this item? All the related data will be deleted also.') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 												</td>

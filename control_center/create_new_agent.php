@@ -148,8 +148,6 @@
 		//$_SESSION['SET_TYPE'] = 'error';
 		//$_SESSION['SET_FLASH'] = "We are having some problem to authorize api.";
 	endif;
-	$payment_days=range(1,100);
-	//print_r($payment_days);
 ?>
 <!DOCTYPE html>
 <html>
@@ -168,7 +166,7 @@
 		$("#cash").change(function(){
 			$("#pay_within_days").show();
 		});
-		//
+		// HIDE & SHOW
 		$("#country").change(function(){
 			fetch_state($(this).val());
 		});
@@ -463,17 +461,16 @@
 											</div>
 										</div>
 										<div class="form-group col-md-6" id="pay_within_days" style="display:none;">
-											<label for="pwd" class="form-label1">You Can Pay Within <font color="#FF0000">*</font> :</label>
-											<select name="pay_within_days" class="form-control form_input1 select_bg"  style="width:100%;">
+											<label for="pwd" class="form-label1">You Can Pay Within (Day)<font color="#FF0000">*</font> :</label>
+											<select name="pay_within_days" class="form-control form_input1 select_bg validate[required]"  style="width:100%;">
 												<option value="" class="form-control form_input1">- Select Day -</option>
 											<?php
-											if(!empty($payment_days)):
-												foreach($payment_days as $day_key=>$day_val):
+											$payment_days=range(1,100);
+											foreach($payment_days as $day_key=>$day_val):
 											?>
 												<option value = "<?php echo $day_val;?>" <?php echo(isset($_POST['pay_within_days']) && $_POST['pay_within_days']==$day_val ? 'selected="selected"' : "");?>><?php echo $day_val;?></option>
 											<?php
-												endforeach;
-											endif;
+											endforeach;
 											?>
 											</select>
 										</div>
