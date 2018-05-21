@@ -40,7 +40,7 @@
 	<script type="text/javascript" src="<?php echo(DOMAIN_NAME_PATH);?>js/twitterfeed.js"></script> 
 	<script src="<?php echo(DOMAIN_NAME_PATH);?>js/jquery.validationEngine.js" type="text/javascript"></script>
 	<script src="<?php echo(DOMAIN_NAME_PATH);?>js/jquery.validationEngine-en.js" type="text/javascript"></script>
-	<script src="<?php echo(CONTROL_CENTER_JS_PATH);?>js/select2.js" type="text/javascript"></script>
+	<script src="<?php echo(DOMAIN_NAME_PATH);?>js/select2.js" type="text/javascript"></script>
 	<script type="text/javascript">
 	<!--
 		$(function(){

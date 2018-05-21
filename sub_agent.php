@@ -3,7 +3,17 @@
 	tools::module_validation_check(@$_SESSION['AGENT_SESSION_DATA']['id'], DOMAIN_NAME_PATH.'');
 	if(isset($_GET['del_agent_id']) && $_GET['del_agent_id']!=""):
 	endif;
-	$agent_data = tools::find("all", TM_AGENT, '*', "WHERE type=:type AND parent_id=:parent_id ", array(":type"=>"A", ':parent_id'=>$_SESSION['AGENT_SESSION_DATA']['id']));
+	$agent_data = tools::find("all", TM_AGENT." as a, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci, ".TM_CURRENCIES." as cu", 'a.*, co.name as co_name, s.name as s_name, ci.name as ci_name, cu.currency_code as currency_code, cu.currency_name as currency_name', "WHERE a.country=co.id AND a.state=s.id AND a.city=ci.id AND a.preferred_currency=cu.id AND type=:type AND parent_id=:parent_id ", array(":type"=>"A", ':parent_id'=>$_SESSION['AGENT_SESSION_DATA']['id']));
+	$autentication_booking_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."authorized.php"));
+	if(isset($autentication_booking_data->status)):
+		if($autentication_booking_data->status=="success"):
+			$post_booking_data['token']=array(
+				"token"=>$autentication_booking_data->results->token,
+				"token_timeout"=>$autentication_booking_data->results->token_timeout,
+				"token_generation_time"=>$autentication_booking_data->results->token_generation_time
+			);
+		endif;
+	endif;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -422,13 +432,45 @@
 															<td class=" "><?= $agent_val['telephone'];?></td>
 															<td class=" "><?= $agent_val['company_name'];?></td>
 															<td class=" ">
-																<b>ACTIVE BOOKING: 5
-																<br/>
-																COMPLETE BOOKING: 20
-																<br/>
-																CANCELLED BOOKING: 4
-																<br/>
-																TOTAL EARNING: $2000.00</b>
+																<?php
+																$post_booking_data['data']['agent_id']=$agent_val['id'];
+																$post_booking_data_str=json_encode($post_booking_data);
+																$ch = curl_init();
+																curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+																curl_setopt($ch, CURLOPT_HEADER, false);
+																curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+																curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+																curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."booking/agent-booking-counter.php");
+																curl_setopt($ch, CURLOPT_POSTFIELDS, $post_booking_data_str);
+																curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+																$return_booking_data = curl_exec($ch);
+																curl_close($ch);
+																//print_r($return_booking_data);
+																$return_booking_data_arr=json_decode($return_booking_data, true);
+																$agent_data=array();
+																if(!isset($return_booking_data_arr['status'])):
+																	//$_SESSION['SET_TYPE'] = 'error';
+																	//$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+																elseif($return_booking_data_arr['status']=="success"):
+																	$agent_booking_data=$return_booking_data_arr['results'];
+																else:
+																	//$_SESSION['SET_TYPE'] = 'error';
+																	//$_SESSION['SET_FLASH'] = $return_booking_data_arr['msg'];
+																endif;
+																if(!empty($agent_booking_data)):
+																?>
+																	<b>ACTIVE BOOKING: <?php echo $agent_booking_data['total_active'];?>
+																	<br/>
+																	COMPLETE BOOKING: <?php echo $agent_booking_data['total_completed'];?>
+																	<br/>
+																	CANCELLED BOOKING: <?php echo $agent_booking_data['total_cancelled'];?>
+																	<br/>
+																	TOTAL BOOOKING AMOUNT: <?php echo $agent_val['currency_code'].number_format($agent_booking_data['total_amount'], 2, ".", ",");?></b>
+																<?php
+																else:
+																	echo "N/A";
+																endif;
+																?>
 															</td>
 															<td class=" ">
 																<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $agent_val['status']==1 ? "btn-success" : "btn-danger";?>" onclick="change_status(<?= $agent_val['id'];?>, $(this))"><?= $agent_val['status']==1 ? "Active" : "Inactive";?></a>

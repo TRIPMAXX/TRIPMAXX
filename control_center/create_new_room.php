@@ -1,7 +1,7 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
-	$white_list_array = array('hotel_id', 'room_type', 'room_images', 'room_description', 'amenities', 'price', 'number_of_rooms', 'start_date', 'end_date', 'price_per_night', 'status', 'token', 'id', 'btn_submit', 'amenities_arr');
+	$white_list_array = array('hotel_id', 'room_type', 'room_images', 'room_description', 'amenities', 'price', 'number_of_rooms', 'start_date', 'end_date', 'price_per_night', 'room_attribute_id', 'status', 'token', 'id', 'btn_submit', 'amenities_arr');
 	$verify_token = "create_new_room";
 	if(isset($_GET['hotel_id']) && $_GET['hotel_id']!=""):
 		$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
@@ -32,6 +32,30 @@
 			//else:
 			//	$_SESSION['SET_TYPE'] = 'error';
 			//	$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+			endif;
+			$post_data_room_attr['token']=$post_data['token'];
+			$post_data_room_attr['data']['type']="status";
+			$post_data_room_str=json_encode($post_data_room_attr);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($ch, CURLOPT_HEADER, false);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."room-attribute/read.php");
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_room_str);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+			$return_room_data = curl_exec($ch);
+			//print_r($return_room_data);
+			curl_close($ch);
+			$return_room_data_arr=json_decode($return_room_data, true);
+			//print_r($return_room_data_arr);
+			$room_attribute_data=array();
+			if($return_room_data_arr['status']=="success"):
+				$room_attribute_data=$return_room_data_arr['results'];
+			
+			//else:
+			//	$_SESSION['SET_TYPE'] = 'error';
+			//	$_SESSION['SET_FLASH'] = $return_room_data_arr['msg'];
 			endif;
 			$post_data['data']=$_GET;
 			$post_data_str=json_encode($post_data);
@@ -135,8 +159,18 @@ endif;
 	<!-- JAVASCRIPT CODE -->
 	<script type="text/javascript">
 	<!--
-	jQuery(document).ready(function(){
-		jQuery("#form_create_room").validationEngine();
+	$(function(){
+		$("#form_create_room").validationEngine();
+		$("#room_attribute_id").change(function(){
+			if($("#room_attribute_id").val()!="")
+			{
+				$("#room_type").val($("#room_attribute_id option:selected").text());
+			}
+			else
+			{
+				$("#room_type").val("");
+			}
+		});
 	});
 	//-->
 	</script>
@@ -146,20 +180,6 @@ endif;
 	CKEDITOR.config.shiftEnterMode = CKEDITOR.ENTER_BR;
 	CKEDITOR.config.protectedSource.push(/<i[^>]*><\/i>/g);
 	CKEDITOR.config.allowedContent = true;
-	</script>
-	<script>
-	$( function() {
-		$( "#start_date1" ).datepicker();
-		$( "#end_date1" ).datepicker();
-		$( "#start_date2" ).datepicker();
-		$( "#end_date2" ).datepicker();
-		$( "#start_date3" ).datepicker();
-		$( "#end_date3" ).datepicker();
-		$( "#start_date4" ).datepicker();
-		$( "#end_date4" ).datepicker();
-		$( "#start_date5" ).datepicker();
-		$( "#end_date5" ).datepicker();
-	} );
 	</script>
 	<!-- JAVASCRIPT CODE -->
 </head>
@@ -193,7 +213,19 @@ endif;
 									<div class="box-body">
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Room Type<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['room_type']) && $_POST['room_type']!='' ? $_POST['room_type'] : "");?>" name="room_type" id="room_type" placeholder="Room Type" tabindex = "1" />
+											<select class="form-control validate[optional]" name="room_attribute_id" id="room_attribute_id" tabindex = "1">
+												<option value="">Select Room Type</option>
+											<?php
+											if(isset($room_attribute_data) && !empty($room_attribute_data)):
+												foreach($room_attribute_data as $room_key=>$room_val):
+											?>
+												<option value = "<?php echo $room_val['id'];?>" <?php echo(isset($_POST['room_attribute_id']) && $_POST['room_attribute_id']==$room_val['id'] ? 'selected="selected"' : "");?>><?php echo $room_val['attribute_name'];?></option>
+											<?php
+												endforeach;
+											endif;
+											?>
+											</select>
+											<input type="hidden" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['room_type']) && $_POST['room_type']!='' ? $_POST['room_type'] : "");?>" name="room_type" id="room_type" placeholder="Room Type" tabindex = "0" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="inputName" class="control-label">Room Images</label>

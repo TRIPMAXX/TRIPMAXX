@@ -226,15 +226,15 @@
 												curl_close($ch);
 												//print_r($return_booking_data);
 												$return_booking_data_arr=json_decode($return_booking_data, true);
-												$agent_data=array();
-												if(!isset($return_data_arr['status'])):
+												$agent_booking_data=array();
+												if(!isset($return_booking_data_arr['status'])):
 													//$_SESSION['SET_TYPE'] = 'error';
 													//$_SESSION['SET_FLASH']="Some error has been occure during execution.";
-												elseif($return_data_arr['status']=="success"):
+												elseif($return_booking_data_arr['status']=="success"):
 													$agent_booking_data=$return_booking_data_arr['results'];
 												else:
 													//$_SESSION['SET_TYPE'] = 'error';
-													//$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+													//$_SESSION['SET_FLASH'] = $return_booking_data_arr['msg'];
 												endif;
 												if(!empty($agent_booking_data)):
 												?>

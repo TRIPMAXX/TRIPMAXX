@@ -60,6 +60,8 @@
 				<ul class="treeview-menu">
 					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_attribute"><i class="fa fa-circle-o"></i> CREATE ATTRIBUTES</a></li>
 					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>attributes"><i class="fa fa-circle-o"></i> LISTS OF ATTRIBUTES</a></li>
+					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_room_attribute"><i class="fa fa-circle-o"></i> CREATE ROOM ATTRIBUTES</a></li>
+					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>room_attributes"><i class="fa fa-circle-o"></i> LISTS OF ROOM ATTRIBUTES</a></li>
 					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_hotel"><i class="fa fa-circle-o"></i> CREATE NEW HOTELS</a></li>
 					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>hotels"><i class="fa fa-circle-o"></i> LISTS OF HOTELS</a></li>
 				</ul>
