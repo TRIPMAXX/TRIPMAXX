@@ -11,7 +11,7 @@
 			$prev_agent_id=$server_data['data']['prev_agent_id'];
 			$find_prev_agent = tools::find("first", TM_AGENT, '*', "WHERE id=:id ", array(":id"=>$prev_agent_id));
 			if(!empty($find_prev_agent)):
-				$_POST['credit_balance']=$find_prev_agent['credit_balance']+$server_data['data']['prev_total_price'];
+				$closing_balance=$_POST['credit_balance']=$find_prev_agent['credit_balance']+$server_data['data']['prev_total_price'];
 				$_POST['id']=$find_prev_agent['id'];
 				if($save_prev_agent_data = tools::module_form_submission("", TM_AGENT)):
 					unset($_POST);
@@ -19,6 +19,7 @@
 					$_POST['amount']=$server_data['data']['prev_total_price'];
 					$_POST['note']="Credit refund money for booking with quotation name:".$server_data['data']['prev_quotation_name'];
 					$_POST['debit_or_credit']="Credit";
+					$_POST['closing_balance']=$closing_balance;
 					$save_agent_credit=tools::module_form_submission("", TM_AGENT_ACCOUNTING);
 					unset($_POST);
 					$_POST['transaction_id']=tools::generate_transaction_id("TM-".$save_agent_credit);
@@ -37,7 +38,7 @@
 			$agent_id=$server_data['data']['agent_id'];
 			$find_agent = tools::find("first", TM_AGENT, '*', "WHERE id=:id ", array(":id"=>$agent_id));
 			if(!empty($find_agent)):
-				$_POST['credit_balance']=$find_agent['credit_balance']-$server_data['data']['total_price'];
+				$closing_balance=$_POST['credit_balance']=$find_agent['credit_balance']-$server_data['data']['total_price'];
 				$_POST['id']=$find_agent['id'];
 				if($save_agent_data = tools::module_form_submission("", TM_AGENT)):
 					unset($_POST);
@@ -45,6 +46,7 @@
 					$_POST['amount']=$server_data['data']['total_price'];
 					$_POST['note']="Debit money for booking with quotation name:".$server_data['data']['quotation_name'];
 					$_POST['debit_or_credit']="Debit";
+					$_POST['closing_balance']=$closing_balance;
 					$save_agent_credit=tools::module_form_submission("", TM_AGENT_ACCOUNTING);
 					unset($_POST);
 					$_POST['transaction_id']=tools::generate_transaction_id("TM-".$save_agent_credit);

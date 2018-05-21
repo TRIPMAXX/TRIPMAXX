@@ -106,35 +106,89 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>LISTS OF ACCOUNTING</title>
-	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
-	<!-- JAVASCRIPT CODE -->
-	<script type="text/javascript">
-	<!--
-	$(function() {
-		$('#example').DataTable();
-	});
-	</script>
-	<!-- JAVASCRIPT CODE -->
+	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>LISTS OF ACCOUNTING PRINT</title>
+	<link href="<?php echo(CONTROL_CENTER_CSS_PATH);?>bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="<?php echo(CONTROL_CENTER_CSS_PATH);?>select2.css" rel="stylesheet" type="text/css" />
+	<style type="text/css">
+	@media screen, print
+		.main-footer{margin-left: 0px;text-align:center;}
+		.main-header{background:#FFF;height:auto;max-height:none;padding: 15px 0px;}
+		.main-header .logo{float:none;height:auto;padding:0px;}
+		.footer-a {
+			color:#fff !important;
+			background:#141d1e !important;
+			padding:56px 0px 31px 0px;
+		}
+		.footer-a .section {
+			width:281px;
+			float:left;
+			display:block;
+			color:#fff !important;
+		}
+		.footer-a .section:last-child {
+			float:right;
+			width:254px;
+			color:#fff !important;
+		}
+		.footer-lbl {
+			font-size:14px;
+			color:#ffffff;
+			color:#ffffff;
+			font-weight:normal;
+			background:url(assets/img/foot-lbl.gif) left bottom no-repeat;
+			padding:0px 0px 18px 0px;
+			text-transform:uppercase;	
+			color:#fff !important;
+		}
+		.footer-adress {
+			font-size:13px;
+			line-height:33px;
+			color:#f7f7f7;
+			background:url(assets/img/footer-icon-01.png) left top no-repeat;
+			padding:0px 0px 0px 22px;
+			background-position:left 9px;
+			margin:0px 0px 9px 0px;
+			color:#fff !important;
+		}
+		.footer-phones {
+			font-size:13px;
+			color:#f7f7f7;
+			background:url(assets/img/footer-icon-02.png) left top no-repeat;
+			padding:0px 0px 0px 22px;
+			margin:0px 0px 17px 0px;
+			background-position:left 1px;
+			color:#fff !important;
+		}
+		.footer-phones a[href^=tel]{color:#fff; text-decoration:none;} 
+		.footer-email {
+			font-size:13px;
+			color:#f7f7f7;
+			margin:0px 0px 17px 0px;
+			background:url(assets/img/footer-icon-03.png) left top no-repeat;
+			padding:0px 0px 0px 22px;
+			background-position:left 2px;
+			color:#fff !important;
+		}
+		.footer-skype {
+			font-size:13px;
+			color:#f7f7f7;
+			background:url(assets/img/footer-icon-04.png) left top no-repeat;
+			padding:0px 0px 0px 22px;
+			background-position:left 2px;
+			color:#fff !important;
+		}
+	}
+	</style>
 </head>
-<body class="skin-purple">
+<body class="skin-purple" onload="window.print();">
 <div class="wrapper">
-    <!-- TOP HEADER -->
-	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'header.php');?>		
-	<!-- TOP HEADER -->
-
-	<!-- LEFT MENU -->
-	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'menu.php');?>
-	<!-- LEFT MENU --> 
-
+	<header class="main-header">
+		<img  class="logo"src="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>assets/img/logo.png" border="0" alt="">
+	</header>
 	<!-- BODY --> 
-	<div class="content-wrapper">
+	<div class="content-wrapper" style="margin-left: 0px;padding: 15px;">
 		<section class="content-header">
 			<h1>Lists Of Accounting</h1>
-			<ol class="breadcrumb">
-				<li><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
-				<li class="active">Lists Of Accounting </li>
-			</ol>
 		</section>
 		<section class="content">
 			<div class="row">
@@ -145,10 +199,6 @@
 							<div id="" class="row">
 								<div id="" class="col-md-8">
 									<h4><strong>Current Credit Balance</strong> : <?php echo number_format($agent_data['credit_balance'], 2, ".", ",");?></h4>
-								</div>
-								<div id="" class="col-md-4">
-									<a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>print_accounting?agent_id=<?php echo base64_encode($agent_data['id']);?>" target="_blank"><button class="status_checks btn btn-success btn-md" type="submit" style="float:right; margin-bottom:10px;margin-left:15px;" value="">Print</button></a>
-									<a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_accounting?agent_id=<?php echo base64_encode($agent_data['id']);?>"><button class="status_checks btn btn-success btn-md" type="submit" style="float:right; margin-bottom:10px;" value="">CREATE NEW ACCOUNTING</button></a>
 								</div>
 							</div>
 							<div id="example1_wrapper" class="dataTables_wrapper form-inline" role="grid">
@@ -163,7 +213,6 @@
 												<th>Credit</th>
 												<th>Closing Balance</th>
 												<th>Note</th>
-												<th>Action</th>
 											</tr>
 										</thead>
 										<tbody aria-relevant="all" aria-live="polite" role="alert">
@@ -199,10 +248,6 @@
 												</td>
 												<td class=" "><?= ($accounting_val['closing_balance']!="" ? $accounting_val['closing_balance'] : "--");?></td>
 												<td class=" "><?= nl2br($accounting_val['note']);?></td>
-												<td class=" " data-title="Action">
-													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_accounting?accounting_id=<?php echo base64_encode($accounting_val['id']);?>&agent_id=<?php echo base64_encode($agent_data['id']);?>" title = "Edit Accounting"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
-													<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>accounting?accounting_id=<?php echo base64_encode($accounting_val['id']);?>&agent_id=<?php echo base64_encode($agent_data['id']);?>"  title = "Delete Accounting" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
-												</td>
 											</tr>
 										<?php
 											endforeach;
@@ -226,7 +271,32 @@
 	</div>
 	<!-- BODY --> 
 	<!-- FOOTER -->
-	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'footer.php');?>
+	<footer style="color:#fff;background:#000;padding:56px 0px 31px 0px;border-top:1px solid #000;">
+		<div style="width:100%;margin: 0px auto;">
+			<div style="padding:15px;">
+				<div style="float:left;width:100%;">
+					<div style="float:left;width:46%;padding:2%;">
+						<div style="font-size: 20px;padding-bottom: 18px;color:#ffffff;">Get In Touch</div>
+						<div style="font-size:13px;line-height:25px;color:#f7f7f7;">
+							2, Ganesh Chandra Avenue, Commerce House, 1st floor, Kolkata 700013. India.
+						</div>
+					</div>
+					<div style="float:left;width:46%;padding:2%;">
+						<div style="font-size: 20px;padding-bottom: 18px;color:#ffffff;">CONTACT</div>
+						<div style="font-size:13px;color:#f7f7f7;line-height:25px;">Telephones: +91 33 4032 8888</div>
+						<div style="font-size:13px;color:#f7f7f7;line-height:25px;">E-mail: travel@tripmaxx.in</div>
+					</div>
+					<div style="clear:both"></div>
+				</div>
+				<div style="clear:both"></div>
+			</div>
+		</div>
+		<div class="clear"></div>
+	</footer>
+	<footer class="main-footer text-center" style="padding-top:10px;">
+		<div class="pull-right hidden-xs"></div>
+		<strong>Copyright &copy; 2018 <a href="#">TRIPMAXX</a>. All rights reserved</strong>
+	</footer>
 	<!-- FOOTER -->
       </div>
    </body>
