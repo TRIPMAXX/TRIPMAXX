@@ -1,7 +1,7 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
-	$white_list_array = array('employee_id', 'company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'code', 'username', 'password', 'account_department_employee_id', 'account_department_name', 'account_department_email', 'account_department_number', 'reservation_department_employee_id', 'reservation_department_name', 'reservation_department_email', 'reservation_department_number', 'management_department_employee_id', 'management_department_name', 'management_department_email', 'management_department_number', 'hotel_price', 'tour_price', 'transfer_price', 'package_price', 'status', 'token', 'id', 'btn_submit', 'confirm_password');
+	$white_list_array = array('employee_id', 'company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'code', 'username', 'password', 'account_department_employee_id', 'account_department_name', 'account_department_email', 'account_department_number', 'reservation_department_employee_id', 'reservation_department_name', 'reservation_department_email', 'reservation_department_number', 'management_department_employee_id', 'management_department_name', 'management_department_email', 'management_department_number', 'hotel_price', 'tour_price', 'transfer_price', 'package_price', 'status', 'token', 'id', 'btn_submit', 'confirm_password', 'pay_within_days', 'payment_type');
 	$verify_token = "edit_agent";
 	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
 	if(isset($autentication_data->status)):
@@ -190,6 +190,14 @@
 	<!--
 	$(function(){
 		$("#form_edit_agent").validationEngine();
+		// HIDE & SHOW
+		$("#credit").change(function(){
+			$("#pay_within_days").hide();
+		});
+		$("#cash").change(function(){
+			$("#pay_within_days").show();
+		});
+		// HIDE & SHOW
 		$("#country").change(function(){
 			fetch_state($(this).val());
 		});
@@ -496,6 +504,28 @@
 										<div class="form-group col-md-6">
 											<label for="code" class="form-label1">Type The Code Shown <font color="#FF0000">*</font> :</label>
 											<input type="text" class="form-control form_input1 validate[required]" id="code" name="code" placeholder="Type The Code Shown" value="<?php echo(isset($_POST['code']) && $_POST['code']!='' ? $_POST['code'] : (isset($agent_data['code']) && $agent_data['code']!='' ? $agent_data['code'] : ""));?>" tabindex="21">
+										</div>
+										<div class="clearfix"></div>
+										<div class="form-group col-md-6">
+											<label for="website" class="form-label1">Your Payment Type :</label>
+											<div class="radio">
+											  <label class="form-label1"><input type="radio" name="payment_type" id="credit" value="credit" <?php echo(isset($agent_data['payment_type']) && $agent_data['payment_type']=='credit' ? "checked" : "");?>>Credit</label>&nbsp;&nbsp;&nbsp;
+											  <label><input type="radio" name="payment_type" id="cash" value="cash" <?php echo(isset($agent_data['payment_type']) && $agent_data['payment_type']=='cash' ? "checked" : "");?>>Cash</label>
+											</div>
+										</div>
+										<div class="form-group col-md-6" id="pay_within_days" style="<?php echo(isset($agent_data['payment_type']) && $agent_data['payment_type']=='cash' ? "display:block;" : "display:none;");?>">
+											<label for="pwd" class="form-label1">You Can Pay Within (Day)<font color="#FF0000">*</font> :</label>
+											<select name="pay_within_days" class="form-control form_input1 select_bg  validate[required]"  style="width:100%;">
+												<option value="" class="form-control form_input1">- Select Day -</option>
+											<?php
+											$payment_days=range(1,100);
+											foreach($payment_days as $day_key=>$day_val):
+											?>
+												<option value = "<?php echo $day_val;?>" <?php echo(isset($_POST['pay_within_days']) && $_POST['pay_within_days']==$day_val ? 'selected="selected"' : (isset($agent_data['pay_within_days']) && $agent_data['pay_within_days']==$day_val ? 'selected="selected"' : ""));?>><?php echo $day_val;?></option>
+											<?php
+											endforeach;
+											?>
+											</select>
 										</div>
 										<div class="clearfix"></div>
 									</div>

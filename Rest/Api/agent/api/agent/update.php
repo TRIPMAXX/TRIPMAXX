@@ -12,6 +12,9 @@
 		if(!empty($find_agent)):
 			$_POST=$server_data['data'];
 			$_POST['id']=$find_agent['id'];
+			if(isset($_POST['payment_type']) && $_POST['payment_type']=="cash"):
+				$_POST['credit_balance']="";
+			endif;
 			$check_flag=true;
 			if(isset($server_data['data']['update_type']) && $server_data['data']['update_type']=="status"):
 				if($find_agent['status']==1):

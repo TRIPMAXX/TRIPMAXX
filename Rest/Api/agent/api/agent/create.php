@@ -9,6 +9,9 @@
 	
 	if(isset($server_data['token']) && isset($server_data['token']['token']) && isset($server_data['token']['token_timeout']) && isset($server_data['token']['token_generation_time']) && tools::jwtTokenDecode($server_data['token']['token']) && ($server_data['token']['token_generation_time']+$server_data['token']['token_timeout']) > time()):
 		$_POST=$server_data['data'];
+		if(isset($_POST['payment_type']) && $_POST['payment_type']=="cash"):
+			$_POST['credit_balance']="";
+		endif;
 		$uploaded_file_json_data="";
 		if(tools::module_data_exists_check("company_name = '".tools::stripcleantohtml($_POST['company_name'])."'", '', TM_AGENT)) {
 			$return_data['status']="error";
