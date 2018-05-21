@@ -13,15 +13,17 @@
 		if($save_agent_credit = tools::module_form_submission($uploaded_file_json_data, TM_AGENT_ACCOUNTING)) {
 			$added_amount=$_POST['amount'];
 			$agent_id=$_POST['agent_id'];
+			$find_agent = tools::find("first", TM_AGENT, '*', "WHERE id=:id", array(":id"=>$_POST['agent_id']));
+			$closing_balance=$find_agent['credit_balance']+$added_amount;
 			unset($_POST);
+			$_POST['closing_balance']=$closing_balance;
 			$_POST['transaction_id']=tools::generate_transaction_id("TM-".$save_agent_credit);
 			$_POST['id']=$save_agent_credit;
 			$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
 			$_POST['agent_id']=$agent_id;
-			$find_agent = tools::find("first", TM_AGENT, '*', "WHERE id=:id", array(":id"=>$_POST['agent_id']));
 			unset($_POST);
 			$_POST['id']=$find_agent['id'];
-			$_POST['credit_balance']=$find_agent['credit_balance']+$added_amount;
+			$_POST['credit_balance']=$closing_balance;
 			$update_agent = tools::module_form_submission("", TM_AGENT);
 			$return_data['status']="success";
 			$return_data['msg'] = 'Agent credit has been created successfully.';

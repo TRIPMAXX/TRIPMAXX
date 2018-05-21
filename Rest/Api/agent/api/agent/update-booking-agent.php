@@ -10,7 +10,7 @@
 		$agent_id=$server_data['data']['agent_id'];
 		$find_agent = tools::find("first", TM_AGENT, '*', "WHERE id=:id ", array(":id"=>$agent_id));
 		if(!empty($find_agent)):
-			$_POST['credit_balance']=$find_agent['credit_balance']-$server_data['data']['total_price'];
+			$closing_balance=$_POST['credit_balance']=$find_agent['credit_balance']-$server_data['data']['total_price'];
 			$_POST['id']=$find_agent['id'];
 			if($save_agent_data = tools::module_form_submission("", TM_AGENT)):
 				unset($_POST);
@@ -18,6 +18,7 @@
 				$_POST['amount']=$server_data['data']['total_price'];
 				$_POST['note']="Debit money for booking with quotation name:".$server_data['data']['quotation_name'];
 				$_POST['debit_or_credit']="Debit";
+				$_POST['closing_balance']=$closing_balance;
 				tools::module_form_submission("", TM_AGENT_ACCOUNTING);
 				$return_data['status'] = 'success';
 				$return_data['result'] = $find_agent;

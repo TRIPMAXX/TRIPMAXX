@@ -10,7 +10,11 @@
 		$_GET=$server_data['data'];
 		$find_accounting = tools::find("first", TM_AGENT_ACCOUNTING, '*', "WHERE id=:id", array(":id"=>base64_decode($_GET['accounting_id'])));
 		if(!empty($find_accounting)):
+			$find_agent = tools::find("first", TM_AGENT, '*', "WHERE id=:id", array(":id"=>$find_accounting['agent_id']));
 			if(tools::delete(TM_AGENT_ACCOUNTING, "WHERE id=:id", array(":id"=>$find_accounting['id']))):
+				$_POST['id']=$find_agent['id'];
+				$_POST['credit_balance']=$find_agent['credit_balance']-$find_accounting['amount'];
+				$update_agent = tools::module_form_submission("", TM_AGENT);
 				$return_data['status'] = 'success';
 				$return_data['msg'] = 'Agent credit has been deleted successfully.';
 				$return_data['results'] = array();

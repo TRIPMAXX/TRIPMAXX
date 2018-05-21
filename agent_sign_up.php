@@ -109,6 +109,7 @@
 					$_POST['agent_id']=$save_agent;
 					$_POST['amount']=$credit_balance;
 					$_POST['note']="Default Credit";
+					$_POST['closing_balance']=$credit_balance;
 					$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
 					unset($_POST);
 					$_POST['transaction_id']=tools::generate_transaction_id("TM-".$save_agent_accounting);
