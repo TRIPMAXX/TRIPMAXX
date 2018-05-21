@@ -465,7 +465,7 @@
 									</div>
 									<div id="" class="col-md-3">
 										<div class="form-group fancy-form">
-											<input type="text" class="form-control form_input1 validate[required, custom[zip]]" id="zipcode" name="zipcode" placeholder="Pincode/Zipcode/Postcode" value="<?php echo(isset($_POST['zipcode']) && $_POST['zipcode']!='' ? $_POST['zipcode'] : "");?>" tabindex="14">
+											<input type="text" class="form-control form_input1 validate[required, custom[onlyLetterNumber]]" id="zipcode" name="zipcode" placeholder="Pincode/Zipcode/Postcode" value="<?php echo(isset($_POST['zipcode']) && $_POST['zipcode']!='' ? $_POST['zipcode'] : "");?>" tabindex="14">
 										</div>
 									</div>
 									<div id="" class="col-md-3">

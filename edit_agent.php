@@ -1,7 +1,7 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['AGENT_SESSION_DATA']['id'], DOMAIN_NAME_PATH.'');
-	$white_list_array = array('company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'image_hidden', 'code', 'username', 'password', 'token', 'btn_submit', 'confirm_password', 'credit_balance', 'pay_within_days', 'payment_type');
+	$white_list_array = array('company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'image_hidden', 'code', 'username', 'password', 'token', 'btn_submit', 'confirm_password', 'credit_balance');
 	$verify_token = "create_new_agent";
 	$country_data = tools::find("all", TM_COUNTRIES, '*', "WHERE 1", array());
 	$currency_data = tools::find("all", TM_CURRENCIES, '*', "WHERE status=:status ORDER BY serial_number ASC ", array(':status'=>1));
@@ -382,7 +382,7 @@
 												</div>
 												<div class="form-group col-md-6">
 													<label for="zipcode" class="form-label1">Pincode/Zipcode/Postcode <font color="#FF0000">*</font> :</label>
-													<input type="text" class="form-control form_input1 validate[required, custom[zip]]" id="zipcode" name="zipcode" placeholder="Pincode/Zipcode/Postcode" value="<?php echo(isset($_POST['zipcode']) && $_POST['zipcode']!='' ? $_POST['zipcode'] : (isset($find_sub_agent['zipcode']) && $find_sub_agent['zipcode']!='' ? $find_sub_agent['zipcode'] : ""));?>" tabindex="14">
+													<input type="text" class="form-control form_input1 validate[required, custom[onlyLetterNumber]]" id="zipcode" name="zipcode" placeholder="Pincode/Zipcode/Postcode" value="<?php echo(isset($_POST['zipcode']) && $_POST['zipcode']!='' ? $_POST['zipcode'] : (isset($find_sub_agent['zipcode']) && $find_sub_agent['zipcode']!='' ? $find_sub_agent['zipcode'] : ""));?>" tabindex="14">
 												</div>
 												<div class="clearfix"></div>
 												<div class="form-group col-md-12">

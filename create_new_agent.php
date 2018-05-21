@@ -369,7 +369,7 @@
 												</div>
 												<div class="form-group col-md-6">
 													<label for="zipcode" class="form-label1">Pincode/Zipcode/Postcode <font color="#FF0000">*</font> :</label>
-													<input type="text" class="form-control form_input1 validate[required, custom[zip]]" id="zipcode" name="zipcode" placeholder="Pincode/Zipcode/Postcode" value="<?php echo(isset($_POST['zipcode']) && $_POST['zipcode']!='' ? $_POST['zipcode'] : "");?>" tabindex="14">
+													<input type="text" class="form-control form_input1 validate[required, custom[onlyLetterNumber]]" id="zipcode" name="zipcode" placeholder="Pincode/Zipcode/Postcode" value="<?php echo(isset($_POST['zipcode']) && $_POST['zipcode']!='' ? $_POST['zipcode'] : "");?>" tabindex="14">
 												</div>
 												<div class="clearfix"></div>
 												<div class="form-group col-md-12">

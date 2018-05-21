@@ -1,7 +1,7 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['AGENT_SESSION_DATA']['id'], DOMAIN_NAME_PATH.'');
-	$white_list_array = array('company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'image_hidden', 'code', 'username', 'password', 'token', 'btn_submit', 'confirm_password', 'credit_balance', 'id', 'pay_within_days', 'payment_type');
+	$white_list_array = array('company_name', 'accounting_name', 'first_name', 'middle_name', 'last_name', 'email_address', 'designation', 'iata_status', 'nature_of_business', 'preferred_currency', 'country', 'state', 'city', 'zipcode', 'address', 'timezone', 'telephone', 'mobile_number', 'website', 'image', 'image_hidden', 'code', 'username', 'password', 'token', 'btn_submit', 'confirm_password', 'credit_balance', 'id');
 	$verify_token = "create_new_agent";
 	
 	//print_r($agent_data);exit;
@@ -147,16 +147,6 @@
 	<!--
 	$(function(){
 		$("#agent_signe_up").validationEngine();
-		// HIDE & SHOW
-		$("#credit").change(function(){
-			$("#pay_within_days").hide();
-			$("#pay_within_days1").hide();
-		});
-		$("#cash").change(function(){
-			$("#pay_within_days").show();
-			$("#pay_within_days1").show();
-		});
-		// HIDE & SHOW
 		$("#country").change(function(){
 			fetch_state($(this).val());
 		});
@@ -471,7 +461,7 @@
 									</div>
 									<div id="" class="col-md-3">
 										<div class="form-group fancy-form">
-											<input type="text" class="form-control form_input1 validate[required, custom[zip]]" id="zipcode" name="zipcode" placeholder="Pincode/Zipcode/Postcode" value="<?php echo(isset($_POST['zipcode']) && $_POST['zipcode']!='' ? $_POST['zipcode'] : (isset($agent_data['zipcode']) && $agent_data['zipcode']!='' ? $agent_data['zipcode'] : ""));?>" tabindex="14">
+											<input type="text" class="form-control form_input1 validate[required, custom[onlyLetterNumber]]" id="zipcode" name="zipcode" placeholder="Pincode/Zipcode/Postcode" value="<?php echo(isset($_POST['zipcode']) && $_POST['zipcode']!='' ? $_POST['zipcode'] : (isset($agent_data['zipcode']) && $agent_data['zipcode']!='' ? $agent_data['zipcode'] : ""));?>" tabindex="14">
 										</div>
 									</div>
 									<div id="" class="col-md-3">
@@ -563,32 +553,6 @@
 											<input type="text" class="form-control form_input1 validate[required]" id="code" name="code" placeholder="Type The Code Shown" value="<?php echo(isset($_POST['code']) && $_POST['code']!='' ? $_POST['code'] : (isset($agent_data['code']) && $agent_data['code']!='' ? $agent_data['code'] : ""));?>" tabindex="21">
 										</div>
 									</div>
-									<div class="col-md-3">
-										<label for="website" class="form-label1">Your Payment Type :</label>
-									</div>
-									<div class="form-group col-md-3">
-										<div class="radio" style="margin: 0 0 15px 0;">
-											<label class="form-label1"><input type="radio" name="payment_type" id="credit" value="credit" <?php echo(isset($agent_data['payment_type']) && $agent_data['payment_type']=='credit' ? "checked" : "");?>>Credit</label>&nbsp;&nbsp;&nbsp;
-											<label><input type="radio" name="payment_type" id="cash" value="cash" <?php echo(isset($agent_data['payment_type']) && $agent_data['payment_type']=='cash' ? "checked" : "");?>>Cash</label>
-										</div>
-									</div>
-									<div class="col-md-3 " id="pay_within_days" style="<?php echo(isset($agent_data['payment_type']) && $agent_data['payment_type']=='cash' ? "display:block;" : "display:none;");?>">
-										<label for="pwd" class="form-label1">You Can Pay Within (Day)<font color="#FF0000">*</font> :</label>
-									</div>
-									<div class="form-group col-md-3" id="pay_within_days1" style="<?php echo(isset($agent_data['payment_type']) && $agent_data['payment_type']=='cash' ? "display:block;" : "display:none;");?>">
-										<select name="pay_within_days" class="form-control form_input1 select_bg validate[required]"  style="width:100%;">
-											<option value="" class="form-control form_input1">- Select Day -</option>
-											<?php
-											$payment_days=range(1,100);
-											foreach($payment_days as $day_key=>$day_val):
-											?>
-												<option value = "<?php echo $day_val;?>" <?php echo(isset($_POST['pay_within_days']) && $_POST['pay_within_days']==$day_val ? 'selected="selected"' : (isset($agent_data['pay_within_days']) && $agent_data['pay_within_days']==$day_val ? 'selected="selected"' : ""));?>><?php echo $day_val;?></option>
-											<?php
-											endforeach;
-											?>
-										</select>
-									</div>
-									<div class="clearfix"></div>
 								</div>
 								<div id="" class="row rows">
 									<div id="" class="col-md-12">
