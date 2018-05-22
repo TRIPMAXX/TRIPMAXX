@@ -29,6 +29,11 @@
 		elseif(isset($server_data['data']['booking_details_list']['quotation_name'])):
 			$_POST['quotation_name']=$server_data['data']['booking_details_list']['quotation_name'];
 		endif;
+		$_POST['payment_type']=$server_data['data']['payment_type'];
+		$_POST['payment_status']=$server_data['data']['payment_status'];
+		$_POST['pay_within_days']=$server_data['data']['pay_within_days'];
+		if($server_data['data']['payment_date']!="")
+			$_POST['payment_date']=$server_data['data']['payment_date'];
 		$adult_arr=array();
 		foreach($server_data['data']['step_1']['adult'] as $adult_key=>$adult_val):
 			if($adult_val!="")

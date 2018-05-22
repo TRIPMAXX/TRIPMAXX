@@ -183,6 +183,55 @@
 				//$data['msg'] = $autentication_data->msg;
 			endif;
 		endif;
+		$show_pay_dropdown=true;
+		$show_pay_days=0;
+		if(isset($_SESSION['step_1']['booking_type']) && $_SESSION['step_1']['booking_type']=="agent" && isset($_SESSION['step_1']['agent_name']) && $_SESSION['step_1']['agent_name']!=""):
+			$autentication_agent_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
+			if(isset($autentication_agent_data->status)):
+				if($autentication_agent_data->status=="success"):
+					$post_agent_data['token']=array(
+						"token"=>$autentication_agent_data->results->token,
+						"token_timeout"=>$autentication_agent_data->results->token_timeout,
+						"token_generation_time"=>$autentication_agent_data->results->token_generation_time
+					);
+					$post_agent_data['data']['agent_id']=$_SESSION['step_1']['agent_name'];
+					$post_agent_data_str=json_encode($post_agent_data);
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($ch, CURLOPT_HEADER, false);
+					curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+					curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/booking-agent.php");
+					curl_setopt($ch, CURLOPT_POSTFIELDS, $post_agent_data_str);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+					$return_agent_data = curl_exec($ch);
+					curl_close($ch);
+					$return_agent_data_arr=json_decode($return_agent_data, true);
+					//print_r($return_agent_data);
+					$tour_data=array();
+					if(!isset($return_agent_data_arr['status'])):
+						//$data['status'] = 'error';
+						//$data['msg']="Some error has been occure during execution.";
+					elseif($return_agent_data_arr['status']=="success"):
+						//$data['status'] = 'success';
+						//$data['msg']="Data received successfully";
+						if($return_agent_data_arr['results']['payment_type']=="cash"):
+							$show_pay_dropdown=false;
+							$show_pay_days=$return_agent_data_arr['results']['pay_within_days'];
+						else:
+							//$data['status'] = 'error';
+							//$data['msg']="You do not have enough credit balance";
+						endif;
+					else:
+						//$data['status'] = 'error';
+						//$data['msg'] = $return_data_arr['msg'];
+					endif;
+				endif;
+			else:
+				//$data['status'] = 'error';
+				//$data['msg'] = $autentication_data->msg;
+			endif;
+		endif;
 		$fifth_section_html='';
 		$fifth_section_html.='<div class="box-body">';
 			$fifth_section_html.='<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">';
@@ -238,6 +287,8 @@
 		$fifth_section_html.='</div>';
 		$data['booking_html']=$first_section_html.$secend_section_html.$fourth_section_html.$third_section_html.$fifth_section_html;
 		$data['total_price']=$hotel_price+(($tour_price+$transfer_price)*$number_of_adult);
+		$data['show_pay_dropdown']=$show_pay_dropdown;
+		$data['show_pay_days']=$show_pay_days;
 		$data['status']="success";
 		$data['msg']="Saved to session.";
 	endif;

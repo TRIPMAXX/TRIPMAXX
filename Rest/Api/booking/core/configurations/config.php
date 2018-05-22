@@ -84,6 +84,7 @@ define("AGENT_API_PATH", "agent/api/");
 define("HOTEL_API_PATH", "hotel/api/");
 define("TOUR_API_PATH", "tour/api/");
 define("TRANSFER_API_PATH", "transfer/api/");
+define("DMC_API_PATH", "dmc/api/");
 
 define("API_USERNAME", "a");
 define("API_PASSWORD", "1");
@@ -91,5 +92,7 @@ define("TOKEN", "");
 define("TOKEN_TIMEOUT", 10000);
 define("TOKEN_SECRET_KEY", "tripmaxjwtkey");
 define("RECORD_PER_PAGE", 10);
+
+define("FROM_EMAIL", "noreply@neocoderztechnologies.com");
 
 ?>

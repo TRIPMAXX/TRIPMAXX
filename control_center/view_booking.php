@@ -445,6 +445,36 @@
 							$_SESSION['SET_FLASH'] = $return_data_arr_booking_update['msg'];
 						endif;
 					};
+					if(isset($_POST) && isset($_POST['booking_payment_status']) && $_POST['booking_payment_status']!="")
+					{
+						$post_data_booking['data']['payment_status']=$_POST['booking_payment_status'];
+						$post_data_booking['data']['payment_date']=date("Y-m-d H:i:s");
+						$post_data_booking['data']['id']=$booking_details_list['id'];
+						$post_data_str_booking=json_encode($post_data_booking);
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+						curl_setopt($ch, CURLOPT_HEADER, false);
+						curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+						curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+						curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."booking/update.php");
+						curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str_booking);
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+						$return_data_booking = curl_exec($ch);
+						curl_close($ch);
+						$return_data_arr_booking_update=json_decode($return_data_booking, true);
+						if(!isset($return_data_arr_booking_update['status'])):
+							$_SESSION['SET_TYPE'] = 'error';
+							$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+						elseif($return_data_arr_booking_update['status']=="success"):
+							$_SESSION['SET_TYPE'] = 'success';
+							$_SESSION['SET_FLASH']="Payment status updated successfully.";
+							header("location:".DOMAIN_NAME_PATH_ADMIN.'view_booking?booking_id='.$_GET['booking_id']);
+							exit;
+						else:
+							$_SESSION['SET_TYPE'] = 'error';
+							$_SESSION['SET_FLASH'] = $return_data_arr_booking_update['msg'];
+						endif;
+					};
 					//print_r($booking_details_list);
 				else:
 					$_SESSION['SET_TYPE'] = 'error';
@@ -472,6 +502,9 @@
 		$(function(){
 			$("#booking_approval_status").change(function(){
 				$("#booking_approval_status_form").submit();
+			});
+			$("#booking_payment_status").change(function(){
+				$("#booking_payment_status_form").submit();
 			});
 		});
 	//-->
@@ -537,6 +570,9 @@
 										<th style = "text-align:center;">Quote Date</th>
 										<th style = "text-align:center;">Destination</th>
 										<th style = "text-align:center;">Booking Date</th>
+										<th style = "text-align:center;">Payment Type</th>
+										<th style = "text-align:center;">Payment Status</th>
+										<th style = "text-align:center;">Payment Date</th>
 										<th style = "text-align:center;">Approval</th>
 									</tr>
 								</thead>
@@ -546,6 +582,33 @@
 										<td style = "text-align:center;"><?php echo tools::module_date_format($booking_details_list['creation_date'], "Y-m-d H:i:s");?></td>
 										<td style = "text-align:center;"><?php echo $destination_str;?></td>
 										<td style = "text-align:center;"><?php echo tools::module_date_format($booking_details_list['checkin_date'])." - ".tools::module_date_format($booking_details_list['checkout_date']);?></td>
+										<td style = "text-align:center;"><?php echo $booking_details_list['payment_type'];?></td>
+										<td style = "text-align:center;">
+											<?php
+											if(isset($booking_details_list['payment_status']) && $booking_details_list['payment_status']=="U")
+											{
+											?>
+											<form method="post" name="booking_payment_status_form" id="booking_payment_status_form" action="">
+												<select name="booking_payment_status" id="booking_payment_status" class="btn-warning">
+													<option value="U" class="btn-warning">Unpaid</option>
+													<option value="P" class="btn-success">Paid</option>
+												</select>
+											</form>
+											<?php
+											}
+											elseif(isset($booking_details_list['payment_status']) && $booking_details_list['payment_status']=="P")
+											{
+											?>
+											<span style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" class="btn-success">Paid</span>
+											<?php
+											}
+											else
+											{
+												echo "N/A";
+											}
+											?>
+										</td>
+										<td style = "text-align:center;"><?php echo($booking_details_list['payment_date']!="" ? tools::module_date_format($booking_details_list['payment_date'], "Y-m-d H:i:s") : "N/A");?></td>
 										<td style = "text-align:center;">
 											<?php
 											if(isset($booking_details_list['status']) && isset($booking_details_list['status']) && $booking_details_list['status']==0)

@@ -130,6 +130,7 @@
 													<th>Number Of Days</th>
 													<th>Destination</th>
 													<th>Service Include</th>
+													<th>Payment Type</th>
 													<th>Total Quotation</th>
 													<th>Status</th>
 													<th>Action</th>
@@ -228,9 +229,10 @@
 													<td class=" "><?php echo round($datediff / (60 * 60 * 24));;?></td>
 													<td class=" "><?php echo $destination_str;?></td>
 													<td class=" "><?php echo implode(", ", $service_arr);?></td>
+													<td class=" "><?php echo $book_val['payment_type'];?></td>
 													<td class=" "><?php echo $book_val['currency_code'].number_format($book_val['total_amount'], 2, ".", ",");?></td>
 													<td class=" ">
-														<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $book_val['status']==1 ? "btn-success" : "btn-warning";?>" onclick="change_status(<?= $book_val['id'];?>, $(this))"><?= $book_val['status']==1 ? "Completed" : "Pending";?></a>
+														<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $book_val['status']==1 ? "btn-success" : ($book_val['status']==2 ? "btn-danger" : "btn-warning");?>"><?= $book_val['status']==1 ? "Completed" : ($book_val['status']==2 ? "Rejected" : "Pending");?></a>
 													</td>
 													<td class=" " data-title="Action">
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>view_booking?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "View Booking Details"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;

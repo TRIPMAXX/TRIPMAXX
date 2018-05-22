@@ -1056,6 +1056,11 @@
 					{
 						$("#final_step_html").html(response.booking_html);
 						$("#total_price").val(response.total_price);
+						if(response.show_pay_dropdown==false)
+						{
+							$(".pay_dropdown_div").hide();
+							$(".pay_dropdown_div_1").text("Cash Payment with in "+response.show_pay_days+" days").show();
+						}
 					}
 					else
 					{
@@ -2040,9 +2045,10 @@
 													</div>
 													<div class="form-group col-md-6">
 														<form method="post" action="" name="payment_method_form" id="payment_method_form">
-															<label for="inputName" class="control-label">Choose Payment Method<font color="#FF0000">*</font></label>
+															<label for="inputName" class="control-label pay_dropdown_div">Choose Payment Method<font color="#FF0000">*</font></label>
+															<label for="inputName" class="control-label pay_dropdown_div_1" style="display:none;">--</label>
 															<br/>
-															<div style = "float:left;">
+															<div style = "float:left;" class="pay_dropdown_div">
 																<select class="form-control validate[optional]" name="sel_avlbl_hotel" id="sel_avlbl_hotel">
 																	<option value="Pay">Pay</option>
 																</select>

@@ -38,7 +38,9 @@
 					elseif($return_data_arr['status']=="success"):
 						//$data['status'] = 'success';
 						//$data['msg']="Data received successfully";
-						if($return_data_arr['results']['credit_balance'] > $_POST['total_price']):
+						if($return_data_arr['results']['credit_balance'] > $_POST['total_price'] && $return_data_arr['results']['payment_type']=="credit"):
+							$price_check_flag=true;
+						elseif($return_data_arr['results']['payment_type']=="cash"):
 							$price_check_flag=true;
 						else:
 							$data['status'] = 'error';
@@ -65,6 +67,17 @@
 					);
 					$post_data_booking['data']=$_SESSION;
 					$post_data_booking['data']['total_price']=$_POST['total_price'];
+					if($return_data_arr['results']['payment_type']=="cash"):
+						$post_data_booking['data']['payment_type']="cash";
+						$post_data_booking['data']['payment_status']="U";
+						$post_data_booking['data']['payment_date']="";
+						$post_data_booking['data']['pay_within_days']=$return_data_arr['results']['pay_within_days'];
+					else:
+						$post_data_booking['data']['payment_type']="credit";
+						$post_data_booking['data']['payment_status']="P";
+						$post_data_booking['data']['payment_date']=date("Y-m-d H:i:s");
+						$post_data_booking['data']['pay_within_days']=0;
+					endif;
 					$post_data_str_booking=json_encode($post_data_booking);
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -206,26 +219,33 @@
 								//$data['status'] = 'error';
 								//$data['msg']="Some error has been occure during execution.";
 							elseif($return_data_arr['status']=="success"):
+								if($return_data_arr['result']['payment_type']=="credit"):
+									$email_temp_id=12;
+									$cash_payment_str="";
+								else:
+									$email_temp_id=40;
+									$cash_payment_str="Cash payment needed to be done with in ".$return_data_arr['result']['pay_within_days'].($return_data_arr['result']['pay_within_days'] > 1 ? " days" : " day");
+								endif;
 								if($return_data_arr['result']['type']=="A"):
-									$agent_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>12, ':status'=>1));
+									$agent_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>$email_temp_id, ':status'=>1));
 									if(!empty($agent_email_template)):
 										$agent_url_details="";
-										$agent_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_arr['result']['first_name'], $return_data_arr['result']['last_name'], $agent_url_details), $agent_email_template['template_body']);
+										$agent_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]", "[CASH_PAYMENT]"), array($return_data_arr['result']['first_name'], $return_data_arr['result']['last_name'], $agent_url_details, $cash_payment_str), $agent_email_template['template_body']);
 										@tools::Send_SMTP_Mail($return_data_arr['result']['email_address'], FROM_EMAIL, '', $agent_email_template['template_subject'], $agent_mail_Body);
 									endif;
 									if(isset($return_data_arr['result_gsm']) && !empty($return_data_arr['result_gsm'])):
-										$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>12, ':status'=>1));
+										$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>$email_temp_id, ':status'=>1));
 										if(!empty($gsm_email_template)):
 											$gsm_url_details="";
-											$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_arr['result_gsm']['first_name'], $return_data_arr['result_gsm']['last_name'], $gsm_url_details), $gsm_email_template['template_body']);
+											$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]", "[CASH_PAYMENT]"), array($return_data_arr['result_gsm']['first_name'], $return_data_arr['result_gsm']['last_name'], $gsm_url_details, $cash_payment_str), $gsm_email_template['template_body']);
 											@tools::Send_SMTP_Mail($return_data_arr['result_gsm']['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
 										endif;
 									endif;
 								elseif($return_data_arr['result']['type']=="G"):
-									$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>12, ':status'=>1));
+									$gsm_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>$email_temp_id, ':status'=>1));
 									if(!empty($gsm_email_template)):
 										$gsm_url_details="";
-										$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]"), array($return_data_arr['result']['first_name'], $return_data_arr['result']['last_name'], $gsm_url_details), $gsm_email_template['template_body']);
+										$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]", "[CASH_PAYMENT]"), array($return_data_arr['result']['first_name'], $return_data_arr['result']['last_name'], $gsm_url_details, $cash_payment_str), $gsm_email_template['template_body']);
 										@tools::Send_SMTP_Mail($return_data_arr['result']['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
 									endif;
 								endif;
