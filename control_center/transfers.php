@@ -157,7 +157,7 @@
 													<th>Country</th>
 													<th>City</th>
 													<th>Transfer Title</th>
-													<th>Service Type</th>
+													<!-- <th>Service Type</th> -->
 													<th>Status</th>
 													<th>Action</th>
 												</tr>
@@ -188,7 +188,7 @@
 													<td class=" "><?= $transfer_val['co_name'];?></td>
 													<td class=" "><?= $transfer_val['ci_name'];?></td>
 													<td class=" "><?= $transfer_val['transfer_title'];?></td>
-													<td class=" "><?= $transfer_val['transfer_service'];?></td>
+													<!-- <td class=" "><?= $transfer_val['transfer_service'];?></td> -->
 													<td class=" ">
 														<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $transfer_val['status']==1 ? "btn-success" : "btn-danger";?>" onclick="change_status(<?= $transfer_val['id'];?>, $(this))"><?= $transfer_val['status']==1 ? "Active" : "Inactive";?></a>
 													</td>

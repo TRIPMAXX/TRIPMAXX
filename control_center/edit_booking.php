@@ -777,7 +777,7 @@
 		}
 		function change_transfer_radio(cur)
 		{
-			if(cur.attr('previousValue') == 'true')
+			/*if(cur.attr('previousValue') == 'true')
 			{
 				cur.prop('checked', false);
 				cur.attr('previousValue', false);
@@ -788,7 +788,7 @@
 				$('input[name="selected_transfer[]"]').attr('previousValue', false);
 				cur.attr('previousValue', true);			
 				cur.parents(".form-group").find(".default_price_div").html(cur.attr('data-price'));
-			}
+			}*/
 		}
 		function change_order(cur)
 		{
@@ -1262,6 +1262,7 @@
 			{
 				cur.removeClass("radio_button_row_background");
 				cur.find('input[type="radio"]').prop("checked", false);
+				cur.parents(".form-group").find(".default_price_div").html(cur.parents(".form-group").find(".default_price_div").attr("data-default_price"));
 				showSuccess("Transfer deselected successfully.");
 			}
 			else
@@ -1270,6 +1271,7 @@
 				cur.parent(".transfer_offer_cls").find(".radio_button_row").find('input[type="radio"]').removeAttr("checked");
 				cur.addClass("radio_button_row_background");
 				cur.find('input[type="radio"]').prop("checked", true);
+				cur.parents(".form-group").find(".default_price_div").html(cur.find('input[type="radio"]').attr('data-price'));
 				showSuccess("Transfer selected successfully.");
 			}
 		}
@@ -1279,6 +1281,7 @@
 			{
 				cur.removeClass("radio_button_row_background");
 				cur.find('input[type="radio"]').prop("checked", false);
+				cur.parents(".form-group").find(".default_price_div").html(cur.parents(".form-group").find(".default_price_div").attr("data-default_price"));
 				showSuccess("Tour deselected successfully.");
 			}
 			else
@@ -1287,6 +1290,7 @@
 				cur.parent(".tour_offer_cls").find(".radio_button_row").find('input[type="radio"]').removeAttr("checked");
 				cur.addClass("radio_button_row_background");
 				cur.find('input[type="radio"]').prop("checked", true);
+				cur.parents(".form-group").find(".default_price_div").html(cur.find('input[type="radio"]').attr('data-price'));
 				showSuccess("Tour selected successfully.");
 			}
 		}

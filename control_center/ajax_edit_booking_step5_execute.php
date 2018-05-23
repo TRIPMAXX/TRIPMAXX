@@ -68,7 +68,7 @@
 					$post_data_booking['data']=$_SESSION;
 					$post_data_booking['data']['booking_details_list']=$_POST['booking_details_list'];
 					$post_data_booking['data']['total_price']=$_POST['total_price'];
-					if($return_data_arr['results']['payment_type']=="cash"):
+					if(isset($return_data_arr) && $return_data_arr['results']['payment_type']=="cash"):
 						$post_data_booking['data']['payment_type']="cash";
 						$post_data_booking['data']['payment_status']="U";
 						$post_data_booking['data']['payment_date']="";

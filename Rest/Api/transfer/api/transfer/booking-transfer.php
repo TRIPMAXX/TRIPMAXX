@@ -103,6 +103,7 @@
 					$total_transfer=count($transfer_list);
 					foreach($transfer_list as $transfer_key=>$transfer_val):
 						$each_first_price="--";
+						$selected_first_price="";
 						$offers_list = tools::find("all", TM_OFFERS, '*', "WHERE transfer_id=:transfer_id ", array(":transfer_id"=>$transfer_val['id']));
 						$offer_html='';
 						$transfer_avalibility_status="";
@@ -213,7 +214,7 @@
 										endif;
 										?>
 										<br>
-										<input type="radio" name="selected_transfer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>]" class="selected_transfer" onclick="change_transfer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>"  <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?> <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?>>
+										<input type="radio" name="selected_transfer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>]" class="selected_transfer" onclick="change_transfer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>"  <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?>>
 									</div>
 									<div class="col-md-3" style="font-weight:bold;">
 										<?= $offer_val['offer_title'];?>
@@ -221,15 +222,17 @@
 									<div class="col-md-3"><?= $offer_val['service_type'];?></div>
 									<div class="col-md-3"><?= $offer_val['offer_capacity'];?></div>
 									<div class="col-md-2" style="font-weight:bold;color:red;text-align:center;">
-									<?php echo $default_currency['currency_code'].number_format((($total_price+$agent_commision+$nationality_charge)*$total_person), 2,".",",");?>
+									<?php echo $default_currency['currency_code'].number_format((($total_price+$agent_commision+$nationality_charge)), 2,".",",");?>
 									</div>
 									<div class="clearfix"></div>
 								</div>
 <?php
 								$each_offer_html=ob_get_clean();
 								$offer_html.=$each_offer_html;
+								if(isset($edit_avalibility_status) && $edit_avalibility_status!="")
+									$selected_first_price=$default_currency['currency_code'].number_format((($total_price+$agent_commision+$nationality_charge)), 2,".",",");
 								if($each_first_price=="--")
-									$each_first_price=$default_currency['currency_code'].number_format((($total_price+$agent_commision+$nationality_charge)*$total_person), 2,".",",");
+									$each_first_price=$default_currency['currency_code'].number_format((($total_price+$agent_commision+$nationality_charge)), 2,".",",");
 							endforeach;
 						endif;
 						ob_start();
@@ -237,15 +240,15 @@
 ?>
 							<div class="form-group col-md-12">
 								<div style="border:1px solid red;background-color:red;">
-									<div class="col-md-3" style="font-weight:bold;color:#fff;">Transfer Title</div>
-									<div class="col-md-2" style="font-weight:bold;color:#fff;">Transfer Type</div>
+									<div class="col-md-5" style="font-weight:bold;color:#fff;">Transfer Title</div>
+									<!-- <div class="col-md-2" style="font-weight:bold;color:#fff;">Transfer Type</div> -->
 									<div class="col-md-3" style="font-weight:bold;color:#fff;text-align:center;">Availability</div>
 									<div class="col-md-2" style="font-weight:bold;color:#fff;text-align:center;">Rate</div>
 									<div class="clearfix"></div>
 								</div>
 								<div style="padding:20px 0 0 0;border:1px solid red;">
-									<div class="col-md-3" style="font-weight:bold;"><?php echo $transfer_val['transfer_title'];?></div>
-									<div class="col-md-2" style="font-weight:bold;"><?php echo $transfer_val['transfer_service'];?></div>
+									<div class="col-md-5" style="font-weight:bold;"><?php echo $transfer_val['transfer_title'];?></div>
+									<!-- <div class="col-md-2" style="font-weight:bold;"><?php echo $transfer_val['transfer_service'];?></div> -->
 									<div class="col-md-3" style="font-weight:bold;text-align:center;">
 										<?php
 										if($transfer_avalibility_status=="avaliable" || $transfer_edit_avalibility_status=="A"):
@@ -259,7 +262,7 @@
 										endif;
 										?>
 									</div>
-									<div class="col-md-2 default_price_div" style="font-weight:bold;text-align:center;" data-default_price="<?php echo $each_first_price;?>"><?php echo $each_first_price;?></div>
+									<div class="col-md-2 default_price_div" style="font-weight:bold;text-align:center;" data-default_price="<?php echo $each_first_price;?>"><?php echo(isset($selected_first_price) && $selected_first_price!="" ? $selected_first_price : $each_first_price);?></div>
 									<div class="clearfix"></div>
 									<div class="col-md-3">
 										<?php

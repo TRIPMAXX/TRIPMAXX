@@ -300,18 +300,6 @@
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-4">
-											<label for="tour_service" class="control-label">Service Type<font color="#FF0000">*</font></label>
-											<select name = "tour_service" id="tour_service" class="form-control form_input1 select_bg validate[required]" tabindex="6">
-												<option value = "">Select Service Type</option>
-												<option value = "Private" <?php echo(isset($_POST['tour_service']) && $_POST['tour_service']=="Private" ? 'selected="selected"' : "");?>>Private</option>
-												<option value = "Shared" <?php echo(isset($_POST['tour_service']) && $_POST['tour_service']=="Shared" ? 'selected="selected"' : "");?>>Shared</option>
-											</select>
-										</div>
-										<div class="form-group col-md-4">
-											<label for="service_note" class="control-label">Service Note</label>
-											<input type="text" class="form-control"  value="<?php echo(isset($_POST['service_note']) && $_POST['service_note']!='' ? $_POST['service_note'] : "");?>" name="service_note" id="service_note" placeholder="Service Note" tabindex = "7" />
-										</div>
-										<div class="form-group col-md-4">
 											<label for="tour_images" class="control-label">Tour Images<font color="#FF0000">*</font></label>
 											<input type="file" class="form-control validate[required]"  value="" name="tour_images[]" id="tour_images" placeholder="Tour Images" tabindex = "8" multiple/>
 											<br/>

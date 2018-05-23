@@ -382,7 +382,7 @@
 										</div>
 										<div class="form-group col-md-4">
 											<label for="offer_capacity" class="control-label">Capacity<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['offer_capacity']) && $_POST['offer_capacity']!='' ? $_POST['offer_capacity'] : (isset($offer_data['offer_capacity']) && $offer_data['offer_capacity']!='' ? $offer_data['offer_capacity'] : ""));?>" name="offer_capacity" id="offer_capacity" placeholder="Capacity" tabindex = "2" />
+											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['offer_capacity']) && $_POST['offer_capacity']!='' ? $_POST['offer_capacity'] : (isset($offer_data['offer_capacity']) && $offer_data['offer_capacity']!='' ? $offer_data['offer_capacity'] : ""));?>" name="offer_capacity" id="offer_capacity" placeholder="Capacity" tabindex = "2" />
 										</div>
 										<div class="form-group col-md-4">
 											<label for="service_type" class="control-label">Service Type<font color="#FF0000">*</font></label>
@@ -394,8 +394,8 @@
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
-											<label for="price_per_person" class="control-label">Default Price Per Person<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required, custom[number]]"  value="<?php echo(isset($_POST['price_per_person']) && $_POST['price_per_person']!='' ? $_POST['price_per_person'] : (isset($offer_data['price_per_person']) && $offer_data['price_per_person']!='' ? $offer_data['price_per_person'] : ""));?>" name="price_per_person" id="price_per_person" placeholder="Default Price Per Person" tabindex = "4" />
+											<label for="price_per_person" class="control-label">Default Price<font color="#FF0000">*</font></label>
+											<input type="text" class="form-control validate[required, custom[number]]"  value="<?php echo(isset($_POST['price_per_person']) && $_POST['price_per_person']!='' ? $_POST['price_per_person'] : (isset($offer_data['price_per_person']) && $offer_data['price_per_person']!='' ? $offer_data['price_per_person'] : ""));?>" name="price_per_person" id="price_per_person" placeholder="Default Price" tabindex = "4" />
 										</div>
 										<div class="form-group col-md-6">
 											<label for="status" class="control-label">Status<font color="#FF0000">*</font></label>

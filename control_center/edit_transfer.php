@@ -354,9 +354,9 @@
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
-											<label for="allow_pickup_type" class="control-label">Allowed Pickup Type<font color="#FF0000">*</font></label>
-											<select name = "allow_pickup_type_arr[]" id="allow_pickup_type" class="form-control form_input1 select_bg validate[required]" multiple tabindex = "4">
-												<option value = "">Select Pickup Type</option>
+											<label for="allow_pickup_type" class="control-label">Allowed Pickup Type/Allowed Drop-off Type<font color="#FF0000">*</font></label>
+											<select name = "allow_pickup_type_arr[]" id="allow_pickup_type" class="form-control form_input1 select_bg validate[required]" tabindex = "4">
+												<option value = "">Select Pickup/Drop-off Type</option>
 											<?php
 											if(!empty($attribute_data)):
 												$allow_pickup_type_arr=array();
@@ -374,41 +374,10 @@
 											<font color = "red">Hold Control Key To Select Multiple</font>
 										</div>
 										<div class="form-group col-md-6">
-											<label for="allow_dropoff_type" class="control-label">Allowed Drop-off Type<font color="#FF0000">*</font></label>
-											<select name = "allow_dropoff_type_arr[]" id="allow_dropoff_type" class="form-control form_input1 select_bg validate[required]" multiple tabindex = "5">
-												<option value = "">Select Drop-off Type</option>
-											<?php
-											if(!empty($attribute_data)):
-												$allow_dropoff_type_arr=array();
-												if(isset($transfer_data['allow_dropoff_type']) && $transfer_data['allow_dropoff_type']!="")
-													$allow_dropoff_type_arr=explode(",", $transfer_data['allow_dropoff_type']);
-												foreach($attribute_data as $attribute_key=>$attribute_val):
-											?>
-												<option value = "<?php echo $attribute_val['id'];?>" <?php echo(isset($_POST['allow_dropoff_type_arr']) && in_array($attribute_val['id'], $_POST['allow_dropoff_type_arr']) ? 'selected="selected"' : (isset($transfer_data['allow_dropoff_type']) && $transfer_data['allow_dropoff_type']!="" && in_array($attribute_val['id'], $allow_dropoff_type_arr) ? 'selected="selected"' : ""));?>><?php echo $attribute_val['attribute_name'];?></option>
-											<?php
-												endforeach;
-											endif;
-											?>
-											</select>
-											<br/>
-											<font color = "red">Hold Control Key To Select Multiple</font>
-										</div>
-										<div class="form-group col-md-6">
 											<label for="transfer_title" class="control-label">Transfer Title<font color="#FF0000">*</font></label>
 											<input type="text" class="form-control validate[required, custom[onlyLetterNumber]]"  value="<?php echo(isset($_POST['transfer_title']) && $_POST['transfer_title']!='' ? $_POST['transfer_title'] : (isset($transfer_data['transfer_title']) && $transfer_data['transfer_title']!='' ? $transfer_data['transfer_title'] : ""));?>" name="transfer_title" id="transfer_title" placeholder="Transfer Title" tabindex = "6" />
 										</div>
-										<div class="form-group col-md-6">
-											<label for="transfer_service" class="control-label">Service Type<font color="#FF0000">*</font></label>
-											<select name = "transfer_service" id="transfer_service" class="form-control form_input1 select_bg validate[required]" tabindex="7">
-												<option value = "">Select Service Type</option>
-												<option value = "Private" <?php echo(isset($_POST['transfer_service']) && $_POST['transfer_service']=="Private" ? 'selected="selected"' : (isset($transfer_data['transfer_service']) && $transfer_data['transfer_service']=="Private" ? 'selected="selected"' : ""));?>>Private</option>
-												<option value = "Shared" <?php echo(isset($_POST['transfer_service']) && $_POST['transfer_service']=="Shared" ? 'selected="selected"' : (isset($transfer_data['transfer_service']) && $transfer_data['transfer_service']=="Shared" ? 'selected="selected"' : ""));?>>Shared</option>
-											</select>
-										</div>
-										<div class="form-group col-md-6">
-											<label for="service_note" class="control-label">Service Note</label>
-											<input type="text" class="form-control"  value="<?php echo(isset($_POST['service_note']) && $_POST['service_note']!='' ? $_POST['service_note'] : (isset($transfer_data['service_note']) && $transfer_data['service_note']!='' ? $transfer_data['service_note'] : ""));?>" name="service_note" id="service_note" placeholder="Service Note" tabindex = "8" />
-										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
 											<label for="transfer_images" class="control-label">Transfer Images</label>
 											<input type="file" class="form-control" name="transfer_images[]" id="transfer_images" placeholder="Transfer Images" tabindex = "9" multiple/>
@@ -432,6 +401,7 @@
 											endif;
 											?>
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-4">
 											<label for="is_cancellation_policy_applied" class="control-label">Is Cancellation Policy Applied?<font color="#FF0000">*</font></label>
 											<select name = "is_cancellation_policy_applied" id="is_cancellation_policy_applied" class="form-control form_input1 select_bg" tabindex="10">
@@ -460,6 +430,7 @@
 											<label for="other_policy" class="control-label">Other Policies</label>
 											<textarea class="form-control ckeditor"  value="" name="other_policy" id="other_policy" placeholder="Other Policies" tabindex = "13"><?php echo(isset($_POST['other_policy']) && $_POST['other_policy']!='' ? $_POST['other_policy'] : (isset($transfer_data['other_policy']) && $transfer_data['other_policy']!='' ? $transfer_data['other_policy'] : ""));?></textarea>
 										</div>
+										<div class="clearfix"></div>
 										<div class="form-group col-md-4">
 											<label for="is_guide_included" class="control-label">Guide Included<font color="#FF0000">*</font></label>
 											<select name = "is_guide_included" id="is_guide_included" class="form-control form_input1 select_bg" tabindex="14">
@@ -478,6 +449,7 @@
 												<option value = "0" <?php echo(isset($_POST['status']) && $_POST['status']==0 ? 'selected="selected"' : (isset($transfer_data['status']) && $transfer_data['status']==0 ? 'selected="selected"' : ""));?>>Inactive</option>
 											</select>
 										</div>
+										<div class="clearfix"></div>
 									</div>
 								</div>
 								<div class="col-md-12 row">

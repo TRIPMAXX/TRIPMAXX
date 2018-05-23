@@ -67,7 +67,7 @@
 					);
 					$post_data_booking['data']=$_SESSION;
 					$post_data_booking['data']['total_price']=$_POST['total_price'];
-					if($return_data_arr['results']['payment_type']=="cash"):
+					if(isset($return_data_arr) && $return_data_arr['results']['payment_type']=="cash"):
 						$post_data_booking['data']['payment_type']="cash";
 						$post_data_booking['data']['payment_status']="U";
 						$post_data_booking['data']['payment_date']="";
@@ -224,7 +224,7 @@
 									$cash_payment_str="";
 								else:
 									$email_temp_id=40;
-									$cash_payment_str="Cash payment needed to be done with in ".$return_data_arr['result']['pay_within_days'].($return_data_arr['result']['pay_within_days'] > 1 ? " days" : " day");
+									$cash_payment_str="Cash payment needed to be done within ".$return_data_arr['result']['pay_within_days'].($return_data_arr['result']['pay_within_days'] > 1 ? " days" : " day");
 								endif;
 								if($return_data_arr['result']['type']=="A"):
 									$agent_email_template = tools::find("first", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE id=:id AND status=:status ", array(':id'=>$email_temp_id, ':status'=>1));
