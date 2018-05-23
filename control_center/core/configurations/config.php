@@ -76,6 +76,8 @@ define("AUTO_LOGIN_SECURITY_KEY", "hjre658@37#99!");
 define("PROMO_DOC", "assets/upload/promotional_offer/");
 define("CMS_BANNER", "assets/upload/cms_banner/");
 define("GENERAL_IMAGES", "assets/upload/general/");
+define("SUPPORT_TICKET_IMAGE", "assets/upload/support_ticket_image/");
+define("SUPPORT_TICKET_REPLY_IMAGE", "assets/upload/support_ticket_reply_image/");
 define("API_USERNAME", "a");
 define("API_PASSWORD", "1");
 define("REST_API_PATH", "Rest/Api/");

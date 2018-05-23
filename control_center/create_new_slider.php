@@ -90,7 +90,7 @@ if(isset($_POST['btn_submit'])) {
 									<div class="box-body">
 										<div class="form-group col-md-6">
 											<label for="slider_image" class="control-label">Upload Image<font color="#FF0000">*</font></label>
-											<input type="file" class="form-control validate[required]" name="slider_image" id="slider_image" placeholder="Upload Image" tabindex = "1" />
+											<input type="file" class="form-control validate[required]" name="slider_image" id="slider_image" placeholder="Upload Image" tabindex = "1" multiple/>
 										</div>
 										<div class="form-group col-md-6">
 											<label for="serial_number" class="control-label">Serial Number</label>

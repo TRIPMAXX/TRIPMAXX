@@ -20,4 +20,6 @@ define( "TM_MODULES", "tm_modules" );
 define( "TM_PROMOTIONAL_OFFERS", "tm_promotional_offers" );
 define( "TM_SETTINGS", "tm_settings" );
 define( "TM_STATES", "tm_states" );
+define( "TM_SUPPORT_TICKETS", "tm_support_tickets" );
+define( "TM_SUPPORT_TICKET_REPLIES", "tm_support_ticket_replies" );
 ?>

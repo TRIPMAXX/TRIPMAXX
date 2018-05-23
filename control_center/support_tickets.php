@@ -1,19 +1,7 @@
 <?php
 require_once('loader.inc');
-require_once('core/microservices/email_template.php');
 tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
-
-/*if(isset($_GET['id']) && $_GET['id']!='') {
-	if(tools::delete(TM_EMAIL_TEMPLATES, 'WHERE id=:id', array(':id'=>base64_decode($_GET['id'])))) {
-		$_SESSION['SET_TYPE'] = 'success';
-		$_SESSION['SET_FLASH'] = 'Email Template has been deleted successfully';
-		tools::module_redirect(DOMAIN_NAME_PATH_ADMIN.'email_templates');
-	} else {
-		$_SESSION['SET_TYPE'] = 'error';
-		$_SESSION['SET_FLASH'] = 'Invalid Data';
-	}
-}
-$email_templates = tools::find("all", TM_EMAIL_TEMPLATES, $value='id, template_title, template_subject, template_body, status', "WHERE 1 ORDER BY template_title ASC", array());*/
+$support_tickets = tools::find("all", TM_SUPPORT_TICKETS, '*', "WHERE 1 ORDER BY status ASC", array());
 ?>
 <!DOCTYPE html>
 <html>
@@ -69,36 +57,32 @@ $email_templates = tools::find("all", TM_EMAIL_TEMPLATES, $value='id, template_t
 												</tr>
 											</thead>
 											<tbody aria-relevant="all" aria-live="polite" role="alert">
+											<?php
+											if(!empty($support_tickets)):
+												foreach($support_tickets as $s_key => $support_ticket_val):
+											?>
 												<tr class="odd">
-													<td class="  sorting_1">1</td>
-													<td class=" ">TM-12345678</td>
-													<td class=" ">Hotel</td>
-													<td class=" ">ITC(SB)</td>
-													<td class=" ">High</td>
-													<td class=" ">21/05/2018</td>
+													<td class="  sorting_1"><?=$s_key+1?></td>
+													<td class=" "><?=$support_ticket_val['ticket_id']?></td>
 													<td class=" ">
-														<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks btn-warning">Pending</a>
+													<?=($support_ticket_val['account_type']=="A"?"Agent":($support_ticket_val['account_type']=="H"?"Hotel":($support_ticket_val['account_type']=="S"?"Supplier":"")))?>
+													</td>
+													<td class=" "><?=$support_ticket_val['account_name']?></td>
+													<td class=" ">
+													<?=($support_ticket_val['priority']=="H"?"High":($support_ticket_val['priority']=="M"?"Medium":($support_ticket_val['priority']=="L"?"Low":"")))?>
+													</td>
+													<td class=" "><?= tools::module_date_format($support_ticket_val['creation_date'],"Y-m-d H:i:s");?></td>
+													<td class=" ">
+														<a style="padding: 3px;border-radius: 2px;text-decoration:none" data-id="" class="status_checks <?=($support_ticket_val['status']=="P"?"btn-warning":"btn-success")?>"><?=($support_ticket_val['status']=="P"?"Pending":"Completed")?></a>
 													</td>
 													<td class=" " data-title="Action">
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>view_support_ticket?id=" title = "Edit Email Template"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
-														<!-- <a href = "#"  title = "Delete Email Templates" onclick = "delete_email_template('<?php echo(base64_encode($email_template['id']));?>');"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
+														&nbsp;&nbsp;<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>view_support_ticket?ticket_id=<?=base64_encode($support_ticket_val['id'])?>" title = "Edit Email Template"><i class="fa fa-eye fa-1x" ></i></a>
 													</td>
 												</tr>
-												<tr class="odd">
-													<td class="  sorting_1">1</td>
-													<td class=" ">TM-12345678</td>
-													<td class=" ">Hotel</td>
-													<td class=" ">ITC(SB)</td>
-													<td class=" ">High</td>
-													<td class=" ">21/05/2018</td>
-													<td class=" ">
-														<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks btn-success">Completed</a>
-													</td>
-													<td class=" " data-title="Action">
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>view_support_ticket?id=" title = "Edit Email Template"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
-														<!-- <a href = "#"  title = "Delete Email Templates" onclick = "delete_email_template('<?php echo(base64_encode($email_template['id']));?>');"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
-													</td>
-												</tr>
+											<?php
+												endforeach;
+											endif;
+											?>
 											</tbody>
 										</table>
 									</div>

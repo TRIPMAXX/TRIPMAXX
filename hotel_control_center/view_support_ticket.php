@@ -1,9 +1,9 @@
 <?php
 require_once('loader.inc');
-tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
+tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_HOTEL.'login');
+
 if(isset($_GET['ticket_id']) && $_GET['ticket_id']!='') {
-	$support_ticket_val = tools::find("first", TM_SUPPORT_TICKETS, '*', 'WHERE id=:id', array(':id'=>base64_decode($_GET['ticket_id'])));
-	$support_ticket_replies = tools::find("all", TM_SUPPORT_TICKET_REPLIES, '*', 'WHERE support_ticket_id=:id', array(':id'=>base64_decode($_GET['ticket_id'])));
+	$ticket_id = base64_decode($_GET['ticket_id']);
 }
 else
 {
@@ -12,6 +12,44 @@ else
 	header("location:support_tickets");
 	exit;
 }
+$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."authorized.php"));
+	if(isset($autentication_data->status)):
+		if($autentication_data->status=="success"):
+			$post_data['token']=array(
+				"token"=>$autentication_data->results->token,
+				"token_timeout"=>$autentication_data->results->token_timeout,
+				"token_generation_time"=>$autentication_data->results->token_generation_time
+			);
+			$post_data['data']['email_address']=$_SESSION['SESSION_DATA_HOTEL']['email_address'];
+			//print_r($post_data);
+			$post_data_str=json_encode($post_data);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($ch, CURLOPT_HEADER, false);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+			curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."support_tickets/read.php");
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+			$return_data = curl_exec($ch);
+			curl_close($ch);
+			//print_r($return_data);exit;
+			$return_data_arr=json_decode($return_data, true);
+			//print_r($return_data_arr);
+			$support_tickets=array();
+			if(!isset($return_data_arr['status'])):
+				$_SESSION['SET_TYPE'] = 'error';
+				$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+			elseif($return_data_arr['status']=="success"):
+				$support_tickets=$return_data_arr['results'];
+			else:
+				$_SESSION['SET_TYPE'] = 'error';
+				$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+			endif;
+		endif;
+	endif;
 $white_list_array = array('massage', 'status', 'attachments', 'token', 'btn_submit');
 $verify_token = "create_new_support_ticket_replies";
 if(isset($_POST['btn_submit'])):
@@ -62,7 +100,7 @@ endif;
 <html>
 <head>
 	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>VIEW SUPPORT TICKETS</title>
-	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
+	<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
 	<!-- JAVASCRIPT CODE -->
 	<script type="text/javascript">
 	<!--
@@ -75,11 +113,11 @@ endif;
 <body class="skin-purple">
 	<div class="wrapper">
 		<!-- TOP HEADER -->
-		<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'header.php');?>		
+		<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'header.php');?>		
 		<!-- TOP HEADER -->
 
 		<!-- LEFT MENU -->
-		<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'menu.php');?>
+		<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'menu.php');?>
 		<!-- LEFT MENU -->
 		
 		<!-- BODY -->   
@@ -87,7 +125,7 @@ endif;
 			<section class="content-header">
 				<h1>View Support Ticket</h1>
 				<ol class="breadcrumb">
-					<li><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
+					<li><a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
 					<li class="active">View Support Ticket</li>
 				</ol>
 			</section>
@@ -246,7 +284,7 @@ endif;
 													<td class=" "><?=$ticket_repy_val['reply_to']?></td>
 													<td class=" "><?=$ticket_repy_val['massage']?></td>
 													<td class=" " data-title="Action">
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>view_support_ticket?id=" title = "Edit Email Template"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
+														<a href = "<?php echo(DOMAIN_NAME_PATH_HOTEL);?>view_support_ticket?id=" title = "Edit Email Template"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
 														<!-- <a href = "#"  title = "Delete Email Templates" onclick = "delete_email_template('<?php echo(base64_encode($email_template['id']));?>');"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 													</td>
 												</tr>
@@ -267,7 +305,7 @@ endif;
 		<!-- BODY --> 
 
 		<!-- FOOTER -->
-		<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'footer.php');?>
+		<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'footer.php');?>
 		<!-- FOOTER -->
 
 	</div>

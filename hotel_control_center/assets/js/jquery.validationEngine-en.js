@@ -142,7 +142,7 @@
                     "alertText": "Letters only (accents allowed)"
                 },
                 "onlyLetterNumber": {
-                    "regex": /^[0-9a-zA-Z]+$/,
+                    "regex": /^[0-9a-zA-Z\ \']+$/,
                     "alertText": "No special characters allowed"
                 },
                 // --- CUSTOM RULES -- Those are specific to the demos, they can be removed or changed to your likings

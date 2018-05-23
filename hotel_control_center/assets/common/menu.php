@@ -29,6 +29,16 @@
 				<span>REPORT</span>
 				</a>
 			</li>
+			<li class="<?php echo(($current_page_name == 'create_new_support_ticket.php' || $current_page_name == 'support_tickets.php' || $current_page_name == 'view_support_ticket.php') ? 'active' : '');?>">
+				<a href="javascript:void(0);">
+				<span>SUPPORT TICKETS</span>
+				<i class="fa fa-angle-left pull-right"></i>
+				</a>
+				<ul class="treeview-menu">
+					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>create_new_support_ticket"><i class="fa fa-circle-o"></i> CREATE NEW</a></li>
+					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>support_tickets"><i class="fa fa-circle-o"></i> LISTS OF SUPPORT TICKETS</a></li>
+				</ul>
+			</li>
 		</ul>
 	</section>
 </aside>

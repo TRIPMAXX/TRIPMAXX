@@ -98,6 +98,8 @@ define("ROOM_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/r
 define("AGENT_IMAGE_PATH", DOMAIN_NAME_PATH."agent_control_center/assets/upload/agent/");
 define("TOUR_IMAGE_PATH", DOMAIN_NAME_PATH."tour_control_center/assets/upload/tour/");
 define("TRANSFER_IMAGE_PATH", DOMAIN_NAME_PATH."transfer_control_center/assets/upload/transfer/");
+define("SUPPORT_TICKET_IMAGE", DOMAIN_NAME_PATH."control_center/assets/upload/support_ticket_image/");
+define("SUPPORT_TICKET_REPLY_IMAGE", DOMAIN_NAME_PATH."control_center/assets/upload/support_ticket_reply_image/");
 
 define("ROOM_IMAGES", "assets/upload/room/");
 define("HOTEL_IMAGES", "assets/upload/hotel/");
