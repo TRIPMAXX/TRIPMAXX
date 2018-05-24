@@ -74,6 +74,8 @@ define("AUTO_LOGIN_SECURITY_KEY", "hjre658@37#99!");
 define("PROMO_DOC", "../../../../../control_center/assets/upload/promotional_offer/");
 define("CMS_BANNER", "../../../../../control_center/assets/upload/cms_banner/");
 define("GENERAL_IMAGES", "../../../../../control_center/assets/upload/general/");
+define("SUPPORT_TICKET_IMAGE", "../../../../../control_center/assets/upload/support_ticket_image/");
+define("SUPPORT_TICKET_REPLY_IMAGE", "../../../../../control_center/assets/upload/support_ticket_reply_image/");
 
 define("HOTEL_IMAGES", "../../../../../hotel_control_center/assets/upload/hotel/");
 define("ROOM_IMAGES", "../../../../../hotel_control_center/assets/upload/room/");

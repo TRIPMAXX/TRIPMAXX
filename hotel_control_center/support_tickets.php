@@ -108,7 +108,7 @@ tools::module_validation_check(@$_SESSION['SESSION_DATA_HOTEL']['id'], DOMAIN_NA
 														<a style="padding: 3px;border-radius: 2px;text-decoration:none" data-id="" class="status_checks <?=($support_ticket_val['status']=="P"?"btn-warning":"btn-success")?>"><?=($support_ticket_val['status']=="P"?"Pending":"Completed")?></a>
 													</td>
 													<td class=" " data-title="Action">
-														&nbsp;&nbsp;<a href = "<?php echo(DOMAIN_NAME_PATH_HOTEL);?>view_support_ticket?ticket_id=<?=base64_encode($support_ticket_val['id'])?>" title = "Edit Email Template"><i class="fa fa-eye fa-1x" ></i></a>
+														&nbsp;&nbsp;<a href = "<?php echo(DOMAIN_NAME_PATH_HOTEL);?>view_support_ticket?ticket_id=<?=base64_encode($support_ticket_val['id'])?>" title = "View Support Ticket"><i class="fa fa-eye fa-1x" ></i></a>
 													</td>
 												</tr>
 											<?php

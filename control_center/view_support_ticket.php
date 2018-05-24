@@ -20,8 +20,8 @@ if(isset($_POST['btn_submit'])):
 		$uploaded_file_json_data='';
 		$_POST['attachments']="";
 		$_POST['support_ticket_id']=$support_ticket_val['id'];
-		$_POST['reply_from']="";
-		$_POST['reply_to']="";
+		$_POST['reply_from']="Tripmaxx";
+		$_POST['reply_to']=($support_ticket_val['account_type']=="A"?"Agent":($support_ticket_val['account_type']=="H"?"Hotel":($support_ticket_val['account_type']=="S"?"Supplier":"")))." - ".$support_ticket_val['account_name']." - ".$support_ticket_val['account_email']." - ".$support_ticket_val['account_phone'];
 		if(is_array($_FILES["attachments"]['name'])){
 			foreach($_FILES["attachments"]['name'] as $file_key => $file_val):
 				if($file_val!='') {
@@ -45,9 +45,15 @@ if(isset($_POST['btn_submit'])):
 			endforeach;
 		}
 		//print_r($_POST);exit;
-		if($save_hotel = tools::module_form_submission($uploaded_file_json_data, TM_SUPPORT_TICKET_REPLIES)) {
+		if($save_reply = tools::module_form_submission($uploaded_file_json_data, TM_SUPPORT_TICKET_REPLIES)) {
+			if(isset($_POST['status']) && $_POST['status']=="C"):
+				unset($_POST);
+				$_POST['id']=$support_ticket_val['id'];
+				$_POST['status']="C";
+				$update_ticket = tools::module_form_submission($uploaded_file_json_data, TM_SUPPORT_TICKETS);
+			endif;
 			$_SESSION['SET_TYPE']="success";
-			$_SESSION['SET_FLASH'] = 'Support ticket has been created successfully.';
+			$_SESSION['SET_FLASH'] = 'Support ticket response has been created successfully.';
 			header("location:view_support_ticket?ticket_id=".base64_encode($support_ticket_val['id']));
 			exit;
 		} else {
@@ -61,7 +67,7 @@ endif;
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>VIEW SUPPORT TICKETS</title>
+	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>SUPPORT TICKET DETAILS</title>
 	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
 	<!-- JAVASCRIPT CODE -->
 	<script type="text/javascript">
@@ -85,10 +91,10 @@ endif;
 		<!-- BODY -->   
 		<div class="content-wrapper">
 			<section class="content-header">
-				<h1>View Support Ticket</h1>
+				<h1>Support Ticket Details</h1>
 				<ol class="breadcrumb">
 					<li><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
-					<li class="active">View Support Ticket</li>
+					<li class="active">Support Ticket Details</li>
 				</ol>
 			</section>
             <section class="content">
@@ -175,6 +181,7 @@ endif;
 					</div>
 				</div>
 			</section>
+			<?php if(isset($support_ticket_val['status']) && $support_ticket_val['status']!="C"):?>
             <section class="content">
 				<form name="form_new_support_ticket_reply" id="form_new_support_ticket_reply" method="POST" enctype="multipart/form-data">
 				<div class="row">
@@ -189,8 +196,8 @@ endif;
 											<textarea class = "form-control validate[required]" name = "massage" id = "reply" placeholder = "Reply" tabindex = "4"><?php echo(isset($_POST['massage']) && $_POST['massage']!="" ? $_POST['massage'] : "");?></textarea>
 										</div>
 										<div class="form-group col-md-6">
-											<label for="Attachments" class="control-label">Attachments <font color="#FF0000">*</font> :</label>
-											<input type="file" class="validate[required]"  value="" name="attachments[]" id="attachments" placeholder="Attachments" tabindex = "6" multiple/>
+											<label for="Attachments" class="control-label">Attachments :</label>
+											<input type="file" class=""  value="" name="attachments[]" id="attachments" placeholder="Attachments" tabindex = "6" multiple/>
 											<br/>
 											<font color = "red">SELECT MULTIPLE BY HOLDING CONTROL BUTTON.</font>
 										</div>
@@ -215,6 +222,7 @@ endif;
 				</div>
 				</form>
 			</section>
+			<?php endif;?>
 			<section class="content">
 				<div class="row">
 					<section class="col-lg-12 connectedSortable">
@@ -244,10 +252,64 @@ endif;
 													<td class=" "><?= tools::module_date_format($ticket_repy_val['response_date'],"Y-m-d H:i:s");?></td>
 													<td class=" "><?=$ticket_repy_val['reply_from']?></td>
 													<td class=" "><?=$ticket_repy_val['reply_to']?></td>
-													<td class=" "><?=$ticket_repy_val['massage']?></td>
+													<td class=" "><?=substr(nl2br($ticket_repy_val['massage']),0,50).(strlen($ticket_repy_val['massage'])>50?"...":"")?></td>
 													<td class=" " data-title="Action">
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>view_support_ticket?id=" title = "Edit Email Template"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
-														<!-- <a href = "#"  title = "Delete Email Templates" onclick = "delete_email_template('<?php echo(base64_encode($email_template['id']));?>');"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
+													  <!-- Trigger the modal with a button -->
+													  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal_149<?php echo($ticket_repy_val['id']);?>" title = "View Massage"><i class="fa fa-eye fa-1x" ></i></button>
+
+													  <!-- Modal -->
+													  <div class="modal fade" id="myModal_149<?php echo($ticket_repy_val['id']);?>" role="dialog">
+														<div class="modal-dialog modal-lg">
+														  <div class="modal-content" style="border-radius:5px;">
+															<div class="modal-header">
+															  <button type="button" class="close" data-dismiss="modal">&times;</button>
+															  <h4 class="modal-title">Support Ticket Response for :- <?=$support_ticket_val['ticket_id']?></h4>
+															</div>
+															<div class="modal-body">
+																<div id="" class="row rows">
+																	<div class="col-md-4">
+																		<label class="form-label1">Date : &nbsp;&nbsp;&nbsp;</label>
+																		<?= tools::module_date_format($ticket_repy_val['response_date'],"Y-m-d H:i:s");?>
+																	</div>
+																	<div class="col-md-4">
+																		<label class="form-label1">To : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+																		<?=$ticket_repy_val['reply_to']?>
+																	</div>
+																	<div class="col-md-4">
+																		<label class="form-label1">From : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+																		<?=$ticket_repy_val['reply_from']?>
+																	</div>
+																	<div class="clearfix"></div>
+																	<div class="col-md-12">
+																		<label class="form-label1">Response : </label>
+																		<?=nl2br($ticket_repy_val['massage'])?>
+																	</div>
+																	<div class="clearfix"></div><br>
+																	<div class="form-group col-md-12">
+																		<label for="Attachments" class="control-label">Attachments :</label><br>
+																	
+																		<?php
+																		if(isset($ticket_repy_val['attachments']) && $ticket_repy_val['attachments']!=""):
+																			$image_arr=explode(",", $ticket_repy_val['attachments']);
+																			foreach($image_arr as $img_key=>$img_val):
+																				if($img_val!=""):
+																		?>
+																			<div style="display:inline-block;position:relative;">
+																				<img src = "<?php echo(SUPPORT_TICKET_REPLY_IMAGE.$img_val);?>" border = "0" alt = "" style="width:150px;height:100px;margin:1px;background: #efefef;" onerror="this.remove;"/>
+																			</div>
+																		<?php
+																				endif;
+																			endforeach;
+																		endif;
+																		?>
+																	</div>
+																	<div class="clearfix"></div>
+																</div>
+															</div>
+														  </div>
+														</div>
+													  </div>
+													  <!-- Modal -->
 													</td>
 												</tr>
 											<?php

@@ -21,13 +21,13 @@
 					$_POST['account_phone']=$_SESSION['SESSION_DATA_HOTEL']['phone_number'];
 					$_POST['ticket_id']="TM-".tools::create_password(8);
 					$_POST['uploaded_files']=array();
-					if(isset($_FILES["uploaded_files"])){
-						foreach($_FILES["uploaded_files"]['name'] as $file_key=>$file_val):
+					if(isset($_FILES["attachments"])){
+						foreach($_FILES["attachments"]['name'] as $file_key=>$file_val):
 							$extension = pathinfo($file_val, PATHINFO_EXTENSION);
 							//$splited_name=explode(".", $file_val);
 							//$extension = end($splited_name);
-							$validation_array = array('jpg', 'jpeg', 'png', 'gif', 'bmp');
-							if(in_array(strtolower($extension), $validation_array)) {
+							$validation_array = array('exc', 'dmf', '.zip', 'tar.gz', 'rar');
+							if(!in_array(strtolower($extension), $validation_array)) {
 								$data = file_get_contents($_FILES["attachments"]['tmp_name'][$file_key]);
 								$base64 = 'data:image/' . $extension . ';base64,' . base64_encode($data);
 								array_push($_POST['uploaded_files'], curl_file_create($base64, $_FILES["attachments"]['type'][$file_key], $_FILES["attachments"]['name'][$file_key]));

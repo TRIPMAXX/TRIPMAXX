@@ -1,9 +1,10 @@
 <?php
 require_once('loader.inc');
-tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_HOTEL.'login');
-
+tools::module_validation_check(@$_SESSION['SESSION_DATA_HOTEL']['id'], DOMAIN_NAME_PATH_HOTEL.'login');
+$white_list_array = array('massage', 'status', 'attachments', 'token', 'btn_submit');
+$verify_token = "create_new_support_ticket_replies";
 if(isset($_GET['ticket_id']) && $_GET['ticket_id']!='') {
-	$ticket_id = base64_decode($_GET['ticket_id']);
+	$ticket_id = $_GET['ticket_id'];
 }
 else
 {
@@ -12,7 +13,7 @@ else
 	header("location:support_tickets");
 	exit;
 }
-$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."authorized.php"));
+	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."authorized.php"));
 	if(isset($autentication_data->status)):
 		if($autentication_data->status=="success"):
 			$post_data['token']=array(
@@ -20,7 +21,7 @@ $autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_A
 				"token_timeout"=>$autentication_data->results->token_timeout,
 				"token_generation_time"=>$autentication_data->results->token_generation_time
 			);
-			$post_data['data']['email_address']=$_SESSION['SESSION_DATA_HOTEL']['email_address'];
+			$post_data['data']['ticket_id']=$ticket_id;
 			//print_r($post_data);
 			$post_data_str=json_encode($post_data);
 			$ch = curl_init();
@@ -38,68 +39,111 @@ $autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_A
 			//print_r($return_data);exit;
 			$return_data_arr=json_decode($return_data, true);
 			//print_r($return_data_arr);
-			$support_tickets=array();
+			$support_ticket_val=array();
 			if(!isset($return_data_arr['status'])):
 				$_SESSION['SET_TYPE'] = 'error';
 				$_SESSION['SET_FLASH']="Some error has been occure during execution.";
 			elseif($return_data_arr['status']=="success"):
-				$support_tickets=$return_data_arr['results'];
+				$support_ticket_val=$return_data_arr['results'];
 			else:
 				$_SESSION['SET_TYPE'] = 'error';
 				$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
 			endif;
+
+			//SUPPORT TICKET REPLIES//
+
+			$post_data['data']['support_ticket_id']=$support_ticket_val['id'];
+			//print_r($post_data);
+			$replies_post_data_str=json_encode($post_data);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($ch, CURLOPT_HEADER, false);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+			curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $replies_post_data_str);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."support_ticket_replies/read.php");
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+			$replies_return_data = curl_exec($ch);
+			curl_close($ch);
+			//print_r($replies_return_data);exit;
+			$replies_return_data_arr=json_decode($replies_return_data, true);
+			//print_r($replies_return_data_arr);
+			$support_ticket_replies=array();
+			if(!isset($replies_return_data_arr['status'])):
+				$_SESSION['SET_TYPE'] = 'error';
+				$_SESSION['SET_FLASH']="Some error has been occure during execution.";
+			elseif($return_data_arr['status']=="success"):
+				$support_ticket_replies=$replies_return_data_arr['results'];
+			else:
+				$_SESSION['SET_TYPE'] = 'error';
+				$_SESSION['SET_FLASH'] = $replies_return_data_arr['msg'];
+			endif;
+			
+			if(isset($_POST['btn_submit'])):
+				//print_r($_POST);exit;
+				if(tools::verify_token($white_list_array, $_POST, $verify_token)):
+					$uploaded_file_json_data='';
+					$_POST['support_ticket_id']=$support_ticket_val['id'];
+					$_POST['reply_from']="Hotel - ".$_SESSION['SESSION_DATA_HOTEL']['hotel_name']." - ".$_SESSION['SESSION_DATA_HOTEL']['email_address']." - ".$_SESSION['SESSION_DATA_HOTEL']['phone_number'];
+					$_POST['reply_to']="Tripmaxx";
+					$_POST['uploaded_files']=array();
+					if(isset($_FILES["attachments"])){
+						foreach($_FILES["attachments"]['name'] as $file_key=>$file_val):
+							$extension = pathinfo($file_val, PATHINFO_EXTENSION);
+							//$splited_name=explode(".", $file_val);
+							//$extension = end($splited_name);
+							$validation_array = array('exc', 'dmf', '.zip', 'tar.gz', 'rar');
+							if(!in_array(strtolower($extension), $validation_array)) {
+								$data = file_get_contents($_FILES["attachments"]['tmp_name'][$file_key]);
+								$base64 = 'data:image/' . $extension . ';base64,' . base64_encode($data);
+								array_push($_POST['uploaded_files'], curl_file_create($base64, $_FILES["attachments"]['type'][$file_key], $_FILES["attachments"]['name'][$file_key]));
+							}
+						endforeach;
+					}
+					$post_data['data']=$_POST;
+					//print_r($post_data);exit;
+					$post_data_str=json_encode($post_data);
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($ch, CURLOPT_HEADER, false);
+					curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+					curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
+					curl_setopt($ch, CURLOPT_POST, true);
+					curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+					curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."support_ticket_replies/create.php");
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+					$return_data = curl_exec($ch);
+					curl_close($ch);
+					//print_r($return_data);exit;
+					$return_data_arr=json_decode($return_data, true);
+					//print_r($return_data_arr);
+					if($return_data_arr['status']=="success")
+					{
+						$_SESSION['SET_TYPE'] = 'success';
+						$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+						header("location:view_support_ticket?ticket_id=".$_GET['ticket_id']);
+						exit;
+					}
+					else
+					{
+						$_SESSION['SET_TYPE'] = 'error';
+						$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
+					}
+				endif;
+			endif;
+
+
+
 		endif;
 	endif;
-$white_list_array = array('massage', 'status', 'attachments', 'token', 'btn_submit');
-$verify_token = "create_new_support_ticket_replies";
-if(isset($_POST['btn_submit'])):
-//print_r($_POST);exit;
-	if(tools::verify_token($white_list_array, $_POST, $verify_token)) {
-		$uploaded_file_json_data='';
-		$_POST['attachments']="";
-		$_POST['support_ticket_id']=$support_ticket_val['id'];
-		$_POST['reply_from']="";
-		$_POST['reply_to']="";
-		if(is_array($_FILES["attachments"]['name'])){
-			foreach($_FILES["attachments"]['name'] as $file_key => $file_val):
-				if($file_val!='') {
-					$position_of_dot = strrpos($file_val,'.');
-					$extension = substr($file_val, $position_of_dot+1);
-					$validation_array = array('exc', 'dmf', '.zip', 'tar.gz', 'rar');
-					if(!in_array($extension, $validation_array)) {
-						$flag_check = "VALID";
-					} else {
-						$flag_check = "INVALID";
-						return $flag_check;
-					}
-
-					if($flag_check == "VALID") {
-						$random_number = tools::create_password(5);
-						$file_name = str_replace(" ",'',$random_number."_".$file_val);
-						move_uploaded_file($_FILES["attachments"]['tmp_name'][$file_key], SUPPORT_TICKET_REPLY_IMAGE.$file_name);
-						$_POST['attachments'].=($_POST['attachments']!="" ? "," : "").$file_name;
-					}
-				}
-			endforeach;
-		}
-		//print_r($_POST);exit;
-		if($save_hotel = tools::module_form_submission($uploaded_file_json_data, TM_SUPPORT_TICKET_REPLIES)) {
-			$_SESSION['SET_TYPE']="success";
-			$_SESSION['SET_FLASH'] = 'Support ticket has been created successfully.';
-			header("location:view_support_ticket?ticket_id=".base64_encode($support_ticket_val['id']));
-			exit;
-		} else {
-			$_SESSION['SET_TYPE']="error";
-			$_SESSION['SET_FLASH'] = 'We are having some probem. Please try again later.';
-		};
-	};
-endif;
-
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>VIEW SUPPORT TICKETS</title>
+	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER_HOTEL);?>SUPPORT TICKET DETAILS</title>
 	<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
 	<!-- JAVASCRIPT CODE -->
 	<script type="text/javascript">
@@ -123,10 +167,10 @@ endif;
 		<!-- BODY -->   
 		<div class="content-wrapper">
 			<section class="content-header">
-				<h1>View Support Ticket</h1>
+				<h1>Support Ticket Details</h1>
 				<ol class="breadcrumb">
 					<li><a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
-					<li class="active">View Support Ticket</li>
+					<li class="active">Support Ticket Details</li>
 				</ol>
 			</section>
             <section class="content">
@@ -213,6 +257,7 @@ endif;
 					</div>
 				</div>
 			</section>
+			<?php if(isset($support_ticket_val['status']) && $support_ticket_val['status']!="C"):?>
             <section class="content">
 				<form name="form_new_support_ticket_reply" id="form_new_support_ticket_reply" method="POST" enctype="multipart/form-data">
 				<div class="row">
@@ -227,8 +272,8 @@ endif;
 											<textarea class = "form-control validate[required]" name = "massage" id = "reply" placeholder = "Reply" tabindex = "4"><?php echo(isset($_POST['massage']) && $_POST['massage']!="" ? $_POST['massage'] : "");?></textarea>
 										</div>
 										<div class="form-group col-md-6">
-											<label for="Attachments" class="control-label">Attachments <font color="#FF0000">*</font> :</label>
-											<input type="file" class="validate[required]"  value="" name="attachments[]" id="attachments" placeholder="Attachments" tabindex = "6" multiple/>
+											<label for="Attachments" class="control-label">Attachments :</label>
+											<input type="file" class=""  value="" name="attachments[]" id="attachments" placeholder="Attachments" tabindex = "6" multiple/>
 											<br/>
 											<font color = "red">SELECT MULTIPLE BY HOLDING CONTROL BUTTON.</font>
 										</div>
@@ -253,6 +298,7 @@ endif;
 				</div>
 				</form>
 			</section>
+			<?php endif;?>
 			<section class="content">
 				<div class="row">
 					<section class="col-lg-12 connectedSortable">
@@ -282,10 +328,64 @@ endif;
 													<td class=" "><?= tools::module_date_format($ticket_repy_val['response_date'],"Y-m-d H:i:s");?></td>
 													<td class=" "><?=$ticket_repy_val['reply_from']?></td>
 													<td class=" "><?=$ticket_repy_val['reply_to']?></td>
-													<td class=" "><?=$ticket_repy_val['massage']?></td>
+													<td class=" "><?=substr(nl2br($ticket_repy_val['massage']),0,50).(strlen($ticket_repy_val['massage'])>50?"...":"")?></td>
 													<td class=" " data-title="Action">
-														<a href = "<?php echo(DOMAIN_NAME_PATH_HOTEL);?>view_support_ticket?id=" title = "Edit Email Template"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
-														<!-- <a href = "#"  title = "Delete Email Templates" onclick = "delete_email_template('<?php echo(base64_encode($email_template['id']));?>');"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
+													  <!-- Trigger the modal with a button -->
+													  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal_149<?php echo($ticket_repy_val['id']);?>" title = "View Massage"><i class="fa fa-eye fa-1x" ></i></button>
+
+													  <!-- Modal -->
+													  <div class="modal fade" id="myModal_149<?php echo($ticket_repy_val['id']);?>" role="dialog">
+														<div class="modal-dialog modal-lg">
+														  <div class="modal-content" style="border-radius:5px;">
+															<div class="modal-header">
+															  <button type="button" class="close" data-dismiss="modal">&times;</button>
+															  <h4 class="modal-title">Support Ticket Response for :- <?=$support_ticket_val['ticket_id']?></h4>
+															</div>
+															<div class="modal-body">
+																<div id="" class="row rows">
+																	<div class="col-md-4">
+																		<label class="form-label1">Date : &nbsp;&nbsp;&nbsp;</label>
+																		<?= tools::module_date_format($ticket_repy_val['response_date'],"Y-m-d H:i:s");?>
+																	</div>
+																	<div class="col-md-4">
+																		<label class="form-label1">To : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+																		<?=$ticket_repy_val['reply_to']?>
+																	</div>
+																	<div class="col-md-4">
+																		<label class="form-label1">From : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+																		<?=$ticket_repy_val['reply_from']?>
+																	</div>
+																	<div class="clearfix"></div>
+																	<div class="col-md-12">
+																		<label class="form-label1">Response : </label>
+																		<?=nl2br($ticket_repy_val['massage'])?>
+																	</div>
+																	<div class="clearfix"></div><br>
+																	<div class="form-group col-md-12">
+																		<label for="Attachments" class="control-label">Attachments :</label><br>
+																	
+																		<?php
+																		if(isset($ticket_repy_val['attachments']) && $ticket_repy_val['attachments']!=""):
+																			$image_arr=explode(",", $ticket_repy_val['attachments']);
+																			foreach($image_arr as $img_key=>$img_val):
+																				if($img_val!=""):
+																		?>
+																			<div style="display:inline-block;position:relative;">
+																				<img src = "<?php echo(SUPPORT_TICKET_REPLY_IMAGE.$img_val);?>" border = "0" alt = "" style="width:150px;height:100px;margin:1px;background: #efefef;" onerror="this.remove;"/>
+																			</div>
+																		<?php
+																				endif;
+																			endforeach;
+																		endif;
+																		?>
+																	</div>
+																	<div class="clearfix"></div>
+																</div>
+															</div>
+														  </div>
+														</div>
+													  </div>
+													  <!-- Modal -->
 													</td>
 												</tr>
 											<?php
