@@ -30,11 +30,6 @@
 					$post_data['data']['city_id']=$_POST['city_id'];
 					$post_data['data']['country_id']=$_POST['country_id'];
 					$post_data['data']['search_val']=$_POST['search_val'];
-					$post_data['data']['booking_transfer_date']=$_POST['booking_transfer_date'];
-					$post_data['data']['pickup_dropoff_type']=$_POST['pickup_dropoff_type'];
-					$post_data['data']['selected_airport']=$_POST['selected_airport'];
-					$post_data['data']['arr_dept_time']=$_POST['arr_dept_time'];
-					$post_data['data']['selected_service_type']=$_POST['selected_service_type'];
 					if(isset($_POST['booking_details_list']) && $_POST['booking_details_list']!=""):
 						$post_data['data']['booking_details_list']=$_POST['booking_details_list'];
 					endif;
@@ -44,7 +39,7 @@
 					curl_setopt($ch, CURLOPT_HEADER, false);
 					curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
 					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-					curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.TRANSFER_API_PATH."transfer/booking-transfer.php");
+					curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.TRANSFER_API_PATH."transfer/booking-transfer-new.php");
 					curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 					$return_data = curl_exec($ch);

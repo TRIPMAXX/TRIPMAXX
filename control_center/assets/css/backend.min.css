@@ -62,3 +62,6 @@
     z-index: 99;
     border-radius: 50%;
 }
+.select2 {
+	width:100% !important;
+}

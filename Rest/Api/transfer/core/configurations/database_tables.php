@@ -17,4 +17,5 @@ define( "TM_OFFER_AGENT_MARKUP", "tm_offer_agent_markup" );
 define( "TM_OFFER_ADDON_PRICES", "tm_offer_addon_prices" );
 define( "TM_CURRENCIES", "tm_currencies" );
 define( "TM_SETTINGS", "tm_settings" );
+define( "TM_AIRPORTS", "tm_airports" );
 ?>

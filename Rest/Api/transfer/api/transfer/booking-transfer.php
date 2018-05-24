@@ -5,7 +5,7 @@
 	$return_data['status']="error";
 	$return_data['msg']="Token is not verified.";
 	$server_data=json_decode(file_get_contents("php://input"), true);
-	//$server_data=json_decode('{"token":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE1MjY2Mjk4MzEsImp0aSI6Ik40cEhHS2FhcGI5bEp5UG1mcThnK3V2cUZncWVqVkhEbUxLWTNuWSs1XC9rPSIsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdFwvdHJpcG1heHhcL1Jlc3RcL0FwaVwvdHJhbnNmZXJcL2FwaVwvIiwibmJmIjoxNTI2NjI5ODMxLCJleHAiOjE1MjY2Mjk5MzEsImRhdGEiOnsiZmlsZV9uYW1lIjoiMTUyNjYyOTgzMV8xNzAudHh0In19.aRVwTqi-ZZWPgMj7cs8G_gkeyn6GPr8dHD9dWQTVVLSSN2-hzf-fWSDuHSdv3sgC6USj6V_DL2OvXRvDauE8NA","token_timeout":100,"token_generation_time":1526629831},"data":{"booking_type":"personal","agent_name":"","checkin":"18\/05\/2018","checkout":"22\/05\/2018","country":["101","101"],"city":["5312","5313"],"number_of_night":["2","2"],"hotel_ratings":[["3"],["2"]],"first_page_hotel":["2","4"],"sel_nationality":"101","country_residance":"101","sel_currency":"1","rooms":"1","adult":["1"],"child":[""],"offset":0,"record_per_page":10,"type":"1","sort_order":"","city_id":"","country_id":"","search_val":"","booking_details_list":{"id":"34","booking_number":"","quotation_name":"kkkk","checkin_date":"2018-05-18","checkout_date":"2018-05-22","booking_type":"personal","dmc_id":"1","agent_id":"0","nationality":"101","residance_country":"101","invoice_currency":"1","number_of_rooms":"1","adult":"[\"1\"]","child":"[]","total_amount":"330.00","status":"0","is_deleted":"N","creation_date":"2018-05-18 12:40:14","last_updated":"2018-05-18 12:40:14","currency_code":"INR","currency_name":"Indian","booking_supplier_list":[{"id":"15","booking_master_id":"34","supplier_id":"7","status":"0","creation_date":"2018-05-10 16:35:40","last_updated":"2018-05-10 16:35:40"},{"id":"35","booking_master_id":"34","supplier_id":"7","status":"0","creation_date":"2018-05-18 12:40:17","last_updated":"2018-05-18 12:40:17"}],"booking_destination_list":[{"id":"78","booking_master_id":"34","country_id":"101","city_id":"5312","no_of_night":"2","hotel_rating":"3","creation_date":"2018-05-18 12:40:14","last_updated":"2018-05-18 12:40:14","co_name":"India","ci_name":"24 Parganas (n)","booking_hotel_list":[{"id":"78","booking_destination_id":"78","hotel_id":"2","room_id":"5","price":"20.00","booking_start_date":"2018-05-18","booking_end_date":"2018-05-20","agent_markup_percentage":"0","currency_id":"1","avalibility_status":"N","status":"0","creation_date":"2018-05-18 12:40:14","last_updated":"2018-05-18 12:40:14"}],"booking_tour_list":[{"id":"90","booking_destination_id":"78","tour_id":"3","offer_id":"4","price":"200.00","number_of_person":"1","booking_start_date":"2018-05-18","booking_end_date":"2018-05-20","agent_markup_percentage":"0","nationality_addon_percentage":"0","avalibility_status":"N","creation_date":"2018-05-18 12:40:15","last_updated":"2018-05-18 12:40:15"}],"booking_transfer_list":[{"id":"44","booking_destination_id":"78","transfer_id":"5","offer_id":"8","price":"20.00","number_of_person":"1","booking_start_date":"2018-05-18","booking_end_date":"2018-05-20","agent_markup_percentage":"0","nationality_addon_percentage":"0","avalibility_status":"A","creation_date":"2018-05-18 12:40:15","last_updated":"2018-05-18 12:40:15"}]},{"id":"79","booking_master_id":"34","country_id":"101","city_id":"5313","no_of_night":"2","hotel_rating":"2","creation_date":"2018-05-18 12:40:15","last_updated":"2018-05-18 12:40:15","co_name":"India","ci_name":"24 Parganas (s)","booking_hotel_list":[{"id":"79","booking_destination_id":"79","hotel_id":"4","room_id":"9","price":"20.00","booking_start_date":"2018-05-20","booking_end_date":"2018-05-22","agent_markup_percentage":"0","currency_id":"1","avalibility_status":"N","status":"0","creation_date":"2018-05-18 12:40:15","last_updated":"2018-05-18 12:40:15"}],"booking_tour_list":[{"id":"91","booking_destination_id":"79","tour_id":"4","offer_id":"6","price":"30.00","number_of_person":"1","booking_start_date":"2018-05-20","booking_end_date":"2018-05-22","agent_markup_percentage":"0","nationality_addon_percentage":"0","avalibility_status":"A","creation_date":"2018-05-18 12:40:15","last_updated":"2018-05-18 12:40:15"}],"booking_transfer_list":[{"id":"45","booking_destination_id":"79","transfer_id":"6","offer_id":"9","price":"40.00","number_of_person":"1","booking_start_date":"2018-05-20","booking_end_date":"2018-05-22","agent_markup_percentage":"0","nationality_addon_percentage":"0","avalibility_status":"A","creation_date":"2018-05-18 12:40:15","last_updated":"2018-05-18 12:40:15"}]}]}}}', true);
+	//$server_data=json_decode('{"token":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE1MjcxNjgyMjcsImp0aSI6IkdNSW9KU0pjdXBJQzErVE45QkhoWE1PdzRSQ1BHUlFtYlVwYWFRN3dGYkU9IiwiaXNzIjoiaHR0cDpcL1wvbG9jYWxob3N0XC90cmlwbWF4eFwvUmVzdFwvQXBpXC90cmFuc2ZlclwvYXBpXC8iLCJuYmYiOjE1MjcxNjgyMjcsImV4cCI6MTUyNzE2ODMyNywiZGF0YSI6eyJmaWxlX25hbWUiOiIxNTI3MTY4MjI3XzMyNTY4LnR4dCJ9fQ.5JAcrXMBqBEQ0iSfklaqxC4CxgAZP0Xybtd-_9nA6JncENuSfUrBlIDkBo2Zt7CZPIN1ikTehmiX4t3STAot5w","token_timeout":100,"token_generation_time":1527168227},"data":{"booking_type":"personal","agent_name":"","checkin":"26\/04\/2018","checkout":"29\/04\/2018","country":["101","101"],"city":["5313","5312"],"number_of_night":["1","2"],"hotel_type":["",""],"hotel_ratings":[["2","3"],["2","3"]],"first_page_hotel":["4","2"],"sel_nationality":"10","country_residance":"3","sel_currency":"1","rooms":"1","adult":["3"],"child":[""],"offset":0,"record_per_page":10,"type":"3","sort_order":"","city_id":"5313","country_id":"101","search_val":"","booking_transfer_date":"2018-04-26","pickup_dropoff_type":"1","selected_airport":"1983","arr_dept_time":"10:00","selected_service_type":"Shared","booking_details_list":{"id":"2","booking_number":"","quotation_name":"uuu","checkin_date":"2018-04-26","checkout_date":"2018-04-29","booking_type":"personal","dmc_id":"1","agent_id":"0","nationality":"10","residance_country":"3","invoice_currency":"1","number_of_rooms":"1","adult":"[\"3\"]","child":"[]","total_amount":"315.00","payment_type":"credit","payment_status":"P","payment_date":"2018-05-23 10:00:40","pay_within_days":"0","is_emailed":"0","status":"0","is_deleted":"N","creation_date":"2018-04-26 12:07:32","last_updated":"2018-05-23 13:30:40","currency_code":"INR","currency_name":"Indian","booking_supplier_list":[{"id":"2","booking_master_id":"2","supplier_id":"7","status":"1","creation_date":"2018-04-30 15:18:06","last_updated":"2018-05-11 12:37:46"}],"booking_destination_list":[{"id":"101","booking_master_id":"2","country_id":"101","city_id":"5313","no_of_night":"1","hotel_rating":"2,3","creation_date":"2018-05-23 13:30:40","last_updated":"2018-05-23 13:30:40","co_name":"India","ci_name":"24 Parganas (s)","booking_hotel_list":[{"id":"101","booking_destination_id":"101","hotel_id":"4","room_id":"9","price":"10.00","booking_start_date":"2018-04-26","booking_end_date":"2018-04-27","agent_markup_percentage":"0","currency_id":"1","avalibility_status":"A","status":"0","creation_date":"2018-05-23 13:30:40","last_updated":"2018-05-23 13:30:40"}],"booking_tour_list":[{"id":"113","booking_destination_id":"101","tour_id":"4","offer_id":"6","price":"15.00","number_of_person":"3","booking_start_date":"2018-04-26","booking_end_date":"2018-04-27","agent_markup_percentage":"0","nationality_addon_percentage":"0","avalibility_status":"N","creation_date":"2018-05-23 13:30:40","last_updated":"2018-05-23 13:30:40"}],"booking_transfer_list":[{"id":"66","booking_destination_id":"101","transfer_id":"6","offer_id":"9","price":"20.00","number_of_person":"3","booking_start_date":"2018-04-26","booking_end_date":"2018-04-27","agent_markup_percentage":"0","nationality_addon_percentage":"0","avalibility_status":"N","creation_date":"2018-05-23 13:30:40","last_updated":"2018-05-23 13:30:40"}]},{"id":"102","booking_master_id":"2","country_id":"101","city_id":"5312","no_of_night":"2","hotel_rating":"2,3","creation_date":"2018-05-23 13:30:40","last_updated":"2018-05-23 13:30:40","co_name":"India","ci_name":"24 Parganas (n)","booking_hotel_list":[{"id":"102","booking_destination_id":"102","hotel_id":"2","room_id":"5","price":"20.00","booking_start_date":"2018-04-27","booking_end_date":"2018-04-29","agent_markup_percentage":"0","currency_id":"1","avalibility_status":"A","status":"0","creation_date":"2018-05-23 13:30:40","last_updated":"2018-05-23 13:30:40"}],"booking_tour_list":[{"id":"115","booking_destination_id":"102","tour_id":"2","offer_id":"5","price":"30.00","number_of_person":"3","booking_start_date":"2018-04-27","booking_end_date":"2018-04-29","agent_markup_percentage":"0","nationality_addon_percentage":"0","avalibility_status":"A","creation_date":"2018-05-23 13:30:40","last_updated":"2018-05-23 13:30:40"},{"id":"114","booking_destination_id":"102","tour_id":"3","offer_id":"4","price":"200.00","number_of_person":"3","booking_start_date":"2018-04-27","booking_end_date":"2018-04-29","agent_markup_percentage":"0","nationality_addon_percentage":"0","avalibility_status":"A","creation_date":"2018-05-23 13:30:40","last_updated":"2018-05-23 13:30:40"}],"booking_transfer_list":[{"id":"67","booking_destination_id":"102","transfer_id":"5","offer_id":"8","price":"20.00","number_of_person":"3","booking_start_date":"2018-04-27","booking_end_date":"2018-04-29","agent_markup_percentage":"0","nationality_addon_percentage":"0","avalibility_status":"N","creation_date":"2018-05-23 13:30:40","last_updated":"2018-05-23 13:30:40"}]}]}}}', true);
 	if(isset($server_data['token']) && isset($server_data['token']['token']) && isset($server_data['token']['token_timeout']) && isset($server_data['token']['token_generation_time']) && tools::jwtTokenDecode($server_data['token']['token']) && ($server_data['token']['token_generation_time']+$server_data['token']['token_timeout']) > time()):
 		if(isset($server_data['data']) && isset($server_data['data']['country']) && !empty($server_data['data']['country'])):
 			$offset=0;
@@ -63,6 +63,7 @@
 			foreach($server_data['data']['country'] as $country_key=>$counrty_val):	
 				$transfer_first_row=1;
 				$order_by='ORDER BY t.id DESC';
+				$service_where="";
 				if(isset($server_data['data']['city_id']) && $server_data['data']['city_id']!=""):
 					if(isset($server_data['data']['country_id']) && $server_data['data']['country_id']!="" && $counrty_val==$server_data['data']['country_id'] && $server_data['data']['city_id']==$server_data['data']['city'][$country_key]):
 						if(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']!=""):
@@ -79,6 +80,14 @@
 							$execute[':transfer_service']="%".$server_data['data']['search_val']."%";
 							$execute[':service_note']="%".$server_data['data']['search_val']."%";
 						endif;
+						$find_transfer_ids=tools::find("first", TM_OFFERS, 'GROUP_CONCAT(DISTINCT(transfer_id)) as transfer_ids', "WHERE status=:status AND service_type=:service_type", array(":status"=>1, ":service_type"=>$server_data['data']['selected_service_type']));
+						if(!empty($find_transfer_ids)):
+							$search_query=" AND t.id IN (".$find_transfer_ids['transfer_ids'].") ";
+						endif;
+						$search_query.=" AND allow_pickup_type=:allow_pickup_type ";
+						$execute[':allow_pickup_type']=$server_data['data']['pickup_dropoff_type'];
+						$service_where=" AND service_type=:service_type ";
+						$offer_exe[':service_type']=$server_data['data']['selected_service_type'];
 					else:
 						continue;
 					endif;
@@ -104,7 +113,9 @@
 					foreach($transfer_list as $transfer_key=>$transfer_val):
 						$each_first_price="--";
 						$selected_first_price="";
-						$offers_list = tools::find("all", TM_OFFERS, '*', "WHERE transfer_id=:transfer_id ", array(":transfer_id"=>$transfer_val['id']));
+						$offer_exe[':transfer_id']=$transfer_val['id'];
+						$offer_where="WHERE transfer_id=:transfer_id ";
+						$offers_list = tools::find("all", TM_OFFERS, '*', $offer_where.$service_where, $offer_exe);
 						$offer_html='';
 						$transfer_avalibility_status="";
 						$transfer_edit_avalibility_status="";
@@ -323,21 +334,59 @@
 				if($server_data['data']['sort_order']=="" && $server_data['data']['type']!=3 && $server_data['data']['type']!=2):
 					$country_city_rcd_html.='<div class="each_transfer_tab_content '.($country_key==0 ? "active_each_tab_content" : "").'" id="transfer_city'.$server_data['data']['city'][$country_key].'" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'">';
 				endif;
-					$country_city_rcd_html.='<div class="col-md-8 heading_count_rcd">';
+					$country_city_rcd_html.='<div class="col-md-12 heading_count_rcd">';
 						$heading_count_rcd=$total_transfer;
 						$country_city_rcd_html.='<p>Your search for <font color="red"><b>'.$country_name.'</b></font>, <font color="red"><b>'.$city_name.'</b></font> for <font color="red"><b>'.tools::module_date_format($checkin_date_on_city).'</b></font> for <font color="red"><b>'.$total_person.' Passenger(s)</b></font> fetched <font color="red"><b><span class="total_transfer_number">'.$heading_count_rcd.'</span> Transfer(s)</b></font></p>';
 					$country_city_rcd_html.='</div>';
-					$country_city_rcd_html.='<div class="col-md-4">';
-						$country_city_rcd_html.='<p><b>SORT BY:</b>&nbsp;&nbsp;&nbsp;';
-						//$country_city_rcd_html.='<input type = "radio" name = "transfer_sort" value="price" onchange="change_transfer_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'" '.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="price" ? 'checked="checked"' : '').'/>&nbsp;Price&nbsp;&nbsp;';
-						$country_city_rcd_html.='<input type = "radio" name = "transfer_sort" value="name" onchange="change_transfer_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'"'.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="name" ? 'checked="checked"' : '').'/>&nbsp;Transfer Title&nbsp;&nbsp;';
-						//$country_city_rcd_html.='<input type = "radio" name = "transfer_sort" value="rating" onchange="change_transfer_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'"'.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="rating" ? 'checked="checked"' : '').'/>&nbsp;Rating</p>';
-					$country_city_rcd_html.='</div>';
-					$country_city_rcd_html.='<div class="clearfix"></div>';
+					$country_city_rcd_html.='<h3>Create New Transfer</h3>';
 					$country_city_rcd_html.='<form name="form_third_step" id="form_third_step" method="POST" onsubmit="filter_transfer_search($(this), '.$server_data['data']['city'][$country_key].');return false;" data-country_id="'.$counrty_val.'">';
 						$country_city_rcd_html.='<div class="form-group col-sm-6">';
-							$country_city_rcd_html.='<label for="inputName" class="control-label">Search</label>';
-							$country_city_rcd_html.='<input type="text" class="form-control" name="transfer_keyword_search'.$server_data['data']['city'][$country_key].'" id="transfer_keyword_search'.$server_data['data']['city'][$country_key].'" value="'.(isset($server_data['data']['search_val']) && $server_data['data']['search_val']!="" ? $server_data['data']['search_val'] : "").'">';
+							$country_city_rcd_html.='<label for="inputName" class="control-label">Choose Day</label>';
+							$country_city_rcd_html.='
+								<select name="booking_transfer_date'.$server_data['data']['city'][$country_key].'"  id="booking_transfer_date'.$server_data['data']['city'][$country_key].'" class="form-control">';
+								$country_city_rcd_html.='<option value="">Select Date</option>';
+							for($i=strtotime($checkin_date_on_city);$i<=strtotime($checkout_date_on_city);):
+								$choosen_date_value=date("Y-m-d", $i);
+								$choosen_date_text=date("Y-m-d", $i);
+								$country_city_rcd_html.='<option value="'.$choosen_date_value.'">'.tools::module_date_format($choosen_date_text).'</option>';
+								$i=$i+(24*60*60);
+							endfor;
+							$country_city_rcd_html.='</select>';
+						$country_city_rcd_html.='</div>';
+						$transfer_attribute_list = tools::find("all", TM_ATTRIBUTES, '*', "WHERE status=:status ORDER BY serial_number ASC ", array(":status"=>1));
+						$country_city_rcd_html.='<div class="form-group col-sm-6">';
+							$country_city_rcd_html.='<label for="inputName" class="control-label">Pickup/Dropoff Type</label>';
+							$country_city_rcd_html.='
+								<select name="pickup_dropoff_type'.$server_data['data']['city'][$country_key].'"  id="pickup_dropoff_type'.$server_data['data']['city'][$country_key].'" class="form-control">';
+								$country_city_rcd_html.='<option value="">Select Pickup/Dropoff Type</option>';
+								foreach($transfer_attribute_list as $attr_key=>$attr_val):
+									$country_city_rcd_html.='<option value="'.$attr_val['id'].'">'.$attr_val['attribute_name'].'</option>';
+								endforeach;
+							$country_city_rcd_html.='</select>';
+						$country_city_rcd_html.='</div>';
+						$transfer_city_airport_list = tools::find("all", TM_AIRPORTS, '*', "WHERE countryName=:countryName ORDER BY name ASC ", array(":countryName"=>$country_name));
+						$country_city_rcd_html.='<div class="form-group col-sm-6">';
+							$country_city_rcd_html.='<label for="inputName" class="control-label">Choose Airport</label>';
+							$country_city_rcd_html.='
+								<select name="selected_airport'.$server_data['data']['city'][$country_key].'"  id="selected_airport'.$server_data['data']['city'][$country_key].'" class="form-control">';
+								$country_city_rcd_html.='<option value="">Choose Airport</option>';
+								foreach($transfer_city_airport_list as $airport_key=>$airport_val):
+									$country_city_rcd_html.='<option value="'.$airport_val['id'].'">'.$airport_val['name'].'</option>';
+								endforeach;
+							$country_city_rcd_html.='</select>';
+						$country_city_rcd_html.='</div>';
+						$country_city_rcd_html.='<div class="form-group col-sm-6">';
+							$country_city_rcd_html.='<label for="inputName" class="control-label">Arrival/Departure Time</label>';
+							$country_city_rcd_html.='<input type="time" class="form-control" name="arr_dept_time'.$server_data['data']['city'][$country_key].'" id="arr_dept_time'.$server_data['data']['city'][$country_key].'" value="">';
+						$country_city_rcd_html.='</div>';
+						$country_city_rcd_html.='<div class="form-group col-sm-6">';
+							$country_city_rcd_html.='<label for="inputName" class="control-label">Service Type</label>';
+							$country_city_rcd_html.='
+								<select name="selected_service_type'.$server_data['data']['city'][$country_key].'"  id="selected_service_type'.$server_data['data']['city'][$country_key].'" class="form-control">';
+								$country_city_rcd_html.='<option value = "">Select Service Type</option>';
+								$country_city_rcd_html.='<option value = "Private">Private</option>';
+								$country_city_rcd_html.='<option value = "Shared">Shared</option>';
+							$country_city_rcd_html.='</select>';
 						$country_city_rcd_html.='</div>';
 						$country_city_rcd_html.='<div class="form-group col-sm-5 text-left">';
 							$country_city_rcd_html.='<button type="submit" class="btn btn-primary next-step" style="margin-top:23px;" >Search</button>';

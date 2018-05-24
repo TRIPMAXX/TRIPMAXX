@@ -1,7 +1,7 @@
 <?php
 require_once('loader.inc');
 tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
-$white_list_array = array('website_logo', 'punch_line', 'contact_person_name', 'contact_email_address', 'contact_phone_number', 'contact_address', 'default_currency', 'maintenance_mode', 'google_map_api', 'google_analytics_api', 'from_email_address', 'default_page_title', 'default_meta_keyword', 'default_meta_description', 'prev_website_logo', 'default_credit_balance', 'token', 'id', 'btn_submit');
+$white_list_array = array('website_logo', 'punch_line', 'contact_person_name', 'contact_email_address', 'contact_phone_number', 'contact_address', 'default_currency', 'maintenance_mode', 'google_map_api', 'google_analytics_api', 'from_email_address', 'default_page_title', 'default_meta_keyword', 'default_meta_description', 'prev_website_logo', 'default_credit_balance', 'threshold_booking_time', 'token', 'id', 'btn_submit');
 $verify_token = "general_settings";
 if(isset($_POST['btn_submit'])) {
 	$_POST['id']=1;
@@ -187,12 +187,18 @@ $currency_details = tools::find("all", TM_CURRENCIES, '*', "WHERE status=:status
 												<input type="text" class="form-control validate[required, custom[number]]"  value="<?php echo(isset($_POST['default_credit_balance']) && $_POST['default_credit_balance']!='' ? $_POST['default_credit_balance'] : $general_setting['default_credit_balance']);?>" name="default_credit_balance" id="default_credit_balance" placeholder="Default Credit Balance" tabindex = "15" />
 											</div>
 										</div>
+										<div class="form-group col-md-6">
+											<label for="threshold_booking_time" class="control-label">Threshold Booking Time (In hour)<font color="#FF0000">*</font></label>
+											<div class="input-icon right">
+												<input type="text" class="form-control validate[required, custom[number]]"  value="<?php echo(isset($_POST['threshold_booking_time']) && $_POST['threshold_booking_time']!='' ? $_POST['threshold_booking_time'] : $general_setting['threshold_booking_time']);?>" name="threshold_booking_time" id="threshold_booking_time" placeholder="Threshold Booking Time" tabindex = "16" />
+											</div>
+										</div>
 									</div>
 								</div>
 								<div class="col-md-12 row">
 									<div class="box-footer">
 										<input type="hidden" name="token" value="<?php echo(tools::generateFormToken($verify_token)); ?>" />
-										<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex = "15">UPDATE</button>
+										<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex = "17">UPDATE</button>
 									</div>
 								</div>
 							</form>

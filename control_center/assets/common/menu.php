@@ -127,6 +127,17 @@
 				<span>EMAIL TEMPLATES</span>
 				</a>
 			</li>
+			<li class="<?php echo(($current_page_name == 'agent_accounting.php' || $current_page_name == 'hotel_accounting.php' || $current_page_name == 'supplier_accounting.php') ? 'active' : '');?>">
+				<a href="javascript:void(0);">
+				<span>ACCOUNTING</span>
+				<i class="fa fa-angle-left pull-right"></i>
+				</a>
+				<ul class="treeview-menu">
+					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>agent_accounting"><i class="fa fa-circle-o"></i> AGENT ACCOUNTING</a></li>
+					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>hotel_accounting"><i class="fa fa-circle-o"></i> HOTEL ACCOUNTING</a></li>
+					<!-- <li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>supplier_accounting"><i class="fa fa-circle-o"></i> SUPPLIER ACCOUNTING</a></li> -->
+				</ul>
+			</li>
 			<li class="<?php echo(($current_page_name == 'reports.php') ? 'active' : '');?>">
 				<a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>reports">
 				<span>REPORT</span>

@@ -290,7 +290,7 @@
 							{
 								var page=1;
 								var type=1;
-								fetch_step4_rcd(page, type);
+								fetch_new_step4_rcd(page, type);
 								var $active = $('.wizard .nav-tabs li.active');
 								$active.next().removeClass('disabled');
 								$active.next().find('a[data-toggle="tab"]').click();
@@ -840,12 +840,21 @@
 		}
 		function filter_transfer_search(cur, city_id)
 		{
-			var search_val=$("#transfer_keyword_search"+city_id).val();
-			var country_id=cur.attr("data-country_id");
-			var sort_order=cur.parents("#transfer_city"+city_id).find("input[name='transfer_sort']:checked").val();
-			var page=1;
-			var type=3;
-			fetch_step4_rcd(page, type, sort_order, city_id, country_id, search_val);
+			if(cur.validationEngine("validate")==true)
+			{
+				var booking_transfer_date=$("#booking_transfer_date"+city_id).val();
+				var pickup_dropoff_type=$("#pickup_dropoff_type"+city_id).val();
+				var selected_airport=$("#selected_airport"+city_id).val();
+				var arr_dept_time=$("#arr_dept_time"+city_id).val();
+				var selected_service_type=$("#selected_service_type"+city_id).val();
+				var country_id=cur.attr("data-country_id");
+				var sort_order='';
+				var page=1;
+				var type=3;
+				var search_val='';
+				fetch_step4_rcd(page, type, sort_order, city_id, country_id, search_val, booking_transfer_date, pickup_dropoff_type, selected_airport, arr_dept_time, selected_service_type);
+			}
+			return false;
 		}
 		function fetch_step2_rcd(page, type, sort_order='', city_id='', country_id='', search_val='')
 		{
@@ -979,10 +988,81 @@
 				}
 			});
 		}
-		function fetch_step4_rcd(page, type, sort_order='', city_id='', country_id='', search_val='')
+		function fetch_step4_rcd(page, type, sort_order='', city_id='', country_id='', search_val='', booking_transfer_date='', pickup_dropoff_type='', selected_airport='', arr_dept_time='', selected_service_type='')
 		{
 			$.ajax({
 				url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_find_booking_step4_data";?>',
+				type:"post",
+				data:{
+					page:page,
+					type:type,
+					sort_order:sort_order,
+					city_id:city_id,
+					country_id:country_id,
+					search_val:search_val,
+					booking_transfer_date:booking_transfer_date,
+					pickup_dropoff_type:pickup_dropoff_type,
+					selected_airport:selected_airport,
+					arr_dept_time:arr_dept_time,
+					selected_service_type:selected_service_type,
+					<?php echo(isset($booking_details_list) && !empty($booking_details_list) ? "booking_details_list:".json_encode($booking_details_list) : "");?>
+				},
+				beforeSend:function(){
+					$(".loader_inner").fadeIn();
+				},
+				dataType:"json",
+				success:function(response){
+					//console.log(response);
+					//console.log(JSON.stringify(response, null, 4));
+					if(response.status=="success")
+					{
+						if(type==2)
+						{
+							/*$("#transfer_city"+city_id+" .all_rcd_row").append(response.transfer_data);
+							$(".tab-content .active .active_each_tab_content").find(".transfer_list_tab_current_page").val(page);
+							var prev_count=$("#transfer_city"+city_id+" .total_transfer_number").html();
+							var new_count=eval(prev_count)+eval(response.heading_count_rcd);
+							$("#transfer_city"+city_id+" .total_transfer_number").html(new_count);
+							if(response.transfer_data.indexOf("No more record found") > -1)
+								$(".tab-content .active .active_each_tab_content").find(".transfer_list_tab_no_more_record_status").val(1);
+							*/
+						}
+						else if(sort_order!="" || type==3)
+						{
+							//if(type==3)
+							//{
+								$(".tab-content .active .active_each_tab_content").find(".transfer_list_tab_current_page").val(1);
+								$(".tab-content .active .active_each_tab_content").find(".transfer_list_tab_no_more_record_status").val(0);
+							//}
+							//$("#step4 #transfer_city"+city_id+" .all_rcd_row").html(response.transfer_data);
+							//$("#step4 #transfer_city"+city_id+" .total_transfer_number").text(response.heading_count_rcd);
+							$("#step4 #transfer_city"+city_id+" .all_rcd_row").append(response.transfer_data);
+						}
+						else
+						{
+							$(".transfer_tab_all_data_div").html(response.transfer_data);
+							$(".transfer_city_tab_button_div").html(response.city_tab_html);
+						}
+					}
+					else
+					{
+						showError(response.msg);
+					}
+					$(".loader_inner").fadeOut();
+				},
+				error:function(){
+					showError("We are having some problem. Please try later.");
+					$(".loader_inner").fadeOut();
+				},
+				complete:function(){
+					$("select").select2();
+				}
+			});
+		}
+		function fetch_new_step4_rcd(page, type, sort_order='', city_id='', country_id='', search_val='')
+		{
+			$.ajax({
+				url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_find_new_booking_step4_data";?>',
 				type:"post",
 				data:{
 					page:page,
@@ -1037,6 +1117,9 @@
 				error:function(){
 					showError("We are having some problem. Please try later.");
 					$(".loader_inner").fadeOut();
+				},
+				complete:function(){
+					$("select").select2();
 				}
 			});
 		}
@@ -1294,6 +1377,9 @@
 				showSuccess("Tour selected successfully.");
 			}
 		}
+		window.onerror = function(msg, file, line) {
+			alert(msg + '; ' + file + '; ' + line);
+		};
 	//-->
 	</script>
 	<!-- JAVASCRIPT CODE -->
@@ -1554,7 +1640,7 @@
 															</div>
 															<div class="form-group col-md-2" style="">
 																<label for="inputName" class="control-label">Hotel Type</label>
-																<select class="form-control hotel_type" name="hotel_type[<?php echo $post_country_key;?>]" id="first_hotel_type<?php echo $post_country_key;?>" onchange="find_hotel_name($(this))">
+																<select class="form-control hotel_type" name="hotel_type[<?php echo $destination_key;?>]" id="first_hotel_type<?php echo $destination_key;?>" onchange="find_hotel_name($(this))">
 																	<option value="">All</option>
 															<?php
 															if(isset($global_hotel_type_arr) && !empty($global_hotel_type_arr)):

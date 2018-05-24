@@ -382,7 +382,7 @@
 										</div>
 										<div class="form-group col-md-4">
 											<label for="offer_capacity" class="control-label">Capacity<font color="#FF0000">*</font></label>
-											<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['offer_capacity']) && $_POST['offer_capacity']!='' ? $_POST['offer_capacity'] : (isset($offer_data['offer_capacity']) && $offer_data['offer_capacity']!='' ? $offer_data['offer_capacity'] : ""));?>" name="offer_capacity" id="offer_capacity" placeholder="Capacity" tabindex = "2" />
+											<input type="text" class="form-control validate[required, custom[integer]]"  value="<?php echo(isset($_POST['offer_capacity']) && $_POST['offer_capacity']!='' ? $_POST['offer_capacity'] : (isset($offer_data['offer_capacity']) && $offer_data['offer_capacity']!='' ? $offer_data['offer_capacity'] : ""));?>" name="offer_capacity" id="offer_capacity" placeholder="Capacity" tabindex = "2" />
 										</div>
 										<div class="form-group col-md-4">
 											<label for="service_type" class="control-label">Service Type<font color="#FF0000">*</font></label>
