@@ -112,6 +112,7 @@
 	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>EDIT BOOKING</title>
 	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
 	<script src="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>assets/raty/jquery.raty.js" type="text/javascript"></script>
+    <link href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>assets/css/clocks.css" type="text/css" rel="stylesheet">
 	<style type="text/css">
 		.hide_age_div, .each_hotel_tab_content, .each_tour_tab_content, .each_transfer_tab_content{display:none;}
 		.active_each_tab_content{display:block;}
@@ -144,6 +145,23 @@
 			border-top-width:1px;
 			color: #000;
 			border-bottom-width:0px;
+		}
+	</style>
+	<style type="text/css">
+		.clock {
+			background-size: 100px;
+			-webkit-border-radius: 50%;
+			-moz-border-radius: 50%;
+			-ms-border-radius: 50%;
+			-o-border-radius: 50%;
+			border-radius: 50%;
+			margin-top: -43px;
+			margin-bottom: 6px;
+		}
+		svg {
+			height: 65px;
+			width: 100px;
+			margin: 21px -1px;
 		}
 	</style>
 	<!-- JAVASCRIPT CODE -->
@@ -361,7 +379,12 @@
 			});
 			$(".save_step4_data").click(function(){
 				var transfer_offer_arr=[];
-				var transfer_offer_city_arr=[];
+				var transfer_pickuptime_arr=[];
+				var transfer_dropofftime_arr=[];
+				var transfer_booking_transfer_date_arr=[];
+				var transfer_pickup_dropoff_type_arr=[];
+				var transfer_airport_arr=[];
+				var transfer_service_type_arr=[];
 				$('input[class="selected_transfer"]:checked').each(function(){
 					transfer_offer_arr.push($(this).val());
 					var city_id=$(this).val().split("-");
@@ -377,9 +400,9 @@
 					beforeSend:function(){
 						$(".loader_inner").fadeIn();
 					},
-					dataType:"json",
+					//dataType:"json",
 					success:function(response){
-						//console.log(response);
+						console.log(response);
 						//console.log(JSON.stringify(response, null, 4));
 						if(response.status=="success")
 						{
@@ -848,11 +871,13 @@
 				var arr_dept_time=$("#arr_dept_time"+city_id).val();
 				var selected_service_type=$("#selected_service_type"+city_id).val();
 				var country_id=cur.attr("data-country_id");
+				var search_counter=cur.find(".search_counter").val();
 				var sort_order='';
 				var page=1;
 				var type=3;
 				var search_val='';
-				fetch_step4_rcd(page, type, sort_order, city_id, country_id, search_val, booking_transfer_date, pickup_dropoff_type, selected_airport, arr_dept_time, selected_service_type);
+				fetch_step4_rcd(page, type, sort_order, city_id, country_id, search_val, booking_transfer_date, pickup_dropoff_type, selected_airport, arr_dept_time, selected_service_type, search_counter);
+				cur.find(".search_counter").val(eval(search_counter)+eval(1));
 			}
 			return false;
 		}
@@ -988,7 +1013,7 @@
 				}
 			});
 		}
-		function fetch_step4_rcd(page, type, sort_order='', city_id='', country_id='', search_val='', booking_transfer_date='', pickup_dropoff_type='', selected_airport='', arr_dept_time='', selected_service_type='')
+		function fetch_step4_rcd(page, type, sort_order='', city_id='', country_id='', search_val='', booking_transfer_date='', pickup_dropoff_type='', selected_airport='', arr_dept_time='', selected_service_type='', search_counter='')
 		{
 			$.ajax({
 				url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_find_booking_step4_data";?>',
@@ -1005,6 +1030,7 @@
 					selected_airport:selected_airport,
 					arr_dept_time:arr_dept_time,
 					selected_service_type:selected_service_type,
+					search_counter:search_counter,
 					<?php echo(isset($booking_details_list) && !empty($booking_details_list) ? "booking_details_list:".json_encode($booking_details_list) : "");?>
 				},
 				beforeSend:function(){
@@ -1036,7 +1062,49 @@
 							//}
 							//$("#step4 #transfer_city"+city_id+" .all_rcd_row").html(response.transfer_data);
 							//$("#step4 #transfer_city"+city_id+" .total_transfer_number").text(response.heading_count_rcd);
-							$("#step4 #transfer_city"+city_id+" .all_rcd_row").append(response.transfer_data);
+							if($("#step4 #transfer_city"+city_id+" .all_rcd_row .each_date_div_"+response['post_data']['country_city_rcd_date']).length)
+							{								
+								$("#step4 #transfer_city"+city_id+" .all_rcd_row .each_date_div .no_rcd").remove();
+								$("#step4 #transfer_city"+city_id+" .all_rcd_row .each_date_div_"+response['post_data']['country_city_rcd_date']).append(response.transfer_data);
+							}
+							else
+							{
+								var exists_svg_path="";
+								$(".each_date_div").each(function(){
+									if($(this).attr("data-date_time")==response['post_data']['country_city_rcd_date_time'] && $(this).find(".radio_button_row_background").length>0)
+									{
+										exists_svg_path=$(this).find("svg").html();
+									}
+								});
+								var add_html='';
+								add_html+='<div class="each_date_div_'+response['post_data']['country_city_rcd_date']+' each_date_div" data-date_time="'+response['post_data']['country_city_rcd_date_time']+'">';
+									add_html+='<div class="col-md-12 date_heading_div">';
+										add_html+='<h4>Date: '+response['post_data']['country_city_rcd_formated_date']+'</h4>';
+										add_html+='<div class="clock">';
+											add_html+='<svg>';
+											  add_html+=exists_svg_path;
+											add_html+='</svg>';
+										add_html+='</div>';
+									add_html+='</div>';
+									add_html+=response.transfer_data;
+								add_html+='</div>';								
+								$("#step4 #transfer_city"+city_id+" .all_rcd_row .each_date_div .no_rcd").remove();
+								var will_prepend=false;
+								$("#step4 #transfer_city"+city_id+" .all_rcd_row .each_date_div").each(function(){
+									if(response['post_data']['country_city_rcd_date_time']<=$(this).attr("data-date_time"))
+									{
+										will_prepend=true;
+									}
+								});
+								if(will_prepend==true)
+								{
+									$("#step4 #transfer_city"+city_id+" .all_rcd_row").prepend(add_html);
+								}
+								else
+								{
+									$("#step4 #transfer_city"+city_id+" .all_rcd_row").append(add_html);
+								}
+							}
 						}
 						else
 						{
@@ -1056,6 +1124,8 @@
 				},
 				complete:function(){
 					$("select").select2();
+					//var arc = describeArc(50, 28, 28, 187.5, 240);
+					//$("#arc1").attr("d", arc);
 				}
 			});
 		}
@@ -1341,21 +1411,28 @@
 		}
 		function select_transfer_radio_row(cur)
 		{
-			if(cur.hasClass("radio_button_row_background"))
+			if(cur.parents(".each_date_div").find(".pickuptime").val()!="" && cur.parents(".each_date_div").find(".dropofftime").val()!="")
 			{
-				cur.removeClass("radio_button_row_background");
-				cur.find('input[type="radio"]').prop("checked", false);
-				cur.parents(".form-group").find(".default_price_div").html(cur.parents(".form-group").find(".default_price_div").attr("data-default_price"));
-				showSuccess("Transfer deselected successfully.");
+				if(cur.hasClass("radio_button_row_background"))
+				{
+					cur.removeClass("radio_button_row_background");
+					cur.find('input[type="radio"]').prop("checked", false);
+					cur.parents(".form-group").find(".default_price_div").html(cur.parents(".form-group").find(".default_price_div").attr("data-default_price"));
+					showSuccess("Transfer deselected successfully.");
+				}
+				else
+				{
+					cur.parent(".transfer_offer_cls").find(".radio_button_row").removeClass("radio_button_row_background");
+					cur.parent(".transfer_offer_cls").find(".radio_button_row").find('input[type="radio"]').removeAttr("checked");
+					cur.addClass("radio_button_row_background");
+					cur.find('input[type="radio"]').prop("checked", true);
+					cur.parents(".form-group").find(".default_price_div").html(cur.find('input[type="radio"]').attr('data-price'));
+					showSuccess("Transfer selected successfully.");
+				}
 			}
 			else
 			{
-				cur.parent(".transfer_offer_cls").find(".radio_button_row").removeClass("radio_button_row_background");
-				cur.parent(".transfer_offer_cls").find(".radio_button_row").find('input[type="radio"]').removeAttr("checked");
-				cur.addClass("radio_button_row_background");
-				cur.find('input[type="radio"]').prop("checked", true);
-				cur.parents(".form-group").find(".default_price_div").html(cur.find('input[type="radio"]').attr('data-price'));
-				showSuccess("Transfer selected successfully.");
+				showError("Please select pickup and dropoff time.");
 			}
 		}
 		function select_tour_radio_row(cur)
@@ -1375,6 +1452,101 @@
 				cur.find('input[type="radio"]').prop("checked", true);
 				cur.parents(".form-group").find(".default_price_div").html(cur.find('input[type="radio"]').attr('data-price'));
 				showSuccess("Tour selected successfully.");
+			}
+		}
+		function calculate_time(cur, type)
+		{
+			if(type=="p")
+			{
+				var valuestart = cur.val();
+				var valuestop=cur.parent("div").find(".dropofftime").val();
+			}
+			else
+			{
+				var valuestart = cur.parent("div").find(".pickuptime").val();
+				var valuestop=cur.val();
+			}
+			//console.log(valuestart+"/"+valuestop);
+			if(valuestart!="" && valuestop!="")
+			{
+				var selected_date=cur.parent("div").find(".selected_booking_transfer_date").val();
+				var timeStart = new Date(selected_date+" "+valuestart+":00");
+				var timeEnd = new Date(selected_date+" "+valuestop+":00");
+				if(timeEnd > timeStart)
+				{
+					var difference = timeEnd - timeStart;            
+					//var diff_result = new Date(difference);
+					var hourDiff = difference / 60 / 60 / 1000;;
+					cur.parent("div").find(".calculated_time_diff").text(hourDiff.toFixed(2)+" hours");
+					var start_angle=(timeStart.getHours()*60+timeStart.getMinutes())*.5;
+					var end_angle=(timeEnd.getHours()*60+timeEnd.getMinutes())*.5;
+					var arc = describeArc(50, 28, 28, start_angle, end_angle);
+					//alert(cur.parent("div").find(".svg_path_id_input").length)
+					if(cur.parent("div").find(".svg_path_id_input").length)
+					{
+						$("."+cur.parent("div").find(".svg_path_id_input").val()).attr("d", arc);
+						$(".each_date_div").each(function(){
+							if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
+							{
+								$(this).find("svg").html(cur.parents(".each_date_div").find("svg").html())
+							}
+						});
+					}
+					else
+					{
+						var svg_path_id=Math.floor((Math.random() * 1000) + 1);
+						cur.parent("div").append('<input type="hidden" name="svg_path_id_input_hidden" class="svg_path_id_input" value="'+svg_path_id+'">');
+						var prev_html=cur.parents(".each_date_div").find(".date_heading_div .clock svg").html();
+						cur.parents(".each_date_div").find(".date_heading_div .clock svg").html(prev_html+'<path class="'+svg_path_id+'" fill="green" d="'+arc+'"/>');
+						$(".each_date_div").each(function(){
+							if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
+							{
+								$(this).find("svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock svg").html())
+							}
+						});
+					}
+				}
+				else
+				{
+					showError("Drop off time must be greater than pick up time");
+					cur.parent("div").find(".calculated_time_diff").text("--");
+				}
+			}
+		}
+		function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+			var angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
+			return {
+				x: centerX + (radius * Math.cos(angleInRadians)),
+				y: centerY + (radius * Math.sin(angleInRadians))
+			};
+		}
+
+		function describeArc(x, y, radius, startAngle, endAngle){
+			var start = polarToCartesian(x, y, radius, endAngle);
+			var end = polarToCartesian(x, y, radius, startAngle);
+			var arcSweep = endAngle - startAngle <= 180 ? "0" : "1";
+			var d = [
+				"M", start.x, start.y, 
+				"A", radius, radius, 0, arcSweep, 0, end.x, end.y,
+				"L", x,y,
+				"L", start.x, start.y
+			].join(" ");
+			//console.log(d);
+			return d;       
+		}
+		function delete_transfer_tour_row(cur)
+		{
+			if(confirm("Are you sure you want to remove this row?"))
+			{
+				if(cur.parents(".each_date_div").find(".each_transfer_row_outer").length==1)
+				{
+					cur.parents(".each_date_div").remove();
+				}
+				else
+				{
+					$("#"+cur.parent("div").find(".svg_path_id_input").val()).remove();
+					cur.parents(".each_transfer_row_outer").remove();
+				}
 			}
 		}
 		window.onerror = function(msg, file, line) {

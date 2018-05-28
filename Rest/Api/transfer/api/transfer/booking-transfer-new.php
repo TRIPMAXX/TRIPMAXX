@@ -44,6 +44,7 @@
 					$country_city_rcd_html.='</div>';
 					$country_city_rcd_html.='<h3>Create New Transfer</h3>';
 					$country_city_rcd_html.='<form name="form_third_step" id="form_third_step" class="form_third_step" method="POST" onsubmit="filter_transfer_search($(this), '.$server_data['data']['city'][$country_key].');return false;" data-country_id="'.$counrty_val.'">';
+						$country_city_rcd_html.='<input type="hidden" name="search_counter" class="search_counter" value="1">';
 						$country_city_rcd_html.='<div class="form-group col-sm-6">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Choose Day</label>';
 							$country_city_rcd_html.='

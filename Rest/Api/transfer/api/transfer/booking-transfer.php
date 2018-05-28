@@ -32,6 +32,10 @@
 			$default_currency=tools::find("first", TM_SETTINGS." as s, ".TM_CURRENCIES." as c", 'c.*', "WHERE c.id=s.default_currency ", array());
 			$markup_percentage=0;
 			$nationality_addon_percentage=0;
+			$search_counter=1;
+			if(isset($server_data['data']['search_counter']) && $server_data['data']['search_counter']!=""):
+				$search_counter=$server_data['data']['search_counter'];
+			endif;
 			if(isset($server_data['data']['booking_type']) && $server_data['data']['booking_type']=="agent" && isset($server_data['data']['agent_name']) && $server_data['data']['agent_name']!=""):
 				$autentication_data_agent=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
 				if(isset($autentication_data_agent->status)):
@@ -60,6 +64,22 @@
 					endif;
 				endif;
 			endif;
+			$find_selected_airport = tools::find("first", TM_AIRPORTS, '*', "WHERE id=:id ", array(":id"=>$server_data['data']['selected_airport']));
+			$find_pickup_dropoff_type = tools::find("first", TM_ATTRIBUTES, '*', "WHERE id=:id ", array(":id"=>$server_data['data']['pickup_dropoff_type']));
+			$pickuptime=$dropofftime="";
+			$pickupdate=$dropoffdate=$server_data['data']['booking_transfer_date'];
+			if($find_pickup_dropoff_type['id']==1)
+			{
+				$pickup_time_str=strtotime($server_data['data']['booking_transfer_date']." ".$server_data['data']['arr_dept_time'].":00")+($server_data['data']['threshold_booking_time']['threshold_booking_time']*60*60);
+				$pickuptime=date("H:i", $pickup_time_str);
+				$dropoffdate=$pickupdate=date("Y-m-d", $pickup_time_str);
+			}
+			elseif($find_pickup_dropoff_type['id']==4)
+			{
+				$dropoff_time_str=strtotime($server_data['data']['booking_transfer_date']." ".$server_data['data']['arr_dept_time'])-($server_data['data']['threshold_booking_time']['threshold_booking_time']*60*60);
+				$dropofftime=date("H:i", $dropoff_time_str);
+				$pickupdate=$dropoffdate=date("Y-m-d", $dropoff_time_str);
+			}
 			foreach($server_data['data']['country'] as $country_key=>$counrty_val):	
 				$transfer_first_row=1;
 				$order_by='ORDER BY t.id DESC';
@@ -225,7 +245,7 @@
 										endif;
 										?>
 										<br>
-										<input type="radio" name="selected_transfer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>]" class="selected_transfer" onclick="change_transfer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>"  <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?>>
+										<input type="radio" name="selected_transfer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" class="selected_transfer" onclick="change_transfer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>"  <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?>>
 									</div>
 									<div class="col-md-3" style="font-weight:bold;">
 										<?= $offer_val['offer_title'];?>
@@ -249,16 +269,17 @@
 						ob_start();
 						if($offer_html!=""):
 ?>
-							<div class="form-group col-md-12">
+							<div class="form-group col-md-12 each_transfer_row_outer">
 								<div style="border:1px solid red;background-color:red;">
-									<div class="col-md-5" style="font-weight:bold;color:#fff;">Transfer Title</div>
+									<div class="col-md-3" style="font-weight:bold;color:#fff;">Transfer Title</div>
 									<!-- <div class="col-md-2" style="font-weight:bold;color:#fff;">Transfer Type</div> -->
 									<div class="col-md-3" style="font-weight:bold;color:#fff;text-align:center;">Availability</div>
 									<div class="col-md-2" style="font-weight:bold;color:#fff;text-align:center;">Rate</div>
+									<div class="col-md-4" style="font-weight:bold;color:#fff;">Transfer Details</div>
 									<div class="clearfix"></div>
 								</div>
 								<div style="padding:20px 0 0 0;border:1px solid red;">
-									<div class="col-md-5" style="font-weight:bold;"><?php echo $transfer_val['transfer_title'];?></div>
+									<div class="col-md-3" style="font-weight:bold;"><?php echo $transfer_val['transfer_title'];?></div>
 									<!-- <div class="col-md-2" style="font-weight:bold;"><?php echo $transfer_val['transfer_service'];?></div> -->
 									<div class="col-md-3" style="font-weight:bold;text-align:center;">
 										<?php
@@ -274,6 +295,18 @@
 										?>
 									</div>
 									<div class="col-md-2 default_price_div" style="font-weight:bold;text-align:center;" data-default_price="<?php echo $each_first_price;?>"><?php echo(isset($selected_first_price) && $selected_first_price!="" ? $selected_first_price : $each_first_price);?></div>
+									<div class="col-md-4">
+										<img src="assets/img/delete.png" width="12" height="18" border="0" alt="Delete" class="delete_transfer_tour_row" onclick="delete_transfer_tour_row($(this))">
+										<input type="hidden" name="selected_booking_transfer_date[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_booking_transfer_date[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $server_data['data']['booking_transfer_date'];?>" class="selected_booking_transfer_date">
+										<input type="hidden" name="selected_service_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_service_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $server_data['data']['selected_service_type'];?>" class="selected_service_type">
+										<strong>Pickup/Dropoff Type: </strong><?php echo $find_pickup_dropoff_type['attribute_name'];?><br/>
+										<input type="hidden" name="selected_pickup_dropoff_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="pickup_dropoff_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $find_pickup_dropoff_type['id'];?>" class="pickup_dropoff_type">
+										<strong>Airport: </strong><?php echo $find_selected_airport['name'];?><br/>
+										<input type="hidden" name="selected_airport[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_airport[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $find_selected_airport['name'];?>" class="selected_airport">
+										<strong>Pickup: </strong><?php echo tools::module_date_format($pickupdate);?><input type="time" name="selected_pickuptime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_pickuptime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $pickuptime;?>" class="pickuptime" onkeyup="calculate_time($(this), 'p')"><br/>
+										<strong>Dropoff: </strong><?php echo tools::module_date_format($dropoffdate);?><input type="time" name="selected_dropofftime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_dropofftime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $dropofftime;?>" class="dropofftime" onkeyup="calculate_time($(this), 'd')"><br/>
+										<strong>Time: </strong><span class="calculated_time_diff">--</span><br/>
+									</div>
 									<div class="clearfix"></div>
 									<div class="col-md-3">
 										<?php
@@ -407,8 +440,13 @@
 			$return_data['status']="success";
 			$return_data['msg']="Date fetched successfully.";
 			if($server_data['data']['sort_order']!="" || $server_data['data']['type']==3 || $server_data['data']['type']==2 ):
-				
 				$return_data['country_city_rcd_html']=$transfer_list_html.'<div class="clearfix"></div>';
+				$return_data['post_data']['country_city_rcd_date']=$server_data['data']['booking_transfer_date'];
+				$return_data['post_data']['country_city_rcd_date_time']=strtotime($server_data['data']['booking_transfer_date']);
+				$return_data['post_data']['country_city_rcd_formated_date']=tools::module_date_format($server_data['data']['booking_transfer_date']);
+				$return_data['post_data']['country_city_rcd_arr_dept_time']=$server_data['data']['arr_dept_time'];
+				$return_data['post_data']['find_selected_airport']=$find_selected_airport;
+				$return_data['post_data']['find_pickup_dropoff_type']=$find_pickup_dropoff_type;
 			else:
 				$return_data['country_city_rcd_html']=$country_city_rcd_html;
 			endif;

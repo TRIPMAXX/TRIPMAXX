@@ -65,3 +65,23 @@
 .select2 {
 	width:100% !important;
 }
+.each_date_div{
+	border: 1px solid #000;
+}
+.date_heading_div{
+	background: #00a65a;
+}
+.date_heading_div h4{
+    color: white;
+    padding: 5px 15px;
+}
+.pickuptime, .dropofftime{
+	margin: 5px;
+}
+.delete_transfer_tour_row{
+	float:right;
+	cursor:pointer;
+}
+.each_date_div{
+	margin-bottom: 15px;
+}
