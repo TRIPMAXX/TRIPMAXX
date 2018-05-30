@@ -7,6 +7,7 @@
 		$_SESSION['step_4']=array();
 		if(!empty($_POST))
 			$_SESSION['step_4']=$_POST['transfer_offer_arr'];
+			$_SESSION['step_4_all']=$_POST;
 		$data['status']="success";
 		$data['msg']="Saved to session.";
 	endif;

@@ -73,7 +73,7 @@
 						$country_city_rcd_html.='<div class="form-group col-sm-6">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Choose Airport</label>';
 							$country_city_rcd_html.='
-								<select name="selected_airport'.$server_data['data']['city'][$country_key].'"  id="selected_airport'.$server_data['data']['city'][$country_key].'" class="form-control validate[required]">';
+								<select name="selected_airport'.$server_data['data']['city'][$country_key].'"  id="selected_airport'.$server_data['data']['city'][$country_key].'" class="form-control ">';
 								$country_city_rcd_html.='<option value="">Choose Airport</option>';
 								foreach($transfer_city_airport_list as $airport_key=>$airport_val):
 									$country_city_rcd_html.='<option value="'.$airport_val['id'].'">'.$airport_val['name'].'</option>';

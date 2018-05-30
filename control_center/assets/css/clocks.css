@@ -1,5 +1,5 @@
 .clock {
-    background: #fff url(../img/cface.png) 0 0 no-repeat;
+    /*background: #fff url(../img/cface.png) 0 0 no-repeat;
     height: 100px;
     margin: 0 auto;
     overflow: hidden;
@@ -11,9 +11,64 @@
     -ms-border-radius: 250px;
     -o-border-radius: 250px;
     border-radius: 250px;
-	float: right;
-}
+	float: right;*/
+	/*background: #fff url(../img/final_rular.png) 0 0 no-repeat;
+    height: 40px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    width: 650px;
 
+    -webkit-border-radius: unset;
+    -moz-border-radius: unset;
+    -ms-border-radius: unset;
+    -o-border-radius: unset;
+    border-radius: unset;*/
+	/*float: right;*/
+	/*background-size: contain;
+	background-position: center center;
+	background-size: 100px;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	-ms-border-radius: 50%;
+	-o-border-radius: 50%;
+	border-radius: 50%;
+	margin-top: -43px;
+	margin-bottom: 6px;*/
+	margin-top: 0px;
+    margin-bottom: 6px;
+    background: #FFF;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+	height: 20px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+	border: 1px solid #FFF;
+}
+svg {
+	/*height: 40px;
+	width: 100%;
+	margin: 11px -1px;*/
+	height: 20px;
+    width: 100%;
+    margin: 0px 0px;
+}
+svg line{
+	/*stroke:rgb(0, 166, 90);stroke-width:17;*/
+	stroke: #5bc0de;
+    stroke-width: 40px;
+}
+.clock_img_div{
+    width: 650px;
+	float: right;
+	margin-top: -35px;
+}
+.clock_img_div img{
+	width:100%;
+	margin-top: -19px;
+}
 /* seconds */
 
 

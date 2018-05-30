@@ -296,7 +296,7 @@
 									</div>
 									<div class="col-md-2 default_price_div" style="font-weight:bold;text-align:center;" data-default_price="<?php echo $each_first_price;?>"><?php echo(isset($selected_first_price) && $selected_first_price!="" ? $selected_first_price : $each_first_price);?></div>
 									<div class="col-md-4">
-										<img src="assets/img/delete.png" width="12" height="18" border="0" alt="Delete" class="delete_transfer_tour_row" onclick="delete_transfer_tour_row($(this))">
+										<img src="assets/img/delete.png" width="12" height="18" border="0" alt="Delete" class="delete_transfer_row" onclick="delete_transfer_row($(this))">
 										<input type="hidden" name="selected_booking_transfer_date[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_booking_transfer_date[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $server_data['data']['booking_transfer_date'];?>" class="selected_booking_transfer_date">
 										<input type="hidden" name="selected_service_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_service_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $server_data['data']['selected_service_type'];?>" class="selected_service_type">
 										<strong>Pickup/Dropoff Type: </strong><?php echo $find_pickup_dropoff_type['attribute_name'];?><br/>

@@ -21,6 +21,7 @@
 		ob_start();
 ?>
 		<div class="box-body">
+			<?php print_r($_SESSION);?>
 			<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
 				<thead>
 					<tr role="row">
