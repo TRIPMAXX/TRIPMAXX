@@ -1,5 +1,13 @@
 <?php
 	require_once('loader.inc');
+	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
+	unset($_SESSION['step_1']);
+	unset($_SESSION['step_2']);
+	unset($_SESSION['step_3']);
+	unset($_SESSION['step_3_all']);
+	unset($_SESSION['step_4']);
+	unset($_SESSION['step_4_all']);
+	unset($_SESSION['step_5']);
 	if(isset($_GET['booking_id']) && $_GET['booking_id']!=""):
 		$autentication_data_booking=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."authorized.php"));
 		if(isset($autentication_data_booking->status)):
@@ -803,7 +811,7 @@
 		}
 		function change_offer_radio(cur)
 		{
-			if(cur.attr('previousValue') == 'true')
+			/*if(cur.attr('previousValue') == 'true')
 			{
 				cur.prop('checked', false);
 				cur.attr('previousValue', false);
@@ -814,7 +822,7 @@
 				$('input[name="selected_offer[]"]').attr('previousValue', false);
 				cur.attr('previousValue', true);			
 				cur.parents(".form-group").find(".default_price_div").html(cur.attr('data-price'));
-			}
+			}*/
 		}
 		function change_transfer_radio(cur)
 		{
@@ -1530,17 +1538,6 @@
 			{
 				cur.parents(".each_city_row").find('input[type="checkbox"]').prop('checked', false);
 			}
-		}    
-		function check_all_rating(cur)
-		{
-			if(cur.is(":checked")==true)
-			{
-				cur.parent("div").find('input[type="checkbox"]').prop("checked", true);
-			}
-			else
-			{
-				cur.parent("div").find('input[type="checkbox"]').prop("checked", false);
-			}
 		}
 		function select_radio_row(cur)
 		{
@@ -1587,21 +1584,28 @@
 		}
 		function select_tour_radio_row(cur)
 		{
-			if(cur.hasClass("radio_button_row_background"))
+			if(cur.parents(".each_tour_date_div").find(".pickuptime").val()!="" && cur.parents(".each_tour_date_div").find(".dropofftime").val()!="")
 			{
-				cur.removeClass("radio_button_row_background");
-				cur.find('input[type="radio"]').prop("checked", false);
-				cur.parents(".form-group").find(".default_price_div").html(cur.parents(".form-group").find(".default_price_div").attr("data-default_price"));
-				showSuccess("Tour deselected successfully.");
+				if(cur.hasClass("radio_button_row_background"))
+				{
+					cur.removeClass("radio_button_row_background");
+					cur.find('input[type="radio"]').prop("checked", false);
+					cur.parents(".form-group").find(".default_price_div").html(cur.parents(".form-group").find(".default_price_div").attr("data-default_price"));
+					showSuccess("Tour deselected successfully.");
+				}
+				else
+				{
+					cur.parent(".tour_offer_cls").find(".radio_button_row").removeClass("radio_button_row_background");
+					cur.parent(".tour_offer_cls").find(".radio_button_row").find('input[type="radio"]').removeAttr("checked");
+					cur.addClass("radio_button_row_background");
+					cur.find('input[type="radio"]').prop("checked", true);
+					cur.parents(".form-group").find(".default_price_div").html(cur.find('input[type="radio"]').attr('data-price'));
+					showSuccess("Tour selected successfully.");
+				}
 			}
 			else
 			{
-				cur.parent(".tour_offer_cls").find(".radio_button_row").removeClass("radio_button_row_background");
-				cur.parent(".tour_offer_cls").find(".radio_button_row").find('input[type="radio"]').removeAttr("checked");
-				cur.addClass("radio_button_row_background");
-				cur.find('input[type="radio"]').prop("checked", true);
-				cur.parents(".form-group").find(".default_price_div").html(cur.find('input[type="radio"]').attr('data-price'));
-				showSuccess("Tour selected successfully.");
+				showError("Please select pickup and dropoff time.");
 			}
 		}
 		function calculate_time(cur, type)
@@ -1812,9 +1816,9 @@
 				}
 			}
 		}
-		window.onerror = function(msg, file, line) {
+		/*window.onerror = function(msg, file, line) {
 			alert(msg + '; ' + file + '; ' + line);
-		};
+		};*/
 	//-->
 	</script>
 	<!-- JAVASCRIPT CODE -->
@@ -1851,7 +1855,7 @@
 										<div class="connecting-line"></div>
 										<ul class="nav nav-tabs" role="tablist">
 											<li role="presentation" class="active">
-												<a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" title="General">
+												<a href="#step1" data-toggle="tab" aria-controls="step1" role="tab">
 												<span class="round-tab">
 													<i class="fa fa-bars fa-1x" ></i>
 												</span>
@@ -1859,7 +1863,7 @@
 											</li>
 
 											<li role="presentation">
-												<a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" title="Select Hotel">
+												<a href="#step2" data-toggle="tab" aria-controls="step2" role="tab">
 												<span class="round-tab">
 													<i class="fa fa-bed fa-1x" ></i>
 												</span>
@@ -1867,7 +1871,7 @@
 											</li>
 
 											<li role="presentation">
-												<a href="#step4" data-toggle="tab" aria-controls="step4" role="tab" title="Select Tour">
+												<a href="#step4" data-toggle="tab" aria-controls="step4" role="tab">
 												<span class="round-tab">
 													<i class="fa fa-car fa-1x" ></i>
 												</span>
@@ -1875,7 +1879,7 @@
 											</li>
 
 											<li role="presentation">
-												<a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="Select Transfer">
+												<a href="#step3" data-toggle="tab" aria-controls="step3" role="tab">
 												<span class="round-tab">
 													<i class="fa fa-road fa-1x" ></i>
 												</span>
@@ -1883,7 +1887,7 @@
 											</li>
 
 											<li role="presentation">
-												<a href="#complete" data-toggle="tab" aria-controls="complete" role="tab" title="Complete">
+												<a href="#complete" data-toggle="tab" aria-controls="complete" role="tab">
 												<span class="round-tab">
 													<i class="fa fa-shopping-cart fa-1x" ></i>
 												</span>
@@ -1923,11 +1927,11 @@
 														</div>
 														<div class="form-group col-md-6">
 															<label for="inputName" class="control-label">Check In<font color="#FF0000">*</font></label>
-															<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['checkin']) && $_POST['checkin']!='' ? $_POST['checkin'] : (isset($booking_details_list['checkin_date']) && $booking_details_list['checkin_date']!="" ? date("d/m/Y", strtotime($booking_details_list['checkin_date'])) : ""));?>" name="checkin" id="checkin" placeholder="Check In" tabindex = "3"  />
+															<input type="text" class="form-control datepicker validate[required]"  value="<?php echo(isset($_POST['checkin']) && $_POST['checkin']!='' ? $_POST['checkin'] : (isset($booking_details_list['checkin_date']) && $booking_details_list['checkin_date']!="" ? date("d/m/Y", strtotime($booking_details_list['checkin_date'])) : ""));?>" name="checkin" id="checkin" placeholder="Check In" tabindex = "3" autocomplete="off"/>
 														</div>
 														<div class="form-group col-md-6">
 															<label for="inputName" class="control-label">Check Out<font color="#FF0000">*</font></label>
-															<input type="text" class="form-control validate[required]"  value="<?php echo(isset($_POST['checkout']) && $_POST['checkout']!='' ? $_POST['checkout'] : (isset($booking_details_list['checkout_date']) && $booking_details_list['checkout_date']!="" ? date("d/m/Y", strtotime($booking_details_list['checkout_date'])) : ""));?>" name="checkout" id="checkout" placeholder="Check Out" tabindex = "4" />
+															<input type="text" class="form-control datepicker validate[required]"  value="<?php echo(isset($_POST['checkout']) && $_POST['checkout']!='' ? $_POST['checkout'] : (isset($booking_details_list['checkout_date']) && $booking_details_list['checkout_date']!="" ? date("d/m/Y", strtotime($booking_details_list['checkout_date'])) : ""));?>" name="checkout" id="checkout" placeholder="Check Out" tabindex = "4" autocomplete="off"/>
 														</div>
 														<div class="clearfix"></div>
 													</div>

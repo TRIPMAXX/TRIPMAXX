@@ -139,6 +139,7 @@
 							);
 							$post_data_tour['data']['step_1']=$server_data['data']['step_1'];
 							$post_data_tour['data']['step_3']=$server_data['data']['step_3'];
+							$post_data_tour['data']['step_3_all']=$server_data['data']['step_3_all'];
 							$post_data_tour['data']['saved_booking_destination']=$save_booking_destination;
 							$post_data_tour['data']['city_val']=$server_data['data']['step_1']['city'][$country_key];
 							$post_data_str_tour=json_encode($post_data_tour);
@@ -172,6 +173,8 @@
 										$_POST['number_of_person']=$number_of_person;
 										$_POST['booking_start_date']=$result_val['booking_start_date'];
 										$_POST['booking_end_date']=$result_val['booking_end_date'];
+										$_POST['pickup_time']=$result_val['pickup_time'];
+										$_POST['dropoff_time']=$result_val['dropoff_time'];
 										$_POST['agent_markup_percentage']=$result_val['agent_markup_percentage'];
 										$_POST['nationality_addon_percentage']=$result_val['nationality_addon_percentage'];
 										$_POST['currency_id']=$return_data_arr_tour['default_currency'];
@@ -199,6 +202,7 @@
 							);
 							$post_data_transfer['data']['step_1']=$server_data['data']['step_1'];
 							$post_data_transfer['data']['step_4']=$server_data['data']['step_4'];
+							$post_data_transfer['data']['step_4_all']=$server_data['data']['step_4_all'];
 							$post_data_transfer['data']['saved_booking_destination']=$save_booking_destination;
 							$post_data_transfer['data']['city_val']=$server_data['data']['step_1']['city'][$country_key];
 							$post_data_str_transfer=json_encode($post_data_transfer);
@@ -232,6 +236,9 @@
 										$_POST['number_of_person']=$number_of_person;
 										$_POST['booking_start_date']=$result_val['booking_start_date'];
 										$_POST['booking_end_date']=$result_val['booking_end_date'];
+										$_POST['pickup_time']=$result_val['pickup_time'];
+										$_POST['dropoff_time']=$result_val['dropoff_time'];
+										$_POST['airport']=$result_val['airport'];
 										$_POST['agent_markup_percentage']=$result_val['agent_markup_percentage'];
 										$_POST['nationality_addon_percentage']=$result_val['nationality_addon_percentage'];
 										$_POST['currency_id']=$return_data_arr_transfer['default_currency'];

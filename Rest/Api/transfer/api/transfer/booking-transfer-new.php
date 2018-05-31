@@ -28,8 +28,116 @@
 				$checkin_date_on_city=date("Y-m-d", strtotime($checkin_date)+(24*60*60*$add_day));
 				$add_day=$add_day+$server_data['data']['number_of_night'][$country_key];
 				$checkout_date_on_city=date("Y-m-d", strtotime($checkin_date_on_city)+(24*60*60*$server_data['data']['number_of_night'][$country_key]));
+				$transfer_prev_html=$transfer_all_html=$transfer_date=$transfer_svg_line='';
 				if(isset($server_data['data']['booking_details_list']) && $server_data['data']['booking_details_list']!=""):
 					$booking_details_list=$server_data['data']['booking_details_list'];
+					if(isset($booking_details_list) && !empty($booking_details_list)):
+						foreach($booking_details_list['booking_destination_list'] as $b_key=>$b_val):
+							if(isset($b_val['booking_transfer_list']) && !empty($b_val['booking_transfer_list'])):
+								foreach($b_val['booking_transfer_list'] as $t_key=>$t_val):
+									if($b_val['country_id']==$counrty_val && $b_val['city_id']==$server_data['data']['city'][$country_key]):
+										if($transfer_date!="" && $transfer_date!=$t_val['booking_start_date']):
+											$transfer_all_html.='<div class="each_date_div_'.$transfer_date.' each_date_div" data-date_time="'.strtotime($transfer_date).'">';
+												$transfer_all_html.='<div class="col-md-12 date_heading_div">';
+													$transfer_all_html.='<h4>Date: '.tools::module_date_format($transfer_date).'</h4>';
+													$transfer_all_html.='<div class="clock_img_div">';
+														$transfer_all_html.='<div class="clock">';
+															$transfer_all_html.='<svg>';
+															foreach($booking_details_list['booking_destination_list'] as $svg_b_key=>$svg_b_val):
+																if(isset($svg_b_val['booking_transfer_list']) && !empty($svg_b_val['booking_transfer_list'])):
+																	foreach($svg_b_val['booking_transfer_list'] as $svg_t_key=>$svg_t_val):
+																		if($transfer_date==$svg_t_val['booking_start_date']):
+																			$booking_start_time = explode(':', $svg_t_val['pickup_time']);
+																			$start_point=((($booking_start_time[0]*60 + $booking_start_time[1])*644)/1440);
+																			$booking_end_time = explode(':', $svg_t_val['dropoff_time']);
+																			$end_point=((($booking_end_time[0]*60 + $booking_end_time[1])*644)/1440);
+																			$transfer_all_html.='<line x1="'.$start_point.'" y1="0" x2="'.$end_point.'" y2="0" class="'.rand(1, 1000).'"/>';
+																		endif;
+																	endforeach;
+																endif;
+																if(isset($svg_b_val['booking_tour_list']) && !empty($svg_b_val['booking_tour_list'])):
+																	foreach($svg_b_val['booking_tour_list'] as $svg_t_key=>$svg_t_val):
+																		if($transfer_date==$svg_t_val['booking_start_date']):
+																			$booking_start_time = explode(':', $svg_t_val['pickup_time']);
+																			$start_point=((($booking_start_time[0]*60 + $booking_start_time[1])*644)/1440);
+																			$booking_end_time = explode(':', $svg_t_val['dropoff_time']);
+																			$end_point=((($booking_end_time[0]*60 + $booking_end_time[1])*644)/1440);
+																			$transfer_all_html.='<line x1="'.$start_point.'" y1="0" x2="'.$end_point.'" y2="0" class="'.rand(1, 1000).'"/>';
+																		endif;
+																	endforeach;
+																endif;
+															endforeach;
+															$transfer_all_html.='</svg>';
+														$transfer_all_html.='</div>';
+														$transfer_all_html.='<img src="assets/img/final_rular.png" border="0" alt="">';
+													$transfer_all_html.='</div>';
+												$transfer_all_html.='</div>';
+												$transfer_all_html.='<div class="form-group col-md-12 each_transfer_row_outer">';
+													$transfer_all_html.='<div style="border:1px solid red;background-color:red;">';
+														$transfer_all_html.='<div class="col-md-3" style="font-weight:bold;color:#fff;">Transfer Title</div>';
+														$transfer_all_html.='<!-- <div class="col-md-2" style="font-weight:bold;color:#fff;">Transfer Type</div> -->';
+														$transfer_all_html.='<div class="col-md-3" style="font-weight:bold;color:#fff;text-align:center;">Availability</div>';
+														$transfer_all_html.='<div class="col-md-2" style="font-weight:bold;color:#fff;text-align:center;">Rate</div>';
+														$transfer_all_html.='<div class="col-md-4" style="font-weight:bold;color:#fff;">Transfer Details</div>';
+														$transfer_all_html.='<div class="clearfix"></div>';
+													$transfer_all_html.='</div>';
+													$transfer_all_html.='<div style="padding:20px 0 0 0;border:1px solid red;">';
+														$transfer_all_html.='<div class="col-md-3" style="font-weight:bold;">b</div>';
+														$transfer_all_html.='<!-- <div class="col-md-2" style="font-weight:bold;">Private</div> -->';
+														$transfer_all_html.='<div class="col-md-3" style="font-weight:bold;text-align:center;">';
+															$transfer_all_html.='<button type="button" class="btn btn-success next-step">AVAILABLE</button>';
+														$transfer_all_html.='</div>';
+													$transfer_all_html.='</div>';
+												$transfer_all_html.='</div>';
+												$transfer_all_html.='<div class="clearfix"></div>';
+											$transfer_all_html.='</div>';
+										endif;
+										$transfer_date=$t_val['booking_start_date'];
+									endif;
+								endforeach;
+								if($transfer_date!=""):
+									$transfer_all_html.='<div class="each_date_div_'.$transfer_date.' each_date_div" data-date_time="'.strtotime($transfer_date).'">';
+										$transfer_all_html.='<div class="col-md-12 date_heading_div">';
+											$transfer_all_html.='<h4>Date: '.tools::module_date_format($transfer_date).'</h4>';
+											$transfer_all_html.='<div class="clock_img_div">';
+												$transfer_all_html.='<div class="clock">';
+													$transfer_all_html.='<svg>';
+														foreach($booking_details_list['booking_destination_list'] as $svg_b_key=>$svg_b_val):
+															if(isset($svg_b_val['booking_transfer_list']) && !empty($svg_b_val['booking_transfer_list'])):
+																foreach($svg_b_val['booking_transfer_list'] as $svg_t_key=>$svg_t_val):
+																	if($transfer_date==$svg_t_val['booking_start_date']):
+																		$booking_start_time = explode(':', $svg_t_val['pickup_time']);
+																		$start_point=((($booking_start_time[0]*60 + $booking_start_time[1])*644)/1440);
+																		$booking_end_time = explode(':', $svg_t_val['dropoff_time']);
+																		$end_point=((($booking_end_time[0]*60 + $booking_end_time[1])*644)/1440);
+																		$transfer_all_html.='<line x1="'.$start_point.'" y1="0" x2="'.$end_point.'" y2="0" class="'.rand(1, 1000).'"/>';
+																	endif;
+																endforeach;
+															endif;
+															if(isset($svg_b_val['booking_tour_list']) && !empty($svg_b_val['booking_tour_list'])):
+																foreach($svg_b_val['booking_tour_list'] as $svg_t_key=>$svg_t_val):
+																	if($transfer_date==$svg_t_val['booking_start_date']):
+																		$booking_start_time = explode(':', $svg_t_val['pickup_time']);
+																		$start_point=((($booking_start_time[0]*60 + $booking_start_time[1])*644)/1440);
+																		$booking_end_time = explode(':', $svg_t_val['dropoff_time']);
+																		$end_point=((($booking_end_time[0]*60 + $booking_end_time[1])*644)/1440);
+																		$transfer_all_html.='<line x1="'.$start_point.'" y1="0" x2="'.$end_point.'" y2="0" class="'.rand(1, 1000).'"/>';
+																	endif;
+																endforeach;
+															endif;
+														endforeach;
+													$transfer_all_html.='</svg>';
+												$transfer_all_html.='</div>';
+												$transfer_all_html.='<img src="assets/img/final_rular.png" border="0" alt="">';
+											$transfer_all_html.='</div>';
+										$transfer_all_html.='</div>';
+									$transfer_all_html.='</div>';
+									$transfer_svg_line='';
+								endif;
+								$transfer_svg_line=$transfer_date=$transfer_prev_html='';
+							endif;
+						endforeach;
+					endif;
 				endif;
 				$contry_list = tools::find("first", TM_COUNTRIES, '*', "WHERE id=:id ORDER BY name ASC ", array(":id"=>$counrty_val));
 				$city_list = tools::find("first", TM_CITIES, '*', "WHERE id=:id ", array(":id"=>$server_data['data']['city'][$country_key]));
@@ -98,7 +206,7 @@
 						$country_city_rcd_html.='</div>';
 						$country_city_rcd_html.='<div class="clearfix"></div>';
 					$country_city_rcd_html.='</form>';
-					$country_city_rcd_html.='<div id="" class="all_rcd_row"></div>';
+					$country_city_rcd_html.='<div id="" class="all_rcd_row">'.$transfer_all_html.'</div>';
 				$country_city_rcd_html.='</div>';
 			endforeach;
 			$city_tab_html.='<div class="clearfix"></div>';

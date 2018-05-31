@@ -6,7 +6,7 @@
 	$return_data['msg']="Token is not verified.";
 	$server_data=json_decode(file_get_contents("php://input"), true);
 	if(isset($server_data['token']) && isset($server_data['token']['token']) && isset($server_data['token']['token_timeout']) && isset($server_data['token']['token_generation_time']) && tools::jwtTokenDecode($server_data['token']['token']) && ($server_data['token']['token_generation_time']+$server_data['token']['token_timeout']) > time()):
-		if(isset($server_data['data']) && isset($server_data['data']['step_1']) && !empty($server_data['data']['step_1']) && isset($server_data['data']['step_4']) && !empty($server_data['data']['step_4'])):
+		if(isset($server_data['data']) && isset($server_data['data']['step_1']) && !empty($server_data['data']['step_1']) && isset($server_data['data']['step_4']) && !empty($server_data['data']['step_4']) && isset($server_data['data']['step_4_all']) && !empty($server_data['data']['step_4_all'])):
 			$add_day=0;
 			$total_transfer_price=0.00;
 			ob_start();
@@ -22,6 +22,8 @@
 <?php
 			$city_index=-1;
 			$prev_city_id="";
+			$prev_booking_date="";
+			$default_currency=tools::find("first", TM_SETTINGS." as s, ".TM_CURRENCIES." as c", 'c.*', "WHERE c.id=s.default_currency ", array());
 			foreach($server_data['data']['step_4'] as $offer_key=>$offer_val):
 				$explode_offer_data=explode("-", $offer_val);
 				$offer_id=end($explode_offer_data);
@@ -59,7 +61,7 @@
 				{
 					$nationality_addon_percentage=$offer_addon_price['addon_price'];
 				}
-				for($i=strtotime($checkin_date_on_city);$i<strtotime($checkout_date_on_city);):
+				/*for($i=strtotime($checkin_date_on_city);$i<strtotime($checkout_date_on_city);):
 					$complete_date=date("Y-m-d", $i);
 					$offer_price_list = tools::find("first", TM_OFFER_PRICES, '*', "WHERE offer_id=:offer_id AND start_date<=:start_date AND end_date>=:end_date AND status=:status", array(":offer_id"=>$offer_details['id'], ":start_date"=>$complete_date, ":end_date"=>$complete_date, ':status'=>1));
 					if(!empty($offer_price_list)):
@@ -69,25 +71,57 @@
 					endif;
 					$total_price=$total_price+$offer_day_price;
 					$i=$i+(24*60*60);
-				endfor;
+				endfor;*/
+				$offer_price_list = tools::find("first", TM_OFFER_PRICES, '*', "WHERE offer_id=:offer_id AND start_date<=:start_date AND end_date>=:end_date AND status=:status", array(":offer_id"=>$offer_details['id'], ":start_date"=>$server_data['data']['step_4_all']['transfer_booking_transfer_date_arr'][$offer_key], ":end_date"=>$server_data['data']['step_4_all']['transfer_booking_transfer_date_arr'][$offer_key], ':status'=>1));
+				if(!empty($offer_price_list)):
+					$offer_day_price=$offer_price_list['price_per_person'];
+				else:
+					$offer_day_price=$offer_details['price_per_person'];
+				endif;
+				$total_price=$total_price+$offer_day_price;
 				$nationality_charge=($total_price * $nationality_addon_percentage)/100;
 				$agent_commision=($total_price * $markup_percentage)/100;
+				$each_transfer_price=$total_price+$agent_commision+$nationality_charge;
 				$total_transfer_price=$total_transfer_price+$total_price+$agent_commision+$nationality_charge;
+				if($prev_booking_date=="" || $prev_booking_date!=$server_data['data']['step_4_all']['transfer_booking_transfer_date_arr'][$offer_key]):
+					$prev_booking_date=$server_data['data']['step_4_all']['transfer_booking_transfer_date_arr'][$offer_key]
+?>
+				<tr class="odd">
+					<td style = "text-align:left;padding-bottom: 0;" colspan="100%">
+						<h4 style="margin: 0;"><?php echo tools::module_date_format($server_data['data']['step_4_all']['transfer_booking_transfer_date_arr'][$offer_key]);?></h4>
+					</td>
+				</tr>
+<?php
+				endif;
 ?>
 				<tr class="odd">
 					<td style = "text-align:left;">
-						<?php echo $transfer_details['transfer_title'];?> - <?php echo $transfer_details['transfer_service'];?> - <?php echo $offer_details['offer_title'];?> ( Capacity:  <?php echo $offer_details['offer_capacity'];?> )
+						<?php echo $transfer_details['transfer_title'];?> - <?php echo $offer_details['offer_title'];?> - <?php echo $offer_details['service_type'];?> ( Capacity:  <?php echo $offer_details['offer_capacity'];?> )
+						<br/>
+						Price: <?php echo $default_currency['currency_code'].number_format($each_transfer_price, 2,".",",");?>
 						<?php
 						if($allow_pickup_type!=""):
 						?>
 						<br/>
-						Pick Up: <?php echo $allow_pickup_type;?>
+						Pick Up/Drop off Type: <?php echo $allow_pickup_type;?>
 						<?php
 						endif;
-						if($allow_dropoff_type!=""):
+						if($server_data['data']['step_4_all']['transfer_pickuptime_arr'][$offer_key]!=""):
 						?>
 						<br/>
-						Drop off: <?php echo $allow_dropoff_type;?>
+						Pick Up Time: <?php echo date("h:i A", strtotime($server_data['data']['step_4_all']['transfer_pickuptime_arr'][$offer_key].":00"));?>
+						<?php
+						endif;
+						if($server_data['data']['step_4_all']['transfer_dropofftime_arr'][$offer_key]!=""):
+						?>
+						<br/>
+						Drop off Time: <?php echo date("h:i A", strtotime($server_data['data']['step_4_all']['transfer_dropofftime_arr'][$offer_key].":00"));?>
+						<?php
+						endif;
+						if($server_data['data']['step_4_all']['transfer_airport_arr'][$offer_key]!=""):
+						?>
+						<br/>
+						Airport: <?php echo $server_data['data']['step_4_all']['transfer_airport_arr'][$offer_key];?>
 						<?php
 						endif;
 						?>
@@ -101,7 +135,6 @@
 		</div>
 <?php
 			$transfer_details_html=ob_get_clean();
-			$default_currency=tools::find("first", TM_SETTINGS." as s, ".TM_CURRENCIES." as c", 'c.*', "WHERE c.id=s.default_currency ", array());
 			$return_data['status']="success";
 			$return_data['msg']="Date fetched successfully.";
 			$return_data['transfer_details']=$transfer_details_html;

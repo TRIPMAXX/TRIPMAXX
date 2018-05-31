@@ -77,7 +77,7 @@
 				{
 					$nationality_addon_percentage=$offer_addon_price['addon_price'];
 				}
-				for($i=strtotime($checkin_date_on_city);$i<strtotime($checkout_date_on_city);):
+				/*for($i=strtotime($checkin_date_on_city);$i<strtotime($checkout_date_on_city);):
 					$complete_date=date("Y-m-d", $i);
 					$offer_price_list = tools::find("first", TM_OFFER_PRICES, '*', "WHERE offer_id=:offer_id AND start_date<=:start_date AND end_date>=:end_date AND status=:status", array(":offer_id"=>$offer_details['id'], ":start_date"=>$complete_date, ":end_date"=>$complete_date, ':status'=>1));
 					if(!empty($offer_price_list)):
@@ -87,7 +87,14 @@
 					endif;
 					$total_price=$total_price+$offer_day_price;
 					$i=$i+(24*60*60);
-				endfor;
+				endfor;*/
+				$offer_price_list = tools::find("first", TM_OFFER_PRICES, '*', "WHERE offer_id=:offer_id AND start_date<=:start_date AND end_date>=:end_date AND status=:status", array(":offer_id"=>$offer_details['id'], ":start_date"=>$server_data['data']['step_4_all']['transfer_booking_transfer_date_arr'][$offer_key], ":end_date"=>$server_data['data']['step_4_all']['transfer_booking_transfer_date_arr'][$offer_key], ':status'=>1));
+				if(!empty($offer_price_list)):
+					$offer_day_price=$offer_price_list['price_per_person'];
+				else:
+					$offer_day_price=$offer_details['price_per_person'];
+				endif;
+				$total_price=$total_price+$offer_day_price;
 				$nationality_charge=($total_price * $nationality_addon_percentage)/100;
 				$agent_commision=($total_price * $markup_percentage)/100;
 				$total_transfer_price=$total_transfer_price+$total_price+$agent_commision+$nationality_charge;
@@ -95,8 +102,13 @@
 					$each_result['transfer_id']=$transfer_details['id'];
 					$each_result['offer_id']=$offer_details['id'];
 					$each_result['price']=$total_price;
-					$each_result['booking_start_date']=$checkin_date_on_city;
-					$each_result['booking_end_date']=$checkout_date_on_city;
+					//$each_result['booking_start_date']=$checkin_date_on_city;
+					$each_result['booking_start_date']=$server_data['data']['step_4_all']['transfer_booking_transfer_date_arr'][$offer_key];
+					//$each_result['booking_end_date']=$checkout_date_on_city;
+					$each_result['booking_end_date']=$server_data['data']['step_4_all']['transfer_booking_transfer_date_arr'][$offer_key];
+					$each_result['pickup_time']=$server_data['data']['step_4_all']['transfer_pickuptime_arr'][$offer_key];
+					$each_result['dropoff_time']=$server_data['data']['step_4_all']['transfer_dropofftime_arr'][$offer_key];
+					$each_result['airport']=$server_data['data']['step_4_all']['transfer_airport_arr'][$offer_key];
 					$each_result['agent_markup_percentage']=$markup_percentage;
 					$each_result['nationality_addon_percentage']=$nationality_addon_percentage;
 					$each_result['avalibility_status']=$explode_offer_data[1];

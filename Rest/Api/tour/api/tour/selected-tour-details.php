@@ -22,6 +22,8 @@
 <?php
 			$city_index=-1;
 			$prev_city_id="";
+			$prev_booking_date="";
+			$default_currency=tools::find("first", TM_SETTINGS." as s, ".TM_CURRENCIES." as c", 'c.*', "WHERE c.id=s.default_currency ", array());
 			foreach($server_data['data']['step_3'] as $offer_key=>$offer_val):
 				$explode_offer_data=explode("-", $offer_val);
 				$offer_id=end($explode_offer_data);
@@ -50,7 +52,7 @@
 				{
 					$nationality_addon_percentage=$offer_addon_price['addon_price'];
 				}
-				for($i=strtotime($checkin_date_on_city);$i<strtotime($checkout_date_on_city);):
+				/*for($i=strtotime($checkin_date_on_city);$i<strtotime($checkout_date_on_city);):
 					$complete_date=date("Y-m-d", $i);
 					$offer_price_list = tools::find("first", TM_OFFER_PRICES, '*', "WHERE offer_id=:offer_id AND start_date<=:start_date AND end_date>=:end_date AND status=:status", array(":offer_id"=>$offer_details['id'], ":start_date"=>$complete_date, ":end_date"=>$complete_date, ':status'=>1));
 					if(!empty($offer_price_list)):
@@ -60,13 +62,49 @@
 					endif;
 					$total_price=$total_price+$offer_day_price;
 					$i=$i+(24*60*60);
-				endfor;
+				endfor;*/
+				$offer_price_list = tools::find("first", TM_OFFER_PRICES, '*', "WHERE offer_id=:offer_id AND start_date<=:start_date AND end_date>=:end_date AND status=:status", array(":offer_id"=>$offer_details['id'], ":start_date"=>$server_data['data']['step_3_all']['tour_booking_tour_date_arr'][$offer_key], ":end_date"=>$server_data['data']['step_3_all']['tour_booking_tour_date_arr'][$offer_key], ':status'=>1));
+				if(!empty($offer_price_list)):
+					$offer_day_price=$offer_price_list['price_per_person'];
+				else:
+					$offer_day_price=$offer_details['price_per_person'];
+				endif;
+				$total_price=$total_price+$offer_day_price;
 				$nationality_charge=($total_price * $nationality_addon_percentage)/100;
 				$agent_commision=($total_price * $markup_percentage)/100;
+				$each_tour_price=$total_price+$agent_commision+$nationality_charge;
 				$total_tour_price=$total_tour_price+$total_price+$agent_commision+$nationality_charge;
+				if($prev_booking_date=="" || $prev_booking_date!=$server_data['data']['step_3_all']['tour_booking_tour_date_arr'][$offer_key]):
+					$prev_booking_date=$server_data['data']['step_3_all']['tour_booking_tour_date_arr'][$offer_key]
 ?>
 				<tr class="odd">
-					<td style = "text-align:left;"><?php echo $tour_details['tour_title'];?> - <?php echo $tour_details['tour_service'];?> - <?php echo $offer_details['offer_title'];?> ( Capacity:  <?php echo $offer_details['offer_capacity'];?> )</td>
+					<td style = "text-align:left;padding-bottom: 0;" colspan="100%">
+						<h4 style="margin: 0;"><?php echo tools::module_date_format($server_data['data']['step_3_all']['tour_booking_tour_date_arr'][$offer_key]);?></h4>
+					</td>
+				</tr>
+<?php
+				endif;
+?>
+				<tr class="odd">
+					<td style = "text-align:left;">
+						<?php echo $tour_details['tour_title'];?> - <?php echo $offer_details['offer_title'];?> - <?php echo $offer_details['service_type'];?> ( Capacity:  <?php echo $offer_details['offer_capacity'];?> )
+						<br/>
+						Price: <?php echo $default_currency['currency_code'].number_format($each_tour_price, 2,".",",");?>
+						<?php
+						if($server_data['data']['step_3_all']['tour_pickuptime_arr'][$offer_key]!=""):
+						?>
+						<br/>
+						Pick Up Time: <?php echo date("h:i A", strtotime($server_data['data']['step_3_all']['tour_pickuptime_arr'][$offer_key].":00"));?>
+						<?php
+						endif;
+						if($server_data['data']['step_3_all']['tour_dropofftime_arr'][$offer_key]!=""):
+						?>
+						<br/>
+						Drop off Time: <?php echo date("h:i A", strtotime($server_data['data']['step_3_all']['tour_dropofftime_arr'][$offer_key].":00"));?>
+						<?php
+						endif;
+						?>
+					</td>
 				</tr>
 <?php
 			endforeach;
@@ -76,7 +114,6 @@
 		</div>
 <?php
 			$tour_details_html=ob_get_clean();
-			$default_currency=tools::find("first", TM_SETTINGS." as s, ".TM_CURRENCIES." as c", 'c.*', "WHERE c.id=s.default_currency ", array());
 			$return_data['status']="success";
 			$return_data['msg']="Date fetched successfully.";
 			$return_data['tour_details']=$tour_details_html;

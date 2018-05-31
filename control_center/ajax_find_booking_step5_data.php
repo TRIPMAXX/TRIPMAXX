@@ -21,7 +21,6 @@
 		ob_start();
 ?>
 		<div class="box-body">
-			<?php print_r($_SESSION);?>
 			<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
 				<thead>
 					<tr role="row">
@@ -102,6 +101,7 @@
 					);
 					$post_data_tour['data']['step_1']=$_SESSION['step_1'];
 					$post_data_tour['data']['step_3']=$_SESSION['step_3'];
+					$post_data_tour['data']['step_3_all']=$_SESSION['step_3_all'];
 					$post_data_str_tour=json_encode($post_data_tour);
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -149,6 +149,7 @@
 					);
 					$post_data_transfer['data']['step_1']=$_SESSION['step_1'];
 					$post_data_transfer['data']['step_4']=$_SESSION['step_4'];
+					$post_data_transfer['data']['step_4_all']=$_SESSION['step_4_all'];
 					$post_data_str_transfer=json_encode($post_data_transfer);
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);

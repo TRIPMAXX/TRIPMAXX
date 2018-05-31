@@ -754,11 +754,30 @@
 														$data['msg']="Some error has been occure during execution.";
 													elseif($return_data_arr_tour['status']=="success"):
 														if(isset($return_data_arr_tour['find_tour']) && isset($return_data_arr_tour['find_offer'])):
-															$tour_price=$tour_price+$tour_val['price']+$tour_val['nationality_addon_percentage']+$tour_val['agent_markup_percentage'];
+															$each_tour_price=$tour_val['price']+(($tour_val['price']*$tour_val['nationality_addon_percentage'])/100)+(($tour_val['price']*$tour_val['agent_markup_percentage'])/100);
+															$tour_price=$tour_price+$each_tour_price;
 															ob_start();
 														?>
 															<tr class="odd">
-																<td style = "text-align:left;"><?php echo $return_data_arr_tour['find_tour']['tour_title'];?> - <?php echo $return_data_arr_tour['find_tour']['tour_service'];?> - <?php echo $return_data_arr_tour['find_offer']['offer_title'];?> ( Capacity:  <?php echo $return_data_arr_tour['find_offer']['offer_capacity'];?> )</td>
+																<td style = "text-align:left;">
+																	<?php echo $return_data_arr_tour['find_tour']['tour_title'];?> - <?php echo $return_data_arr_tour['find_offer']['offer_title'];?> - <?php echo $return_data_arr_tour['find_offer']['service_type'];?> ( Capacity:  <?php echo $return_data_arr_tour['find_offer']['offer_capacity'];?> )
+																	<br/>
+																	Price: <?php echo $booking_details_list['currency_code'].number_format($each_tour_price, 2,".",",");?>
+																	<?php
+																	if($tour_val['pickup_time']!=""):
+																	?>
+																	<br/>
+																	Pick Up Time: <?php echo date("h:i A", strtotime($tour_val['pickup_time'].":00"));?>
+																	<?php
+																	endif;
+																	if($tour_val['dropoff_time']!=""):
+																	?>
+																	<br/>
+																	Drop off Time: <?php echo date("h:i A", strtotime($tour_val['dropoff_time'].":00"));?>
+																	<?php
+																	endif;
+																	?>
+																</td>
 															</tr>
 														<?php
 															$each_tour_html=ob_get_clean();
@@ -804,23 +823,38 @@
 														$data['msg']="Some error has been occure during execution.";
 													elseif($return_data_arr_transfer['status']=="success"):
 														if(isset($return_data_arr_transfer['find_transfer']) && isset($return_data_arr_transfer['find_offer'])):
-															$transfer_price=$transfer_price+$transfer_val['price']+$transfer_val['nationality_addon_percentage']+$transfer_val['agent_markup_percentage'];
+															$each_transfer_price=$transfer_val['price']+(($transfer_val['price']*$transfer_val['nationality_addon_percentage'])/100)+(($transfer_val['price']*$transfer_val['agent_markup_percentage'])/100);
+															$transfer_price=$transfer_price+$each_transfer_price;
 															ob_start();
 														?>
 															<tr class="odd">
 																<td style = "text-align:left;">
-																	<?php echo $return_data_arr_transfer['find_transfer']['transfer_title'];?> - <?php echo $return_data_arr_transfer['find_transfer']['transfer_service'];?> - <?php echo $return_data_arr_transfer['find_offer']['offer_title'];?> ( Capacity:  <?php echo $return_data_arr_transfer['find_offer']['offer_capacity'];?> )
+																	<?php echo $return_data_arr_transfer['find_transfer']['transfer_title'];?> - <?php echo $return_data_arr_transfer['find_offer']['offer_title'];?> - <?php echo $return_data_arr_transfer['find_offer']['service_type'];?> ( Capacity:  <?php echo $return_data_arr_transfer['find_offer']['offer_capacity'];?> )
+																	<br/>
+																	Price: <?php echo $booking_details_list['currency_code'].number_format($each_transfer_price, 2,".",",");?>
 																	<?php
 																	if($return_data_arr_transfer['find_transfer']['allow_pickup_type']!=""):
 																	?>
 																	<br/>
-																	Pick Up: <?php echo $return_data_arr_transfer['find_transfer']['allow_pickup_type'];?>
+																	Pick Up/Drop off Type: <?php echo $return_data_arr_transfer['find_transfer']['allow_pickup_type'];?>
 																	<?php
 																	endif;
-																	if($return_data_arr_transfer['find_transfer']['allow_dropoff_type']!=""):
+																	if($transfer_val['pickup_time']!=""):
 																	?>
 																	<br/>
-																	Drop off: <?php echo $return_data_arr_transfer['find_transfer']['allow_dropoff_type'];?>
+																	Pick Up Time: <?php echo date("h:i A", strtotime($transfer_val['pickup_time'].":00"));?>
+																	<?php
+																	endif;
+																	if($transfer_val['dropoff_time']!=""):
+																	?>
+																	<br/>
+																	Drop off Time: <?php echo date("h:i A", strtotime($transfer_val['dropoff_time'].":00"));?>
+																	<?php
+																	endif;
+																	if($transfer_val['airport']!=""):
+																	?>
+																	<br/>
+																	Airport: <?php echo $transfer_val['airport'];?>
 																	<?php
 																	endif;
 																	?>
