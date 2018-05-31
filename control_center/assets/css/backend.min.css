@@ -65,8 +65,9 @@
 .select2 {
 	width:100% !important;
 }
-.each_date_div{
+.each_date_div, .each_tour_date_div{
 	border: 1px solid #000;
+	margin-bottom: 15px;
 }
 .date_heading_div{
 	background: #00a65a;
@@ -78,10 +79,7 @@
 .pickuptime, .dropofftime{
 	margin: 5px;
 }
-.delete_transfer_tour_row{
+.delete_transfer_row, .delete_tour_row{
 	float:right;
 	cursor:pointer;
-}
-.each_date_div{
-	margin-bottom: 15px;
 }

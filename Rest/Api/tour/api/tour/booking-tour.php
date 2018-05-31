@@ -32,6 +32,10 @@
 			$default_currency=tools::find("first", TM_SETTINGS." as s, ".TM_CURRENCIES." as c", 'c.*', "WHERE c.id=s.default_currency ", array());
 			$markup_percentage=0;
 			$nationality_addon_percentage=0;
+			$search_counter=1;
+			if(isset($server_data['data']['search_counter']) && $server_data['data']['search_counter']!=""):
+				$search_counter=$server_data['data']['search_counter'];
+			endif;
 			if(isset($server_data['data']['booking_type']) && $server_data['data']['booking_type']=="agent" && isset($server_data['data']['agent_name']) && $server_data['data']['agent_name']!=""):
 				$autentication_data_agent=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
 				if(isset($autentication_data_agent->status)):
@@ -60,6 +64,9 @@
 					endif;
 				endif;
 			endif;
+			$find_tour_type = tools::find("first", TM_ATTRIBUTES, '*', "WHERE id=:id ", array(":id"=>$server_data['data']['tour_type']));
+			$pickuptime=$server_data['data']['pick_time'];
+			$pickupdate=$dropoffdate=$server_data['data']['booking_tour_date'];
 			foreach($server_data['data']['country'] as $country_key=>$counrty_val):	
 				$tour_first_row=1;
 				$order_by='ORDER BY t.id DESC';
@@ -78,6 +85,14 @@
 							$execute[':tour_title']="%".$server_data['data']['search_val']."%";
 							$execute[':short_description']="%".$server_data['data']['search_val']."%";
 						endif;
+						$find_tour_ids=tools::find("first", TM_OFFERS, 'GROUP_CONCAT(DISTINCT(tour_id)) as tour_ids', "WHERE status=:status AND service_type=:service_type", array(":status"=>1, ":service_type"=>$server_data['data']['selected_service_type']));
+						if(!empty($find_tour_ids)):
+							$search_query=" AND t.id IN (".$find_tour_ids['tour_ids'].") ";
+						endif;
+						$search_query.=" AND tour_type=:tour_type ";
+						$execute[':tour_type']=$server_data['data']['tour_type'];
+						$service_where=" AND service_type=:service_type ";
+						$offer_exe[':service_type']=$server_data['data']['selected_service_type'];
 					else:
 						continue;
 					endif;
@@ -103,7 +118,9 @@
 					foreach($tour_list as $tour_key=>$tour_val):
 						$each_first_price="--";
 						$selected_first_price="";
-						$offers_list = tools::find("all", TM_OFFERS, '*', "WHERE tour_id=:tour_id ", array(":tour_id"=>$tour_val['id']));
+						$offer_exe[':tour_id']=$tour_val['id'];
+						$offer_where="WHERE tour_id=:tour_id ";
+						$offers_list = tools::find("all", TM_OFFERS, '*', $offer_where.$service_where, $offer_exe);
 						$offer_html='';
 						$tour_avalibility_status="";
 						$tour_edit_avalibility_status="";
@@ -213,7 +230,7 @@
 										endif;
 										?>
 										<br>
-										<input type="radio" name="selected_offer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>]" class="selected_offer" onclick="change_offer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>" <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?> >
+										<input type="radio" name="selected_offer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" class="selected_offer" onclick="change_offer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>" <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?> >
 									</div>
 									<div class="col-md-3" style="font-weight:bold;">
 										<?= $offer_val['offer_title'];?>
@@ -237,16 +254,17 @@
 						ob_start();
 						if($offer_html!=""):
 ?>
-							<div class="form-group col-md-12">
+							<div class="form-group col-md-12 each_tour_row_outer">
 								<div style="border:1px solid red;background-color:red;">
-									<div class="col-md-5" style="font-weight:bold;color:#fff;">Tour Title</div>
+									<div class="col-md-3" style="font-weight:bold;color:#fff;">Tour Title</div>
 									<!-- <div class="col-md-2" style="font-weight:bold;color:#fff;">Tour Type</div> -->
 									<div class="col-md-3" style="font-weight:bold;color:#fff;text-align:center;">Availability</div>
 									<div class="col-md-2" style="font-weight:bold;color:#fff;text-align:center;">Rate</div>
+									<div class="col-md-4" style="font-weight:bold;color:#fff;">Tour Details</div>
 									<div class="clearfix"></div>
 								</div>
 								<div style="padding:20px 0 0 0;border:1px solid red;">
-									<div class="col-md-5" style="font-weight:bold;"><?php echo $tour_val['tour_title'];?></div>
+									<div class="col-md-3" style="font-weight:bold;"><?php echo $tour_val['tour_title'];?></div>
 									<!-- <div class="col-md-2" style="font-weight:bold;"><?php echo $tour_val['tour_type'];?></div> -->
 									<div class="col-md-3" style="font-weight:bold;text-align:center;">
 										<?php
@@ -262,6 +280,16 @@
 										?>
 									</div>
 									<div class="col-md-2 default_price_div" style="font-weight:bold;text-align:center;" data-default_price="<?php echo $each_first_price;?>"><?php echo(isset($selected_first_price) && $selected_first_price!="" ? $selected_first_price : $each_first_price);?></div>
+									<div class="col-md-4">
+										<img src="assets/img/delete.png" width="12" height="18" border="0" alt="Delete" class="delete_tour_row" onclick="delete_tour_row($(this))">
+										<input type="hidden" name="selected_booking_tour_date[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" id="selected_booking_tour_date[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $server_data['data']['booking_tour_date'];?>" class="selected_booking_tour_date">
+										<input type="hidden" name="selected_service_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" id="selected_service_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $server_data['data']['selected_service_type'];?>" class="selected_service_type">
+										<strong>Tour Type: </strong><?php echo $find_tour_type['attribute_name'];?><br/>
+										<input type="hidden" name="selected_tour_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" id="tour_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $find_tour_type['id'];?>" class="tour_type">
+										<strong>Pickup: </strong><?php echo tools::module_date_format($pickupdate);?><input type="time" name="selected_pickuptime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" id="selected_pickuptime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $pickuptime;?>" class="pickuptime" onkeyup="calculate_tour_time($(this), 'p')"><br/>
+										<strong>Dropoff: </strong><?php echo tools::module_date_format($dropoffdate);?><input type="time" name="selected_dropofftime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" id="selected_dropofftime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" value="" class="dropofftime" onkeyup="calculate_tour_time($(this), 'd')"><br/>
+										<strong>Time: </strong><span class="calculated_time_diff">--</span><br/>
+									</div>
 									<div class="clearfix"></div>
 									<div class="col-md-3">
 										<?php
@@ -357,8 +385,12 @@
 			$return_data['status']="success";
 			$return_data['msg']="Date fetched successfully.";
 			if($server_data['data']['sort_order']!="" || $server_data['data']['type']==3 || $server_data['data']['type']==2 ):
-				
 				$return_data['country_city_rcd_html']=$tour_list_html.'<div class="clearfix"></div>';
+				$return_data['post_data']['country_city_rcd_date']=$server_data['data']['booking_tour_date'];
+				$return_data['post_data']['country_city_rcd_date_time']=strtotime($server_data['data']['booking_tour_date']);
+				$return_data['post_data']['country_city_rcd_formated_date']=tools::module_date_format($server_data['data']['booking_tour_date']);
+				$return_data['post_data']['country_city_rcd_pick_time']=$server_data['data']['pick_time'];
+				$return_data['post_data']['find_tour_type']=$find_tour_type;
 			else:
 				$return_data['country_city_rcd_html']=$country_city_rcd_html;
 			endif;
