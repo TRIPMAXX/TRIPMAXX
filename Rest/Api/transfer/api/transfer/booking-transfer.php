@@ -101,7 +101,7 @@
 							$execute[':service_note']="%".$server_data['data']['search_val']."%";
 						endif;
 						$find_transfer_ids=tools::find("first", TM_OFFERS, 'GROUP_CONCAT(DISTINCT(transfer_id)) as transfer_ids', "WHERE status=:status AND service_type=:service_type", array(":status"=>1, ":service_type"=>$server_data['data']['selected_service_type']));
-						if(!empty($find_transfer_ids)):
+						if(!empty($find_transfer_ids) && $find_transfer_ids['transfer_ids']!=""):
 							$search_query=" AND t.id IN (".$find_transfer_ids['transfer_ids'].") ";
 						endif;
 						$search_query.=" AND allow_pickup_type=:allow_pickup_type ";

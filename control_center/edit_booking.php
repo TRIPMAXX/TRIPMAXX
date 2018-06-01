@@ -885,7 +885,7 @@
 				var booking_tour_date=$("#booking_tour_date"+city_id).val();
 				var tour_type=$("#tour_type"+city_id).val();
 				var pick_time=$("#pick_time"+city_id).val();
-				var selected_service_type=$("#selected_service_type"+city_id).val();
+				var selected_service_type=$("#selected_tour_service_type"+city_id).val();
 				var country_id=cur.attr("data-country_id");
 				var search_counter=cur.find(".search_counter").val();
 				var search_val='';
@@ -1074,14 +1074,15 @@
 								$("#step3 #tour_city"+city_id+" .all_rcd_row .each_tour_date_div .no_rcd").remove();
 								var will_prepend=false;
 								$("#step3 #tour_city"+city_id+" .all_rcd_row .each_tour_date_div").each(function(){
-									if(response['post_data']['country_city_rcd_date_time']<=$(this).attr("data-date_time"))
+									if(eval(response['post_data']['country_city_rcd_date_time'])<=eval($(this).attr("data-date_time")))
 									{
 										will_prepend=true;
+										$(this).before(add_html);
 									}
 								});
 								if(will_prepend==true)
 								{
-									$("#step3 #tour_city"+city_id+" .all_rcd_row").prepend(add_html);
+									//$("#step3 #tour_city"+city_id+" .all_rcd_row").prepend(add_html);
 								}
 								else
 								{
@@ -1252,11 +1253,12 @@
 									if(response['post_data']['country_city_rcd_date_time']<=$(this).attr("data-date_time"))
 									{
 										will_prepend=true;
+										$(this).before(add_html);
 									}
 								});
 								if(will_prepend==true)
 								{
-									$("#step4 #transfer_city"+city_id+" .all_rcd_row").prepend(add_html);
+									//$("#step4 #transfer_city"+city_id+" .all_rcd_row").prepend(add_html);
 								}
 								else
 								{
@@ -1558,7 +1560,7 @@
 		}
 		function select_transfer_radio_row(cur)
 		{
-			if(cur.parents(".each_date_div").find(".pickuptime").val()!="" && cur.parents(".each_date_div").find(".dropofftime").val()!="")
+			if(cur.parents(".each_transfer_row_outer").find(".pickuptime").val()!="" && cur.parents(".each_transfer_row_outer").find(".dropofftime").val()!="")
 			{
 				if(cur.hasClass("radio_button_row_background"))
 				{
@@ -1584,7 +1586,7 @@
 		}
 		function select_tour_radio_row(cur)
 		{
-			if(cur.parents(".each_tour_date_div").find(".pickuptime").val()!="" && cur.parents(".each_tour_date_div").find(".dropofftime").val()!="")
+			if(cur.parents(".each_tour_row_outer").find(".pickuptime").val()!="" && cur.parents(".each_tour_row_outer").find(".dropofftime").val()!="")
 			{
 				if(cur.hasClass("radio_button_row_background"))
 				{
