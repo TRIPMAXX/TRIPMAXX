@@ -43,7 +43,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php echo(DOMAIN_NAME_PATH_HOTEL);?>LIST(S) OF BOOKINGS</title>
+	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER_HOTEL);?>LIST(S) OF BOOKINGS</title>
 	<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
 	<!-- JAVASCRIPT CODE -->
 	<script type="text/javascript">

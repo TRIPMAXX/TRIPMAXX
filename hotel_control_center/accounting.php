@@ -1,48 +1,8 @@
 <?php
 	require_once('loader.inc');
-	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');
+	tools::module_validation_check(@$_SESSION['SESSION_DATA_HOTEL']['id'], DOMAIN_NAME_PATH_HOTEL.'login');
 	$white_list_array = array('hotels', 'booking_status', 'date_from', 'date_to', 'token', 'btn_submit', 'export_flag');
 	$verify_token = "search_for_hotel_accounting";
-	$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
-	if(isset($autentication_data->status)):
-		if($autentication_data->status=="success"):
-			$post_data['token']=array(
-				"token"=>$autentication_data->results->token,
-				"token_timeout"=>$autentication_data->results->token_timeout,
-				"token_generation_time"=>$autentication_data->results->token_generation_time
-			);
-			$post_data_str=json_encode($post_data);
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-			curl_setopt($ch, CURLOPT_HEADER, false);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-			curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."hotel/read.php");
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-			$return_data = curl_exec($ch);
-			curl_close($ch);
-			$return_data_arr=json_decode($return_data, true);
-			$hotel_data=array();
-			if(!isset($return_data_arr['status'])):
-				$_SESSION['SET_TYPE'] = 'error';
-				$_SESSION['SET_FLASH']="Some error has been occure during execution.";
-			elseif($return_data_arr['status']=="success"):
-				$hotel_data=$return_data_arr['results'];
-			else:
-				$_SESSION['SET_TYPE'] = 'error';
-				$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
-			endif;
-		else:
-			$_SESSION['SET_TYPE'] = 'error';
-			$_SESSION['SET_FLASH'] = $autentication_data->msg;
-		endif;
-	else:
-		$_SESSION['SET_TYPE'] = 'error';
-		$_SESSION['SET_FLASH'] = "We are having some problem to authorize api.";
-	endif;
-
-
 	$autentication_data_booking=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."authorized.php"));
 	if(isset($autentication_data_booking->status)):
 		if($autentication_data_booking->status=="success"):
@@ -249,8 +209,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER);?>ACCOUNTING DETAILS FOR AGENTS</title>
-	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
+	<title><?php echo(DEFAULT_PAGE_TITLE_CONTROL_CENTER_HOTEL);?>ACCOUNTING DETAILS FOR AGENTS</title>
+	<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'meta.php');?>
 	<!-- JAVASCRIPT CODE -->
 	<script type="text/javascript">
 	<!--
@@ -290,11 +250,11 @@
 	<div class="wrapper">
 		
 		<!-- TOP HEADER -->
-		<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'header.php');?>		
+		<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'header.php');?>		
 		<!-- TOP HEADER -->
 
 		<!-- LEFT MENU -->
-		<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'menu.php');?>
+		<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'menu.php');?>
 		<!-- LEFT MENU -->
 
 		<!-- BODY -->
@@ -315,22 +275,7 @@
 							<form name = "agent_accounting" id = "agent_accounting" method = "POST" action = "">
 								<div class="col-md-12 row">
 									<div class="box-body">
-										<div class="form-group col-md-6">
-											<label for="email"><font color="#FF0000">*</font>Select Hotel</label>
-											<select class="form-control" name = "hotels" id = "hotels" tabindex = "1">
-												<option value = "all">All</option>
-											<?php
-											if(isset($hotel_data) && !empty($hotel_data)):
-												foreach($hotel_data as $hotel_key => $hotel_val):
-											?>
-												<option value = "<?php echo $hotel_val['id'];?>" <?php echo(isset($_POST['hotels']) && $_POST['hotels']==$hotel_val['id'] ? 'selected="selected"' : '');?>><?php echo $hotel_val['hotel_name'];?></option>
-											<?php
-												endforeach;
-											endif;
-											?>
-											</select>
-										</div>
-										<div class="form-group col-md-6">
+										<div class="form-group col-md-4">
 											<label for="email"><font color="#FF0000">*</font>Booking Status</label>
 											<select class="form-control" name = "booking_status" id = "booking_status" tabindex = "2">
 												<option value = "A" <?php echo(isset($_POST['booking_status']) && $_POST['booking_status']=="A" ? 'selected="selected"' : '');?>>All</option>
@@ -338,11 +283,11 @@
 												<option value = "2" <?php echo(isset($_POST['booking_status']) && $_POST['booking_status']=="2" ? 'selected="selected"' : '');?>>Cancelled</option>
 											</select>
 										</div>
-										<div class="form-group col-md-6">
+										<div class="form-group col-md-4">
 											<label for="email">Date From</label>
 											<input type="text" class="form-control"  value="<?php echo(isset($_POST['date_from']) && $_POST['date_from']!="" ? $_POST['date_from'] : '');?>" name="date_from" id="date_from" placeholder="Date From" tabindex = "3" />
 										</div>
-										<div class="form-group col-md-6">
+										<div class="form-group col-md-4">
 											<label for="inputName" class="control-label">Date To</label>
 											<div class="input-icon right">
 												<input type="text" class="form-control"  placeholder = "Date To" name="date_to" id="date_to" tabindex = "4" value="<?php echo(isset($_POST['date_to']) && $_POST['date_to']!="" ? $_POST['date_to'] : '');?>"/>
@@ -351,6 +296,7 @@
 										<div class="form-group col-md-12">
 											<input type="hidden" name="token" value="<?php echo(tools::generateFormToken($verify_token)); ?>" />
 											<input type="hidden" name="export_flag" id="export_flag" value="<?php echo(isset($_POST['export_flag']) && $_POST['export_flag']!="" ? $_POST['export_flag'] : '');?>" />
+											<input type="hidden" name="hotels" id="hotels" value="<?php echo(isset($_SESSION['SESSION_DATA_HOTEL']['id']) && $_SESSION['SESSION_DATA_HOTEL']['id']!="" ? $_SESSION['SESSION_DATA_HOTEL']['id'] : '');?>" />
 											<button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary" tabindex = "5">SEARCH</button>		
 											<?php
 											if(isset($booking_hotel_data) && !empty($booking_hotel_data)):
@@ -395,11 +341,11 @@
 										<thead>
 											<tr role="row">
 												<th>#</th>
-												<th>Hotel Name</th>
 												<th>Check In & Check Out Date</th>
 												<th>Number Of Nights</th>
 												<th>Number Of Person</th>
 												<th>Number Of Rooms</th>
+												<th>Rooms Details</th>
 												<th>View</th>
 												<th>Status</th>
 											</tr>
@@ -418,73 +364,29 @@
 														if(isset($child_val['child']) && $child_val['child']!="")
 															$number_of_child=$number_of_child+$child_val['child'];
 													endforeach;
+													$datediff='';
 													$number_of_person=$number_of_adult+$number_of_child;
-													$checkin_date = strtotime($book_val['checkin_date']);
-													$checkout_date = strtotime($book_val['checkout_date']);
-													$datediff = $checkout_date - $checkin_date;
-													$destination_str="";
-													$service_arr=array("Hotel");
-													$hotel_name="";
 													foreach($book_val['booking_destination_list'] as $dest_key=>$dest_val):
-														if($destination_str!="")
-															$destination_str.=", ";
-														$destination_str.=$dest_val['ci_name'];
-														
-														if(isset($autentication_data->status)):
-															if($autentication_data->status=="success"):
-																$post_data['token']=array(
-																	"token"=>$autentication_data->results->token,
-																	"token_timeout"=>$autentication_data->results->token_timeout,
-																	"token_generation_time"=>$autentication_data->results->token_generation_time
-																);
-																$post_data['data']['hotel_id']=$dest_val['booking_hotel_list'][0]['hotel_id'];
-																$post_data['data']['room_id']=$dest_val['booking_hotel_list'][0]['room_id'];
-																$post_data_str=json_encode($post_data);
-																$ch = curl_init();
-																curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-																curl_setopt($ch, CURLOPT_HEADER, false);
-																curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
-																curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-																curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."hotel/find-booked-hotel.php");
-																curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
-																curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-																$return_data = curl_exec($ch);
-																curl_close($ch);
-																$return_data_arr=json_decode($return_data, true);
-																$hotel_data_name=array();
-																if(!isset($return_data_arr['status'])):
-																	$_SESSION['SET_TYPE'] = 'error';
-																	$_SESSION['SET_FLASH']="Some error has been occure during execution.";
-																elseif($return_data_arr['status']=="success"):
-																	$hotel_data_name=$return_data_arr;
-																	$hotel_name.=($hotel_name!=""?", ":"").$hotel_data_name['find_hotel']['hotel_name'];
-																else:
-																	$_SESSION['SET_TYPE'] = 'error';
-																	$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
-																endif;
-															else:
-																$_SESSION['SET_TYPE'] = 'error';
-																$_SESSION['SET_FLASH'] = $autentication_data->msg;
-															endif;
-														else:
-															$_SESSION['SET_TYPE'] = 'error';
-															$_SESSION['SET_FLASH'] = "We are having some problem to authorize api.";
+														if($dest_val['booking_hotel_list'][0]['hotel_id']==$_SESSION['SESSION_DATA_HOTEL']['id']):
+															$find_room = tools::find("first", TM_ROOMS, '*', "WHERE id=:id AND hotel_id=:hotel_id ", array(":id"=>$dest_val['booking_hotel_list'][0]['room_id'], ":hotel_id"=>$dest_val['booking_hotel_list'][0]['hotel_id']));
+															
+															$checkin_date = $dest_val['booking_hotel_list'][0]['booking_start_date'];
+															$checkout_date = $dest_val['booking_hotel_list'][0]['booking_end_date'];
+															$datediff = strtotime($checkout_date) - strtotime($checkin_date);
 														endif;
 													endforeach;
 											?>
 												<tr class="odd">
 													<td class="  sorting_1"><?php echo $book_key+1;?></td>
 													<td class=" ">
-													<?php echo $hotel_name;?>
-													</td>
-													<td class=" ">
-														<?php echo tools::module_date_format($book_val['checkin_date'])." - ".tools::module_date_format($book_val['checkout_date']);?>
+														<?php echo tools::module_date_format($checkin_date)." - ".tools::module_date_format($checkout_date);?>
 													</td>
 													<td class=" "><?php echo round($datediff / (60 * 60 * 24));?></td>
 													<td class=" "><?php echo $number_of_person;?></td>
 													<td class=" "><?php echo $book_val['number_of_rooms'];?></td>
+													<td class=" "><?=$find_room['room_type'];?></td>
 													<td class=" ">
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>view_booking?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "View Booking Details"><i class="fa fa-eye fa-1x" ></i></a>
+														<a href = "<?php echo(DOMAIN_NAME_PATH_HOTEL);?>view_booking?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "View Booking Details"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
 													</td>
 													<td class=" ">
 														<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $book_val['status']==1 ? "btn-success" : "btn-warning";?>"><?= $book_val['status']==1 ? "Completed" : "Pending";?></a>
@@ -509,7 +411,7 @@
 	<!-- BODY -->
 
 	<!-- FOOTER -->
-	<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'footer.php');?>
+	<?php require_once(HOTEL_CONTROL_CENTER_COMMON_FILE_PATH.'footer.php');?>
 	<!-- FOOTER -->
 </div>
 </body>

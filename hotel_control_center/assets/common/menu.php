@@ -39,6 +39,11 @@
 					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>support_tickets"><i class="fa fa-circle-o"></i> LISTS OF SUPPORT TICKETS</a></li>
 				</ul>
 			</li>
+			<li class="<?php echo($current_page_name == 'accounting.php' ? 'active' : '');?>">
+				<a href="<?php echo(DOMAIN_NAME_PATH_HOTEL);?>accounting">
+				<span>ACCOUNTING</span>
+				</a>
+			</li>
 		</ul>
 	</section>
 </aside>

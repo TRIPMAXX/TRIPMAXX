@@ -7,9 +7,9 @@
 	$return_data['msg']="Token is not verified.";
 	$server_data=json_decode(file_get_contents("php://input"), true);
 	if(isset($server_data['token']) && isset($server_data['token']['token']) && isset($server_data['token']['token_timeout']) && isset($server_data['token']['token_generation_time']) && tools::jwtTokenDecode($server_data['token']['token']) && ($server_data['token']['token_generation_time']+$server_data['token']['token_timeout']) > time()):
-	
+	//print_r($server_data);exit;
 		if(isset($server_data['data']) && isset($server_data['data']['agent_ids']) && $server_data['data']['agent_ids']!=""):
-			$booking_list = tools::find("all", TM_BOOKING_MASTERS." as b, ".TM_CURRENCIES." as cu", 'b.*,	cu.currency_code as currency_code, cu.currency_name as currency_name', "WHERE b.invoice_currency=cu.id AND b.id IN (".$server_data['data']['agent_ids'].") AND b.is_deleted = :is_deleted ", array(":is_deleted"=>"N"));
+			$booking_list = tools::find("all", TM_BOOKING_MASTERS." as b, ".TM_CURRENCIES." as cu", 'b.*,	cu.currency_code as currency_code, cu.currency_name as currency_name', "WHERE b.invoice_currency=cu.id AND b.agent_id IN (".$server_data['data']['agent_ids'].") AND b.is_deleted = :is_deleted AND b.booking_type=:booking_type ", array(":is_deleted"=>"N",":booking_type"=>"agent"));
 		endif;
 		if(!empty($booking_list)):
 			foreach($booking_list as $booking_key=>$booking_val):
