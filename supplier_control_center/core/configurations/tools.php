@@ -1,7 +1,8 @@
 <?php
 
-	include_once ("core/configurations/class.phpmailer.php");
-	include_once ("core/configurations/class.smtp.php");
+	//include_once ("class.phpmailer.php");
+	//include_once ("class.smtp.php");
+	include_once("PHPMailer/class.phpmailer.php");
 /*
 =========================================================================================================================
 COPYRIGHT: NEO CODERZ TECHNOLOGIES
@@ -206,10 +207,10 @@ class tools {
 		$mail->IsSMTP(); 
 		$mail->Host = "localhost";
 		$mail->SMTPAuth = true;
-		$mail->Username = "noreply@jenapburger.com";
-		$mail->Password = "123456";
-		$mail->From = 'noreply@jenapburger.com';
-		$mail->FromName = "Jenap Burger";
+		$mail->Username = "tripmaxx@phptrainingacademy.in";
+		$mail->Password = "S{9pz(%ju7lp";
+		$mail->From = 'tripmaxx@phptrainingacademy.in';
+		$mail->FromName = "Tripmaxxr";
 		$mail->AddAddress($mail_To, ""); 
 		$mail->IsHTML(true);
 		$mail->Subject = $mail_subject;
@@ -1149,6 +1150,30 @@ class tools {
 		}
 
 		return $timezone_list;
+	}
+	
+	public static function polarToCartesian($centerX, $centerY, $radius, $angleInDegrees)
+	{
+		$angleInRadians = ($angleInDegrees-90) * PI() / 180.0;
+		$return_arr=array(
+			'x'=>$centerX + ($radius * cos($angleInRadians)),
+			'y'=>$centerY + ($radius * sin($angleInRadians)),
+		);
+		return $return_arr;
+	}
+
+	public static function describeArc($x, $y, $radius, $startAngle, $endAngle)
+	{
+		$start = tools::polarToCartesian($x, $y, $radius, $endAngle);
+		$end = tools::polarToCartesian($x, $y, $radius, $startAngle);
+		$arcSweep = $endAngle - $startAngle <= 180 ? "0" : "1";
+		$data_array = array(
+			"M", $start['x'], $start['y'], 
+			"A", $radius, $radius, 0, $arcSweep, 0, $end['x'], $end['y'],
+			"L", $x, $y,
+			"L", $start['x'], $start['y']
+		);
+		return implode(" ", $data_array);
 	}
 }
 ?>

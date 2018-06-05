@@ -45,41 +45,71 @@
 												<div class="col-md-12 date_heading_div">
 													<h4>Date: <?php echo tools::module_date_format($tour_date);?></h4>
 													<div class="clock_img_div">
-														<div class="clock">
+											<?php
+														$clock_am_div=$clock_pm_div='';
+														foreach($booking_details_list['booking_destination_list'] as $svg_b_key=>$svg_b_val):
+															if(isset($svg_b_val['booking_transfer_list']) && !empty($svg_b_val['booking_transfer_list'])):
+																foreach($svg_b_val['booking_transfer_list'] as $svg_t_key=>$svg_t_val):
+																	if($tour_date==$svg_t_val['booking_start_date']):
+																		$booking_start_time = explode(':', $svg_t_val['pickup_time']);
+																		$start_point=((($booking_start_time[0]*60 + $booking_start_time[1])*644)/1440);
+																		$booking_end_time = explode(':', $svg_t_val['dropoff_time']);
+																		$end_point=((($booking_end_time[0]*60 + $booking_end_time[1])*644)/1440);
+																		//$transfer_all_html.='<line x1="'.$start_point.'" y1="0" x2="'.$end_point.'" y2="0" class="'.rand(1, 1000).'"/>';
+																		$start_angle=($booking_start_time[0]*60+$booking_start_time[1])*.5;
+																		$end_angle=($booking_end_time[0]*60+$booking_end_time[1])*.5;
+																		if($start_angle < 360 && $end_angle < 360):
+																			$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, $end_angle).'"></path>';
+																			$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d=""></path>';
+																		elseif($start_angle < 360 && $end_angle > 359):
+																			$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, 359).'"></path>';
+																			$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, 360, $end_angle).'"></path>';
+																		elseif($start_angle > 359 && $end_angle < 720):
+																			$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d=""></path>';
+																			$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, $end_angle).'"></path>';
+																		endif;
+																	endif;
+																endforeach;
+															endif;
+															if(isset($svg_b_val['booking_tour_list']) && !empty($svg_b_val['booking_tour_list'])):
+																foreach($svg_b_val['booking_tour_list'] as $svg_t_key=>$svg_t_val):
+																	if($tour_date==$svg_t_val['booking_start_date']):
+																		$booking_start_time = explode(':', $svg_t_val['pickup_time']);
+																		$start_point=((($booking_start_time[0]*60 + $booking_start_time[1])*644)/1440);
+																		$booking_end_time = explode(':', $svg_t_val['dropoff_time']);
+																		$end_point=((($booking_end_time[0]*60 + $booking_end_time[1])*644)/1440);
+																		//$transfer_all_html.='<line x1="'.$start_point.'" y1="0" x2="'.$end_point.'" y2="0" class="'.rand(1, 1000).'"/>';
+																		$start_angle=($booking_start_time[0]*60+$booking_start_time[1])*.5;
+																		$end_angle=($booking_end_time[0]*60+$booking_end_time[1])*.5;
+																		if($start_angle < 360 && $end_angle < 360):
+																			$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, $end_angle).'"></path>';
+																			$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d=""></path>';
+																		elseif($start_angle < 360 && $end_angle > 359):
+																			$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, 359).'"></path>';
+																			$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, 360, $end_angle).'"></path>';
+																		elseif($start_angle > 359 && $end_angle < 720):
+																			$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d=""></path>';
+																			$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, $end_angle).'"></path>';
+																		endif;
+																	endif;
+																endforeach;
+															endif;
+														endforeach;
+											?>
+														<div class="change_clock_am_div">
+															<input type="checkbox" checked data-toggle="toggle" data-on="AM" data-off="PM" data-onstyle="primary" data-offstyle="danger" class="toggle-demo" onchange="change_clock($(this))">
+														</div>
+														<div class="clock clock_am_div">
 															<svg>
-											<?php
-															foreach($booking_details_list['booking_destination_list'] as $svg_b_key=>$svg_b_val):
-																if(isset($svg_b_val['booking_tour_list']) && !empty($svg_b_val['booking_tour_list'])):
-																	foreach($svg_b_val['booking_tour_list'] as $svg_t_key=>$svg_t_val):
-																		if($tour_date==$svg_t_val['booking_start_date']):
-																			$booking_start_time = explode(':', $svg_t_val['pickup_time']);
-																			$start_point=((($booking_start_time[0]*60 + $booking_start_time[1])*644)/1440);
-																			$booking_end_time = explode(':', $svg_t_val['dropoff_time']);
-																			$end_point=((($booking_end_time[0]*60 + $booking_end_time[1])*644)/1440);
-											?>
-																			<line x1="<?php echo $start_point;?>" y1="0" x2="<?php echo $end_point;?>" y2="0" class="<?php echo rand(1, 1000);?>"/>
-											<?php
-																		endif;
-																	endforeach;
-																endif;
-																if(isset($svg_b_val['booking_tour_list']) && !empty($svg_b_val['booking_tour_list'])):
-																	foreach($svg_b_val['booking_tour_list'] as $svg_t_key=>$svg_t_val):
-																		if($tour_date==$svg_t_val['booking_start_date']):
-																			$booking_start_time = explode(':', $svg_t_val['pickup_time']);
-																			$start_point=((($booking_start_time[0]*60 + $booking_start_time[1])*644)/1440);
-																			$booking_end_time = explode(':', $svg_t_val['dropoff_time']);
-																			$end_point=((($booking_end_time[0]*60 + $booking_end_time[1])*644)/1440);
-											?>
-																			<line x1="<?php echo $start_point;?>" y1="0" x2="<?php echo $end_point;?>" y2="0" class="<?php echo rand(1, 1000);?>"/>
-											<?php
-																		endif;
-																	endforeach;
-																endif;
-															endforeach;
-											?>
+																<?php echo $clock_am_div;?>
 															</svg>
 														</div>
-														<img src="assets/img/final_rular.png" border="0" alt="">
+														<div class="clock clock_pm_div">
+															<svg>
+																<?php echo $clock_pm_div;?>
+															</svg>
+														</div>
+														<!-- <img src="assets/img/final_rular.png" border="0" alt=""> -->
 													</div>
 												</div>
 												<?php echo $tour_prev_html;?>
@@ -136,13 +166,14 @@
 												<div class="col-md-2 default_price_div" style="font-weight:bold;text-align:center;" data-default_price="<?php echo $default_currency['currency_code'].number_format($each_tour_price, 2,".",",");?>"><?php echo $default_currency['currency_code'].number_format($each_tour_price, 2,".",",");?></div>
 												<div class="col-md-4">
 													<img src="assets/img/delete.png" width="12" height="18" border="0" alt="Delete" class="delete_tour_row" onclick="delete_tour_row($(this))">
-													<input type="hidden" name="selected_booking_tour_date[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" id="selected_booking_tour_date[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" value="'.$t_val['booking_start_date'].'" class="selected_booking_tour_date">
+													<input type="hidden" name="selected_booking_tour_date[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" id="selected_booking_tour_date[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" value="<?php echo $t_val['booking_start_date'];?>" class="selected_booking_tour_date">
 													<input type="hidden" name="selected_service_type[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" id="selected_service_type[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" value="<?php echo $find_tour_offer_details['service_type'];?>" class="selected_service_type">
 													<strong>Tour Type: </strong><?php echo $tour_type;?><br>
 													<input type="hidden" name="selected_tour_type[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" id="tour_type[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" value="<?php echo $find_tour_details['tour_type'];?>" class="tour_type">
 													<strong>Pickup: </strong><?php echo tools::module_date_format($t_val['booking_start_date']);?><input type="time" name="selected_pickuptime[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" id="selected_pickuptime[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" value="<?php echo $t_val['pickup_time'];?>" class="pickuptime" onkeyup="calculate_tour_time($(this), 'p')"><br>
 													<strong>Dropoff: </strong><?php echo tools::module_date_format($t_val['booking_start_date']);?><input type="time" name="selected_dropofftime[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" id="selected_dropofftime[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" value="<?php echo $t_val['dropoff_time'];?>" class="dropofftime" onkeyup="calculate_tour_time($(this), 'd')"><br>
 													<strong>Time: </strong><span class="calculated_time_diff"><?php echo $hour;?> hours</span><br>
+													<input type="hidden" name="svg_path_id_input_hidden" class="svg_path_id_input" value="old_tour_<?php echo $t_val['id'];?>">
 												</div>
 												<div class="clearfix"></div>
 												<div class="col-md-3">
@@ -265,41 +296,71 @@
 										<div class="col-md-12 date_heading_div">
 											<h4>Date: <?php echo tools::module_date_format($tour_date);?></h4>
 											<div class="clock_img_div">
-												<div class="clock">
+									<?php
+												$clock_am_div=$clock_pm_div='';
+												foreach($booking_details_list['booking_destination_list'] as $svg_b_key=>$svg_b_val):
+													if(isset($svg_b_val['booking_transfer_list']) && !empty($svg_b_val['booking_transfer_list'])):
+														foreach($svg_b_val['booking_transfer_list'] as $svg_t_key=>$svg_t_val):
+															if($tour_date==$svg_t_val['booking_start_date']):
+																$booking_start_time = explode(':', $svg_t_val['pickup_time']);
+																$start_point=((($booking_start_time[0]*60 + $booking_start_time[1])*644)/1440);
+																$booking_end_time = explode(':', $svg_t_val['dropoff_time']);
+																$end_point=((($booking_end_time[0]*60 + $booking_end_time[1])*644)/1440);
+																//$transfer_all_html.='<line x1="'.$start_point.'" y1="0" x2="'.$end_point.'" y2="0" class="'.rand(1, 1000).'"/>';
+																$start_angle=($booking_start_time[0]*60+$booking_start_time[1])*.5;
+																$end_angle=($booking_end_time[0]*60+$booking_end_time[1])*.5;
+																if($start_angle < 360 && $end_angle < 360):
+																	$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, $end_angle).'"></path>';
+																	$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d=""></path>';
+																elseif($start_angle < 360 && $end_angle > 359):
+																	$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, 359).'"></path>';
+																	$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, 360, $end_angle).'"></path>';
+																elseif($start_angle > 359 && $end_angle < 720):
+																	$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d=""></path>';
+																	$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, $end_angle).'"></path>';
+																endif;
+															endif;
+														endforeach;
+													endif;
+													if(isset($svg_b_val['booking_tour_list']) && !empty($svg_b_val['booking_tour_list'])):
+														foreach($svg_b_val['booking_tour_list'] as $svg_t_key=>$svg_t_val):
+															if($tour_date==$svg_t_val['booking_start_date']):
+																$booking_start_time = explode(':', $svg_t_val['pickup_time']);
+																$start_point=((($booking_start_time[0]*60 + $booking_start_time[1])*644)/1440);
+																$booking_end_time = explode(':', $svg_t_val['dropoff_time']);
+																$end_point=((($booking_end_time[0]*60 + $booking_end_time[1])*644)/1440);
+																//$transfer_all_html.='<line x1="'.$start_point.'" y1="0" x2="'.$end_point.'" y2="0" class="'.rand(1, 1000).'"/>';
+																$start_angle=($booking_start_time[0]*60+$booking_start_time[1])*.5;
+																$end_angle=($booking_end_time[0]*60+$booking_end_time[1])*.5;
+																if($start_angle < 360 && $end_angle < 360):
+																	$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, $end_angle).'"></path>';
+																	$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d=""></path>';
+																elseif($start_angle < 360 && $end_angle > 359):
+																	$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, 359).'"></path>';
+																	$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, 360, $end_angle).'"></path>';
+																elseif($start_angle > 359 && $end_angle < 720):
+																	$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d=""></path>';
+																	$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, $end_angle).'"></path>';
+																endif;
+															endif;
+														endforeach;
+													endif;
+												endforeach;
+									?>
+												<div class="change_clock_am_div">
+													<input type="checkbox" checked data-toggle="toggle" data-on="AM" data-off="PM" data-onstyle="primary" data-offstyle="danger" class="toggle-demo" onchange="change_clock($(this))">
+												</div>
+												<div class="clock clock_am_div">
 													<svg>
-									<?php
-													foreach($booking_details_list['booking_destination_list'] as $svg_b_key=>$svg_b_val):
-														if(isset($svg_b_val['booking_tour_list']) && !empty($svg_b_val['booking_tour_list'])):
-															foreach($svg_b_val['booking_tour_list'] as $svg_t_key=>$svg_t_val):
-																if($tour_date==$svg_t_val['booking_start_date']):
-																	$booking_start_time = explode(':', $svg_t_val['pickup_time']);
-																	$start_point=((($booking_start_time[0]*60 + $booking_start_time[1])*644)/1440);
-																	$booking_end_time = explode(':', $svg_t_val['dropoff_time']);
-																	$end_point=((($booking_end_time[0]*60 + $booking_end_time[1])*644)/1440);
-									?>
-																	<line x1="<?php echo $start_point;?>" y1="0" x2="<?php echo $end_point;?>" y2="0" class="<?php echo rand(1, 1000);?>"/>
-									<?php
-																endif;
-															endforeach;
-														endif;
-														if(isset($svg_b_val['booking_tour_list']) && !empty($svg_b_val['booking_tour_list'])):
-															foreach($svg_b_val['booking_tour_list'] as $svg_t_key=>$svg_t_val):
-																if($tour_date==$svg_t_val['booking_start_date']):
-																	$booking_start_time = explode(':', $svg_t_val['pickup_time']);
-																	$start_point=((($booking_start_time[0]*60 + $booking_start_time[1])*644)/1440);
-																	$booking_end_time = explode(':', $svg_t_val['dropoff_time']);
-																	$end_point=((($booking_end_time[0]*60 + $booking_end_time[1])*644)/1440);
-									?>
-																	<line x1="<?php echo $start_point;?>" y1="0" x2="<?php echo $end_point;?>" y2="0" class="<?php echo rand(1, 1000);?>"/>
-									<?php
-																endif;
-															endforeach;
-														endif;
-													endforeach;
-									?>
+														<?php echo $clock_am_div;?>
 													</svg>
 												</div>
-												<img src="assets/img/final_rular.png" border="0" alt="">
+												<div class="clock clock_pm_div">
+													<svg>
+														<?php echo $clock_pm_div;?>
+													</svg>
+												</div>
+												<!-- <img src="assets/img/final_rular.png" border="0" alt=""> -->
 											</div>
 										</div>
 										<?php echo $tour_prev_html;?>
