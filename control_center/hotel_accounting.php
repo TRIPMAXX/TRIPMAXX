@@ -242,8 +242,8 @@
 			endif;
 		endif;
 	else:
-		$data['status'] = 'error';
-		$data['msg'] = $autentication_data->msg;
+		$_SESSION['SET_TYPE'] = 'error';
+		$_SESSION['SET_FLASH'] = $autentication_data_booking->msg;
 	endif;
 ?>
 <!DOCTYPE html>

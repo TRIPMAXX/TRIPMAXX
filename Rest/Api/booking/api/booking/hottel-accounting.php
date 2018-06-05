@@ -8,14 +8,16 @@
 	$server_data=json_decode(file_get_contents("php://input"), true);
 	if(isset($server_data['token']) && isset($server_data['token']['token']) && isset($server_data['token']['token_timeout']) && isset($server_data['token']['token_generation_time']) && tools::jwtTokenDecode($server_data['token']['token']) && ($server_data['token']['token_generation_time']+$server_data['token']['token_timeout']) > time()):
 		if(isset($server_data['data'])):
-			
+			//print_r($server_data['data']);
 			$where_coulse = "WHERE ";
 			$exicute = array();
 			$flag=$flag1=$flag2=true;
 			if(isset($server_data['data']['date_from']) && $server_data['data']['date_from']!="" && isset($server_data['data']['date_to']) && $server_data['data']['date_to']!=""):
-				$date_from=date("Y-m-d",strtotime($server_data['data']['date_from']));
-				$date_to=date("Y-m-d",strtotime($server_data['data']['date_to']));
-				$where_coulse.= "booking_start_date BETWEEN ".$date_from." AND ".$date_to." ";
+				$date_from_obj=date_create_from_format("d/m/Y",$server_data['data']['date_from']);
+				$date_from=date_format($date_from_obj,"Y-m-d");
+				$date_to_obj=date_create_from_format("d/m/Y", $server_data['data']['date_to']);
+				$date_to=date_format($date_to_obj,"Y-m-d");
+				$where_coulse.= "booking_start_date >= '".$date_from."' AND booking_end_date <= '".$date_to."' ";
 			else:
 				$flag=false;
 			endif;
@@ -37,6 +39,7 @@
 			//print_r($exicute);
 			//echo $where_coulse;
 			$booking_destination_list = tools::find("first", TM_BOOKING_HOTEL_DETAILS, 'GROUP_CONCAT(booking_destination_id) as destination_ids', $where_coulse, $exicute);
+			//print_r($booking_destination_list);
 			if(!empty($booking_destination_list) && $booking_destination_list['destination_ids']!=""):
 				$booking_ids_list = tools::find("first", TM_BOOKING_DESTINATION, 'GROUP_CONCAT(booking_master_id) as booking_ids', "WHERE id IN (".$booking_destination_list['destination_ids'].") ", array());
 				if(!empty($booking_ids_list) && $booking_ids_list['booking_ids']!=""):	

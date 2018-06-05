@@ -50,7 +50,7 @@
 						header("Content-Disposition: attachment; filename=\"$fileName\"");
 						header("Content-Type: application/vnd.ms-excel");
 
-						echo "# \t QUOTATION NAME \t BOOKING TYPE \t NUMBER OF PERSON \t NUMBER OF DAYS \t CREATED BY \t DESTINATION \t HOTEL NAME \t ROOM TYPE \t HOTEL CHECK-IN DATE \t HOTEL CHECK-OUT DATE \t HOTEL PRICE". "\n";
+						echo "# \t CHECK IN & CHECK OUT DATE \t NUMBER OF NIGHTS \t NUMBER OF PERSON \t NUMBER OF ROOMS \t ROOMS DETAILS \t HOTEL PRICE". "\n";
 						foreach($booking_hotel_data as $k => $row) {
 							$number_of_person=$number_of_adult=$number_of_child=0;
 							$audlt_arr=json_decode($row['adult'], true);
@@ -64,136 +64,23 @@
 									$number_of_child=$number_of_child+$child_val['child'];
 							endforeach;
 							$number_of_person=$number_of_adult+$number_of_child;
-							$checkin_date = strtotime($row['checkin_date']);
-							$checkout_date = strtotime($row['checkout_date']);
-							$datediff = $checkout_date - $checkin_date;
-							$created_by ='';
+							$datediff='';
+							$hotel_status='';
 
-							if($row['booking_type']=="personal"):
-								$autentication_data_dmc=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."authorized.php"));
-								if(isset($autentication_data_dmc->status)):
-									if($autentication_data_dmc->status=="success"):
-										$post_data_dmc['token']=array(
-											"token"=>$autentication_data_dmc->results->token,
-											"token_timeout"=>$autentication_data_dmc->results->token_timeout,
-											"token_generation_time"=>$autentication_data_dmc->results->token_generation_time
-										);
-										$post_data_dmc['data']['dmc_id']=$row['dmc_id'];
-										$post_data_str_dmc=json_encode($post_data_dmc);
-										$ch = curl_init();
-										curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-										curl_setopt($ch, CURLOPT_HEADER, false);
-										curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
-										curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-										curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.DMC_API_PATH."dmc/read.php");
-										curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str_dmc);
-										curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-										$return_data_dmc = curl_exec($ch);
-										curl_close($ch);
-										//print_r($return_data_dmc);
-										$return_data_arr_dmc=json_decode($return_data_dmc, true);
-										if(!isset($return_data_arr_dmc['status'])):
-											//$data['status'] = 'error';
-											//$data['msg']="Some error has been occure during execution.";
-										elseif($return_data_arr_dmc['status']=="success"):
-											$created_by = $return_data_arr_dmc['results']['first_name']." ".$return_data_arr_dmc['results']['last_name'].", E: ".$return_data_arr_dmc['results']['email_address'].($return_data_arr_dmc['results']['phone_number']!="" ? ", P: ".$return_data_arr_dmc['results']['phone_number'] : "");
-										else:
-											//$data['status'] = 'error';
-											//$data['msg'] = $return_data_arr_agent['msg'];
-										endif;
+							if($row['booking_destination_list']):
+								foreach($row['booking_destination_list'] as $b):
+									if($b['booking_hotel_list'][0]['hotel_id']==$_SESSION['SESSION_DATA_HOTEL']['id']):
+										$find_room = tools::find("first", TM_ROOMS, '*', "WHERE id=:id AND hotel_id=:hotel_id ", array(":id"=>$b['booking_hotel_list'][0]['room_id'], ":hotel_id"=>$b['booking_hotel_list'][0]['hotel_id']));
+										
+										$checkin_date = $b['booking_hotel_list'][0]['booking_start_date'];
+										$checkout_date = $b['booking_hotel_list'][0]['booking_end_date'];
+										$datediff = strtotime($checkout_date) - strtotime($checkin_date);
+										$hotel_status=$b['booking_hotel_list'][0]['status'];
+										
+										echo ($k+1)."\t".tools::module_date_format($b['booking_hotel_list'][0]['booking_start_date'])." & ".tools::module_date_format($b['booking_hotel_list'][0]['booking_end_date'])."\t".round($datediff / (60 * 60 * 24))."\t".$number_of_person."\t ".$row['number_of_rooms']."\t".$find_room['room_type']."\t ".$b['booking_hotel_list'][0]['price']." (".$row['currency_code'].")"."\n";
 									endif;
-								else:
-									//$data['status'] = 'error';
-									//$data['msg'] = $autentication_data->msg;
-								endif;
-							elseif($row['booking_type']=="agent"):
-								$autentication_data_agent=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."authorized.php"));
-								if(isset($autentication_data_agent->status)):
-									if($autentication_data_agent->status=="success"):
-										$post_data_agent['token']=array(
-											"token"=>$autentication_data_agent->results->token,
-											"token_timeout"=>$autentication_data_agent->results->token_timeout,
-											"token_generation_time"=>$autentication_data_agent->results->token_generation_time
-										);
-										$post_data_agent['data']['agent_id']=$row['agent_id'];
-										$post_data_str_agent=json_encode($post_data_agent);
-										$ch = curl_init();
-										curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-										curl_setopt($ch, CURLOPT_HEADER, false);
-										curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
-										curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-										curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.AGENT_API_PATH."agent/booking-agent.php");
-										curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str_agent);
-										curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-										$return_data_agent = curl_exec($ch);
-										curl_close($ch);
-										$return_data_arr_agent=json_decode($return_data_agent, true);
-										if(!isset($return_data_arr_agent['status'])):
-											//$data['status'] = 'error';
-											//$data['msg']="Some error has been occure during execution.";
-										elseif($return_data_arr_agent['status']=="success"):
-											$created_by = $return_data_arr_agent['results']['first_name']." ".$return_data_arr_agent['results']['last_name'].", E: ".$return_data_arr_agent['results']['email_address'].($return_data_arr_agent['results']['telephone']!="" ? ", P: ".$return_data_arr_agent['results']['telephone'] : "");
-										else:
-											//$data['status'] = 'error';
-											//$data['msg'] = $return_data_arr_agent['msg'];
-										endif;
-									endif;
-								else:
-									//$data['status'] = 'error';
-									//$data['msg'] = $autentication_data->msg;
-								endif;
+								endforeach;
 							endif;
-
-
-
-							echo ($k+1)."\t".$row['quotation_name']."\t".$row['booking_type']."\t".$number_of_person."\t ".round($datediff / (60 * 60 * 24))."\t ".$created_by."\n";
-							if($row['booking_destination_list'])
-							{
-								foreach($row['booking_destination_list'] as $b)
-								{					
-									if(isset($autentication_data->status)):
-										if($autentication_data->status=="success"):
-											$post_data['token']=array(
-												"token"=>$autentication_data->results->token,
-												"token_timeout"=>$autentication_data->results->token_timeout,
-												"token_generation_time"=>$autentication_data->results->token_generation_time
-											);
-											$post_data['data']['hotel_id']=$b['booking_hotel_list'][0]['hotel_id'];
-											$post_data['data']['room_id']=$b['booking_hotel_list'][0]['room_id'];
-											$post_data_str=json_encode($post_data);
-											$ch = curl_init();
-											curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-											curl_setopt($ch, CURLOPT_HEADER, false);
-											curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
-											curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-											curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."hotel/find-booked-hotel.php");
-											curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
-											curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-											$return_data = curl_exec($ch);
-											curl_close($ch);
-											$return_data_arr=json_decode($return_data, true);
-											$hotel_data_name=array();
-											if(!isset($return_data_arr['status'])):
-												$_SESSION['SET_TYPE'] = 'error';
-												$_SESSION['SET_FLASH']="Some error has been occure during execution.";
-											elseif($return_data_arr['status']=="success"):
-												$hotel_data_name=$return_data_arr;
-												//$hotel_name=$hotel_data_name['find_hotel']['hotel_name']." (".$hotel_data_name['find_room']['room_type'].")";
-											else:
-												$_SESSION['SET_TYPE'] = 'error';
-												$_SESSION['SET_FLASH'] = $return_data_arr['msg'];
-											endif;
-										else:
-											$_SESSION['SET_TYPE'] = 'error';
-											$_SESSION['SET_FLASH'] = $autentication_data->msg;
-										endif;
-									else:
-										$_SESSION['SET_TYPE'] = 'error';
-										$_SESSION['SET_FLASH'] = "We are having some problem to authorize api.";
-									endif;
-									echo "\t\t\t\t\t\t".$b['ci_name']."\t".$hotel_data_name['find_hotel']['hotel_name']."\t ".$hotel_data_name['find_room']['room_type']."\t".tools::module_date_format($b['booking_hotel_list'][0]['booking_start_date'])."\t".tools::module_date_format($b['booking_hotel_list'][0]['booking_end_date'])."\t".$b['booking_hotel_list'][0]['price']." (".$row['currency_code'].")"."\n";
-								}
-							}
 
 						}
 						exit;
@@ -202,8 +89,8 @@
 			endif;
 		endif;
 	else:
-		$data['status'] = 'error';
-		$data['msg'] = $autentication_data->msg;
+		$_SESSION['SET_TYPE'] = 'error';
+		$_SESSION['SET_FLASH'] = $autentication_data_booking->msg;
 	endif;
 ?>
 <!DOCTYPE html>
@@ -364,8 +251,9 @@
 														if(isset($child_val['child']) && $child_val['child']!="")
 															$number_of_child=$number_of_child+$child_val['child'];
 													endforeach;
-													$datediff='';
 													$number_of_person=$number_of_adult+$number_of_child;
+													$datediff='';
+													$hotel_status='';
 													foreach($book_val['booking_destination_list'] as $dest_key=>$dest_val):
 														if($dest_val['booking_hotel_list'][0]['hotel_id']==$_SESSION['SESSION_DATA_HOTEL']['id']):
 															$find_room = tools::find("first", TM_ROOMS, '*', "WHERE id=:id AND hotel_id=:hotel_id ", array(":id"=>$dest_val['booking_hotel_list'][0]['room_id'], ":hotel_id"=>$dest_val['booking_hotel_list'][0]['hotel_id']));
@@ -373,6 +261,7 @@
 															$checkin_date = $dest_val['booking_hotel_list'][0]['booking_start_date'];
 															$checkout_date = $dest_val['booking_hotel_list'][0]['booking_end_date'];
 															$datediff = strtotime($checkout_date) - strtotime($checkin_date);
+															$hotel_status=$dest_val['booking_hotel_list'][0]['status'];
 														endif;
 													endforeach;
 											?>
@@ -389,7 +278,7 @@
 														<a href = "<?php echo(DOMAIN_NAME_PATH_HOTEL);?>view_booking?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "View Booking Details"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
 													</td>
 													<td class=" ">
-														<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $book_val['status']==1 ? "btn-success" : "btn-warning";?>"><?= $book_val['status']==1 ? "Completed" : "Pending";?></a>
+														<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $hotel_status==1 ? "btn-success" : "btn-warning";?>"><?= $hotel_status==1 ? "Completed" : "Pending";?></a>
 													</td>
 												</tr>
 											<?php

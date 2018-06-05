@@ -122,7 +122,7 @@
 					endif;
 
 
-					if(isset($_POST['export_flag']) && $_POST['export_flag']!=""):
+					/*if(isset($_POST['export_flag']) && $_POST['export_flag']!=""):
 						// file name for download
 						unset($_POST['export_flag']);
 						$fileName = "agent_accounting_export_data" . date('Ymd') . ".xls";
@@ -200,14 +200,14 @@
 
 						}
 						exit;
-					endif;
+					endif;*/
 
 				endif;
 			endif;
 		endif;
 	else:
-		$data['status'] = 'error';
-		$data['msg'] = $autentication_data->msg;
+		$_SESSION['SET_TYPE'] = 'error';
+		$_SESSION['SET_FLASH'] = $autentication_data_booking->msg;
 	endif;
 ?>
 <!DOCTYPE html>
@@ -364,8 +364,8 @@
 											<label for="email"><font color="#FF0000">*</font>Booking Status</label>
 											<select class="form-control validate[required]" name = "booking_status" id = "booking_status" tabindex = "4">
 												<option value = "A" <?php echo(isset($_POST['booking_status']) && $_POST['booking_status']=="A" ? 'selected="selected"' : '');?>>All</option>
-												<option value = "C" <?php echo(isset($_POST['booking_status']) && $_POST['booking_status']=="C" ? 'selected="selected"' : '');?>>Confirmed</option>
-												<option value = "R" <?php echo(isset($_POST['booking_status']) && $_POST['booking_status']=="R" ? 'selected="selected"' : '');?>>Cancelled</option>
+												<option value = "1" <?php echo(isset($_POST['booking_status']) && $_POST['booking_status']=="1" ? 'selected="selected"' : '');?>>Confirmed</option>
+												<option value = "2" <?php echo(isset($_POST['booking_status']) && $_POST['booking_status']=="2" ? 'selected="selected"' : '');?>>Cancelled</option>
 											</select>
 										</div>
 										<div class="form-group col-md-6">

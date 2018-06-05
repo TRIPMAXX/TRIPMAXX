@@ -441,8 +441,9 @@
 										<div class="form-group col-md-6">
 											<label for="status" class="control-label">Status<font color="#FF0000">*</font></label>
 											<select class="form-control validate[required]" name="status" id="status" tabindex = "5">
-												<option value = "1" <?php echo(isset($_POST['status']) && $_POST['status']==1 ? 'selected="selected"' : "");?>>Active</option>
-												<option value = "0" <?php echo(isset($_POST['status']) && $_POST['status']==0 ? 'selected="selected"' : "");?>>Inactive</option>
+												<option value = "0" <?php echo(isset($_POST['status']) && $_POST['status']==0 ? 'selected="selected"' : "");?>>Pending </option>
+												<option value = "1" <?php echo(isset($_POST['status']) && $_POST['status']==1 ? 'selected="selected"' : "");?>>Accepted </option>
+												<option value = "2" <?php echo(isset($_POST['status']) && $_POST['status']==2 ? 'selected="selected"' : "");?>>Rejected </option>
 											</select>
 										</div>
 										<div class="clearfix"></div>

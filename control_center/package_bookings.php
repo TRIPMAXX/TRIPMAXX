@@ -228,7 +228,9 @@
 													<td class="  sorting_1"><?= $booking_key+1;?></td>
 													<td class=" "><?= tools::module_date_format($booking_val['booking_date'],"Y-m-d");?></td>
 													<td class=" ">
-														<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $booking_val['status']==1 ? "btn-success" : "btn-danger";?>" onclick="change_status(<?= $booking_val['id'];?>, $(this))"><?= $booking_val['status']==1 ? "Active" : "Inactive";?></a>
+														<!-- <a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $booking_val['status']==1 ? "btn-success" : "btn-danger";?>" onclick="change_status(<?= $booking_val['id'];?>, $(this))"><?= $booking_val['status']==1 ? "Active" : "Inactive";?></a> -->
+														
+														<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $booking_val['status']==1 ? "btn-success" : ($booking_val['status']==2 ? "btn-danger" : "btn-warning");?>"><?= $booking_val['status']==1 ? "Completed" : ($booking_val['status']==2 ? "Rejected" : "Pending");?></a>
 													</td>
 													<td class=" " data-title="Action">
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_package_booking?package_id=<?php echo base64_encode($package_data['id']);?>&booking_id=<?php echo base64_encode($booking_val['id']);?>" title = "Edit package booking"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;

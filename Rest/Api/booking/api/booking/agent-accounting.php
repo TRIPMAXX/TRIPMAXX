@@ -8,8 +8,22 @@
 	$server_data=json_decode(file_get_contents("php://input"), true);
 	if(isset($server_data['token']) && isset($server_data['token']['token']) && isset($server_data['token']['token_timeout']) && isset($server_data['token']['token_generation_time']) && tools::jwtTokenDecode($server_data['token']['token']) && ($server_data['token']['token_generation_time']+$server_data['token']['token_timeout']) > time()):
 	//print_r($server_data);exit;
+	
 		if(isset($server_data['data']) && isset($server_data['data']['agent_ids']) && $server_data['data']['agent_ids']!=""):
-			$booking_list = tools::find("all", TM_BOOKING_MASTERS." as b, ".TM_CURRENCIES." as cu", 'b.*,	cu.currency_code as currency_code, cu.currency_name as currency_name', "WHERE b.invoice_currency=cu.id AND b.agent_id IN (".$server_data['data']['agent_ids'].") AND b.is_deleted = :is_deleted AND b.booking_type=:booking_type ", array(":is_deleted"=>"N",":booking_type"=>"agent"));
+			$where_coulse= "WHERE b.invoice_currency=cu.id AND b.agent_id IN (".$server_data['data']['agent_ids'].") AND b.is_deleted = :is_deleted AND b.booking_type=:booking_type ";
+			$exicute=array(":is_deleted"=>"N",":booking_type"=>"agent");
+			if(isset($server_data['data']['date_from']) && $server_data['data']['date_from']!="" && isset($server_data['data']['date_to']) && $server_data['data']['date_to']!=""):
+				$date_from_obj=date_create_from_format("d/m/Y",$server_data['data']['date_from']);
+				$date_from=date_format($date_from_obj,"Y-m-d");
+				$date_to_obj=date_create_from_format("d/m/Y", $server_data['data']['date_to']);
+				$date_to=date_format($date_to_obj,"Y-m-d");
+				$where_coulse.= " AND b.checkin_date >= '".$date_from."' AND b.checkout_date <= '".$date_to."' ";
+			endif;
+			if(isset($server_data['data']['booking_status']) && $server_data['data']['booking_status']!="A"):
+				$where_coulse.= "AND b.status=:status ";
+				$exicute[":status"]=$server_data['data']['booking_status'];
+			endif;
+			$booking_list = tools::find("all", TM_BOOKING_MASTERS." as b, ".TM_CURRENCIES." as cu", 'b.*,	cu.currency_code as currency_code, cu.currency_name as currency_name', $where_coulse, $exicute);
 		endif;
 		if(!empty($booking_list)):
 			foreach($booking_list as $booking_key=>$booking_val):

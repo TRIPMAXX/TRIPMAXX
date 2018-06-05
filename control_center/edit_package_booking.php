@@ -529,8 +529,9 @@
 										<div class="form-group col-md-6">
 											<label for="status" class="control-label">Status<font color="#FF0000">*</font></label>
 											<select class="form-control validate[required]" name="status" id="status" tabindex = "4">
-												<option value = "1" <?php echo(isset($_POST['status']) && $_POST['status']==1 ? 'selected="selected"' : (isset($booking_data['status']) && $booking_data['status']==1 ? 'selected="selected"' : ""));?>>Active</option>
-												<option value = "0" <?php echo(isset($_POST['status']) && $_POST['status']==0 ? 'selected="selected"' : (isset($booking_data['status']) && $booking_data['status']==0 ? 'selected="selected"' : ""));?>>Inactive</option>
+												<option value = "0" <?php echo(isset($_POST['status']) && $_POST['status']==0 ? 'selected="selected"' : (isset($booking_data['status']) && $booking_data['status']==0 ? 'selected="selected"' : ""));?>>Pending </option>
+												<option value = "1" <?php echo(isset($_POST['status']) && $_POST['status']==1 ? 'selected="selected"' : (isset($booking_data['status']) && $booking_data['status']==1 ? 'selected="selected"' : ""));?>>Accepted </option>
+												<option value = "2" <?php echo(isset($_POST['status']) && $_POST['status']==2 ? 'selected="selected"' : (isset($booking_data['status']) && $booking_data['status']==2 ? 'selected="selected"' : ""));?>>Rejected </option>
 											</select>
 										</div>
 										<div class="clearfix"></div>
@@ -548,7 +549,7 @@
 					</div>
 				</form>
 			</section>
-            <section class="content-header style123" >
+            <!-- <section class="content-header style123" >
 				<h3>Booking Cost Details</h3>
             </section>
 			<section class="content">
@@ -614,7 +615,7 @@
 						</div>
 					</section>
 				</div>
-			</section>
+			</section> -->
 		</div>
         <!-- BODY -->
 
