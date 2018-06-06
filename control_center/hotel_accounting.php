@@ -90,7 +90,7 @@
 						header("Content-Disposition: attachment; filename=\"$fileName\"");
 						header("Content-Type: application/vnd.ms-excel");
 
-						echo "# \t QUOTATION NAME \t BOOKING TYPE \t NUMBER OF PERSON \t NUMBER OF DAYS \t CREATED BY \t DESTINATION \t HOTEL NAME \t ROOM TYPE \t HOTEL CHECK-IN DATE \t HOTEL CHECK-OUT DATE \t HOTEL PRICE". "\n";
+						echo "# \t QUOTATION NAME \t BOOKING TYPE \t NUMBER OF PERSON \t NUMBER OF NIGHT \t CREATED BY \t DESTINATION \t HOTEL NAME \t ROOM TYPE \t HOTEL CHECK-IN DATE \t HOTEL CHECK-OUT DATE \t HOTEL PRICE". "\n";
 						foreach($booking_hotel_data as $k => $row) {
 							$number_of_person=$number_of_adult=$number_of_child=0;
 							$audlt_arr=json_decode($row['adult'], true);
@@ -136,7 +136,7 @@
 											//$data['status'] = 'error';
 											//$data['msg']="Some error has been occure during execution.";
 										elseif($return_data_arr_dmc['status']=="success"):
-											$created_by = $return_data_arr_dmc['results']['first_name']." ".$return_data_arr_dmc['results']['last_name'].", E: ".$return_data_arr_dmc['results']['email_address'].($return_data_arr_dmc['results']['phone_number']!="" ? ", P: ".$return_data_arr_dmc['results']['phone_number'] : "");
+											$created_by = $return_data_arr_dmc['results']['first_name']." ".$return_data_arr_dmc['results']['last_name'].", ".$return_data_arr_dmc['results']['email_address'].($return_data_arr_dmc['results']['phone_number']!="" ? ", ".$return_data_arr_dmc['results']['phone_number'] : "");
 										else:
 											//$data['status'] = 'error';
 											//$data['msg'] = $return_data_arr_agent['msg'];

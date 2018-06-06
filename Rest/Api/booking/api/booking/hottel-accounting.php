@@ -71,11 +71,8 @@
 				//print_r($booking_return_data);exit;
 			else:
 				$booking_return_data['status']="error";
-				$booking_return_data['msg']="No record found.";
+				$booking_return_data['msg']="No record found for custom package booking.";
 			endif;
-		else:
-			$booking_return_data['status']="error";
-			$booking_return_data['msg']="Invalid hotel id.";
 		endif;
 	endif;
 	echo json_encode($booking_return_data);	
