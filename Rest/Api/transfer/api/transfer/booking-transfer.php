@@ -270,16 +270,32 @@
 						if($offer_html!=""):
 ?>
 							<div class="form-group col-md-12 each_transfer_row_outer">
-								<div style="border:1px solid red;background-color:red;">
-									<div class="col-md-3" style="font-weight:bold;color:#fff;">Transfer Title</div>
-									<!-- <div class="col-md-2" style="font-weight:bold;color:#fff;">Transfer Type</div> -->
-									<div class="col-md-3" style="font-weight:bold;color:#fff;text-align:center;">Availability</div>
-									<div class="col-md-2" style="font-weight:bold;color:#fff;text-align:center;">Rate</div>
-									<div class="col-md-4" style="font-weight:bold;color:#fff;">Transfer Details</div>
+								<div style="border:0px solid red;background-color:#FFF;">
+									<div class="col-md-3" style="font-weight:bold;color:#000;border:1px solid red;">Transfer Title</div>
+									<!-- <div class="col-md-2" style="font-weight:bold;color:#000;border:1px solid red;">Transfer Type</div> -->
+									<div class="col-md-3" style="font-weight:bold;color:#000;border:1px solid red;text-align:center;">Availability</div>
+									<div class="col-md-2" style="font-weight:bold;color:#000;border:1px solid red;text-align:center;">Rate</div>
+									<div class="col-md-4" style="font-weight:bold;color:#000;border:1px solid red;">Transfer Details</div>
 									<div class="clearfix"></div>
 								</div>
-								<div style="padding:20px 0 0 0;border:1px solid red;">
-									<div class="col-md-3" style="font-weight:bold;"><?php echo $transfer_val['transfer_title'];?></div>
+								<div style="padding:5px 0 0 0;border:1px solid red;">
+									<div class="col-md-3" style="font-weight:bold;">
+										<div><?php echo $transfer_val['transfer_title'];?></div>
+										<?php
+										if($transfer_val['transfer_images']!=""):
+											$image_arr=explode(",", $transfer_val['transfer_images']);
+											//if($image_arr[0]!="" && file_exists(TRANSFER_IMAGE_PATH.$image_arr[0])):
+										?>
+											<img src = "<?php echo(TRANSFER_IMAGE_PATH."thumb/".$image_arr[0]);?>" border = "0" alt = "" style="width:150px" onerror="this.remove;"/>
+										<?php
+											/*else:
+												echo "N/A";
+											endif;*/
+										else:
+											echo "N/A";
+										endif;
+										?>
+									</div>
 									<!-- <div class="col-md-2" style="font-weight:bold;"><?php echo $transfer_val['transfer_service'];?></div> -->
 									<div class="col-md-3" style="font-weight:bold;text-align:center;">
 										<?php
@@ -308,28 +324,12 @@
 										<strong>Time: </strong><span class="calculated_time_diff">--</span><br/>
 									</div>
 									<div class="clearfix"></div>
-									<div class="col-md-3">
-										<?php
-										if($transfer_val['transfer_images']!=""):
-											$image_arr=explode(",", $transfer_val['transfer_images']);
-											//if($image_arr[0]!="" && file_exists(TRANSFER_IMAGE_PATH.$image_arr[0])):
-										?>
-											<img src = "<?php echo(TRANSFER_IMAGE_PATH."thumb/".$image_arr[0]);?>" border = "0" alt = "" width = "250" height = "150" onerror="this.remove;"/>
-										<?php
-											/*else:
-												echo "N/A";
-											endif;*/
-										else:
-											echo "N/A";
-										endif;
-										?>
-									</div>
 									<div class="col-md-9">
 										<?php echo nl2br($transfer_val['service_note']);?>
 									</div>
 									<div class="clearfix"></div>
 									<div class="col-md-12">
-										<a href="<?php echo DOMAIN_NAME_PATH_ADMIN;?>edit_transfer?transfer_id=<?php echo base64_encode($transfer_val['id']);?>" target="_blank" style="font-size:16px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_transfers('transfer<?php echo $transfer_val['id'];?>');" style="font-size:16px;"><b>VIEW AVAILABLE OFFERS</b></a>
+										<a href="<?php echo DOMAIN_NAME_PATH_ADMIN;?>edit_transfer?transfer_id=<?php echo base64_encode($transfer_val['id']);?>" target="_blank" style="font-size:14px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_transfers('transfer<?php echo $transfer_val['id'];?>');" style="font-size:14px;"><b>VIEW AVAILABLE OFFERS</b></a>
 									</div>
 									<div class="clearfix"></div>
 									<div id="transfer<?php echo $transfer_val['id'];?>" <?php echo($transfer_first_row==1 && $offset==0 ? '' : 'style="display:none;"');?>  class="transfer_offer_cls">

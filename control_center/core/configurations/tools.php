@@ -202,7 +202,7 @@ class tools {
 	* @returns true or false.
 	*/
 	public static function Send_SMTP_Mail($mail_To, $mail_From, $mail_CC, $mail_subject, $mail_Body) {
-		$mail = new PHPMailer();
+		/*$mail = new PHPMailer();
 		$mail->IsSMTP(); 
 		$mail->Host = "localhost";
 		$mail->SMTPAuth = true;
@@ -214,7 +214,7 @@ class tools {
 		$mail->IsHTML(true);
 		$mail->Subject = $mail_subject;
 		$mail->Body = $mail_Body;
-		$mail->Send();
+		$mail->Send();*/
 	}
 
 	/*

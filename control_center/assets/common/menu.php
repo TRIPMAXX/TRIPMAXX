@@ -52,7 +52,7 @@
 					<li class=""><a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>transfers"><i class="fa fa-circle-o"></i> LISTS OF TRANSFERS</a></li>
 				</ul>
 			</li>
-			<li class="<?php echo(($current_page_name == 'create_new_attribute.php' || $current_page_name == 'attributes.php' || $current_page_name == 'edit_attribute.php' || $current_page_name == 'create_new_hotel.php' || $current_page_name == 'hotels.php' || $current_page_name == 'edit_hotel.php' || $current_page_name == 'rooms.php' || $current_page_name == 'create_new_room.php' || $current_page_name == 'edit_room.php' || $current_page_name == 'view_hotel_details.php') ? 'active' : '');?>">
+			<li class="<?php echo(($current_page_name == 'create_new_attribute.php' || $current_page_name == 'attributes.php' || $current_page_name == 'edit_attribute.php' || $current_page_name == 'create_new_hotel.php' || $current_page_name == 'hotels.php' || $current_page_name == 'edit_hotel.php' || $current_page_name == 'rooms.php' || $current_page_name == 'create_new_room.php' || $current_page_name == 'edit_room.php' || $current_page_name == 'view_hotel_details.php' || $current_page_name == 'create_new_room_attribute.php' || $current_page_name == 'edit_room_attribute.php' || $current_page_name == 'room_attributes.php') ? 'active' : '');?>">
 				<a href="javascript:void(0);">
 				<span>MANAGE HOTELS</span>
 				<i class="fa fa-angle-left pull-right"></i>

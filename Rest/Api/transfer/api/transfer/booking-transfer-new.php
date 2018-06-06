@@ -38,7 +38,7 @@
 									if($b_val['country_id']==$counrty_val && $b_val['city_id']==$server_data['data']['city'][$country_key]):
 										if($transfer_date!="" && $transfer_date!=$t_val['booking_start_date']):
 											$transfer_all_html.='<div class="each_date_div_'.$transfer_date.' each_date_div" data-date_time="'.strtotime($transfer_date).'">';
-												$transfer_all_html.='<div class="col-md-12 date_heading_div">';
+												$transfer_all_html.='<div class="col-md-12 date_heading_div" onclick="hide_show_transfer_details($(this))">';
 													$transfer_all_html.='<h4>Date: '.tools::module_date_format($transfer_date).'</h4>';
 													$transfer_all_html.='<div class="clock_img_div">';
 														$clock_am_div=$clock_pm_div='';
@@ -54,14 +54,14 @@
 																		$start_angle=($booking_start_time[0]*60+$booking_start_time[1])*.5;
 																		$end_angle=($booking_end_time[0]*60+$booking_end_time[1])*.5;
 																		if($start_angle < 360 && $end_angle < 360):
-																			$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, $end_angle).'"></path>';
+																			$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, $end_angle).'"></path>';
 																			$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d=""></path>';
 																		elseif($start_angle < 360 && $end_angle > 359):
-																			$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, 359).'"></path>';
-																			$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, 360, $end_angle).'"></path>';
+																			$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, 359).'"></path>';
+																			$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, 360, $end_angle).'"></path>';
 																		elseif($start_angle > 359 && $end_angle < 720):
 																			$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d=""></path>';
-																			$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, $end_angle).'"></path>';
+																			$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, $end_angle).'"></path>';
 																		endif;
 																	endif;
 																endforeach;
@@ -77,14 +77,14 @@
 																		$start_angle=($booking_start_time[0]*60+$booking_start_time[1])*.5;
 																		$end_angle=($booking_end_time[0]*60+$booking_end_time[1])*.5;
 																		if($start_angle < 360 && $end_angle < 360):
-																			$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, $end_angle).'"></path>';
+																			$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, $end_angle).'"></path>';
 																			$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d=""></path>';
 																		elseif($start_angle < 360 && $end_angle > 359):
-																			$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, 359).'"></path>';
-																			$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, 360, $end_angle).'"></path>';
+																			$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, 359).'"></path>';
+																			$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, 360, $end_angle).'"></path>';
 																		elseif($start_angle > 359 && $end_angle < 720):
 																			$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d=""></path>';
-																			$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, $end_angle).'"></path>';
+																			$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, $end_angle).'"></path>';
 																		endif;
 																	endif;
 																endforeach;
@@ -128,16 +128,24 @@
 										$diff = $logoutTime - $loginTime;
 										$hour=$diff/3600;
 										$transfer_prev_html.='<div class="form-group col-md-12 each_transfer_row_outer">';
-											$transfer_prev_html.='<div style="border:1px solid red;background-color:red;">';
-												$transfer_prev_html.='<div class="col-md-3" style="font-weight:bold;color:#fff;">Transfer Title</div>';
-												$transfer_prev_html.='<!-- <div class="col-md-2" style="font-weight:bold;color:#fff;">Transfer Type</div> -->';
-												$transfer_prev_html.='<div class="col-md-3" style="font-weight:bold;color:#fff;text-align:center;">Availability</div>';
-												$transfer_prev_html.='<div class="col-md-2" style="font-weight:bold;color:#fff;text-align:center;">Rate</div>';
-												$transfer_prev_html.='<div class="col-md-4" style="font-weight:bold;color:#fff;">Transfer Details</div>';
+											$transfer_prev_html.='<div style="border:0px solid red;background-color:#FFF;">';
+												$transfer_prev_html.='<div class="col-md-3" style="font-weight:bold;color:#000;border:1px solid red;">Transfer Title</div>';
+												$transfer_prev_html.='<!-- <div class="col-md-2" style="font-weight:bold;color:#000;border:1px solid red;">Transfer Type</div> -->';
+												$transfer_prev_html.='<div class="col-md-3" style="font-weight:bold;color:#000;border:1px solid red;text-align:center;">Availability</div>';
+												$transfer_prev_html.='<div class="col-md-2" style="font-weight:bold;color:#000;border:1px solid red;text-align:center;">Rate</div>';
+												$transfer_prev_html.='<div class="col-md-4" style="font-weight:bold;color:#000;border:1px solid red;">Transfer Details</div>';
 												$transfer_prev_html.='<div class="clearfix"></div>';
 											$transfer_prev_html.='</div>';
-											$transfer_prev_html.='<div style="padding:20px 0 0 0;border:1px solid red;">';
-												$transfer_prev_html.='<div class="col-md-3" style="font-weight:bold;">'.$find_transfer_details['transfer_title'].'</div>';
+											$transfer_prev_html.='<div style="padding:5px 0 0 0;border:1px solid red;">';
+												$transfer_prev_html.='<div class="col-md-3" style="font-weight:bold;">';
+													$transfer_prev_html.='<div>'.$find_transfer_details['transfer_title'].'</div>';
+													if($find_transfer_details['transfer_images']!=""):
+														$image_arr=explode(",", $find_transfer_details['transfer_images']);
+														$transfer_prev_html.='<img src="'.TRANSFER_IMAGE_PATH.$image_arr[0].'" border="0" alt="" style="width:150px;" onerror="this.remove;">';
+													else:
+														$transfer_prev_html.='N/A';
+													endif;
+												$transfer_prev_html.='</div>';
 												$transfer_prev_html.='<!-- <div class="col-md-2" style="font-weight:bold;">'.$find_transfer_details['transfer_service'].'</div> -->';
 												$transfer_prev_html.='<div class="col-md-3" style="font-weight:bold;text-align:center;">';
 												if($t_val['avalibility_status']=="A"):
@@ -161,23 +169,15 @@
 													$transfer_prev_html.='<input type="hidden" name="svg_path_id_input_hidden" class="svg_path_id_input" value="old_transfer_'.$t_val['id'].'">';
 												$transfer_prev_html.='</div>';
 												$transfer_prev_html.='<div class="clearfix"></div>';
-												$transfer_prev_html.='<div class="col-md-3">';
-												if($find_transfer_details['transfer_images']!=""):
-													$image_arr=explode(",", $find_transfer_details['transfer_images']);
-													$transfer_prev_html.='<img src="'.TRANSFER_IMAGE_PATH.$image_arr[0].'" border="0" alt="" width="250" height="150" onerror="this.remove;">';
-												else:
-													echo "N/A";
-												endif;
-												$transfer_prev_html.='</div>';
-												$transfer_prev_html.='<div class="col-md-9">';
+												$transfer_prev_html.='<div class="col-md-12">';
 												$transfer_prev_html.='</div>';
 												$transfer_prev_html.='<div class="clearfix"></div>';
 												$transfer_prev_html.='<div class="col-md-12">';
-													$transfer_prev_html.='<a href="'.DOMAIN_NAME_PATH_ADMIN.'edit_transfer?transfer_id='.base64_encode($find_transfer_details['id']).'" target="_blank" style="font-size:16px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_transfers(\'transfer'.$t_val['booking_start_date'].'-old-'.$find_transfer_details['id'].'\');" style="font-size:16px;"><b>VIEW AVAILABLE OFFERS</b></a>';
+													$transfer_prev_html.='<a href="'.DOMAIN_NAME_PATH_ADMIN.'edit_transfer?transfer_id='.base64_encode($find_transfer_details['id']).'" target="_blank" style="font-size:14px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_transfers(\'transfer'.$t_val['booking_start_date'].'-old-'.$find_transfer_details['id'].'\');" style="font-size:14px;"><b>VIEW AVAILABLE OFFERS</b></a>';
 												$transfer_prev_html.='</div>';
 												$transfer_prev_html.='<div class="clearfix"></div>';
 												$transfer_prev_html.='<div id="transfer'.$t_val['booking_start_date'].'-old-'.$find_transfer_details['id'].'" class="transfer_offer_cls">';
-													$transfer_prev_html.='<div style="border:1px solid gray;background-color:gray;margin-top:10px;">';
+													$transfer_prev_html.='<div style="border:1px solid gray;background-color:gray;margin-top:0px;">';
 														$transfer_prev_html.='<div class="col-md-1" style="font-weight:bold;color:#fff;">#</div>';
 														$transfer_prev_html.='<div class="col-md-3" style="font-weight:bold;color:#fff;">Offer Title</div>';
 														$transfer_prev_html.='<div class="col-md-3" style="font-weight:bold;color:#fff;">Service Type</div>';
@@ -239,7 +239,7 @@
 																	$transfer_prev_html.='<img src="assets/img/r_icon.png" border="0" alt="On Request" title="On Request">';
 																endif;
 																$transfer_prev_html.='<br>';
-																$transfer_prev_html.='<input type="radio" name="selected_transfer['.$b_val['city_id'].']['.$list_val['id'].'][old'.$t_key.']" class="selected_transfer" onclick="change_transfer_radio($(this))" value="'.$b_val['city_id'].'-'.$avalibility_status.'-'.$list_val['id'].'" data-price="'.$default_currency['currency_code'].number_format($list_val['price_per_person'], 2,".",",").'" '.($list_val['id']==$find_transfer_offer_details['id'] ? 'checked="checked' : "").'">';
+																$transfer_prev_html.='<input type="radio" name="selected_transfer['.$b_val['city_id'].']['.$list_val['id'].'][old'.$t_key.']" class="selected_transfer" onclick="change_transfer_radio($(this))" value="'.$b_val['city_id'].'-'.$avalibility_status.'-'.$list_val['id'].'" data-price="'.$default_currency['currency_code'].number_format($list_val['price_per_person'], 2,".",",").'" '.($list_val['id']==$find_transfer_offer_details['id'] ? 'checked="checked' : "").'" style="display:none;">';
 															$transfer_prev_html.='</div>';
 															$transfer_prev_html.='<div class="col-md-3" style="font-weight:bold;">';
 																$transfer_prev_html.=''.$list_val['offer_title'].'';
@@ -259,7 +259,7 @@
 								endforeach;
 								if($transfer_date!="" && $transfer_prev_html!=""):
 									$transfer_all_html.='<div class="each_date_div_'.$transfer_date.' each_date_div" data-date_time="'.strtotime($transfer_date).'">';
-										$transfer_all_html.='<div class="col-md-12 date_heading_div">';
+										$transfer_all_html.='<div class="col-md-12 date_heading_div" onclick="hide_show_transfer_details($(this))">';
 											$transfer_all_html.='<h4>Date: '.tools::module_date_format($transfer_date).'</h4>';
 											$transfer_all_html.='<div class="clock_img_div">';
 												$clock_am_div=$clock_pm_div='';
@@ -275,14 +275,14 @@
 																$start_angle=($booking_start_time[0]*60+$booking_start_time[1])*.5;
 																$end_angle=($booking_end_time[0]*60+$booking_end_time[1])*.5;
 																if($start_angle < 360 && $end_angle < 360):
-																	$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, $end_angle).'"></path>';
+																	$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, $end_angle).'"></path>';
 																	$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d=""></path>';
 																elseif($start_angle < 360 && $end_angle > 359):
-																	$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, 359).'"></path>';
-																	$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, 360, $end_angle).'"></path>';
+																	$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, 359).'"></path>';
+																	$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, 360, $end_angle).'"></path>';
 																elseif($start_angle > 359 && $end_angle < 720):
 																	$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d=""></path>';
-																	$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, $end_angle).'"></path>';
+																	$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, $end_angle).'"></path>';
 																endif;
 															endif;
 														endforeach;
@@ -298,14 +298,14 @@
 																$start_angle=($booking_start_time[0]*60+$booking_start_time[1])*.5;
 																$end_angle=($booking_end_time[0]*60+$booking_end_time[1])*.5;
 																if($start_angle < 360 && $end_angle < 360):
-																	$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, $end_angle).'"></path>';
+																	$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, $end_angle).'"></path>';
 																	$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d=""></path>';
 																elseif($start_angle < 360 && $end_angle > 359):
-																	$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, 359).'"></path>';
-																	$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, 360, $end_angle).'"></path>';
+																	$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, 359).'"></path>';
+																	$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, 360, $end_angle).'"></path>';
 																elseif($start_angle > 359 && $end_angle < 720):
 																	$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d=""></path>';
-																	$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(51, 37, 31, $start_angle, $end_angle).'"></path>';
+																	$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, $end_angle).'"></path>';
 																endif;
 															endif;
 														endforeach;
@@ -351,7 +351,7 @@
 					$country_city_rcd_html.='<h3>Create New Transfer</h3>';
 					$country_city_rcd_html.='<form name="form_third_step" id="form_third_step" class="form_third_step" method="POST" onsubmit="filter_transfer_search($(this), '.$server_data['data']['city'][$country_key].');return false;" data-country_id="'.$counrty_val.'">';
 						$country_city_rcd_html.='<input type="hidden" name="search_counter" class="search_counter" value="1">';
-						$country_city_rcd_html.='<div class="form-group col-sm-6">';
+						$country_city_rcd_html.='<div class="form-group col-sm-4">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Choose Day</label>';
 							$country_city_rcd_html.='
 								<select name="booking_transfer_date'.$server_data['data']['city'][$country_key].'"  id="booking_transfer_date'.$server_data['data']['city'][$country_key].'" class="form-control validate[required]">';
@@ -365,10 +365,10 @@
 							$country_city_rcd_html.='</select>';
 						$country_city_rcd_html.='</div>';
 						$transfer_attribute_list = tools::find("all", TM_ATTRIBUTES, '*', "WHERE status=:status ORDER BY serial_number ASC ", array(":status"=>1));
-						$country_city_rcd_html.='<div class="form-group col-sm-6">';
+						$country_city_rcd_html.='<div class="form-group col-sm-4">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Pickup/Dropoff Type</label>';
 							$country_city_rcd_html.='
-								<select name="pickup_dropoff_type'.$server_data['data']['city'][$country_key].'"  id="pickup_dropoff_type'.$server_data['data']['city'][$country_key].'" class="form-control validate[required]">';
+								<select name="pickup_dropoff_type'.$server_data['data']['city'][$country_key].'"  id="pickup_dropoff_type'.$server_data['data']['city'][$country_key].'" class="form-control" onchange="enable_disable_airport($(this))">';
 								$country_city_rcd_html.='<option value="">Select Pickup/Dropoff Type</option>';
 								foreach($transfer_attribute_list as $attr_key=>$attr_val):
 									$country_city_rcd_html.='<option value="'.$attr_val['id'].'">'.$attr_val['attribute_name'].'</option>';
@@ -376,30 +376,31 @@
 							$country_city_rcd_html.='</select>';
 						$country_city_rcd_html.='</div>';
 						$transfer_city_airport_list = tools::find("all", TM_AIRPORTS, '*', "WHERE countryName=:countryName ORDER BY name ASC ", array(":countryName"=>$country_name));
-						$country_city_rcd_html.='<div class="form-group col-sm-6">';
+						$country_city_rcd_html.='<div class="form-group col-sm-4 airport_all_div">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Choose Airport</label>';
 							$country_city_rcd_html.='
-								<select name="selected_airport'.$server_data['data']['city'][$country_key].'"  id="selected_airport'.$server_data['data']['city'][$country_key].'" class="form-control ">';
+								<select name="selected_airport'.$server_data['data']['city'][$country_key].'"  id="selected_airport'.$server_data['data']['city'][$country_key].'" class="form-control selected_airport">';
 								$country_city_rcd_html.='<option value="">Choose Airport</option>';
 								foreach($transfer_city_airport_list as $airport_key=>$airport_val):
 									$country_city_rcd_html.='<option value="'.$airport_val['id'].'">'.$airport_val['name'].'</option>';
 								endforeach;
 							$country_city_rcd_html.='</select>';
 						$country_city_rcd_html.='</div>';
-						$country_city_rcd_html.='<div class="form-group col-sm-6">';
-							$country_city_rcd_html.='<label for="inputName" class="control-label">Arrival/Departure Time</label>';
-							$country_city_rcd_html.='<input type="time" class="form-control validate[required]" name="arr_dept_time'.$server_data['data']['city'][$country_key].'" id="arr_dept_time'.$server_data['data']['city'][$country_key].'" value="" >';
+						$country_city_rcd_html.='<div class="clearfix"></div>';
+						$country_city_rcd_html.='<div class="form-group col-sm-4">';
+							$country_city_rcd_html.='<label for="inputName" class="control-label arr_dept_time_label">Arrival/Departure Time</label>';
+							$country_city_rcd_html.='<input type="time" class="form-control" name="arr_dept_time'.$server_data['data']['city'][$country_key].'" id="arr_dept_time'.$server_data['data']['city'][$country_key].'" value="" >';
 						$country_city_rcd_html.='</div>';
-						$country_city_rcd_html.='<div class="form-group col-sm-6">';
+						$country_city_rcd_html.='<div class="form-group col-sm-4">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Service Type</label>';
 							$country_city_rcd_html.='
-								<select name="selected_service_type'.$server_data['data']['city'][$country_key].'"  id="selected_service_type'.$server_data['data']['city'][$country_key].'" class="form-control validate[required]">';
+								<select name="selected_service_type'.$server_data['data']['city'][$country_key].'"  id="selected_service_type'.$server_data['data']['city'][$country_key].'" class="form-control">';
 								$country_city_rcd_html.='<option value = "">Select Service Type</option>';
 								$country_city_rcd_html.='<option value = "Private">Private</option>';
 								$country_city_rcd_html.='<option value = "Shared">Shared</option>';
 							$country_city_rcd_html.='</select>';
 						$country_city_rcd_html.='</div>';
-						$country_city_rcd_html.='<div class="form-group col-sm-5 text-left">';
+						$country_city_rcd_html.='<div class="form-group col-sm-4 text-left">';
 							$country_city_rcd_html.='<button type="submit" class="btn btn-primary next-step" style="margin-top:23px;" >Search</button>';
 						$country_city_rcd_html.='</div>';
 						$country_city_rcd_html.='<div class="clearfix"></div>';

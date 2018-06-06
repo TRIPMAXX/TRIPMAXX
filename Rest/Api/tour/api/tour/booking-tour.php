@@ -231,7 +231,7 @@
 										endif;
 										?>
 										<br>
-										<input type="radio" name="selected_offer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" class="selected_offer" onclick="change_offer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>" <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?> >
+										<input type="radio" name="selected_tour[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" class="selected_tour" onclick="change_offer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>" <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?> >
 									</div>
 									<div class="col-md-3" style="font-weight:bold;">
 										<?= $offer_val['offer_title'];?>

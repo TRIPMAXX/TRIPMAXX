@@ -3,12 +3,13 @@
 
 
 .radio_button_row{
-	padding:10px 0 10px 0;
+	padding:4px 0 2px 0;
 	border:1px solid gray;
 	cursor:pointer;
 }
 .radio_button_row_background{
 	background: rgba(0, 128, 0, 0.54117647058);
+	background: rgba(91, 192, 222, 0.59);
 }
 .radio_button_row input[type="radio"]{
 	/*display:none;*/
@@ -32,7 +33,7 @@
     right: 30%;
     opacity: 1;
     margin: 0 auto;
-    top: 10px;
+    top: 0px;
     color: #FFF;
     padding: 5px 6px;
     background: #009c30 !important;
@@ -83,3 +84,5 @@
 	float:right;
 	cursor:pointer;
 }
+.date_heading_div{cursor:pointer;}
+.dropofftime, .pickuptime{line-height: 10px !important;}

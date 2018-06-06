@@ -237,7 +237,7 @@
 								endfor;
 ?>
 								<div class="radio_button_row <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'radio_button_row_background' : "");?>" onclick="select_radio_row($(this))">
-									<div class="col-md-1" style="font-weight:bold;">
+									<div class="col-md-1" style="font-weight:bold;padding-top: 4px;">
 										<?php
 										if($room_avaliability_status=="avaliable" || $edit_avalibility_status=="A"):
 											$avalibility_status="A";
@@ -251,8 +251,8 @@
 										<?php
 										endif;
 										?>
-										<br>
-										<input type="radio" name="selected_room[<?= $server_data['data']['city'][$country_key];?>]" class="selected_room" onclick="change_room_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$room_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision, 2,".",",");?>" <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?>>
+										<!-- <br> -->
+										<input type="radio" name="selected_room[<?= $server_data['data']['city'][$country_key];?>]" class="selected_room" onclick="change_room_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$room_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision, 2,".",",");?>" <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?> style="opacity:0;display:none;">
 									</div>
 									<div class="col-md-3" style="font-weight:bold;">
 										<?= $room_val['room_type'];?>
@@ -260,7 +260,7 @@
 										<font color="red"><?= $room_val['room_description'];?></font>
 									</div>
 									<div class="col-md-2"><?= $room_val['number_of_rooms'];?></div>
-									<div class="col-md-4">
+									<!-- <div class="col-md-4">
 									<?php
 									//if($week_day_th!="" && $week_day_td!=""):
 									if($week_day_td!=""):
@@ -273,7 +273,7 @@
 									endif;
 									echo $main_html;
 									?>
-									</div>
+									</div> -->
 									<div class="col-md-2" style="font-weight:bold;color:red;text-align:center;"><?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision, 2,".",",");?></div>
 									<div class="clearfix"></div>
 								</div>
@@ -288,16 +288,16 @@
 						//if($room_html!=""):
 ?>
 							<div class="form-group col-md-12">
-								<div style="border:1px solid red;background-color:red;">
-									<div class="col-md-2" style="font-weight:bold;color:#fff;">Hotel Type</div>
-									<div class="col-md-2" style="font-weight:bold;color:#fff;">Hotel Name</div>
-									<div class="col-md-2" style="font-weight:bold;color:#fff;">Rating</div>
-									<div class="col-md-2" style="font-weight:bold;color:#fff;">Location</div>
-									<div class="col-md-2" style="font-weight:bold;color:#fff;text-align:center;">Availability</div>
-									<div class="col-md-2" style="font-weight:bold;color:#fff;text-align:center;">Rate</div>
+								<div style="border:0px solid red;background-color:#FFF;">
+									<div class="col-md-2" style="font-weight:bold;color:#000;border:1px solid red;">Hotel Type</div>
+									<div class="col-md-2" style="font-weight:bold;color:#000;border:1px solid red;">Hotel Name</div>
+									<div class="col-md-2" style="font-weight:bold;color:#000;border:1px solid red;">Rating</div>
+									<div class="col-md-2" style="font-weight:bold;color:#000;border:1px solid red;">Location</div>
+									<div class="col-md-2" style="font-weight:bold;color:#000;text-align:center;border:1px solid red;">Availability</div>
+									<div class="col-md-2" style="font-weight:bold;color:#000;text-align:center;border:1px solid red;">Rate</div>
 									<div class="clearfix"></div>
 								</div>
-								<div style="padding:20px 0 0 0;border:1px solid red;">
+								<div style="padding: 5px 0 0 0;border-left: 1px solid red;border-right: 1px solid red;">
 									<div class="col-md-2" style="font-weight:bold;">
 										<?php
 										if($hotel_val['hotel_type']!=""):
@@ -332,13 +332,13 @@
 									</div>
 									<div class="col-md-2 default_price_div" style="font-weight:bold;text-align:center;" data-default_price="<?php echo $each_first_price;?>"><?php echo $each_first_price;?></div>
 									<div class="clearfix"></div>
-									<div class="col-md-3">
+									<div class="col-md-2">
 										<?php
 										if($hotel_val['hotel_images']!=""):
 											$image_arr=explode(",", $hotel_val['hotel_images']);
 											//if($image_arr[0]!="" && file_exists(HOTEL_IMAGE_PATH.$image_arr[0])):
 										?>
-											<img src = "<?php echo(HOTEL_IMAGE_PATH."thumb/".$image_arr[0]);?>" border = "0" alt = "" width = "250" height = "150" onerror="this.remove;"/>
+											<img src = "<?php echo(HOTEL_IMAGE_PATH."thumb/".$image_arr[0]);?>" border = "0" alt = "" style="width:100px;" onerror="this.remove;"/>
 										<?php
 											/*else:
 												echo "N/A";
@@ -348,20 +348,20 @@
 										endif;
 										?>
 									</div>
-									<div class="col-md-9">
+									<div class="col-md-10">
 										<?php echo nl2br($hotel_val['short_description']);?>
 									</div>
 									<div class="clearfix"></div>
 									<div class="col-md-12">
-										<a href="<?php echo DOMAIN_NAME_PATH_ADMIN;?>view_hotel_details?hotel_id=<?php echo base64_encode($hotel_val['id']);?>" target="_blank" style="font-size:16px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_rooms('hotel<?php echo $hotel_val['id'];?>');" style="font-size:16px;"><b>VIEW AVAILABLE ROOMS</b></a>
+										<a href="<?php echo DOMAIN_NAME_PATH_ADMIN;?>view_hotel_details?hotel_id=<?php echo base64_encode($hotel_val['id']);?>" target="_blank" style="font-size:14px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_rooms('hotel<?php echo $hotel_val['id'];?>');" style="font-size:14px;"><b>VIEW AVAILABLE ROOMS</b></a>
 									</div>
 									<div class="clearfix"></div>
 									<div id="hotel<?php echo $hotel_val['id'];?>" <?php echo($hotel_first_row==1 && $offset==0 ? '' : 'style="display:none;"');?>>
-										<div style="border:1px solid gray;background-color:gray;margin-top:10px;">
+										<div style="border:1px solid gray;background-color:gray;margin-top:0px;">
 											<div class="col-md-1" style="font-weight:bold;color:#fff;">#</div>
 											<div class="col-md-3" style="font-weight:bold;color:#fff;">Room Type</div>
 											<div class="col-md-2" style="font-weight:bold;color:#fff;">Rooms</div>
-											<div class="col-md-4" style="font-weight:bold;color:#fff;">Room Breakup</div>
+											<!-- <div class="col-md-4" style="font-weight:bold;color:#fff;">Room Breakup</div> -->
 											<div class="col-md-2" style="font-weight:bold;color:#fff;text-align:center;">Total Amount</div>
 											<div class="clearfix"></div>
 										</div>

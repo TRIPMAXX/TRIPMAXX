@@ -99,10 +99,10 @@ define("RECORD_PER_PAGE", 10);
 define("FROM_EMAIL", "noreply@neocoderztechnologies.com");
 
 
-define("HOTEL_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/hotel/thumb/");
-define("ROOM_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/room/thumb/");
+define("HOTEL_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/hotel/");
+define("ROOM_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/room/");
 define("AGENT_IMAGE_PATH", DOMAIN_NAME_PATH."agent_control_center/assets/upload/agent/");
-define("TOUR_IMAGE_PATH", DOMAIN_NAME_PATH."tour_control_center/assets/upload/tour/thumb/");
-define("TRANSFER_IMAGE_PATH", DOMAIN_NAME_PATH."transfer_control_center/assets/upload/transfer/thumb/");
+define("TOUR_IMAGE_PATH", DOMAIN_NAME_PATH."tour_control_center/assets/upload/tour/");
+define("TRANSFER_IMAGE_PATH", DOMAIN_NAME_PATH."transfer_control_center/assets/upload/transfer/");
 define("PACKAGE_IMAGE_PATH", DOMAIN_NAME_PATH."package_control_center/assets/upload/package/");
 ?>

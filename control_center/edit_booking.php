@@ -137,7 +137,7 @@
 		.loader_inner img{
 			margin-top:40vh;
 		}
-		.city_tab_button_div, .tour_city_tab_button_div, .transfer_city_tab_button_div{margin-bottom: 20px;}
+		.city_tab_button_div, .tour_city_tab_button_div, .transfer_city_tab_button_div{margin-bottom: 5px;}
 		.cls_each_city_hotel_tab_div, .cls_each_city_tour_tab_div, .cls_each_city_transfer_tab_div{
 			padding: 5px;
 			text-align: center;
@@ -155,6 +155,16 @@
 			border-top-width:1px;
 			color: #000;
 			border-bottom-width:0px;
+		}
+		.form-group {
+			margin-bottom: 4px;
+			padding: 0px 6px;
+		}
+		.wizard .tab-pane {
+			padding-top: 10px;
+		}
+		.wizard h3{
+			font-size: 18px;
 		}
 	</style>
 	<!-- JAVASCRIPT CODE -->
@@ -328,7 +338,7 @@
 				var tour_dropofftime_arr=[];
 				var tour_booking_tour_date_arr=[];
 				var tour_service_type_arr=[];
-				$('input[class="selected_offer"]:checked').each(function(){
+				$('input[class="selected_tour"]:checked').each(function(){
 					if($(this).val()!="" && $(this).parents(".each_tour_row_outer").find(".selected_booking_tour_date").val()!="" && $(this).parents(".each_tour_row_outer").find(".tour_type").val()!="" && $(this).parents(".each_tour_row_outer").find(".selected_service_type").val()!="" && $(this).parents(".each_tour_row_outer").find(".pickuptime").val()!="" && $(this).parents(".each_tour_row_outer").find(".dropofftime").val()!="")
 					{
 						tour_offer_arr.push($(this).val());
@@ -1077,7 +1087,7 @@
 								});
 								var add_html='';
 								add_html+='<div class="each_tour_date_div_'+response['post_data']['country_city_rcd_date']+' each_tour_date_div" data-date_time="'+response['post_data']['country_city_rcd_date_time']+'">';
-									add_html+='<div class="col-md-12 date_heading_div">';
+									add_html+='<div class="col-md-12 date_heading_div" onclick="hide_show_transfer_details($(this))">';
 										add_html+='<h4>Date: '+response['post_data']['country_city_rcd_formated_date']+'</h4>';
 										add_html+='<div class="clock_img_div">';
 											add_html+='<div class="change_clock_am_div">';
@@ -1278,7 +1288,7 @@
 								});
 								var add_html='';
 								add_html+='<div class="each_date_div_'+response['post_data']['country_city_rcd_date']+' each_date_div" data-date_time="'+response['post_data']['country_city_rcd_date_time']+'">';
-									add_html+='<div class="col-md-12 date_heading_div">';
+									add_html+='<div class="col-md-12 date_heading_div" onclick="hide_show_transfer_details($(this))">';
 										add_html+='<h4>Date: '+response['post_data']['country_city_rcd_formated_date']+'</h4>';
 										add_html+='<div class="clock_img_div">';
 											add_html+='<div class="change_clock_am_div">';
@@ -1522,7 +1532,7 @@
 					var new_row_key=$(this).attr("data-attr_key");
 					$(this).attr("data-attr_key", eval(new_row_key)+1);
 					var markup = '';
-					markup+='<div class="form-group col-md-12 appended_row each_city_row">';
+					markup+='<div class="form-group appended_row each_city_row">';
 						markup+='<div class="form-group col-md-2">';
 							markup+='<input type="checkbox" name="record"/>&nbsp;&nbsp;<label for="inputName" class="control-label">Country<font color="#FF0000">*</font></label>';
 							markup+='<select name="country['+new_row_key+']" class="form-control validate[required]" id="country'+new_row_key+'" onchange="fetch_city($(this).val(), '+new_row_key+');">';
@@ -1567,6 +1577,7 @@
 								markup+='<option value="">Select Hotel</option>';
 							markup+='</select>';
 						markup+='</div>';
+						markup+='<div class="clearfix"></div>';
 					markup+='</div>';
 					markup+='<div class="clearfix"></div>';
 					$("#sample").append(markup);
@@ -1705,18 +1716,18 @@
 					//var arc = describeArc(50, 28, 28, start_angle, end_angle);
 					if(start_angle < 360 && end_angle < 360)
 					{
-						var arc_am=describeArc(51, 37, 31, start_angle, end_angle);
+						var arc_am=describeArc(30, 17.8, 19, start_angle, end_angle);
 						var arc_pm='';
 					}
 					else if(start_angle < 360 && end_angle > 359)
 					{
-						var arc_am=describeArc(51, 37, 31, start_angle, 359);
-						var arc_pm=describeArc(51, 37, 31, 360, end_angle);
+						var arc_am=describeArc(30, 17.8, 19, start_angle, 359);
+						var arc_pm=describeArc(30, 17.8, 19, 360, end_angle);
 					}
 					else if(start_angle > 359 && end_angle < 720)
 					{
 						var arc_am='';
-						var arc_pm=describeArc(51, 37, 31, start_angle, end_angle);
+						var arc_pm=describeArc(30, 17.8, 19, start_angle, end_angle);
 					}
 					//alert(cur.parent("div").find(".svg_path_id_input").length)
 					if(cur.parent("div").find(".svg_path_id_input").length)
@@ -1804,18 +1815,18 @@
 					//var arc = describeArc(50, 28, 28, start_angle, end_angle);
 					if(start_angle < 360 && end_angle < 360)
 					{
-						var arc_am=describeArc(51, 37, 31, start_angle, end_angle);
+						var arc_am=describeArc(30, 17.8, 19, start_angle, end_angle);
 						var arc_pm='';
 					}
 					else if(start_angle < 360 && end_angle > 359)
 					{
-						var arc_am=describeArc(51, 37, 31, start_angle, 359);
-						var arc_pm=describeArc(51, 37, 31, 360, end_angle);
+						var arc_am=describeArc(30, 17.8, 19, start_angle, 359);
+						var arc_pm=describeArc(30, 17.8, 19, 360, end_angle);
 					}
 					else if(start_angle > 359 && end_angle < 720)
 					{
 						var arc_am='';
-						var arc_pm=describeArc(51, 37, 31, start_angle, end_angle);
+						var arc_pm=describeArc(30, 17.8, 19, start_angle, end_angle);
 					}
 					//alert(cur.parent("div").find(".svg_path_id_input").length)
 					if(cur.parent("div").find(".svg_path_id_input").length)
@@ -1939,6 +1950,24 @@
 				cur.parents(".clock_img_div").find(".clock_am_div").hide();
 				cur.parents(".clock_img_div").find(".clock_pm_div").show();
 			}
+			cur.parents(".date_heading_div").siblings().show();
+		}
+		function enable_disable_airport(cur)
+		{
+			if(cur.val()==1 || cur.val()==4)
+			{
+				cur.parents("form").find(".airport_all_div").show();
+				cur.parents("form").find(".arr_dept_time_label").html("Arrival/Departure Time");
+			}
+			else
+			{
+				cur.parents("form").find(".airport_all_div").hide();
+				cur.parents("form").find(".arr_dept_time_label").html("Pickup Time");
+			}
+		}
+		function hide_show_transfer_details(cur)
+		{
+			cur.parent("div").find(".each_transfer_row_outer").toggle();
 		}
 		/*window.onerror = function(msg, file, line) {
 			alert(msg + '; ' + file + '; ' + line);
@@ -1974,12 +2003,12 @@
 						<div id="notify_msg_div"></div>
 						<div class="box box-primary">
 							<section class="content">
-								<div class="wizard">
+								<div class="wizard" style="margin: 0px auto;">
 									<div class="wizard-inner">
 										<div class="connecting-line"></div>
-										<ul class="nav nav-tabs" role="tablist">
+										<ul class="nav nav-tabs" role="tablist" style="margin: 0px auto;">
 											<li role="presentation" class="active">
-												<a href="#step1" data-toggle="tab" aria-controls="step1" role="tab">
+												<a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" style="margin: 0px auto 9px;">
 												<span class="round-tab">
 													<i class="fa fa-bars fa-1x" ></i>
 												</span>
@@ -1987,7 +2016,7 @@
 											</li>
 
 											<li role="presentation">
-												<a href="#step2" data-toggle="tab" aria-controls="step2" role="tab">
+												<a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" style="margin: 0px auto 9px;">
 												<span class="round-tab">
 													<i class="fa fa-bed fa-1x" ></i>
 												</span>
@@ -1995,7 +2024,7 @@
 											</li>
 
 											<li role="presentation">
-												<a href="#step4" data-toggle="tab" aria-controls="step4" role="tab">
+												<a href="#step4" data-toggle="tab" aria-controls="step4" role="tab" style="margin: 0px auto 9px;">
 												<span class="round-tab">
 													<i class="fa fa-car fa-1x" ></i>
 												</span>
@@ -2003,7 +2032,7 @@
 											</li>
 
 											<li role="presentation">
-												<a href="#step3" data-toggle="tab" aria-controls="step3" role="tab">
+												<a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" style="margin: 0px auto 9px;">
 												<span class="round-tab">
 													<i class="fa fa-road fa-1x" ></i>
 												</span>
@@ -2011,7 +2040,7 @@
 											</li>
 
 											<li role="presentation">
-												<a href="#complete" data-toggle="tab" aria-controls="complete" role="tab">
+												<a href="#complete" data-toggle="tab" aria-controls="complete" role="tab" style="margin: 0px auto 9px;">
 												<span class="round-tab">
 													<i class="fa fa-shopping-cart fa-1x" ></i>
 												</span>
@@ -2026,15 +2055,15 @@
 											<h3>Select Criteria For New Booking</h3>
 											<form name="form_first_step" id="form_first_step" method="post" enctype="mulitipart/form-data">
 												<div class="col-md-12 row">
-													<div class="box-body" style = "border:1px solid gray;">
-														<div class="form-group col-md-6">
+													<div class="box-body" style = "border:1px solid gray;padding: 3px;">
+														<div class="form-group col-md-3">
 															<label for="inputName" class="control-label">Select Booking Type<font color="#FF0000">*</font></label>
 															<select name = "booking_type" id = "booking_type" class="form-control validate[required]"  tabindex = "1" onchange = "manage_booking_type(this.value);">
 																<option value = "personal" <?php echo(isset($_POST['booking_type']) && $_POST['booking_type']=="personal" ? "selected='selected'" : (isset($booking_details_list['booking_type']) && $booking_details_list['booking_type']=="personal" ? "selected='selected'" : ""));?>>Personal Booking</option>
 																<option value = "agent" <?php echo(isset($_POST['booking_type']) && $_POST['booking_type']=="agent" ? "selected='selected'" : (isset($agent_data) &&  !empty($agent_data) ? "selected='selected'" : (isset($booking_details_list['booking_type']) && $booking_details_list['booking_type']=="agent" ? "selected='selected'" : "")));?>>Agent Booking</option>
 															</select>
 														</div>
-														<div class="form-group col-md-6">
+														<div class="form-group col-md-3">
 															<label for="inputName" class="control-label">Select Agent<font color="#FF0000">*</font></label>
 															<select name = "agent_name" id = "agent_name" class="form-control validate[required]"  tabindex = "2" <?php echo(isset($_POST['agent_name']) && $_POST['agent_name']!="" ? '' : 'disabled');?>>
 																<option value = "">Select Agent</option>
@@ -2049,26 +2078,25 @@
 															?>
 															</select>
 														</div>
-														<div class="form-group col-md-6">
+														<div class="form-group col-md-3">
 															<label for="inputName" class="control-label">Check In<font color="#FF0000">*</font></label>
 															<input type="text" class="form-control datepicker validate[required]"  value="<?php echo(isset($_POST['checkin']) && $_POST['checkin']!='' ? $_POST['checkin'] : (isset($booking_details_list['checkin_date']) && $booking_details_list['checkin_date']!="" ? date("d/m/Y", strtotime($booking_details_list['checkin_date'])) : ""));?>" name="checkin" id="checkin" placeholder="Check In" tabindex = "3" autocomplete="off"/>
 														</div>
-														<div class="form-group col-md-6">
+														<div class="form-group col-md-3">
 															<label for="inputName" class="control-label">Check Out<font color="#FF0000">*</font></label>
 															<input type="text" class="form-control datepicker validate[required]"  value="<?php echo(isset($_POST['checkout']) && $_POST['checkout']!='' ? $_POST['checkout'] : (isset($booking_details_list['checkout_date']) && $booking_details_list['checkout_date']!="" ? date("d/m/Y", strtotime($booking_details_list['checkout_date'])) : ""));?>" name="checkout" id="checkout" placeholder="Check Out" tabindex = "4" autocomplete="off"/>
 														</div>
 														<div class="clearfix"></div>
 													</div>
-													<div class="box-body">
-													</div>
-													<div class="box-body" id = "sample"  style = "border:1px solid gray;">
+													<div class="box-body" style="padding:3px;"></div>
+													<div class="box-body" id = "sample"  style = "border:1px solid gray;padding: 3px;">
 														<?php
 														if(isset($_POST['country']) && !empty($_POST['country']))
 														{
 															foreach($_POST['country'] as $post_country_key=>$post_country_val)
 															{
 														?>
-														<div class="form-group col-md-12 <?php echo($post_country_key > 0 ? "appended_row" : "");?> each_city_row">
+														<div class="form-group <?php echo($post_country_key > 0 ? "appended_row" : "");?> each_city_row">
 															<div class="form-group col-md-2">
 																<?php
 																if($post_country_key > 0)
@@ -2143,6 +2171,7 @@
 																	<option value="">Select Hotel</option>
 																</select>
 															</div>
+															<div class="clearfix"></div>
 														</div>
 														<?php
 															}
@@ -2153,7 +2182,7 @@
 															foreach($booking_details_list['booking_destination_list'] as $destination_key=>$destination_val):
 																$hotel_rating_arr=explode(",", $destination_val['hotel_rating']);
 														?>
-														<div class="form-group col-md-12 <?php echo($destination_key > 0 ? "appended_row" : "");?> each_city_row">
+														<div class="form-group <?php echo($destination_key > 0 ? "appended_row" : "");?> each_city_row">
 															<div class="form-group col-md-2">
 																<?php
 																if($destination_key > 0)
@@ -2276,6 +2305,7 @@
 																?>
 																</select>
 															</div>
+															<div class="clearfix"></div>
 														</div>
 														<?php
 															endforeach;
@@ -2285,7 +2315,7 @@
 														{
 															$next_index=1;
 														?>
-														<div class="form-group col-md-12 each_city_row">
+														<div class="form-group each_city_row">
 															<div class="form-group col-md-2">
 																<label for="inputName" class="control-label">Country<font color="#FF0000">*</font></label>
 																<select name="country[0]" class="form-control validate[required]" id="country0" onchange="fetch_city($(this).val(), 0);">
@@ -2338,20 +2368,18 @@
 																	<option value="">Select Hotel</option>
 																</select>
 															</div>
+															<div class="clearfix"></div>
 														</div>
 														<?php
 														}
 														?>
 														<div class="clearfix"></div>
 													</div>
-													<div class="box-body">
-														<div class="form-group col-md-12">
-															<a href = "javascript:void(0);" class="add-row" data-attr_key="<?php echo $next_index;?>"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>plus-icon.png" border = "0" alt = "" /></a>&nbsp;&nbsp;<b>ADD ANOTHER DESTINATION</b>&nbsp;&nbsp;<a href = "javascript:void(0);" class="delete-row"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>minus-icon.png" border = "0" alt = "" /></a>
-														</div>
+													<div class="box-body" style="padding:3px;">
+														<a href = "javascript:void(0);" class="add-row" data-attr_key="<?php echo $next_index;?>"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>plus-icon.png" border = "0" alt = "" /></a>&nbsp;&nbsp;<b>ADD ANOTHER DESTINATION</b>&nbsp;&nbsp;<a href = "javascript:void(0);" class="delete-row"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>minus-icon.png" border = "0" alt = "" /></a>
 													</div>
-													<div class="box-body">
-													</div>
-													<div class="box-body" style = "border:1px solid gray;">
+													<div class="box-body" style="padding:3px;"></div>
+													<div class="box-body" style = "border:1px solid gray;padding: 3px;">
 														<div class="form-group col-md-4">
 															<label for="inputName" class="control-label">Nationality<font color="#FF0000">*</font></label>
 															<select class="form-control validate[required]" name="sel_nationality" id="sel_nationality"> 
