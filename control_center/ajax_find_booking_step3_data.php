@@ -12,6 +12,7 @@
 				"token_generation_time"=>$autentication_data->results->token_generation_time
 			);
 			if(isset($_POST) && !empty($_POST)):
+				$find_threshold_booking_time = tools::find("first", TM_SETTINGS, '*', "WHERE id=:id ", array(":id"=>1));
 				$offset=0;
 				if(isset($_POST['page']) && $_POST['page']!="")
 					$offset=($_POST['page']-1)*RECORD_PER_PAGE;
@@ -29,6 +30,7 @@
 					$post_data['data']['pick_time']=$_POST['pick_time'];
 					$post_data['data']['selected_service_type']=$_POST['selected_service_type'];
 					$post_data['data']['search_counter']=$_POST['search_counter'];
+					$post_data['data']['threshold_booking_time']=$find_threshold_booking_time;
 					if(isset($_POST['booking_details_list']) && $_POST['booking_details_list']!=""):
 						$post_data['data']['booking_details_list']=$_POST['booking_details_list'];
 					endif;
@@ -55,6 +57,7 @@
 						$data['city_tab_html']=$return_data_arr['city_tab_html'];
 						$data['heading_count_rcd']=$return_data_arr['heading_count_rcd'];
 						$data['post_data']=$return_data_arr['post_data'];
+						$data['post_data']['find_threshold_booking_time']=$find_threshold_booking_time;
 					else:
 						$data['status'] = 'error';
 						$data['msg'] = $return_data_arr['msg'];

@@ -871,6 +871,7 @@
 			var booking_transfer_date=$("#booking_transfer_date"+city_id).val();
 			var pickup_dropoff_type=$("#pickup_dropoff_type"+city_id).val();
 			var selected_airport=$("#selected_airport"+city_id).val();
+			var arr_dept_flight_number=$("#arr_dept_flight_number"+city_id).val();
 			var arr_dept_time=$("#arr_dept_time"+city_id).val();
 			var selected_service_type=$("#selected_service_type"+city_id).val();
 			var country_id=cur.attr("data-country_id");
@@ -879,7 +880,7 @@
 			var page=1;
 			var type=3;
 			var search_val='';
-			fetch_step4_rcd(page, type, sort_order, city_id, country_id, search_val, booking_transfer_date, pickup_dropoff_type, selected_airport, arr_dept_time, selected_service_type, search_counter);
+			fetch_step4_rcd(page, type, sort_order, city_id, country_id, search_val, booking_transfer_date, pickup_dropoff_type, selected_airport, arr_dept_flight_number, arr_dept_time, selected_service_type, search_counter);
 			cur.find(".search_counter").val(eval(search_counter)+eval(1));
 		}
 		return false;
@@ -1038,7 +1039,7 @@
 							});
 							var add_html='';
 							add_html+='<div class="each_tour_date_div_'+response['post_data']['country_city_rcd_date']+' each_tour_date_div" data-date_time="'+response['post_data']['country_city_rcd_date_time']+'">';
-								add_html+='<div class="col-md-12 date_heading_div" onclick="enable_disable_airport($(this))">';
+								add_html+='<div class="col-md-12 date_heading_div" onclick="hide_show_tour_details($(this))">';
 									add_html+='<h4>Date: '+response['post_data']['country_city_rcd_formated_date']+'</h4>';
 									add_html+='<div class="clock_img_div">';
 										add_html+='<div class="change_clock_am_div">';
@@ -1073,6 +1074,7 @@
 								{
 									will_prepend=true;
 									$(this).before(add_html);
+									return false;
 								}
 							});
 							if(will_prepend==true)
@@ -1084,6 +1086,16 @@
 								$("#step3 #tour_city"+city_id+" .all_rcd_row").append(add_html);
 							}
 						}
+						$(".each_tour_date_div").each(function(){
+							if(response['post_data']['country_city_rcd_date_time']==$(this).attr("data-date_time"))
+							{
+								$(this).find(".each_tour_row_outer").show();
+							}
+							else
+							{
+								$(this).find(".each_tour_row_outer").hide();
+							}
+						});
 					}
 					else
 					{
@@ -1171,7 +1183,7 @@
 			}
 		});
 	}
-	function fetch_step4_rcd(page, type, sort_order='', city_id='', country_id='', search_val='', booking_transfer_date='', pickup_dropoff_type='', selected_airport='', arr_dept_time='', selected_service_type='', search_counter='')
+	function fetch_step4_rcd(page, type, sort_order='', city_id='', country_id='', search_val='', booking_transfer_date='', pickup_dropoff_type='', selected_airport='', arr_dept_flight_number='', arr_dept_time='', selected_service_type='', search_counter='')
 	{
 		$.ajax({
 			url:'<?= DOMAIN_NAME_PATH_ADMIN."ajax_find_booking_step4_data";?>',
@@ -1186,6 +1198,7 @@
 				booking_transfer_date:booking_transfer_date,
 				pickup_dropoff_type:pickup_dropoff_type,
 				selected_airport:selected_airport,
+				arr_dept_flight_number:arr_dept_flight_number,
 				arr_dept_time:arr_dept_time,
 				selected_service_type:selected_service_type,
 				search_counter:search_counter,
@@ -1236,7 +1249,7 @@
 							});
 							var add_html='';
 							add_html+='<div class="each_date_div_'+response['post_data']['country_city_rcd_date']+' each_date_div" data-date_time="'+response['post_data']['country_city_rcd_date_time']+'">';
-								add_html+='<div class="col-md-12 date_heading_div">';
+								add_html+='<div class="col-md-12 date_heading_div" onclick="hide_show_transfer_details($(this))">';
 									add_html+='<h4>Date: '+response['post_data']['country_city_rcd_formated_date']+'</h4>';
 									add_html+='<div class="clock_img_div">';
 										add_html+='<div class="change_clock_am_div">';
@@ -1271,6 +1284,7 @@
 								{
 									will_prepend=true;
 									$(this).before(add_html);
+									return false;
 								}
 							});
 							if(will_prepend==true)
@@ -1282,6 +1296,16 @@
 								$("#step4 #transfer_city"+city_id+" .all_rcd_row").append(add_html);
 							}
 						}
+						$(".each_date_div").each(function(){
+							if(response['post_data']['country_city_rcd_date_time']==$(this).attr("data-date_time"))
+							{
+								$(this).find(".each_transfer_row_outer").show();
+							}
+							else
+							{
+								$(this).find(".each_transfer_row_outer").hide();
+							}
+						});
 					}
 					else
 					{
@@ -1632,101 +1656,168 @@
 			if(type=="p")
 			{
 				var valuestart = cur.val();
-				var valuestop=cur.parent("div").find(".dropofftime").val();
+				var valuestop=cur.parents(".calculate_time").find(".dropofftime").val();
 			}
 			else
 			{
-				var valuestart = cur.parent("div").find(".pickuptime").val();
+				var valuestart = cur.parents(".calculate_time").find(".pickuptime").val();
 				var valuestop=cur.val();
 			}
 			//console.log(valuestart+"/"+valuestop);
 			if(valuestart!="" && valuestop!="")
 			{
-				var selected_date=cur.parent("div").find(".selected_booking_transfer_date").val();
+				var selected_date=cur.parents(".calculate_time").find(".selected_booking_transfer_date").val();
 				var timeStart = new Date(selected_date+" "+valuestart+":00");
 				var timeEnd = new Date(selected_date+" "+valuestop+":00");
 				if(timeEnd > timeStart)
 				{
-					var difference = timeEnd - timeStart;            
-					//var diff_result = new Date(difference);
-					var hourDiff = difference / 60 / 60 / 1000;;
-					cur.parent("div").find(".calculated_time_diff").text(hourDiff.toFixed(2)+" hours");
-					var start_angle=(timeStart.getHours()*60+timeStart.getMinutes())*.5;
-					//console.log(timeStart.getHours());
-					//console.log(timeStart.getMinutes());
-					//console.log((timeStart.getHours()*60+timeStart.getMinutes()));
-					var start_point=(((timeStart.getHours()*60+timeStart.getMinutes())*644)/1440);
-					//console.log(start_point);
-					var end_angle=(timeEnd.getHours()*60+timeEnd.getMinutes())*.5;
-					var end_point=(((timeEnd.getHours()*60+timeEnd.getMinutes())*644)/1440);
-					//console.log(end_point);
-					//var arc = describeArc(50, 28, 28, start_angle, end_angle);
-					//alert(cur.parent("div").find(".svg_path_id_input").length);
-					if(start_angle < 360 && end_angle < 360)
-					{
-						var arc_am=describeArc(30, 17.8, 19, start_angle, end_angle);
-						var arc_pm='';
-					}
-					else if(start_angle < 360 && end_angle > 359)
-					{
-						var arc_am=describeArc(30, 17.8, 19, start_angle, 359);
-						var arc_pm=describeArc(30, 17.8, 19, 360, end_angle);
-					}
-					else if(start_angle > 359 && end_angle < 720)
-					{
-						var arc_am='';
-						var arc_pm=describeArc(30, 17.8, 19, start_angle, end_angle);
-					}
-					if(cur.parent("div").find(".svg_path_id_input").length)
-					{
-						$(".am_"+cur.parent("div").find(".svg_path_id_input").val()).attr("d", arc_am);
-						$(".pm_"+cur.parent("div").find(".svg_path_id_input").val()).attr("d", arc_pm);
-						//$("."+cur.parent("div").find(".svg_path_id_input").val()).attr("x1", start_point).attr("x2", end_point);
-						$(".each_date_div").each(function(){
-							if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
+					var exists_msg="";
+					//console.log($(".each_transfer_row_outer").not(cur.parents(".each_transfer_row_outer")).length);
+					$(".each_transfer_row_outer").not(cur.parents(".each_transfer_row_outer")).each(function(){
+						var other_valuestart = $(this).find(".calculate_time .pickuptime").val();
+						var other_valuestop=$(this).find(".calculate_time .dropofftime").val();
+						if(other_valuestart!="" && other_valuestop!="")
+						{
+							var other_selected_date=$(this).find(".calculate_time .selected_booking_transfer_date").val();
+							var other_timeStart = new Date(other_selected_date+" "+other_valuestart+":00");
+							var other_timeEnd = new Date(other_selected_date+" "+other_valuestop+":00");	
+							/*console.log(other_timeStart);
+							console.log(timeStart);
+							console.log(other_timeEnd);
+							console.log(timeEnd);
+							console.log("aaa");*/
+							if((other_timeStart>=timeStart && other_timeEnd<timeStart) || (other_timeStart<timeEnd && other_timeEnd>=timeEnd) || (other_timeStart>=timeStart && other_timeEnd<=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd && other_timeEnd>=timeStart) || (other_timeStart>=timeStart && other_timeEnd>=timeEnd && other_timeStart<=timeStart))
 							{
-								$(this).find(".clock_am_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html());
-								$(this).find(".clock_pm_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html());
+								exists_msg="You have transfer in this time.";
 							}
-						});
-						$(".each_tour_date_div").each(function(){
-							if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
+						}
+					});
+					$(".each_tour_row_outer").each(function(){
+						var other_valuestart = $(this).find(".calculate_tour_time .pickuptime").val();
+						var other_valuestop=$(this).find(".calculate_tour_time .dropofftime").val();
+						if(other_valuestart!="" && other_valuestop!="")
+						{
+							var other_selected_date=$(this).find(".calculate_tour_time .selected_booking_tour_date").val();
+							var other_timeStart = new Date(other_selected_date+" "+other_valuestart+":00");
+							var other_timeEnd = new Date(other_selected_date+" "+other_valuestop+":00");
+							if((other_timeStart>=timeStart && other_timeEnd<timeStart) || (other_timeStart<timeEnd && other_timeEnd>=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd && other_timeEnd>=timeStart) || (other_timeStart>=timeStart && other_timeEnd>=timeEnd && other_timeStart<=timeStart))
 							{
-								$(this).find(".clock_am_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html());
-								$(this).find(".clock_pm_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html());
+								if(exists_msg=="")
+									exists_msg="You have tour in this time.";
+								else
+									exists_msg="You have transfer and tour in this time.";
 							}
-						});
+						}
+					});
+					if(exists_msg=="" || confirm(exists_msg+" Are you sure you want to proceed?"))
+					{
+						var difference = timeEnd - timeStart;            
+						//var diff_result = new Date(difference);
+						var minuteDiff = difference/ (60*1000);
+						var hourDiff = Math.floor(minuteDiff / 60) ;
+						var minuteDiff = minuteDiff % 60 ;
+						cur.parents(".calculate_time").find(".calculated_time_diff").text((hourDiff > 0 ? hourDiff+(hourDiff > 1 ? " hours " : " hour ") : "")+(minuteDiff > 0 ? minuteDiff+(minuteDiff > 1 ? " minutes" : " minute") : ""));
+						var start_angle=(timeStart.getHours()*60+timeStart.getMinutes())*.5;
+						//console.log(timeStart.getHours());
+						//console.log(timeStart.getMinutes());
+						//console.log((timeStart.getHours()*60+timeStart.getMinutes()));
+						var start_point=(((timeStart.getHours()*60+timeStart.getMinutes())*644)/1440);
+						//console.log(start_point);
+						var end_angle=(timeEnd.getHours()*60+timeEnd.getMinutes())*.5;
+						var end_point=(((timeEnd.getHours()*60+timeEnd.getMinutes())*644)/1440);
+						//console.log(end_point);
+						//var arc = describeArc(50, 28, 28, start_angle, end_angle);
+						//alert(cur.parents(".calculate_time").find(".svg_path_id_input").length);
+						if(start_angle < 360 && end_angle < 360)
+						{
+							var arc_am=describeArc(30, 17.8, 19, start_angle, end_angle);
+							var arc_pm='';
+						}
+						else if(start_angle < 360 && end_angle > 359)
+						{
+							var arc_am=describeArc(30, 17.8, 19, start_angle, 359);
+							var arc_pm=describeArc(30, 17.8, 19, 360, end_angle);
+						}
+						else if(start_angle > 359 && end_angle < 720)
+						{
+							var arc_am='';
+							var arc_pm=describeArc(30, 17.8, 19, start_angle, end_angle);
+						}
+						if(cur.parents(".calculate_time").find(".svg_path_id_input").length)
+						{
+							$(".am_"+cur.parents(".calculate_time").find(".svg_path_id_input").val()).attr("d", arc_am);
+							$(".pm_"+cur.parents(".calculate_time").find(".svg_path_id_input").val()).attr("d", arc_pm);
+							//$("."+cur.parents(".calculate_time").find(".svg_path_id_input").val()).attr("x1", start_point).attr("x2", end_point);
+							$(".each_date_div").each(function(){
+								if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
+								{
+									$(this).find(".clock_am_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html());
+									$(this).find(".clock_pm_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html());
+								}
+							});
+							$(".each_tour_date_div").each(function(){
+								if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
+								{
+									$(this).find(".clock_am_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html());
+									$(this).find(".clock_pm_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html());
+								}
+							});
+						}
+						else
+						{
+							var svg_path_id=Math.floor((Math.random() * 1000) + 1);
+							cur.parents(".calculate_time").append('<input type="hidden" name="svg_path_id_input_hidden" class="svg_path_id_input" value="'+svg_path_id+'">');
+							//var prev_html=cur.parents(".each_date_div").find(".date_heading_div .clock svg").html();
+							var prev_am_html=cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html();
+							var prev_pm_html=cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html();
+							cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html(prev_am_html+'<path class="am_'+svg_path_id+'" fill="green" d="'+arc_am+'"/>');
+							cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html(prev_pm_html+'<path class="pm_'+svg_path_id+'" fill="green" d="'+arc_pm+'"/>');
+							//cur.parents(".each_date_div").find(".date_heading_div .clock svg").html(prev_html+' <line x1="'+start_point+'" y1="0" x2="'+end_point+'" y2="0" class="'+svg_path_id+'"/>');
+							$(".each_date_div").each(function(){
+								if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
+								{
+									$(this).find(".clock_am_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html());
+									$(this).find(".clock_pm_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html());
+								}
+							});
+							$(".each_tour_date_div").each(function(){
+								if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
+								{
+									$(this).find(".clock_am_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html());
+									$(this).find(".clock_pm_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html());
+								}
+							});
+						}
 					}
 					else
 					{
-						var svg_path_id=Math.floor((Math.random() * 1000) + 1);
-						cur.parent("div").append('<input type="hidden" name="svg_path_id_input_hidden" class="svg_path_id_input" value="'+svg_path_id+'">');
-						//var prev_html=cur.parents(".each_date_div").find(".date_heading_div .clock svg").html();
-						var prev_am_html=cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html();
-						var prev_pm_html=cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html();
-						cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html(prev_am_html+'<path class="am_'+svg_path_id+'" fill="green" d="'+arc_am+'"/>');
-						cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html(prev_pm_html+'<path class="pm_'+svg_path_id+'" fill="green" d="'+arc_pm+'"/>');
-						//cur.parents(".each_date_div").find(".date_heading_div .clock svg").html(prev_html+' <line x1="'+start_point+'" y1="0" x2="'+end_point+'" y2="0" class="'+svg_path_id+'"/>');
-						$(".each_date_div").each(function(){
-							if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
-							{
-								$(this).find(".clock_am_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html());
-								$(this).find(".clock_pm_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html());
-							}
-						});
-						$(".each_tour_date_div").each(function(){
-							if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
-							{
-								$(this).find(".clock_am_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html());
-								$(this).find(".clock_pm_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html());
-							}
-						});
+						cur.val("");
+						cur.parents(".calculate_time").find(".calculated_time_diff").text("--");
+						if(cur.parents(".calculate_time").find(".svg_path_id_input").length)
+						{
+							$(".am_"+cur.parents(".calculate_time").find(".svg_path_id_input").val()).attr("d", "");
+							$(".pm_"+cur.parents(".calculate_time").find(".svg_path_id_input").val()).attr("d", "");
+							$(".each_date_div").each(function(){
+								if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
+								{
+									$(this).find(".clock_am_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html());
+									$(this).find(".clock_pm_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html());
+								}
+							});
+							$(".each_tour_date_div").each(function(){
+								if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
+								{
+									$(this).find(".clock_am_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html());
+									$(this).find(".clock_pm_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html());
+								}
+							});
+						}
 					}
 				}
 				else
 				{
 					showError("Drop off time must be greater than pick up time");
-					cur.parent("div").find(".calculated_time_diff").text("--");
+					cur.parents(".calculate_time").find(".calculated_time_diff").text("--");
 				}
 			}
 		}
@@ -1750,75 +1841,137 @@
 				var timeEnd = new Date(selected_date+" "+valuestop+":00");
 				if(timeEnd > timeStart)
 				{
-					var difference = timeEnd - timeStart;            
-					//var diff_result = new Date(difference);
-					var hourDiff = difference / 60 / 60 / 1000;;
-					cur.parent("div").find(".calculated_time_diff").text(hourDiff.toFixed(2)+" hours");
-					var start_angle=(timeStart.getHours()*60+timeStart.getMinutes())*.5;
-					var start_point=(((timeStart.getHours()*60+timeStart.getMinutes())*644)/1440);
-					var end_angle=(timeEnd.getHours()*60+timeEnd.getMinutes())*.5;
-					var end_point=(((timeEnd.getHours()*60+timeEnd.getMinutes())*644)/1440);
-					//var arc = describeArc(50, 28, 28, start_angle, end_angle);
-					//alert(cur.parent("div").find(".svg_path_id_input").length)
-					if(start_angle < 360 && end_angle < 360)
-					{
-						var arc_am=describeArc(30, 17.8, 19, start_angle, end_angle);
-						var arc_pm='';
-					}
-					else if(start_angle < 360 && end_angle > 359)
-					{
-						var arc_am=describeArc(30, 17.8, 19, start_angle, 359);
-						var arc_pm=describeArc(30, 17.8, 19, 360, end_angle);
-					}
-					else if(start_angle > 359 && end_angle < 720)
-					{
-						var arc_am='';
-						var arc_pm=describeArc(30, 17.8, 19, start_angle, end_angle);
-					}
-					if(cur.parent("div").find(".svg_path_id_input").length)
-					{
-						$(".am_"+cur.parent("div").find(".svg_path_id_input").val()).attr("d", arc_am);
-						$(".pm_"+cur.parent("div").find(".svg_path_id_input").val()).attr("d", arc_pm);
-						//$("."+cur.parent("div").find(".svg_path_id_input").val()).attr("x1", start_point).attr("x2", end_point);
-						$(".each_date_div").each(function(){
-							if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
+					var exists_msg="";
+					//console.log($(".each_transfer_row_outer").not(cur.parents(".each_transfer_row_outer")).length);
+					$(".each_transfer_row_outer").each(function(){
+						var other_valuestart = $(this).find(".calculate_time .pickuptime").val();
+						var other_valuestop=$(this).find(".calculate_time .dropofftime").val();
+						if(other_valuestart!="" && other_valuestop!="")
+						{
+							var other_selected_date=$(this).find(".calculate_time .selected_booking_transfer_date").val();
+							var other_timeStart = new Date(other_selected_date+" "+other_valuestart+":00");
+							var other_timeEnd = new Date(other_selected_date+" "+other_valuestop+":00");
+							if((other_timeStart>=timeStart && other_timeEnd<timeStart) || (other_timeStart<timeEnd && other_timeEnd>=timeEnd) || (other_timeStart>=timeStart && other_timeEnd<=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd && other_timeEnd>=timeStart) || (other_timeStart>=timeStart && other_timeEnd>=timeEnd && other_timeStart<=timeStart))
 							{
-								$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
-								$(this).find(".clock_pm_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html());
+								exists_msg="You have transfer in this time.";
 							}
-						});
-						$(".each_tour_date_div").each(function(){
-							if($(this).attr("data-date_time")==cur.parents(".each_tour_date_div").attr("data-date_time"))
+						}
+					});
+					$(".each_tour_row_outer").not(cur.parents(".each_tour_row_outer")).each(function(){
+						var other_valuestart = $(this).find(".calculate_tour_time .pickuptime").val();
+						var other_valuestop=$(this).find(".calculate_tour_time .dropofftime").val();
+						if(other_valuestart!="" && other_valuestop!="")
+						{
+							var other_selected_date=$(this).find(".calculate_tour_time .selected_booking_tour_date").val();
+							var other_timeStart = new Date(other_selected_date+" "+other_valuestart+":00");
+							var other_timeEnd = new Date(other_selected_date+" "+other_valuestop+":00");
+							if((other_timeStart>=timeStart && other_timeEnd<timeStart) || (other_timeStart<timeEnd && other_timeEnd>=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd && other_timeEnd>=timeStart) || (other_timeStart>=timeStart && other_timeEnd>=timeEnd && other_timeStart<=timeStart))
 							{
-								$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
-								$(this).find(".clock_pm_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html());
+								if(exists_msg=="")
+									exists_msg="You have tour in this time.";
+								else
+									exists_msg="You have transfer and tour in this time.";
 							}
-						});
+						}
+					});
+					if(exists_msg=="" || confirm(exists_msg+" Are you sure you want to proceed?"))
+					{
+						var difference = timeEnd - timeStart;            
+						//var diff_result = new Date(difference);
+						var minuteDiff = difference/ (60*1000);
+						var hourDiff = Math.floor(minuteDiff / 60) ;
+						var minuteDiff = minuteDiff % 60 ;
+						cur.parent("div").find(".calculated_time_diff").text((hourDiff > 0 ? hourDiff+(hourDiff > 1 ? " hours " : " hour ") : "")+(minuteDiff > 0 ? minuteDiff+(minuteDiff > 1 ? " minutes" : " minute") : ""));
+						var start_angle=(timeStart.getHours()*60+timeStart.getMinutes())*.5;
+						var start_point=(((timeStart.getHours()*60+timeStart.getMinutes())*644)/1440);
+						var end_angle=(timeEnd.getHours()*60+timeEnd.getMinutes())*.5;
+						var end_point=(((timeEnd.getHours()*60+timeEnd.getMinutes())*644)/1440);
+						//var arc = describeArc(50, 28, 28, start_angle, end_angle);
+						//alert(cur.parent("div").find(".svg_path_id_input").length)
+						if(start_angle < 360 && end_angle < 360)
+						{
+							var arc_am=describeArc(30, 17.8, 19, start_angle, end_angle);
+							var arc_pm='';
+						}
+						else if(start_angle < 360 && end_angle > 359)
+						{
+							var arc_am=describeArc(30, 17.8, 19, start_angle, 359);
+							var arc_pm=describeArc(30, 17.8, 19, 360, end_angle);
+						}
+						else if(start_angle > 359 && end_angle < 720)
+						{
+							var arc_am='';
+							var arc_pm=describeArc(30, 17.8, 19, start_angle, end_angle);
+						}
+						if(cur.parent("div").find(".svg_path_id_input").length)
+						{
+							$(".am_"+cur.parent("div").find(".svg_path_id_input").val()).attr("d", arc_am);
+							$(".pm_"+cur.parent("div").find(".svg_path_id_input").val()).attr("d", arc_pm);
+							//$("."+cur.parent("div").find(".svg_path_id_input").val()).attr("x1", start_point).attr("x2", end_point);
+							$(".each_date_div").each(function(){
+								if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
+								{
+									$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
+									$(this).find(".clock_pm_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html());
+								}
+							});
+							$(".each_tour_date_div").each(function(){
+								if($(this).attr("data-date_time")==cur.parents(".each_tour_date_div").attr("data-date_time"))
+								{
+									$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
+									$(this).find(".clock_pm_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html());
+								}
+							});
+						}
+						else
+						{
+							var svg_path_id=Math.floor((Math.random() * 1000) + 1);
+							cur.parent("div").append('<input type="hidden" name="svg_path_id_input_hidden" class="svg_path_id_input" value="'+svg_path_id+'">');
+							//var prev_html=cur.parents(".each_tour_date_div").find(".date_heading_div .clock svg").html();
+							var prev_am_html=cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html();
+							var prev_pm_html=cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html();
+							cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html(prev_am_html+'<path class="am_'+svg_path_id+'" fill="green" d="'+arc_am+'"/>');
+							cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html(prev_pm_html+'<path class="pm_'+svg_path_id+'" fill="green" d="'+arc_pm+'"/>');
+							//cur.parents(".each_tour_date_div").find(".date_heading_div .clock svg").html(prev_html+' <line x1="'+start_point+'" y1="0" x2="'+end_point+'" y2="0" class="'+svg_path_id+'"/>');
+							$(".each_date_div").each(function(){
+								if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
+								{
+									$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
+									$(this).find(".clock_pm_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html());
+								}
+							});
+							$(".each_tour_date_div").each(function(){
+								if($(this).attr("data-date_time")==cur.parents(".each_tour_date_div").attr("data-date_time"))
+								{
+									$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
+									$(this).find(".clock_pm_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html());
+								}
+							});
+						}
 					}
 					else
 					{
-						var svg_path_id=Math.floor((Math.random() * 1000) + 1);
-						cur.parent("div").append('<input type="hidden" name="svg_path_id_input_hidden" class="svg_path_id_input" value="'+svg_path_id+'">');
-						//var prev_html=cur.parents(".each_tour_date_div").find(".date_heading_div .clock svg").html();
-						var prev_am_html=cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html();
-						var prev_pm_html=cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html();
-						cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html(prev_am_html+'<path class="am_'+svg_path_id+'" fill="green" d="'+arc_am+'"/>');
-						cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html(prev_pm_html+'<path class="pm_'+svg_path_id+'" fill="green" d="'+arc_pm+'"/>');
-						//cur.parents(".each_tour_date_div").find(".date_heading_div .clock svg").html(prev_html+' <line x1="'+start_point+'" y1="0" x2="'+end_point+'" y2="0" class="'+svg_path_id+'"/>');
-						$(".each_date_div").each(function(){
-							if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
-							{
-								$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
-								$(this).find(".clock_pm_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html());
-							}
-						});
-						$(".each_tour_date_div").each(function(){
-							if($(this).attr("data-date_time")==cur.parents(".each_tour_date_div").attr("data-date_time"))
-							{
-								$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
-								$(this).find(".clock_pm_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html());
-							}
-						});
+						cur.val("");
+						cur.parents(".calculate_tour_time").find(".calculated_time_diff").text("--");
+						if(cur.parents(".calculate_tour_time").find(".svg_path_id_input").length)
+						{
+							$(".am_"+cur.parents(".calculate_tour_time").find(".svg_path_id_input").val()).attr("d", "");
+							$(".pm_"+cur.parents(".calculate_tour_time").find(".svg_path_id_input").val()).attr("d", "");
+							$(".each_date_div").each(function(){
+								if($(this).attr("data-date_time")==cur.parents(".each_tour_date_div").attr("data-date_time"))
+								{
+									$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
+									$(this).find(".clock_pm_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html());
+								}
+							});
+							$(".each_tour_date_div").each(function(){
+								if($(this).attr("data-date_time")==cur.parents(".each_tour_date_div").attr("data-date_time"))
+								{
+									$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
+									$(this).find(".clock_pm_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html());
+								}
+							});
+						}
 					}
 				}
 				else
@@ -1915,6 +2068,10 @@
 		function hide_show_transfer_details(cur)
 		{
 			cur.parent("div").find(".each_transfer_row_outer").toggle();
+		}
+		function hide_show_tour_details(cur)
+		{
+			cur.parent("div").find(".each_tour_row_outer").toggle();
 		}
 	//-->
 	</script>

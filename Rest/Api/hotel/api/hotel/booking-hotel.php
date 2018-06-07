@@ -288,16 +288,16 @@
 						//if($room_html!=""):
 ?>
 							<div class="form-group col-md-12">
-								<div style="border:0px solid red;background-color:#FFF;">
-									<div class="col-md-2" style="font-weight:bold;color:#000;border:1px solid red;">Hotel Type</div>
-									<div class="col-md-2" style="font-weight:bold;color:#000;border:1px solid red;">Hotel Name</div>
-									<div class="col-md-2" style="font-weight:bold;color:#000;border:1px solid red;">Rating</div>
-									<div class="col-md-2" style="font-weight:bold;color:#000;border:1px solid red;">Location</div>
-									<div class="col-md-2" style="font-weight:bold;color:#000;text-align:center;border:1px solid red;">Availability</div>
-									<div class="col-md-2" style="font-weight:bold;color:#000;text-align:center;border:1px solid red;">Rate</div>
+								<div style="border: 1px solid #0a80c4;background-color: #0a80c4;border-radius: 10px 10px 0 0;padding: 6px;">
+									<div class="col-md-2" style="font-weight:bold;color:#000;border:0px solid red;">Hotel Type</div>
+									<div class="col-md-2" style="font-weight:bold;color:#000;border:0px solid red;">Hotel Name</div>
+									<div class="col-md-2" style="font-weight:bold;color:#000;border:0px solid red;">Rating</div>
+									<div class="col-md-2" style="font-weight:bold;color:#000;border:0px solid red;">Location</div>
+									<div class="col-md-2" style="font-weight:bold;color:#000;text-align:center;border:0px solid red;">Availability</div>
+									<div class="col-md-2" style="font-weight:bold;color:#000;text-align:center;border:0px solid red;">Rate</div>
 									<div class="clearfix"></div>
 								</div>
-								<div style="padding: 5px 0 0 0;border-left: 1px solid red;border-right: 1px solid red;">
+								<div style="padding: 5px 0 0 0;border-left: 1px solid #0a80c4;border-right: 1px solid #0a80c4;">
 									<div class="col-md-2" style="font-weight:bold;">
 										<?php
 										if($hotel_val['hotel_type']!=""):
@@ -411,7 +411,7 @@
 						$country_city_rcd_html.='<input type = "radio" name = "sort" value="rating" onchange="change_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'"'.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="rating" ? 'checked="checked"' : '').'/>&nbsp;Rating</p>';
 					$country_city_rcd_html.='</div>';
 					$country_city_rcd_html.='<div class="clearfix"></div>';
-					$country_city_rcd_html.='<form name="form_secend_step" id="form_secend_step" method="POST" onsubmit="filter_search($(this), '.$server_data['data']['city'][$country_key].');return false;" data-country_id="'.$counrty_val.'">';
+					$country_city_rcd_html.='<form name="form_secend_step" id="form_secend_step" class="form_secend_step" method="POST" onsubmit="filter_search($(this), '.$server_data['data']['city'][$country_key].');return false;" data-country_id="'.$counrty_val.'">';
 						$country_city_rcd_html.='<div class="form-group col-sm-6">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Search</label>';
 							$country_city_rcd_html.='<input type="text" class="form-control" name="keyword_search'.$server_data['data']['city'][$country_key].'" id="keyword_search'.$server_data['data']['city'][$country_key].'" value="'.(isset($server_data['data']['search_val']) && $server_data['data']['search_val']!="" ? $server_data['data']['search_val'] : "").'">';

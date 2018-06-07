@@ -109,6 +109,7 @@
 					$each_result['pickup_time']=$server_data['data']['step_4_all']['transfer_pickuptime_arr'][$offer_key];
 					$each_result['dropoff_time']=$server_data['data']['step_4_all']['transfer_dropofftime_arr'][$offer_key];
 					$each_result['airport']=$server_data['data']['step_4_all']['transfer_airport_arr'][$offer_key];
+					$each_result['flight_number_name']=$server_data['data']['step_4_all']['transfer_flight_number_arr'][$offer_key];
 					$each_result['agent_markup_percentage']=$markup_percentage;
 					$each_result['nationality_addon_percentage']=$nationality_addon_percentage;
 					$each_result['avalibility_status']=$explode_offer_data[1];

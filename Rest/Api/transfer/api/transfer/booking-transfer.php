@@ -245,7 +245,7 @@
 										endif;
 										?>
 										<br>
-										<input type="radio" name="selected_transfer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" class="selected_transfer" onclick="change_transfer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>"  <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?>>
+										<input type="radio" name="selected_transfer[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" class="selected_transfer" onclick="change_transfer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>"  <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?> style="display:none;">
 									</div>
 									<div class="col-md-3" style="font-weight:bold;">
 										<?= $offer_val['offer_title'];?>
@@ -270,15 +270,15 @@
 						if($offer_html!=""):
 ?>
 							<div class="form-group col-md-12 each_transfer_row_outer">
-								<div style="border:0px solid red;background-color:#FFF;">
-									<div class="col-md-3" style="font-weight:bold;color:#000;border:1px solid red;">Transfer Title</div>
-									<!-- <div class="col-md-2" style="font-weight:bold;color:#000;border:1px solid red;">Transfer Type</div> -->
-									<div class="col-md-3" style="font-weight:bold;color:#000;border:1px solid red;text-align:center;">Availability</div>
-									<div class="col-md-2" style="font-weight:bold;color:#000;border:1px solid red;text-align:center;">Rate</div>
-									<div class="col-md-4" style="font-weight:bold;color:#000;border:1px solid red;">Transfer Details</div>
+								<div style="border: 1px solid #dd625e;background-color: #dd625e;margin: 10px 0 0 0;border-radius: 10px 10px 0 0;">
+									<div class="col-md-3" style="font-weight:bold;color:#000;border:0px solid red;">Transfer Title</div>
+									<!-- <div class="col-md-2" style="font-weight:bold;color:#000;border:0px solid red;">Transfer Type</div> -->
+									<div class="col-md-1" style="font-weight:bold;color:#000;border:0px solid red;text-align:center;">Availability</div>
+									<div class="col-md-2" style="font-weight:bold;color:#000;border:0px solid red;text-align:center;">Rate</div>
+									<div class="col-md-6" style="font-weight:bold;color:#000;border:0px solid red;">Transfer Details</div>
 									<div class="clearfix"></div>
 								</div>
-								<div style="padding:5px 0 0 0;border:1px solid red;">
+								<div style="padding: 5px 0px 5px 0;border: 1px solid #dd625e;border-radius: 0 0 10px 10px;">
 									<div class="col-md-3" style="font-weight:bold;">
 										<div><?php echo $transfer_val['transfer_title'];?></div>
 										<?php
@@ -297,7 +297,7 @@
 										?>
 									</div>
 									<!-- <div class="col-md-2" style="font-weight:bold;"><?php echo $transfer_val['transfer_service'];?></div> -->
-									<div class="col-md-3" style="font-weight:bold;text-align:center;">
+									<div class="col-md-1" style="font-weight:bold;text-align:center;">
 										<?php
 										if($transfer_avalibility_status=="avaliable" || $transfer_edit_avalibility_status=="A"):
 										?>
@@ -311,17 +311,37 @@
 										?>
 									</div>
 									<div class="col-md-2 default_price_div" style="font-weight:bold;text-align:center;" data-default_price="<?php echo $each_first_price;?>"><?php echo(isset($selected_first_price) && $selected_first_price!="" ? $selected_first_price : $each_first_price);?></div>
-									<div class="col-md-4">
+									<div class="col-md-6 calculate_time">
 										<img src="assets/img/delete.png" width="12" height="18" border="0" alt="Delete" class="delete_transfer_row" onclick="delete_transfer_row($(this))">
 										<input type="hidden" name="selected_booking_transfer_date[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_booking_transfer_date[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $server_data['data']['booking_transfer_date'];?>" class="selected_booking_transfer_date">
 										<input type="hidden" name="selected_service_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_service_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $server_data['data']['selected_service_type'];?>" class="selected_service_type">
 										<strong>Pickup/Dropoff Type: </strong><?php echo $find_pickup_dropoff_type['attribute_name'];?><br/>
-										<input type="hidden" name="selected_pickup_dropoff_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="pickup_dropoff_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $find_pickup_dropoff_type['id'];?>" class="pickup_dropoff_type">
+										<input type="hidden" name="selected_pickup_dropoff_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="pickup_dropoff_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo(isset($find_pickup_dropoff_type['id']) ? $find_pickup_dropoff_type['id'] : "");?>" class="pickup_dropoff_type">
+										<?php
+										if(isset($find_selected_airport['name'])):
+										?>
 										<strong>Airport: </strong><?php echo $find_selected_airport['name'];?><br/>
-										<input type="hidden" name="selected_airport[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_airport[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $find_selected_airport['name'];?>" class="selected_airport">
-										<strong>Pickup: </strong><?php echo tools::module_date_format($pickupdate);?><input type="time" name="selected_pickuptime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_pickuptime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $pickuptime;?>" class="pickuptime" onkeyup="calculate_time($(this), 'p')"><br/>
-										<strong>Dropoff: </strong><?php echo tools::module_date_format($dropoffdate);?><input type="time" name="selected_dropofftime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_dropofftime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $dropofftime;?>" class="dropofftime" onkeyup="calculate_time($(this), 'd')"><br/>
-										<strong>Time: </strong><span class="calculated_time_diff">--</span><br/>
+										<?php
+										endif;
+										?>
+										<input type="hidden" name="selected_airport[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_airport[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo(isset($find_selected_airport['name']) ? $find_selected_airport['name'] : "");?>" class="selected_airport">
+										<?php
+										if(isset($server_data['data']['arr_dept_flight_number'])):
+										?>
+										<strong>Flight Number and Name: </strong><?php echo $server_data['data']['arr_dept_flight_number'];?><br/>
+										<?php
+										endif;
+										?>
+										<input type="hidden" name="arr_dept_flight_number[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="arr_dept_flight_number[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo(isset($server_data['data']['arr_dept_flight_number']) ? $server_data['data']['arr_dept_flight_number'] : "");?>" class="arr_dept_flight_number">
+										<div>
+											<div style="display:inline-block">
+												<strong>Pickup: </strong><?php echo tools::module_date_format($pickupdate);?><input type="time" name="selected_pickuptime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_pickuptime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $pickuptime;?>" class="pickuptime" onkeyup="calculate_time($(this), 'p')">
+											</div>
+											<div style="display:inline-block">
+												<strong>Dropoff: </strong><?php echo tools::module_date_format($dropoffdate);?><input type="time" name="selected_dropofftime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_dropofftime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $dropofftime;?>" class="dropofftime" onkeyup="calculate_time($(this), 'd')">
+											</div>
+										</div>
+										<strong>Time: </strong><span class="calculated_time_diff">--</span>
 									</div>
 									<div class="clearfix"></div>
 									<div class="col-md-9">

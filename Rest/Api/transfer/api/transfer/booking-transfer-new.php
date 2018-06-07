@@ -128,26 +128,26 @@
 										$diff = $logoutTime - $loginTime;
 										$hour=$diff/3600;
 										$transfer_prev_html.='<div class="form-group col-md-12 each_transfer_row_outer">';
-											$transfer_prev_html.='<div style="border:0px solid red;background-color:#FFF;">';
-												$transfer_prev_html.='<div class="col-md-3" style="font-weight:bold;color:#000;border:1px solid red;">Transfer Title</div>';
-												$transfer_prev_html.='<!-- <div class="col-md-2" style="font-weight:bold;color:#000;border:1px solid red;">Transfer Type</div> -->';
-												$transfer_prev_html.='<div class="col-md-3" style="font-weight:bold;color:#000;border:1px solid red;text-align:center;">Availability</div>';
-												$transfer_prev_html.='<div class="col-md-2" style="font-weight:bold;color:#000;border:1px solid red;text-align:center;">Rate</div>';
-												$transfer_prev_html.='<div class="col-md-4" style="font-weight:bold;color:#000;border:1px solid red;">Transfer Details</div>';
+											$transfer_prev_html.='<div style="border: 1px solid #dd625e;background-color: #dd625e;margin: 10px 0 0 0;border-radius: 10px 10px 0 0;">';
+												$transfer_prev_html.='<div class="col-md-3" style="font-weight:bold;color:#000;border:0px solid red;">Transfer Title</div>';
+												$transfer_prev_html.='<!-- <div class="col-md-2" style="font-weight:bold;color:#000;border:0px solid red;">Transfer Type</div> -->';
+												$transfer_prev_html.='<div class="col-md-1" style="font-weight:bold;color:#000;border:0px solid red;text-align:center;">Availability</div>';
+												$transfer_prev_html.='<div class="col-md-2" style="font-weight:bold;color:#000;border:0px solid red;text-align:center;">Rate</div>';
+												$transfer_prev_html.='<div class="col-md-6" style="font-weight:bold;color:#000;border:0px solid red;">Transfer Details</div>';
 												$transfer_prev_html.='<div class="clearfix"></div>';
 											$transfer_prev_html.='</div>';
-											$transfer_prev_html.='<div style="padding:5px 0 0 0;border:1px solid red;">';
+											$transfer_prev_html.='<div style="padding: 5px 0px 5px 0;border: 1px solid #dd625e;border-radius: 0 0 10px 10px;">';
 												$transfer_prev_html.='<div class="col-md-3" style="font-weight:bold;">';
 													$transfer_prev_html.='<div>'.$find_transfer_details['transfer_title'].'</div>';
 													if($find_transfer_details['transfer_images']!=""):
 														$image_arr=explode(",", $find_transfer_details['transfer_images']);
-														$transfer_prev_html.='<img src="'.TRANSFER_IMAGE_PATH.$image_arr[0].'" border="0" alt="" style="width:150px;" onerror="this.remove;">';
+														$transfer_prev_html.='<img src="'.TRANSFER_IMAGE_PATH."thumb/".$image_arr[0].'" border="0" alt="" style="width:150px;" onerror="this.remove;">';
 													else:
 														$transfer_prev_html.='N/A';
 													endif;
 												$transfer_prev_html.='</div>';
 												$transfer_prev_html.='<!-- <div class="col-md-2" style="font-weight:bold;">'.$find_transfer_details['transfer_service'].'</div> -->';
-												$transfer_prev_html.='<div class="col-md-3" style="font-weight:bold;text-align:center;">';
+												$transfer_prev_html.='<div class="col-md-1" style="font-weight:bold;text-align:center;">';
 												if($t_val['avalibility_status']=="A"):
 													$transfer_prev_html.='<button type="button" class="btn btn-success next-step">AVAILABLE</button>';
 												else:
@@ -155,7 +155,7 @@
 												endif;
 												$transfer_prev_html.='</div>';
 												$transfer_prev_html.='<div class="col-md-2 default_price_div" style="font-weight:bold;text-align:center;" data-default_price="'.$default_currency['currency_code'].number_format($each_transfer_price, 2,".",",").'">'.$default_currency['currency_code'].number_format($each_transfer_price, 2,".",",").'</div>';
-												$transfer_prev_html.='<div class="col-md-4">';
+												$transfer_prev_html.='<div class="col-md-6 calculate_time">';
 													$transfer_prev_html.='<img src="assets/img/delete.png" width="12" height="18" border="0" alt="Delete" class="delete_transfer_row" onclick="delete_transfer_row($(this))">';
 													$transfer_prev_html.='<input type="hidden" name="selected_booking_transfer_date['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="selected_booking_transfer_date['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$t_val['booking_start_date'].'" class="selected_booking_transfer_date">';
 													$transfer_prev_html.='<input type="hidden" name="selected_service_type['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="selected_service_type['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$find_transfer_offer_details['service_type'].'" class="selected_service_type">';
@@ -163,8 +163,18 @@
 													$transfer_prev_html.='<input type="hidden" name="selected_pickup_dropoff_type['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="pickup_dropoff_type['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$find_transfer_details['allow_pickup_type'].'" class="pickup_dropoff_type">';
 													$transfer_prev_html.='<strong>Airport: </strong>'.$t_val['airport'].'<br>';
 													$transfer_prev_html.='<input type="hidden" name="selected_airport['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="selected_airport['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$t_val['airport'].'" class="selected_airport">';
-													$transfer_prev_html.='<strong>Pickup: </strong>'.tools::module_date_format($t_val['booking_start_date']).'<input type="time" name="selected_pickuptime['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="selected_pickuptime['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$t_val['pickup_time'].'" class="pickuptime" onkeyup="calculate_time($(this), \'p\')"><br>';
-													$transfer_prev_html.='<strong>Dropoff: </strong>'.tools::module_date_format($t_val['booking_start_date']).'<input type="time" name="selected_dropofftime['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="selected_dropofftime['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$t_val['dropoff_time'].'" class="dropofftime" onkeyup="calculate_time($(this), \'d\')"><br>';
+													if($t_val['flight_number_name']!=""):
+													$transfer_prev_html.='<strong>Flight Number and Name: </strong>'.$t_val['flight_number_name'].'<br/>';
+													endif;
+													$transfer_prev_html.='<input type="hidden" name="arr_dept_flight_number['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="arr_dept_flight_number['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$t_val['flight_number_name'].'" class="arr_dept_flight_number">';
+													$transfer_prev_html.='<div>';
+														$transfer_prev_html.='<div style="display:inline-block;">';
+															$transfer_prev_html.='<strong>Pickup: </strong>'.tools::module_date_format($t_val['booking_start_date']).'<input type="time" name="selected_pickuptime['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="selected_pickuptime['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$t_val['pickup_time'].'" class="pickuptime" onkeyup="calculate_time($(this), \'p\')">';
+														$transfer_prev_html.='</div>';
+														$transfer_prev_html.='<div style="display:inline-block;">';
+															$transfer_prev_html.='<strong>Dropoff: </strong>'.tools::module_date_format($t_val['booking_start_date']).'<input type="time" name="selected_dropofftime['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="selected_dropofftime['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$t_val['dropoff_time'].'" class="dropofftime" onkeyup="calculate_time($(this), \'d\')">';
+														$transfer_prev_html.='</div>';
+													$transfer_prev_html.='</div>';
 													$transfer_prev_html.='<strong>Time: </strong><span class="calculated_time_diff">'.$hour.' hours</span><br>';
 													$transfer_prev_html.='<input type="hidden" name="svg_path_id_input_hidden" class="svg_path_id_input" value="old_transfer_'.$t_val['id'].'">';
 												$transfer_prev_html.='</div>';
@@ -351,7 +361,7 @@
 					$country_city_rcd_html.='<h3>Create New Transfer</h3>';
 					$country_city_rcd_html.='<form name="form_third_step" id="form_third_step" class="form_third_step" method="POST" onsubmit="filter_transfer_search($(this), '.$server_data['data']['city'][$country_key].');return false;" data-country_id="'.$counrty_val.'">';
 						$country_city_rcd_html.='<input type="hidden" name="search_counter" class="search_counter" value="1">';
-						$country_city_rcd_html.='<div class="form-group col-sm-4">';
+						$country_city_rcd_html.='<div class="form-group col-sm-3">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Choose Day</label>';
 							$country_city_rcd_html.='
 								<select name="booking_transfer_date'.$server_data['data']['city'][$country_key].'"  id="booking_transfer_date'.$server_data['data']['city'][$country_key].'" class="form-control validate[required]">';
@@ -365,7 +375,7 @@
 							$country_city_rcd_html.='</select>';
 						$country_city_rcd_html.='</div>';
 						$transfer_attribute_list = tools::find("all", TM_ATTRIBUTES, '*', "WHERE status=:status ORDER BY serial_number ASC ", array(":status"=>1));
-						$country_city_rcd_html.='<div class="form-group col-sm-4">';
+						$country_city_rcd_html.='<div class="form-group col-sm-3">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Pickup/Dropoff Type</label>';
 							$country_city_rcd_html.='
 								<select name="pickup_dropoff_type'.$server_data['data']['city'][$country_key].'"  id="pickup_dropoff_type'.$server_data['data']['city'][$country_key].'" class="form-control" onchange="enable_disable_airport($(this))">';
@@ -376,7 +386,7 @@
 							$country_city_rcd_html.='</select>';
 						$country_city_rcd_html.='</div>';
 						$transfer_city_airport_list = tools::find("all", TM_AIRPORTS, '*', "WHERE countryName=:countryName ORDER BY name ASC ", array(":countryName"=>$country_name));
-						$country_city_rcd_html.='<div class="form-group col-sm-4 airport_all_div">';
+						$country_city_rcd_html.='<div class="form-group col-sm-3 airport_all_div">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Choose Airport</label>';
 							$country_city_rcd_html.='
 								<select name="selected_airport'.$server_data['data']['city'][$country_key].'"  id="selected_airport'.$server_data['data']['city'][$country_key].'" class="form-control selected_airport">';
@@ -386,12 +396,16 @@
 								endforeach;
 							$country_city_rcd_html.='</select>';
 						$country_city_rcd_html.='</div>';
+						$country_city_rcd_html.='<div class="form-group col-sm-3 airport_all_div">';
+							$country_city_rcd_html.='<label for="inputName" class="control-label">Flight Number and Name</label>';
+							$country_city_rcd_html.='<input type="text" class="form-control" name="arr_dept_flight_number'.$server_data['data']['city'][$country_key].'" id="arr_dept_flight_number'.$server_data['data']['city'][$country_key].'" value="" >';
+						$country_city_rcd_html.='</div>';
 						$country_city_rcd_html.='<div class="clearfix"></div>';
-						$country_city_rcd_html.='<div class="form-group col-sm-4">';
+						$country_city_rcd_html.='<div class="form-group col-sm-3">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label arr_dept_time_label">Arrival/Departure Time</label>';
 							$country_city_rcd_html.='<input type="time" class="form-control" name="arr_dept_time'.$server_data['data']['city'][$country_key].'" id="arr_dept_time'.$server_data['data']['city'][$country_key].'" value="" >';
 						$country_city_rcd_html.='</div>';
-						$country_city_rcd_html.='<div class="form-group col-sm-4">';
+						$country_city_rcd_html.='<div class="form-group col-sm-3">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Service Type</label>';
 							$country_city_rcd_html.='
 								<select name="selected_service_type'.$server_data['data']['city'][$country_key].'"  id="selected_service_type'.$server_data['data']['city'][$country_key].'" class="form-control">';
@@ -400,7 +414,7 @@
 								$country_city_rcd_html.='<option value = "Shared">Shared</option>';
 							$country_city_rcd_html.='</select>';
 						$country_city_rcd_html.='</div>';
-						$country_city_rcd_html.='<div class="form-group col-sm-4 text-left">';
+						$country_city_rcd_html.='<div class="form-group col-sm-3 text-left">';
 							$country_city_rcd_html.='<button type="submit" class="btn btn-primary next-step" style="margin-top:23px;" >Search</button>';
 						$country_city_rcd_html.='</div>';
 						$country_city_rcd_html.='<div class="clearfix"></div>';

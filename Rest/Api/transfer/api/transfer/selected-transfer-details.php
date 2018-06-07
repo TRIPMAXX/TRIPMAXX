@@ -124,6 +124,12 @@
 						Airport: <?php echo $server_data['data']['step_4_all']['transfer_airport_arr'][$offer_key];?>
 						<?php
 						endif;
+						if($server_data['data']['step_4_all']['transfer_flight_number_arr'][$offer_key]!=""):
+						?>
+						<br/>
+						Flight Number and Name: <?php echo $server_data['data']['step_4_all']['transfer_flight_number_arr'][$offer_key];?>
+						<?php
+						endif;
 						?>
 					</td>
 				</tr>

@@ -239,6 +239,7 @@
 										$_POST['pickup_time']=$result_val['pickup_time'];
 										$_POST['dropoff_time']=$result_val['dropoff_time'];
 										$_POST['airport']=$result_val['airport'];
+										$_POST['flight_number_name']=$result_val['flight_number_name'];
 										$_POST['agent_markup_percentage']=$result_val['agent_markup_percentage'];
 										$_POST['nationality_addon_percentage']=$result_val['nationality_addon_percentage'];
 										$_POST['currency_id']=$return_data_arr_transfer['default_currency'];

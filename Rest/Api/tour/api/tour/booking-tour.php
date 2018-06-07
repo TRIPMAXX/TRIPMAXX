@@ -67,6 +67,8 @@
 			endif;
 			$find_tour_type = tools::find("first", TM_ATTRIBUTES, '*', "WHERE id=:id ", array(":id"=>$server_data['data']['tour_type']));
 			$pickuptime=$server_data['data']['pick_time'];
+			$pickup_time_str=strtotime($server_data['data']['booking_tour_date']." ".$server_data['data']['pick_time'].":00")+($server_data['data']['threshold_booking_time']['threshold_booking_time']*60*60);
+			$pickuptime=date("H:i", $pickup_time_str);
 			$pickupdate=$dropoffdate=$server_data['data']['booking_tour_date'];
 			foreach($server_data['data']['country'] as $country_key=>$counrty_val):	
 				$tour_first_row=1;
@@ -231,7 +233,7 @@
 										endif;
 										?>
 										<br>
-										<input type="radio" name="selected_tour[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" class="selected_tour" onclick="change_offer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>" <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?> >
+										<input type="radio" name="selected_tour[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" class="selected_tour" onclick="change_offer_radio($(this))" value="<?= $server_data['data']['city'][$country_key]."-".$avalibility_status."-".$offer_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($total_price+$agent_commision+$nationality_charge, 2,".",",");?>" <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'checked="checked"' : "");?> style="display:none;">
 									</div>
 									<div class="col-md-3" style="font-weight:bold;">
 										<?= $offer_val['offer_title'];?>
@@ -256,18 +258,34 @@
 						if($offer_html!=""):
 ?>
 							<div class="form-group col-md-12 each_tour_row_outer">
-								<div style="border:1px solid red;background-color:red;">
-									<div class="col-md-3" style="font-weight:bold;color:#fff;">Tour Title</div>
-									<!-- <div class="col-md-2" style="font-weight:bold;color:#fff;">Tour Type</div> -->
-									<div class="col-md-3" style="font-weight:bold;color:#fff;text-align:center;">Availability</div>
-									<div class="col-md-2" style="font-weight:bold;color:#fff;text-align:center;">Rate</div>
-									<div class="col-md-4" style="font-weight:bold;color:#fff;">Tour Details</div>
+								<div style="border: 1px solid #dd625e;background-color: #dd625e;margin: 10px 0 0 0;border-radius: 10px 10px 0 0;">
+									<div class="col-md-3" style="font-weight:bold;color:#000;border:0px solid red;">Tour Title</div>
+									<!-- <div class="col-md-2" style="font-weight:bold;color:#000;border:0px solid red;">Tour Type</div> -->
+									<div class="col-md-1" style="font-weight:bold;color:#000;border:0px solid red;text-align:center;">Availability</div>
+									<div class="col-md-2" style="font-weight:bold;color:#000;border:0px solid red;text-align:center;">Rate</div>
+									<div class="col-md-6" style="font-weight:bold;color:#000;border:0px solid red;">Tour Details</div>
 									<div class="clearfix"></div>
 								</div>
-								<div style="padding:20px 0 0 0;border:1px solid red;">
-									<div class="col-md-3" style="font-weight:bold;"><?php echo $tour_val['tour_title'];?></div>
+								<div style="padding: 5px 0px 5px 0;border: 1px solid #dd625e;border-radius: 0 0 10px 10px;">
+									<div class="col-md-3" style="font-weight:bold;">
+										<div><?php echo $tour_val['tour_title'];?></div>									
+										<?php
+										if($tour_val['tour_images']!=""):
+											$image_arr=explode(",", $tour_val['tour_images']);
+											//if($image_arr[0]!="" && file_exists(TOUR_IMAGE_PATH.$image_arr[0])):
+										?>
+											<img src = "<?php echo(TOUR_IMAGE_PATH."thumb/".$image_arr[0]);?>" border = "0" alt = "" style="width:150px;" onerror="this.remove;"/>
+										<?php
+											/*else:
+												echo "N/A";
+											endif;*/
+										else:
+											echo "N/A";
+										endif;
+										?>
+									</div>
 									<!-- <div class="col-md-2" style="font-weight:bold;"><?php echo $tour_val['tour_type'];?></div> -->
-									<div class="col-md-3" style="font-weight:bold;text-align:center;">
+									<div class="col-md-1" style="font-weight:bold;text-align:center;">
 										<?php
 										if($tour_avalibility_status=="avaliable" || $tour_edit_avalibility_status=="A"):
 										?>
@@ -281,7 +299,7 @@
 										?>
 									</div>
 									<div class="col-md-2 default_price_div" style="font-weight:bold;text-align:center;" data-default_price="<?php echo $each_first_price;?>"><?php echo(isset($selected_first_price) && $selected_first_price!="" ? $selected_first_price : $each_first_price);?></div>
-									<div class="col-md-4">
+									<div class="col-md-6 calculate_tour_time">
 										<img src="assets/img/delete.png" width="12" height="18" border="0" alt="Delete" class="delete_tour_row" onclick="delete_tour_row($(this))">
 										<input type="hidden" name="selected_booking_tour_date[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" id="selected_booking_tour_date[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $server_data['data']['booking_tour_date'];?>" class="selected_booking_tour_date">
 										<input type="hidden" name="selected_service_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" id="selected_service_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $server_data['data']['selected_service_type'];?>" class="selected_service_type">
@@ -292,32 +310,16 @@
 										<strong>Time: </strong><span class="calculated_time_diff">--</span><br/>
 									</div>
 									<div class="clearfix"></div>
-									<div class="col-md-3">
-										<?php
-										if($tour_val['tour_images']!=""):
-											$image_arr=explode(",", $tour_val['tour_images']);
-											//if($image_arr[0]!="" && file_exists(TOUR_IMAGE_PATH.$image_arr[0])):
-										?>
-											<img src = "<?php echo(TOUR_IMAGE_PATH."thumb/".$image_arr[0]);?>" border = "0" alt = "" width = "250" height = "150" onerror="this.remove;"/>
-										<?php
-											/*else:
-												echo "N/A";
-											endif;*/
-										else:
-											echo "N/A";
-										endif;
-										?>
-									</div>
-									<div class="col-md-9">
+									<div class="col-md-12">
 										<?php echo nl2br($tour_val['short_description']);?>
 									</div>
 									<div class="clearfix"></div>
 									<div class="col-md-12">
-										<a href="<?php echo DOMAIN_NAME_PATH_ADMIN;?>edit_tour?tour_id=<?php echo base64_encode($tour_val['id']);?>" target="_blank" style="font-size:16px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_offers('tour<?php echo $tour_val['id'];?>');" style="font-size:16px;"><b>VIEW AVAILABLE OFFERS</b></a>
+										<a href="<?php echo DOMAIN_NAME_PATH_ADMIN;?>edit_tour?tour_id=<?php echo base64_encode($tour_val['id']);?>" target="_blank" style="font-size:14px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_offers('tour<?php echo $tour_val['id'];?>');" style="font-size:14px;"><b>VIEW AVAILABLE OFFERS</b></a>
 									</div>
 									<div class="clearfix"></div>
 									<div id="tour<?php echo $tour_val['id'];?>" <?php echo($tour_first_row==1 && $offset==0 ? '' : 'style="display:none;"');?> class="tour_offer_cls">
-										<div style="border:1px solid gray;background-color:gray;margin-top:10px;">
+										<div style="border:1px solid gray;background-color:gray;margin-top:0px;">
 											<div class="col-md-1" style="font-weight:bold;color:#fff;">#</div>
 											<div class="col-md-3" style="font-weight:bold;color:#fff;">Offer Title</div>
 											<div class="col-md-3" style="font-weight:bold;color:#fff;">Service Type</div>

@@ -34,6 +34,7 @@
 					$post_data['data']['booking_transfer_date']=$_POST['booking_transfer_date'];
 					$post_data['data']['pickup_dropoff_type']=$_POST['pickup_dropoff_type'];
 					$post_data['data']['selected_airport']=$_POST['selected_airport'];
+					$post_data['data']['arr_dept_flight_number']=$_POST['arr_dept_flight_number'];
 					$post_data['data']['arr_dept_time']=$_POST['arr_dept_time'];
 					$post_data['data']['selected_service_type']=$_POST['selected_service_type'];
 					$post_data['data']['search_counter']=$_POST['search_counter'];

@@ -67,8 +67,9 @@
 	width:100% !important;
 }
 .each_date_div, .each_tour_date_div{
-	border: 1px solid #000;
 	margin-bottom: 15px;
+	border: 1px solid #0a80c4;
+    border-radius: 15px;
 }
 .date_heading_div{
 	background: #00a65a;
@@ -84,5 +85,21 @@
 	float:right;
 	cursor:pointer;
 }
-.date_heading_div{cursor:pointer;}
+.date_heading_div{
+	cursor:pointer;
+	background-color: #0a80c4;
+    border-radius: 10px;
+}
 .dropofftime, .pickuptime{line-height: 10px !important;}
+.form_third_step{
+    border: 1px solid #0a80c4;
+    padding: 5px 0px;
+    margin: 5px 0px 10px;
+    border-radius: 10px;
+}
+.airport_all_div{
+	display:none;
+}
+.form_secend_step{
+	margin-bottom: 1em;
+}

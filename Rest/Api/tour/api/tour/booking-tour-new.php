@@ -42,13 +42,13 @@
 											ob_start();
 ?>
 											<div class="each_tour_date_div_<?php echo $tour_date;?> each_tour_date_div" data-date_time="<?php echo strtotime($tour_date);?>">
-												<div class="col-md-12 date_heading_div">
+												<div class="col-md-12 date_heading_div" onclick="hide_show_tour_details($(this))">
 													<h4>Date: <?php echo tools::module_date_format($tour_date);?></h4>
 													<div class="clock_img_div">
 											<?php
 														$clock_am_div=$clock_pm_div='';
 														foreach($booking_details_list['booking_destination_list'] as $svg_b_key=>$svg_b_val):
-															if(isset($svg_b_val['booking_transfer_list']) && !empty($svg_b_val['booking_transfer_list'])):
+															/*if(isset($svg_b_val['booking_transfer_list']) && !empty($svg_b_val['booking_transfer_list'])):
 																foreach($svg_b_val['booking_transfer_list'] as $svg_t_key=>$svg_t_val):
 																	if($tour_date==$svg_t_val['booking_start_date']):
 																		$booking_start_time = explode(':', $svg_t_val['pickup_time']);
@@ -70,7 +70,7 @@
 																		endif;
 																	endif;
 																endforeach;
-															endif;
+															endif;*/
 															if(isset($svg_b_val['booking_tour_list']) && !empty($svg_b_val['booking_tour_list'])):
 																foreach($svg_b_val['booking_tour_list'] as $svg_t_key=>$svg_t_val):
 																	if($tour_date==$svg_t_val['booking_start_date']):
@@ -139,18 +139,30 @@
 										ob_start();
 ?>
 										<div class="form-group col-md-12 each_tour_row_outer">
-											<div style="border:1px solid red;background-color:red;">
-												<div class="col-md-3" style="font-weight:bold;color:#fff;">Tour Title</div>
-												<!-- <div class="col-md-2" style="font-weight:bold;color:#fff;">Tour Type</div> -->
-												<div class="col-md-3" style="font-weight:bold;color:#fff;text-align:center;">Availability</div>
-												<div class="col-md-2" style="font-weight:bold;color:#fff;text-align:center;">Rate</div>
-												<div class="col-md-4" style="font-weight:bold;color:#fff;">Tour Details</div>
+											<div style="border: 1px solid #dd625e;background-color: #dd625e;margin: 10px 0 0 0;border-radius: 10px 10px 0 0;">
+												<div class="col-md-3" style="font-weight:bold;color:#000;border:0px solid red;">Tour Title</div>
+												<!-- <div class="col-md-2" style="font-weight:bold;color:#000;border:0px solid red;">Tour Type</div> -->
+												<div class="col-md-1" style="font-weight:bold;color:#000;border:0px solid red;text-align:center;">Availability</div>
+												<div class="col-md-2" style="font-weight:bold;color:#000;border:0px solid red;text-align:center;">Rate</div>
+												<div class="col-md-4" style="font-weight:bold;color:#000;border:0px solid red;">Tour Details</div>
 												<div class="clearfix"></div>
 											</div>
-											<div style="padding:20px 0 0 0;border:1px solid red;">
-												<div class="col-md-3" style="font-weight:bold;"><?php echo $find_tour_details['tour_title'];?></div>
+											<div style="padding: 5px 0px 5px 0;border: 1px solid #dd625e;border-radius: 0 0 10px 10px;">
+												<div class="col-md-3" style="font-weight:bold;">
+													<div><?php echo $find_tour_details['tour_title'];?></div>
+													<?php
+													if($find_tour_details['tour_images']!=""):
+														$image_arr=explode(",", $find_tour_details['tour_images']);
+													?>
+														<img src="<?php echo TOUR_IMAGE_PATH."thumb/".$image_arr[0]?>" border="0" alt="" style="width:150px;" onerror="this.remove;">
+													<?php
+													else:
+														echo "N/A";
+													endif;
+													?>
+												</div>
 												<!-- <div class="col-md-2" style="font-weight:bold;">'.$find_tour_details['tour_service'].'</div> -->
-												<div class="col-md-3" style="font-weight:bold;text-align:center;">
+												<div class="col-md-1" style="font-weight:bold;text-align:center;">
 									<?php
 												if($t_val['avalibility_status']=="A"):
 									?>
@@ -164,7 +176,7 @@
 									?>
 												</div>
 												<div class="col-md-2 default_price_div" style="font-weight:bold;text-align:center;" data-default_price="<?php echo $default_currency['currency_code'].number_format($each_tour_price, 2,".",",");?>"><?php echo $default_currency['currency_code'].number_format($each_tour_price, 2,".",",");?></div>
-												<div class="col-md-4">
+												<div class="col-md-6 calculate_tour_time">
 													<img src="assets/img/delete.png" width="12" height="18" border="0" alt="Delete" class="delete_tour_row" onclick="delete_tour_row($(this))">
 													<input type="hidden" name="selected_booking_tour_date[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" id="selected_booking_tour_date[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" value="<?php echo $t_val['booking_start_date'];?>" class="selected_booking_tour_date">
 													<input type="hidden" name="selected_service_type[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" id="selected_service_type[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" value="<?php echo $find_tour_offer_details['service_type'];?>" class="selected_service_type">
@@ -176,27 +188,15 @@
 													<input type="hidden" name="svg_path_id_input_hidden" class="svg_path_id_input" value="old_tour_<?php echo $t_val['id'];?>">
 												</div>
 												<div class="clearfix"></div>
-												<div class="col-md-3">
-									<?php
-												if($find_tour_details['tour_images']!=""):
-													$image_arr=explode(",", $find_tour_details['tour_images']);
-									?>
-													<img src="'.TOUR_IMAGE_PATH.$image_arr[0].'" border="0" alt="" width="250" height="150" onerror="this.remove;">
-									<?php
-												else:
-													echo "N/A";
-												endif;
-									?>
-												</div>
-												<div class="col-md-9">
+												<div class="col-md-12">
 												</div>
 												<div class="clearfix"></div>
 												<div class="col-md-12">
-													<a href="<?php echo DOMAIN_NAME_PATH_ADMIN.'edit_tour?tour_id='.base64_encode($find_tour_details['id']);?>" target="_blank" style="font-size:16px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_tours(\'tour<?php echo $t_val['booking_start_date'].'-old-'.$find_tour_details['id'];?>\');" style="font-size:16px;"><b>VIEW AVAILABLE OFFERS</b></a>
+													<a href="<?php echo DOMAIN_NAME_PATH_ADMIN.'edit_tour?tour_id='.base64_encode($find_tour_details['id']);?>" target="_blank" style="font-size:14px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_tours(\'tour<?php echo $t_val['booking_start_date'].'-old-'.$find_tour_details['id'];?>\');" style="font-size:14px;"><b>VIEW AVAILABLE OFFERS</b></a>
 												</div>
 												<div class="clearfix"></div>
 												<div id="tour<?php echo $t_val['booking_start_date'].'-old-'.$find_tour_details['id'];?>" class="tour_offer_cls">
-													<div style="border:1px solid gray;background-color:gray;margin-top:10px;">
+													<div style="border:1px solid gray;background-color:gray;margin-top:0px;">
 														<div class="col-md-1" style="font-weight:bold;color:#fff;">#</div>
 														<div class="col-md-3" style="font-weight:bold;color:#fff;">Offer Title</div>
 														<div class="col-md-3" style="font-weight:bold;color:#fff;">Service Type</div>
@@ -266,7 +266,7 @@
 																endif;
 										?>
 																<br>
-																<input type="radio" name="selected_tour[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" class="selected_tour" onclick="change_tour_radio($(this))" value="<?php echo $b_val['city_id'].'-'.$avalibility_status.'-'.$list_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($list_val['price_per_person'], 2,".",",");?>" <?php echo($list_val['id']==$find_tour_offer_details['id'] ? 'checked="checked"' : "");?>>
+																<input type="radio" name="selected_tour[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" class="selected_tour" onclick="change_tour_radio($(this))" value="<?php echo $b_val['city_id'].'-'.$avalibility_status.'-'.$list_val['id'];?>" data-price="<?php echo $default_currency['currency_code'].number_format($list_val['price_per_person'], 2,".",",");?>" <?php echo($list_val['id']==$find_tour_offer_details['id'] ? 'checked="checked"' : "");?> style="display:none;">
 															</div>
 															<div class="col-md-3" style="font-weight:bold;">
 																<?php echo $list_val['offer_title'];?>
@@ -293,7 +293,7 @@
 									ob_start();
 ?>
 									<div class="each_tour_date_div_<?php echo $tour_date;?> each_tour_date_div" data-date_time="<?php echo strtotime($tour_date);?>">
-										<div class="col-md-12 date_heading_div">
+										<div class="col-md-12 date_heading_div" onclick="hide_show_tour_details($(this))">
 											<h4>Date: <?php echo tools::module_date_format($tour_date);?></h4>
 											<div class="clock_img_div">
 									<?php
@@ -406,7 +406,7 @@
 						$country_city_rcd_html.='<div class="form-group col-sm-6">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Tour Type</label>';
 							$country_city_rcd_html.='
-								<select name="tour_type'.$server_data['data']['city'][$country_key].'"  id="tour_type'.$server_data['data']['city'][$country_key].'" class="form-control validate[required]">';
+								<select name="tour_type'.$server_data['data']['city'][$country_key].'"  id="tour_type'.$server_data['data']['city'][$country_key].'" class="form-control">';
 								$country_city_rcd_html.='<option value="">Select Tour Type</option>';
 								foreach($tour_attribute_list as $attr_key=>$attr_val):
 									$country_city_rcd_html.='<option value="'.$attr_val['id'].'">'.$attr_val['attribute_name'].'</option>';
@@ -415,12 +415,12 @@
 						$country_city_rcd_html.='</div>';
 						$country_city_rcd_html.='<div class="form-group col-sm-6">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Pickup Time</label>';
-							$country_city_rcd_html.='<input type="time" class="form-control validate[required]" name="pick_time'.$server_data['data']['city'][$country_key].'" id="pick_time'.$server_data['data']['city'][$country_key].'" value="" >';
+							$country_city_rcd_html.='<input type="time" class="form-control" name="pick_time'.$server_data['data']['city'][$country_key].'" id="pick_time'.$server_data['data']['city'][$country_key].'" value="" >';
 						$country_city_rcd_html.='</div>';
 						$country_city_rcd_html.='<div class="form-group col-sm-6">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Service Type</label>';
 							$country_city_rcd_html.='
-								<select name="selected_tour_service_type'.$server_data['data']['city'][$country_key].'"  id="selected_tour_service_type'.$server_data['data']['city'][$country_key].'" class="form-control validate[required]">';
+								<select name="selected_tour_service_type'.$server_data['data']['city'][$country_key].'"  id="selected_tour_service_type'.$server_data['data']['city'][$country_key].'" class="form-control">';
 								$country_city_rcd_html.='<option value = "">Select Service Type</option>';
 								$country_city_rcd_html.='<option value = "Private">Private</option>';
 								$country_city_rcd_html.='<option value = "Shared">Shared</option>';
