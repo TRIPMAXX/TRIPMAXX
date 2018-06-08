@@ -172,7 +172,7 @@
 											//$data['status'] = 'error';
 											//$data['msg']="Some error has been occure during execution.";
 										elseif($return_data_arr_agent['status']=="success"):
-											$created_by = $return_data_arr_agent['results']['first_name']." ".$return_data_arr_agent['results']['last_name'].", E: ".$return_data_arr_agent['results']['email_address'].($return_data_arr_agent['results']['telephone']!="" ? ", P: ".$return_data_arr_agent['results']['telephone'] : "");
+											$created_by = $return_data_arr_agent['results']['first_name']." ".$return_data_arr_agent['results']['last_name'].", ".$return_data_arr_agent['results']['email_address'].($return_data_arr_agent['results']['telephone']!="" ? ", ".$return_data_arr_agent['results']['telephone'] : "");
 										else:
 											//$data['status'] = 'error';
 											//$data['msg'] = $return_data_arr_agent['msg'];

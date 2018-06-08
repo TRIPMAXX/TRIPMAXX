@@ -236,8 +236,10 @@
 													</td>
 													<td class=" " data-title="Action">
 														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>view_booking?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "View Booking Details"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
-														<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>booking_voucher?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "Generate Vouchers"><i class="fa fa-file fa-1x" ></i></a>&nbsp;&nbsp; -->
-														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_booking?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "Edit Booking"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
+														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>booking_voucher?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "Generate Vouchers"><i class="fa fa-file-pdf-o fa-1x" ></i></a>&nbsp;&nbsp;
+														<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>booking_invoice.php?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "Generate Invoice"><i class="fa fa-file-word-o fa-1x" ></i></a>&nbsp;&nbsp;
+														<a href = "<?php 
+														echo(DOMAIN_NAME_PATH_ADMIN);?>edit_booking?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "Edit Booking"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
 														<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>bookings?del_booking_id=<?php echo base64_encode($book_val['id']);?>"  title = "Delete Booking" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 													</td>
 												</tr>
@@ -262,7 +264,6 @@
 			</section>
 		</div>
 		<!-- BODY -->
-
 		<!-- FOOTER -->
 		<?php require_once(CONTROL_CENTER_COMMON_FILE_PATH.'footer.php');?>
 		<!-- FOOTER -->
