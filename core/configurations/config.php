@@ -74,6 +74,11 @@ define("AUTO_LOGIN_SECURITY_KEY", "hjre658@37#99!");
 define("AGENT_IMAGES", "agent_control_center/assets/upload/agent/");
 
 define("REST_API_PATH", "Rest/Api/");
+define("SUPPLIER_API_PATH", "supplier/api/");
+define("HOTEL_API_PATH", "hotel/api/");
+define("TOUR_API_PATH", "tour/api/");
+define("PACKAGE_API_PATH", "package/api/");
+define("TRANSFER_API_PATH", "transfer/api/");
 define("BOOKING_API_PATH", "booking/api/");
 define("DMC_API_PATH", "dmc/api/");
 
@@ -87,5 +92,11 @@ define("FROM_EMAIL", "noreply@neocoderztechnologies.com");
 
 
 
+
+define("HOTEL_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/hotel/");
+define("ROOM_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/room/");
 define("AGENT_IMAGE_PATH", DOMAIN_NAME_PATH."agent_control_center/assets/upload/agent/");
+define("TOUR_IMAGE_PATH", DOMAIN_NAME_PATH."tour_control_center/assets/upload/tour/");
+define("TRANSFER_IMAGE_PATH", DOMAIN_NAME_PATH."transfer_control_center/assets/upload/transfer/");
+define("PACKAGE_IMAGE_PATH", DOMAIN_NAME_PATH."package_control_center/assets/upload/package/");
 ?>

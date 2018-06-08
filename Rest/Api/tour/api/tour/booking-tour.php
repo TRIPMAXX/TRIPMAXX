@@ -391,7 +391,7 @@
 				$return_data['country_city_rcd_html']=$tour_list_html.'<div class="clearfix"></div>';
 				$return_data['post_data']['country_city_rcd_date']=$server_data['data']['booking_tour_date'];
 				$return_data['post_data']['country_city_rcd_date_time']=strtotime($server_data['data']['booking_tour_date']);
-				$return_data['post_data']['country_city_rcd_formated_date']=tools::module_date_format($server_data['data']['booking_tour_date']);
+				$return_data['post_data']['country_city_rcd_formated_date']=date("F j, Y", strtotime($server_data['data']['booking_tour_date']));
 				$return_data['post_data']['country_city_rcd_pick_time']=$server_data['data']['pick_time'];
 				$return_data['post_data']['find_tour_type']=$find_tour_type;
 			else:

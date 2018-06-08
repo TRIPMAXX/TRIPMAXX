@@ -64,7 +64,7 @@ svg line{
 .clock_img_div{
     /*width: 650px;*/
 	float: right;
-	margin-top: -43px;
+	margin-top: 4px;
 }
 .clock_img_div img{
 	width:100%;
