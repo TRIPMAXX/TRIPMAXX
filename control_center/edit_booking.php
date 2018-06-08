@@ -2233,10 +2233,10 @@
 									<!-- <form role="form"> -->
 									<div class="tab-content">
 										<div class="tab-pane active" role="tabpanel" id="step1">
-											<h3>Select Criteria For New Booking</h3>
+											<h3 style="font-weight:bold;color:#1281c4;">Select Criteria For Edit Booking</h3>
 											<form name="form_first_step" id="form_first_step" method="post" enctype="mulitipart/form-data">
 												<div class="col-md-12 row">
-													<div class="box-body" style = "border:1px solid gray;padding: 3px;">
+													<div class="box-body" style = "border:1px solid #1281c4;padding: 5px; border-radius:10px;">
 														<div class="form-group col-md-3">
 															<label for="inputName" class="control-label">Select Booking Type<font color="#FF0000">*</font></label>
 															<select name = "booking_type" id = "booking_type" class="form-control validate[required]"  tabindex = "1" onchange = "manage_booking_type(this.value);">
@@ -2269,8 +2269,8 @@
 														</div>
 														<div class="clearfix"></div>
 													</div>
-													<div class="box-body" style="padding:3px;"></div>
-													<div class="box-body" id = "sample"  style = "border:1px solid gray;padding: 3px;">
+													<div class="box-body" style="padding: 5px;"></div>
+													<div class="box-body" id = "sample"  style = "border:1px solid #1281c4;padding: 5px; border-radius:10px;">
 														<?php
 														if(isset($_POST['country']) && !empty($_POST['country']))
 														{
@@ -2556,11 +2556,11 @@
 														?>
 														<div class="clearfix"></div>
 													</div>
-													<div class="box-body" style="padding:3px;">
+													<div class="box-body" style="padding: 5px;">
 														<a href = "javascript:void(0);" class="add-row" data-attr_key="<?php echo $next_index;?>"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>plus-icon.png" border = "0" alt = "" /></a>&nbsp;&nbsp;<b>ADD ANOTHER DESTINATION</b>&nbsp;&nbsp;<a href = "javascript:void(0);" class="delete-row"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>minus-icon.png" border = "0" alt = "" /></a>
 													</div>
-													<div class="box-body" style="padding:3px;"></div>
-													<div class="box-body" style = "border:1px solid gray;padding: 3px;">
+													<div class="box-body" style="padding: 5px;"></div>
+													<div class="box-body" style = "border:1px solid #1281c4;padding: 5px; border-radius:10px;">
 														<div class="form-group col-md-4">
 															<label for="inputName" class="control-label">Nationality<font color="#FF0000">*</font></label>
 															<select class="form-control validate[required]" name="sel_nationality" id="sel_nationality"> 

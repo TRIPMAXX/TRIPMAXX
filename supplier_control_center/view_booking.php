@@ -462,6 +462,12 @@
 																	Airport: <?php echo $transfer_val['airport'];?>
 																	<?php
 																	endif;
+																	if($transfer_val['flight_number_name']!=""):
+																	?>
+																	<br/>
+																	Flight Number and Name: <?php echo $transfer_val['flight_number_name'];?>
+																	<?php
+																	endif;
 																	?>
 																</td>
 															</tr>

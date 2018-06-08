@@ -365,6 +365,7 @@
 			var transfer_booking_transfer_date_arr=[];
 			var transfer_pickup_dropoff_type_arr=[];
 			var transfer_airport_arr=[];
+			var transfer_flight_number_arr=[];
 			var transfer_service_type_arr=[];
 			$('input[class="selected_transfer"]:checked').each(function(){
 				if($(this).val()!="" && $(this).parents(".each_transfer_row_outer").find(".selected_booking_transfer_date").val()!="" && $(this).parents(".each_transfer_row_outer").find(".selected_service_type").val()!="" && $(this).parents(".each_transfer_row_outer").find(".pickup_dropoff_type").val()!="" && $(this).parents(".each_transfer_row_outer").find(".pickuptime").val()!="" && $(this).parents(".each_transfer_row_outer").find(".dropofftime").val()!="")
@@ -374,6 +375,7 @@
 					transfer_service_type_arr.push($(this).parents(".each_transfer_row_outer").find(".selected_service_type").val());
 					transfer_pickup_dropoff_type_arr.push($(this).parents(".each_transfer_row_outer").find(".pickup_dropoff_type").val());
 					transfer_airport_arr.push($(this).parents(".each_transfer_row_outer").find(".selected_airport").val());
+					transfer_flight_number_arr.push($(this).parents(".each_transfer_row_outer").find(".arr_dept_flight_number").val());
 					transfer_pickuptime_arr.push($(this).parents(".each_transfer_row_outer").find(".pickuptime").val());
 					transfer_dropofftime_arr.push($(this).parents(".each_transfer_row_outer").find(".dropofftime").val());
 					var city_id=$(this).val().split("-");
@@ -391,6 +393,7 @@
 					transfer_booking_transfer_date_arr:transfer_booking_transfer_date_arr,
 					transfer_pickup_dropoff_type_arr:transfer_pickup_dropoff_type_arr,
 					transfer_airport_arr:transfer_airport_arr,
+					transfer_flight_number_arr:transfer_flight_number_arr,
 					transfer_service_type_arr:transfer_service_type_arr
 				},
 				beforeSend:function(){
@@ -1004,7 +1007,7 @@
 						if($("#step3 #tour_city"+city_id+" .all_rcd_row .each_tour_date_div_"+response['post_data']['country_city_rcd_date']).length)
 						{								
 							$("#step3 #tour_city"+city_id+" .all_rcd_row .each_tour_date_div .no_rcd").remove();
-							$("#step3 #tour_city"+city_id+" .all_rcd_row .each_tour_date_div_"+response['post_data']['country_city_rcd_date']).append(response.transfer_data);
+							$("#step3 #tour_city"+city_id+" .all_rcd_row .each_tour_date_div_"+response['post_data']['country_city_rcd_date']).append(response.tour_data);
 						}
 						else
 						{
@@ -2153,10 +2156,10 @@
 									<!-- <form role="form"> -->
 										<div class="tab-content">
 											<div class="tab-pane active" role="tabpanel" id="step1">
-												<h3>Select Criteria For New Booking</h3>
+												<h3 style = "font-weight:bold;color:#1281c4">Select Criteria For New Booking</h3>
 												<form name="form_first_step" id="form_first_step" method="post" enctype="mulitipart/form-data">
 													<div class="col-md-12 row">
-														<div class="box-body" style = "border:1px solid gray;padding: 3px;">
+														<div class="box-body" style = "border:1px solid #1281c4;padding: 5px; border-radius:10px;">
 															<div class="form-group col-md-3">
 																<label for="inputName" class="control-label">Select Booking Type<font color="#FF0000">*</font></label>
 																<select name = "booking_type" id = "booking_type" class="form-control validate[required]"  tabindex = "1" onchange = "manage_booking_type(this.value);">
@@ -2189,8 +2192,8 @@
 															</div>
 															<div class="clearfix"></div>
 														</div>
-														<div class="box-body" style="padding: 3px;"></div>
-														<div class="box-body" id = "sample"  style = "border:1px solid gray;padding: 3px;">
+														<div class="box-body" style="padding: 5px;"></div>
+														<div class="box-body" id = "sample"  style = "border:1px solid #1281c4;padding: 5px; border-radius:10px;">
 															<?php
 															if(isset($_POST['country']) && !empty($_POST['country']))
 															{
@@ -2342,13 +2345,13 @@
 															?>
 															<div class="clearfix"></div>
 														</div>
-														<div class="box-body" style="padding: 3px;">
+														<div class="box-body" style="padding: 5px;">
 															<div class="form-group">
 																<a href = "javascript:void(0);" class="add-row" data-attr_key="<?php echo $next_index;?>"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>plus-icon.png" border = "0" alt = "" /></a>&nbsp;&nbsp;<b>ADD ANOTHER DESTINATION</b>&nbsp;&nbsp;<a href = "javascript:void(0);" class="delete-row"><img src = "<?php echo(CONTROL_CENTER_IMAGE_PATH);?>minus-icon.png" border = "0" alt = "" /></a>
 															</div>
 														</div>
-														<div class="box-body" style="padding: 3px;"></div>
-														<div class="box-body" style = "border:1px solid gray;padding: 3px;">
+														<div class="box-body" style="padding: 5px;"></div>
+														<div class="box-body" style = "border:1px solid #1281c4;padding: 5px; border-radius:10px;">
 															<div class="form-group col-md-4">
 																<label for="inputName" class="control-label">Nationality<font color="#FF0000">*</font></label>
 																<select class="form-control validate[required]" name="sel_nationality" id="sel_nationality"> 
@@ -2540,7 +2543,7 @@
 												</form>
 											</div>
 											<div class="tab-pane" role="tabpanel" id="step2">
-												<h3>Search Hotels</h3>
+												<h3 style = "font-weight:bold;color:#1281c4">Search Hotels</h3>
 												<!-- <form name="form_secend_step" id="form_secend_step" method="POST" enctype="multipart/form-data"> -->
 													<div class="city_tab_button_div">
 														<!-- City Tab -->
@@ -2555,7 +2558,7 @@
 												<!-- </form> -->
 											</div>
 											<div class="tab-pane" role="tabpanel" id="step4">
-												<h3>Search Transfers</h3>
+												<h3 style = "font-weight:bold;color:#1281c4">Search Transfers</h3>
 												<div class="transfer_city_tab_button_div">
 													<!-- Transfer City Tab -->
 												</div>
@@ -2569,7 +2572,7 @@
 												</ul>
 											</div>
 											<div class="tab-pane" role="tabpanel" id="step3">
-												<h3>Search Tour</h3>
+												<h3 style = "font-weight:bold;color:#1281c4">Search Tour</h3>
 												<div class="tour_city_tab_button_div">
 													<!-- Tour City Tab -->
 												</div>
@@ -2583,7 +2586,7 @@
 												</ul>
 											</div>
 											<div class="tab-pane" role="tabpanel" id="complete">
-												<h3>Complete Your Booking</h3>
+												<h3 style = "font-weight:bold;color:#1281c4">Complete Your Booking</h3>
 												<div class="col-md-12 row">
 													<div id="final_step_html">
 														<!-- Final step display content -->
