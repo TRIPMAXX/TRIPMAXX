@@ -21,7 +21,7 @@
 							<div class="offer-slider">
 								<div class="tabs_area">
 									<ul>
-										<a href="create_new_booking.html"><li class="first_tab tab_wrapper">
+										<a href="<?php echo DOMAIN_NAME_PATH;?>create_new_booking.php"><li class="first_tab tab_wrapper">
 											<div class="tab_name_area">
 											<h1>CREATE NEW BOOKING</h1>
 											</div>

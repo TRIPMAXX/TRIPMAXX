@@ -265,7 +265,7 @@
 				endif;
 			else:
 				$data['status'] = 'error';
-				$data['msg'] = $autentication_data->msg;
+				$data['msg'] = $autentication_data_booking->msg;
 			endif;
 			//$data['status']="success";
 			//$data['msg']="Booking has been saved successfully.";

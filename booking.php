@@ -1,6 +1,13 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['AGENT_SESSION_DATA']['id'], DOMAIN_NAME_PATH.'');
+	if(isset($_GET['msg']) && $_GET['msg']=="b_success")
+	{
+		$_SESSION['SET_TYPE'] = 'success';
+		$_SESSION['SET_FLASH'] = "Booking has been saved successfully.";
+		header("location:booking.php");
+		exit;
+	}
 	$autentication_data_booking=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."authorized.php"));
 	if(isset($autentication_data_booking->status)):
 		if($autentication_data_booking->status=="success"):

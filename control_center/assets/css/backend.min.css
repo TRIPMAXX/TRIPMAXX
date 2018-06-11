@@ -5813,6 +5813,7 @@ fieldset[disabled] .btn-vk.active {
 }
 .content-header h1{
 	font-family: 'Helvetica Neue';
+	width: 70%;
 }
 .checkbox_container {
     display: inline-block;

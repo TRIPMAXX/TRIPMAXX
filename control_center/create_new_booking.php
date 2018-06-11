@@ -1732,7 +1732,7 @@
 							var other_selected_date=$(this).find(".calculate_tour_time .selected_booking_tour_date").val();
 							var other_timeStart = new Date(other_selected_date+" "+other_valuestart+":00");
 							var other_timeEnd = new Date(other_selected_date+" "+other_valuestop+":00");
-							if((other_timeStart>=timeStart && other_timeEnd<timeStart) || (other_timeStart<timeEnd && other_timeEnd>=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd && other_timeEnd>=timeStart) || (other_timeStart>=timeStart && other_timeEnd>=timeEnd && other_timeStart<=timeStart))
+							if((other_timeStart>=timeStart && other_timeEnd<timeStart) || (other_timeStart<timeEnd && other_timeEnd>=timeEnd) || (other_timeStart>=timeStart && other_timeEnd<=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd && other_timeEnd>=timeStart) || (other_timeStart>=timeStart && other_timeEnd>=timeEnd && other_timeStart<=timeStart))
 							{
 								if(exists_msg=="")
 									exists_msg="You have tour in this time.";
@@ -1897,7 +1897,7 @@
 							var other_selected_date=$(this).find(".calculate_tour_time .selected_booking_tour_date").val();
 							var other_timeStart = new Date(other_selected_date+" "+other_valuestart+":00");
 							var other_timeEnd = new Date(other_selected_date+" "+other_valuestop+":00");
-							if((other_timeStart>=timeStart && other_timeEnd<timeStart) || (other_timeStart<timeEnd && other_timeEnd>=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd && other_timeEnd>=timeStart) || (other_timeStart>=timeStart && other_timeEnd>=timeEnd && other_timeStart<=timeStart))
+							if((other_timeStart>=timeStart && other_timeEnd<timeStart) || (other_timeStart<timeEnd && other_timeEnd>=timeEnd) || (other_timeStart>=timeStart && other_timeEnd<=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd && other_timeEnd>=timeStart) || (other_timeStart>=timeStart && other_timeEnd>=timeEnd && other_timeStart<=timeStart))
 							{
 								if(exists_msg=="")
 									exists_msg="You have tour in this time.";

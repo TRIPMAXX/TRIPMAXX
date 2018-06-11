@@ -339,10 +339,10 @@
 										?>
 										<div>
 											<div style="display:inline-block">
-												<strong>Pickup: </strong><?php echo tools::module_date_format($pickupdate);?><input type="time" name="selected_pickuptime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_pickuptime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $pickuptime;?>" class="pickuptime" onkeyup="calculate_time($(this), 'p')">
+												<strong>From: </strong><?php //echo tools::module_date_format($pickupdate);?><input type="time" name="selected_pickuptime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_pickuptime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $pickuptime;?>" class="pickuptime" onkeyup="calculate_time($(this), 'p')">
 											</div>
 											<div style="display:inline-block">
-												<strong>Dropoff: </strong><?php echo tools::module_date_format($dropoffdate);?><input type="time" name="selected_dropofftime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_dropofftime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $dropofftime;?>" class="dropofftime" onkeyup="calculate_time($(this), 'd')">
+												<strong>To: </strong><?php //echo tools::module_date_format($dropoffdate);?><input type="time" name="selected_dropofftime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="selected_dropofftime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $dropofftime;?>" class="dropofftime" onkeyup="calculate_time($(this), 'd')">
 											</div>
 										</div>
 										<strong>Time: </strong><span class="calculated_time_diff">--</span>
@@ -357,7 +357,7 @@
 									</div>
 									<div class="clearfix"></div>
 									<div id="transfer<?php echo $transfer_val['id'];?>" <?php echo($transfer_first_row==1 && $offset==0 ? '' : 'style="display:none;"');?>  class="transfer_offer_cls">
-										<div style="border:1px solid gray;background-color:gray;margin-top:10px;">
+										<div style="border:1px solid gray;background-color:gray;margin-top:0px;">
 											<div class="col-md-1" style="font-weight:bold;color:#fff;">#</div>
 											<div class="col-md-3" style="font-weight:bold;color:#fff;">Offer Title</div>
 											<div class="col-md-3" style="font-weight:bold;color:#fff;">Service Type</div>

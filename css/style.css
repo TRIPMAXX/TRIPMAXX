@@ -441,12 +441,12 @@ button.srch-btn {cursor: pointer; font-family: 'Montserrat'; font-size:11px; fon
 .ui-widget-header {background:#fff !important; border:0px !important;}
 .ui-datepicker .ui-datepicker-title {font-size:12px; font-family: 'Montserrat'; text-transform:uppercase; font-weight:normal; color:#4c4c4c;}
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {font-family: 'Montserrat';  border:0px !important; font-size:11px; font-weight:normal; border-radius:0px !important; display:block; }
-.ui-datepicker td span, .ui-datepicker td a {padding:5px 5px 10px 10px !important; font-weight:normal !important; width:20px !important; height:20px !important; background:#fafafa !important;}
+.ui-datepicker td span, .ui-datepicker td a {/*padding:5px 5px 10px 10px !important; font-weight:normal !important; width:20px !important; height:20px !important; background:#fafafa !important;*/}
 .ui-datepicker td {padding:0px !important; color:#686d6e; border:1px solid #eaeaea;}
 .ui-datepicker td a:hover {background:#ff7200 !important; color:#fff;}
 .ui-state-default.ui-state-active {background:#ff7200 !important; color:#fff;}
 .ui-datepicker th {font-size:11px; font-weight:normal;}
-.ui-datepicker {padding:10px 14px 10px 14px;margin-left:-8px; margin-top:15px; width:252px;}
+.ui-datepicker {padding:10px 14px 10px 14px;margin-left:-8px; margin-top:15px; width:252px;z-index: 2 !important;}
 .ui-widget-header .ui-icon.ui-icon-circle-triangle-w {width:4px; height:8px; left:10px; background:url(../img/cal-left.png) left top no-repeat; background-position:0px 0px;}
 .ui-widget-header .ui-icon.ui-icon-circle-triangle-e {width:4px; height:8px; left:auto; margin-left:0px; right:0px; background:url(../img/cal-right.png) left top no-repeat; background-position:0px 0px;}
 .ui-datepicker .ui-datepicker-prev {left:0px; cursor:pointer;}

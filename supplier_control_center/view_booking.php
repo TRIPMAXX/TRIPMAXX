@@ -372,13 +372,13 @@
 																	if($tour_val['pickup_time']!=""):
 																	?>
 																	<br/>
-																	Pick Up Time: <?php echo date("h:i A", strtotime($tour_val['pickup_time'].":00"));?>
+																	From: <?php echo date("h:i A", strtotime($tour_val['pickup_time'].":00"));?>
 																	<?php
 																	endif;
 																	if($tour_val['dropoff_time']!=""):
 																	?>
 																	<br/>
-																	Drop off Time: <?php echo date("h:i A", strtotime($tour_val['dropoff_time'].":00"));?>
+																	To: <?php echo date("h:i A", strtotime($tour_val['dropoff_time'].":00"));?>
 																	<?php
 																	endif;
 																	?>
@@ -447,13 +447,13 @@
 																	if($transfer_val['pickup_time']!=""):
 																	?>
 																	<br/>
-																	Pick Up Time: <?php echo date("h:i A", strtotime($transfer_val['pickup_time'].":00"));?>
+																	From: <?php echo date("h:i A", strtotime($transfer_val['pickup_time'].":00"));?>
 																	<?php
 																	endif;
 																	if($transfer_val['dropoff_time']!=""):
 																	?>
 																	<br/>
-																	Drop off Time: <?php echo date("h:i A", strtotime($transfer_val['dropoff_time'].":00"));?>
+																	To: <?php echo date("h:i A", strtotime($transfer_val['dropoff_time'].":00"));?>
 																	<?php
 																	endif;
 																	if($transfer_val['airport']!=""):

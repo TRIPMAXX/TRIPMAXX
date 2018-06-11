@@ -173,10 +173,12 @@
 													endif;
 													$transfer_prev_html.='<div>';
 														$transfer_prev_html.='<div style="display:inline-block;">';
-															$transfer_prev_html.='<strong>Pickup: </strong>'.tools::module_date_format($t_val['booking_start_date']).'<input type="time" name="selected_pickuptime['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="selected_pickuptime['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$t_val['pickup_time'].'" class="pickuptime" onkeyup="calculate_time($(this), \'p\')">';
+															//'.tools::module_date_format($t_val['booking_start_date']).'
+															$transfer_prev_html.='<strong>From: </strong><input type="time" name="selected_pickuptime['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="selected_pickuptime['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$t_val['pickup_time'].'" class="pickuptime" onkeyup="calculate_time($(this), \'p\')">';
 														$transfer_prev_html.='</div>';
 														$transfer_prev_html.='<div style="display:inline-block;">';
-															$transfer_prev_html.='<strong>Dropoff: </strong>'.tools::module_date_format($t_val['booking_start_date']).'<input type="time" name="selected_dropofftime['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="selected_dropofftime['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$t_val['dropoff_time'].'" class="dropofftime" onkeyup="calculate_time($(this), \'d\')">';
+															//'.tools::module_date_format($t_val['booking_start_date']).'
+															$transfer_prev_html.='<strong>To: </strong><input type="time" name="selected_dropofftime['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="selected_dropofftime['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$t_val['dropoff_time'].'" class="dropofftime" onkeyup="calculate_time($(this), \'d\')">';
 														$transfer_prev_html.='</div>';
 													$transfer_prev_html.='</div>';
 													$transfer_prev_html.='<strong>Time: </strong><span class="calculated_time_diff">'.$hour.' hours</span><br>';
