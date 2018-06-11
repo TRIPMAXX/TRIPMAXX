@@ -559,11 +559,11 @@
 	{
 		if(cur.is(":checked")==true)
 		{
-			cur.parent("div").find('input[type="checkbox"]').prop("checked", true);
+			cur.parents(".hotel_rating_new_div").find('input[type="checkbox"]').prop("checked", true);
 		}
 		else
 		{
-			cur.parent("div").find('input[type="checkbox"]').prop("checked", false);
+			cur.parents(".hotel_rating_new_div").find('input[type="checkbox"]').prop("checked", false);
 		}
 	}
 	function manage_booking_type(val) {
@@ -1508,7 +1508,11 @@
 				var markup = '';
 				markup+='<div class="form-group appended_row each_city_row">';
 					markup+='<div class="form-group col-md-2">';
-						markup+='<input type="checkbox" name="record"/>&nbsp;&nbsp;<label for="inputName" class="control-label">Country<font color="#FF0000">*</font></label>';
+						markup+='<label class="checkbox_container">';
+							markup+='<input type="checkbox" name="record">';
+							markup+='<span class="checkmark" style="top:-10px;"></span>';
+						markup+='</label>';
+						markup+='<label for="inputName" class="control-label">Country<font color="#FF0000">*</font></label>';
 						markup+='<select name="country['+new_row_key+']" class="form-control validate[required]" id="country'+new_row_key+'" onchange="fetch_city($(this).val(), '+new_row_key+');">';
 							markup+='<option value="">Select Country</option>';
 							<?php
@@ -1544,7 +1548,32 @@
 					?>
 						markup+='</select>';
 					markup+='</div>';
-					markup+='<div class="form-group col-md-2"><label for="inputName" class="control-label">Hotel Ratings<font color="#FF0000">*</font></label><br/><input type="checkbox" name="all_checkbox" class="all_checkbox" onclick="check_all_rating($(this))">&nbsp;All&nbsp;&nbsp;<input type="checkbox" value="1" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;1&nbsp;&nbsp;<input type="checkbox" value="2" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;2&nbsp;&nbsp;<input type="checkbox"  value="3" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;3&nbsp;&nbsp;<input type="checkbox" value="4" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;4&nbsp;&nbsp;<input type="checkbox" value="5" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>&nbsp;5</div>';
+					markup+='<div class="form-group col-md-2 hotel_rating_new_div"><label for="inputName" class="control-label">Hotel Ratings<font color="#FF0000">*</font></label><br/>';
+						markup+='<label class="checkbox_container">All';
+							markup+='<input type="checkbox" name="all_checkbox" class="all_checkbox" onclick="check_all_rating($(this))">';
+							markup+='<span class="checkmark"></span>';
+						markup+='</label>';
+						markup+='<label class="checkbox_container">1';
+							markup+='<input type="checkbox" value="1" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>';
+							markup+='<span class="checkmark"></span>';
+						markup+='</label>';
+						markup+='<label class="checkbox_container">2';
+							markup+='<input type="checkbox" value="2" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>';
+							markup+='<span class="checkmark"></span>';
+						markup+='</label>';
+						markup+='<label class="checkbox_container">3';
+							markup+='<input type="checkbox"  value="3" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>';
+							markup+='<span class="checkmark"></span>';
+						markup+='</label>';
+						markup+='<label class="checkbox_container">4';
+							markup+='<input type="checkbox"  value="4" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>';
+							markup+='<span class="checkmark"></span>';
+						markup+='</label>';
+						markup+='<label class="checkbox_container">5';
+							markup+='<input type="checkbox"  value="5" name="hotel_ratings['+new_row_key+'][]" class="validate[minCheckbox[1]]"/>';
+							markup+='<span class="checkmark"></span>';
+						markup+='</label>';
+					markup+='</div>';
 					markup+='<div class="form-group col-md-2" style="">';
 						markup+='<label for="inputName" class="control-label">Hotels</label>';
 						markup+='<select class="form-control first_page_hotel" name="first_page_hotel['+new_row_key+']" id="first_page_hotel'+new_row_key+'" onchange="checked_hotel_rating($(this))">';
@@ -1703,7 +1732,7 @@
 							var other_selected_date=$(this).find(".calculate_tour_time .selected_booking_tour_date").val();
 							var other_timeStart = new Date(other_selected_date+" "+other_valuestart+":00");
 							var other_timeEnd = new Date(other_selected_date+" "+other_valuestop+":00");
-							if((other_timeStart>=timeStart && other_timeEnd<timeStart) || (other_timeStart<timeEnd && other_timeEnd>=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd && other_timeEnd>=timeStart) || (other_timeStart>=timeStart && other_timeEnd>=timeEnd && other_timeStart<=timeStart))
+							if((other_timeStart>=timeStart && other_timeEnd<timeStart) || (other_timeStart<timeEnd && other_timeEnd>=timeEnd) || (other_timeStart>=timeStart && other_timeEnd<=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd && other_timeEnd>=timeStart) || (other_timeStart>=timeStart && other_timeEnd>=timeEnd && other_timeStart<=timeStart))
 							{
 								if(exists_msg=="")
 									exists_msg="You have tour in this time.";
@@ -1733,18 +1762,18 @@
 						//alert(cur.parents(".calculate_time").find(".svg_path_id_input").length);
 						if(start_angle < 360 && end_angle < 360)
 						{
-							var arc_am=describeArc(30, 17.8, 19, start_angle, end_angle);
+							var arc_am=describeArc(30, 17.5, 17, start_angle, end_angle);
 							var arc_pm='';
 						}
 						else if(start_angle < 360 && end_angle > 359)
 						{
-							var arc_am=describeArc(30, 17.8, 19, start_angle, 359);
-							var arc_pm=describeArc(30, 17.8, 19, 360, end_angle);
+							var arc_am=describeArc(30, 17.5, 17, start_angle, 359);
+							var arc_pm=describeArc(30, 17.5, 17, 360, end_angle);
 						}
 						else if(start_angle > 359 && end_angle < 720)
 						{
 							var arc_am='';
-							var arc_pm=describeArc(30, 17.8, 19, start_angle, end_angle);
+							var arc_pm=describeArc(30, 17.5, 17, start_angle, end_angle);
 						}
 						if(cur.parents(".calculate_time").find(".svg_path_id_input").length)
 						{
@@ -1868,7 +1897,7 @@
 							var other_selected_date=$(this).find(".calculate_tour_time .selected_booking_tour_date").val();
 							var other_timeStart = new Date(other_selected_date+" "+other_valuestart+":00");
 							var other_timeEnd = new Date(other_selected_date+" "+other_valuestop+":00");
-							if((other_timeStart>=timeStart && other_timeEnd<timeStart) || (other_timeStart<timeEnd && other_timeEnd>=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd && other_timeEnd>=timeStart) || (other_timeStart>=timeStart && other_timeEnd>=timeEnd && other_timeStart<=timeStart))
+							if((other_timeStart>=timeStart && other_timeEnd<timeStart) || (other_timeStart<timeEnd && other_timeEnd>=timeEnd) || (other_timeStart>=timeStart && other_timeEnd<=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd && other_timeEnd>=timeStart) || (other_timeStart>=timeStart && other_timeEnd>=timeEnd && other_timeStart<=timeStart))
 							{
 								if(exists_msg=="")
 									exists_msg="You have tour in this time.";
@@ -1893,18 +1922,18 @@
 						//alert(cur.parent("div").find(".svg_path_id_input").length)
 						if(start_angle < 360 && end_angle < 360)
 						{
-							var arc_am=describeArc(30, 17.8, 19, start_angle, end_angle);
+							var arc_am=describeArc(30, 17.5, 17, start_angle, end_angle);
 							var arc_pm='';
 						}
 						else if(start_angle < 360 && end_angle > 359)
 						{
-							var arc_am=describeArc(30, 17.8, 19, start_angle, 359);
-							var arc_pm=describeArc(30, 17.8, 19, 360, end_angle);
+							var arc_am=describeArc(30, 17.5, 17, start_angle, 359);
+							var arc_pm=describeArc(30, 17.5, 17, 360, end_angle);
 						}
 						else if(start_angle > 359 && end_angle < 720)
 						{
 							var arc_am='';
-							var arc_pm=describeArc(30, 17.8, 19, start_angle, end_angle);
+							var arc_pm=describeArc(30, 17.5, 17, start_angle, end_angle);
 						}
 						if(cur.parent("div").find(".svg_path_id_input").length)
 						{
@@ -2206,7 +2235,10 @@
 																	if($post_country_key > 0)
 																	{
 																	?>
-																	<input type="checkbox" name="record"/>&nbsp;&nbsp;
+																	<label class="checkbox_container">
+																		<input type="checkbox" name="record">
+																		<span class="checkmark" style="top:-10px;"></span>
+																	</label>
 																	<?php
 																	}
 																	?>
@@ -2263,11 +2295,33 @@
 																?>
 																	</select>
 																</div>
-																<div class="form-group col-md-2">
+																<div class="form-group col-md-2 hotel_rating_new_div">
 																	<label for="inputName" class="control-label">Hotel Ratings<font color="#FF0000">*</font></label>
 																	<br/>
-																	<input type="checkbox" name="all_checkbox" class="all_checkbox" onclick="check_all_rating($(this))">&nbsp;All&nbsp;&nbsp;
-																	<input type="checkbox" value="1" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(1, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;1&nbsp;&nbsp;<input type="checkbox" value="2" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(2, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;2&nbsp;&nbsp;<input type="checkbox"  value="3" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(3, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;3&nbsp;&nbsp;<input type="checkbox" value="4" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(4, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;4&nbsp;&nbsp;<input type="checkbox" value="5" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(5, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>&nbsp;5
+																	<label class="checkbox_container">All
+																		<input type="checkbox" name="all_checkbox" class="all_checkbox" onclick="check_all_rating($(this))">
+																		<span class="checkmark"></span>
+																	</label>
+																	<label class="checkbox_container">1
+																		<input type="checkbox" value="1" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(1, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>
+																		<span class="checkmark"></span>
+																	</label>
+																	<label class="checkbox_container">2
+																		<input type="checkbox" value="2" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(2, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>
+																		<span class="checkmark"></span>
+																	</label>
+																	<label class="checkbox_container">3
+																		<input type="checkbox" value="3" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(3, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>
+																		<span class="checkmark"></span>
+																	</label>
+																	<label class="checkbox_container">4
+																		<input type="checkbox" value="4" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(4, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>
+																		<span class="checkmark"></span>
+																	</label>
+																	<label class="checkbox_container">5
+																		<input type="checkbox" value="5" name="hotel_ratings[<?php echo $post_country_key;?>][]" <?php echo(isset($_POST['hotel_ratings']) && !empty($_POST['hotel_ratings']) && isset($_POST['hotel_ratings'][$post_country_key]) && in_array(5, $_POST['hotel_ratings'][$post_country_key]) ? 'checked="checked"' : "");?> class="validate[minCheckbox[1]]"/>
+																		<span class="checkmark"></span>
+																	</label>
 																</div>
 																<div class="form-group col-md-2" style="">
 																	<label for="inputName" class="control-label">Hotels</label>
@@ -2326,11 +2380,33 @@
 																?>
 																	</select>
 																</div>
-																<div class="form-group col-md-2">
+																<div class="form-group col-md-2 hotel_rating_new_div">
 																	<label for="inputName" class="control-label">Hotel Ratings<font color="#FF0000">*</font></label>
 																	<br/>
-																	<input type="checkbox" name="all_checkbox" class="all_checkbox" onclick="check_all_rating($(this))">&nbsp;All&nbsp;&nbsp;
-																	<input type="checkbox" value="1" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>&nbsp;1&nbsp;&nbsp;<input type="checkbox" value="2" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>&nbsp;2&nbsp;&nbsp;<input type="checkbox"  value="3" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>&nbsp;3&nbsp;&nbsp;<input type="checkbox" value="4" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>&nbsp;4&nbsp;&nbsp;<input type="checkbox" class="validate[minCheckbox[1]]"value="5" name="hotel_ratings[0][]" />&nbsp;5
+																	<label class="checkbox_container">All
+																		<input type="checkbox" name="all_checkbox" class="all_checkbox" onclick="check_all_rating($(this))">
+																		<span class="checkmark"></span>
+																	</label>
+																	<label class="checkbox_container">1
+																		<input type="checkbox" value="1" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>
+																		<span class="checkmark"></span>
+																	</label>
+																	<label class="checkbox_container">2
+																		<input type="checkbox" value="2" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>
+																		<span class="checkmark"></span>
+																	</label>
+																	<label class="checkbox_container">3
+																		<input type="checkbox"  value="3" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>
+																		<span class="checkmark"></span>
+																	</label>
+																	<label class="checkbox_container">4
+																		<input type="checkbox"  value="4" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>
+																		<span class="checkmark"></span>
+																	</label>
+																	<label class="checkbox_container">5
+																		<input type="checkbox"  value="5" name="hotel_ratings[0][]" class="validate[minCheckbox[1]]"/>
+																		<span class="checkmark"></span>
+																	</label>
 																</div>
 																<div class="form-group col-md-2" style="">
 																	<label for="inputName" class="control-label">Hotels</label>

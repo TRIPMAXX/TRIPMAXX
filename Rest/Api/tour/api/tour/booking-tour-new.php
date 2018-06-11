@@ -43,7 +43,7 @@
 ?>
 											<div class="each_tour_date_div_<?php echo $tour_date;?> each_tour_date_div" data-date_time="<?php echo strtotime($tour_date);?>">
 												<div class="col-md-12 date_heading_div" onclick="hide_show_tour_details($(this))">
-													<h4>Date: <?php echo tools::module_date_format($tour_date);?></h4>
+													<h4>Date: <?php echo date("F j, Y", strtotime($tour_date));?></h4>
 													<div class="clock_img_div">
 											<?php
 														$clock_am_div=$clock_pm_div='';
@@ -59,14 +59,14 @@
 																		$start_angle=($booking_start_time[0]*60+$booking_start_time[1])*.5;
 																		$end_angle=($booking_end_time[0]*60+$booking_end_time[1])*.5;
 																		if($start_angle < 360 && $end_angle < 360):
-																			$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, $end_angle).'"></path>';
+																			$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.5, 17, $start_angle, $end_angle).'"></path>';
 																			$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d=""></path>';
 																		elseif($start_angle < 360 && $end_angle > 359):
-																			$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, 359).'"></path>';
-																			$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, 360, $end_angle).'"></path>';
+																			$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.5, 17, $start_angle, 359).'"></path>';
+																			$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.5, 17, 360, $end_angle).'"></path>';
 																		elseif($start_angle > 359 && $end_angle < 720):
 																			$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d=""></path>';
-																			$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, $end_angle).'"></path>';
+																			$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.5, 17, $start_angle, $end_angle).'"></path>';
 																		endif;
 																	endif;
 																endforeach;
@@ -82,14 +82,14 @@
 																		$start_angle=($booking_start_time[0]*60+$booking_start_time[1])*.5;
 																		$end_angle=($booking_end_time[0]*60+$booking_end_time[1])*.5;
 																		if($start_angle < 360 && $end_angle < 360):
-																			$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, $end_angle).'"></path>';
+																			$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.5, 17, $start_angle, $end_angle).'"></path>';
 																			$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d=""></path>';
 																		elseif($start_angle < 360 && $end_angle > 359):
-																			$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, 359).'"></path>';
-																			$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, 360, $end_angle).'"></path>';
+																			$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.5, 17, $start_angle, 359).'"></path>';
+																			$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.5, 17, 360, $end_angle).'"></path>';
 																		elseif($start_angle > 359 && $end_angle < 720):
 																			$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d=""></path>';
-																			$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, $end_angle).'"></path>';
+																			$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.5, 17, $start_angle, $end_angle).'"></path>';
 																		endif;
 																	endif;
 																endforeach;
@@ -182,8 +182,8 @@
 													<input type="hidden" name="selected_service_type[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" id="selected_service_type[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" value="<?php echo $find_tour_offer_details['service_type'];?>" class="selected_service_type">
 													<strong>Tour Type: </strong><?php echo $tour_type;?><br>
 													<input type="hidden" name="selected_tour_type[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" id="tour_type[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" value="<?php echo $find_tour_details['tour_type'];?>" class="tour_type">
-													<strong>Pickup: </strong><?php echo tools::module_date_format($t_val['booking_start_date']);?><input type="time" name="selected_pickuptime[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" id="selected_pickuptime[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" value="<?php echo $t_val['pickup_time'];?>" class="pickuptime" onkeyup="calculate_tour_time($(this), 'p')"><br>
-													<strong>Dropoff: </strong><?php echo tools::module_date_format($t_val['booking_start_date']);?><input type="time" name="selected_dropofftime[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" id="selected_dropofftime[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" value="<?php echo $t_val['dropoff_time'];?>" class="dropofftime" onkeyup="calculate_tour_time($(this), 'd')"><br>
+													<strong>From: </strong><?php //echo tools::module_date_format($t_val['booking_start_date']);?><input type="time" name="selected_pickuptime[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" id="selected_pickuptime[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" value="<?php echo $t_val['pickup_time'];?>" class="pickuptime" onkeyup="calculate_tour_time($(this), 'p')"><br>
+													<strong>To: </strong><?php //echo tools::module_date_format($t_val['booking_start_date']);?><input type="time" name="selected_dropofftime[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" id="selected_dropofftime[<?php echo $b_val['city_id'];?>][<?php echo $t_val['tour_id'];?>][old<?php echo $t_key;?>]" value="<?php echo $t_val['dropoff_time'];?>" class="dropofftime" onkeyup="calculate_tour_time($(this), 'd')"><br>
 													<strong>Time: </strong><span class="calculated_time_diff"><?php echo $hour;?> hours</span><br>
 													<input type="hidden" name="svg_path_id_input_hidden" class="svg_path_id_input" value="old_tour_<?php echo $t_val['id'];?>">
 												</div>
@@ -294,7 +294,7 @@
 ?>
 									<div class="each_tour_date_div_<?php echo $tour_date;?> each_tour_date_div" data-date_time="<?php echo strtotime($tour_date);?>">
 										<div class="col-md-12 date_heading_div" onclick="hide_show_tour_details($(this))">
-											<h4>Date: <?php echo tools::module_date_format($tour_date);?></h4>
+											<h4>Date: <?php echo date("F j, Y", strtotime($tour_date));?></h4>
 											<div class="clock_img_div">
 									<?php
 												$clock_am_div=$clock_pm_div='';
@@ -310,14 +310,14 @@
 																$start_angle=($booking_start_time[0]*60+$booking_start_time[1])*.5;
 																$end_angle=($booking_end_time[0]*60+$booking_end_time[1])*.5;
 																if($start_angle < 360 && $end_angle < 360):
-																	$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, $end_angle).'"></path>';
+																	$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.5, 17, $start_angle, $end_angle).'"></path>';
 																	$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d=""></path>';
 																elseif($start_angle < 360 && $end_angle > 359):
-																	$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, 359).'"></path>';
-																	$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, 360, $end_angle).'"></path>';
+																	$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.5, 17, $start_angle, 359).'"></path>';
+																	$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.5, 17, 360, $end_angle).'"></path>';
 																elseif($start_angle > 359 && $end_angle < 720):
 																	$clock_am_div.='<path class="am_old_transfer_'.$svg_t_val['id'].'" fill="green" d=""></path>';
-																	$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, $end_angle).'"></path>';
+																	$clock_pm_div.='<path class="pm_old_transfer_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.5, 17, $start_angle, $end_angle).'"></path>';
 																endif;
 															endif;
 														endforeach;
@@ -333,14 +333,14 @@
 																$start_angle=($booking_start_time[0]*60+$booking_start_time[1])*.5;
 																$end_angle=($booking_end_time[0]*60+$booking_end_time[1])*.5;
 																if($start_angle < 360 && $end_angle < 360):
-																	$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, $end_angle).'"></path>';
+																	$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.5, 17, $start_angle, $end_angle).'"></path>';
 																	$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d=""></path>';
 																elseif($start_angle < 360 && $end_angle > 359):
-																	$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, 359).'"></path>';
-																	$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, 360, $end_angle).'"></path>';
+																	$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.5, 17, $start_angle, 359).'"></path>';
+																	$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.5, 17, 360, $end_angle).'"></path>';
 																elseif($start_angle > 359 && $end_angle < 720):
 																	$clock_am_div.='<path class="am_old_tour_'.$svg_t_val['id'].'" fill="green" d=""></path>';
-																	$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.8, 19, $start_angle, $end_angle).'"></path>';
+																	$clock_pm_div.='<path class="pm_old_tour_'.$svg_t_val['id'].'" fill="green" d="'.tools::describeArc(30, 17.5, 17, $start_angle, $end_angle).'"></path>';
 																endif;
 															endif;
 														endforeach;

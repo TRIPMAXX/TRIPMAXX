@@ -109,13 +109,13 @@
 						if($server_data['data']['step_4_all']['transfer_pickuptime_arr'][$offer_key]!=""):
 						?>
 						<br/>
-						Pick Up Time: <?php echo date("h:i A", strtotime($server_data['data']['step_4_all']['transfer_pickuptime_arr'][$offer_key].":00"));?>
+						From: <?php echo date("h:i A", strtotime($server_data['data']['step_4_all']['transfer_pickuptime_arr'][$offer_key].":00"));?>
 						<?php
 						endif;
 						if($server_data['data']['step_4_all']['transfer_dropofftime_arr'][$offer_key]!=""):
 						?>
 						<br/>
-						Drop off Time: <?php echo date("h:i A", strtotime($server_data['data']['step_4_all']['transfer_dropofftime_arr'][$offer_key].":00"));?>
+						To: <?php echo date("h:i A", strtotime($server_data['data']['step_4_all']['transfer_dropofftime_arr'][$offer_key].":00"));?>
 						<?php
 						endif;
 						if($server_data['data']['step_4_all']['transfer_airport_arr'][$offer_key]!=""):

@@ -55,7 +55,7 @@
 			endif;
 			foreach($server_data['data']['country'] as $country_key=>$counrty_val):	
 				$hotel_first_row=1;
-				$order_by='ORDER BY h.id DESC';
+				$order_by='ORDER BY h.hotel_name DESC';
 				if(isset($server_data['data']['city_id']) && $server_data['data']['city_id']!=""):
 					if(isset($server_data['data']['country_id']) && $server_data['data']['country_id']!="" && $counrty_val==$server_data['data']['country_id'] && $server_data['data']['city_id']==$server_data['data']['city'][$country_key]):
 						if(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']!=""):
@@ -297,7 +297,7 @@
 									<div class="col-md-2" style="font-weight:bold;color:#000;text-align:center;border:0px solid red;">Rate</div>
 									<div class="clearfix"></div>
 								</div>
-								<div style="padding: 5px 0 0 0;border-left: 1px solid #0a80c4;border-right: 1px solid #0a80c4;">
+								<div style="padding: 5px 0 0 0;border-left: 1px solid #0a80c4;border-right: 1px solid #0a80c4;border-bottom: 1px solid #0a80c4;">
 									<div class="col-md-2" style="font-weight:bold;">
 										<?php
 										if($hotel_val['hotel_type']!=""):
@@ -407,7 +407,7 @@
 					$country_city_rcd_html.='<div class="col-md-6">';
 						$country_city_rcd_html.='<p><b>SORT BY:</b>&nbsp;&nbsp;&nbsp;';
 						//$country_city_rcd_html.='<input type = "radio" name = "sort" value="price" onchange="change_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'" '.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="price" ? 'checked="checked"' : '').'/>&nbsp;Price&nbsp;&nbsp;';
-						$country_city_rcd_html.='<input type = "radio" name = "sort" value="name" onchange="change_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'"'.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="name" ? 'checked="checked"' : '').'/>&nbsp;Hotel Name&nbsp;&nbsp;';
+						$country_city_rcd_html.='<input type = "radio" name = "sort" value="name" onchange="change_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'"'.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="name" ? 'checked="checked"' : (!isset($server_data['data']['sort_order']) || (isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']!="rating") ? 'checked="checked"' : '')).'/>&nbsp;Hotel Name&nbsp;&nbsp;';
 						$country_city_rcd_html.='<input type = "radio" name = "sort" value="rating" onchange="change_order($(this))" data-city_id="'.$server_data['data']['city'][$country_key].'" data-country_id="'.$counrty_val.'"'.(isset($server_data['data']['sort_order']) && $server_data['data']['sort_order']=="rating" ? 'checked="checked"' : '').'/>&nbsp;Rating</p>';
 					$country_city_rcd_html.='</div>';
 					$country_city_rcd_html.='<div class="clearfix"></div>';

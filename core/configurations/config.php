@@ -43,6 +43,8 @@ define("DOMAIN_NAME_PATH_ADMIN", $website_url.$project_folder."control_center/")
 
 //URL FOR HOTEL CONTROL CENTER
 define("DOMAIN_NAME_PATH_HOTEL", $website_url.$project_folder."hotel_control_center/");
+//URL FOR SUPPLIER CONTROL CENTER
+define("DOMAIN_NAME_PATH_SUPPLIER", $website_url.$project_folder."supplier_control_center/");
 
 //URL FOR CONTROL CENTER CSS
 define("CONTROL_CENTER_CSS_PATH", $website_url.$project_folder."control_center/assets/css/");
@@ -74,8 +76,19 @@ define("AUTO_LOGIN_SECURITY_KEY", "hjre658@37#99!");
 define("AGENT_IMAGES", "agent_control_center/assets/upload/agent/");
 
 define("REST_API_PATH", "Rest/Api/");
+define("SUPPLIER_API_PATH", "supplier/api/");
+define("HOTEL_API_PATH", "hotel/api/");
+define("TOUR_API_PATH", "tour/api/");
+define("PACKAGE_API_PATH", "package/api/");
+define("TRANSFER_API_PATH", "transfer/api/");
 define("BOOKING_API_PATH", "booking/api/");
 define("DMC_API_PATH", "dmc/api/");
+
+define("MAX_ROOM_NO", 10);
+define("MAX_ADULT_NO", 10);
+define("MAX_CHILD_NO", 10);
+define("MAX_CHILD_AGE", 11);
+define("RECORD_PER_PAGE", 10);
 
 define("API_USERNAME", "a");
 define("API_PASSWORD", "1");
@@ -85,7 +98,10 @@ define("TOKEN_SECRET_KEY", "tripmaxjwtkey");
 
 define("FROM_EMAIL", "noreply@neocoderztechnologies.com");
 
-
-
+define("HOTEL_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/hotel/");
+define("ROOM_IMAGE_PATH", DOMAIN_NAME_PATH."hotel_control_center/assets/upload/room/");
 define("AGENT_IMAGE_PATH", DOMAIN_NAME_PATH."agent_control_center/assets/upload/agent/");
+define("TOUR_IMAGE_PATH", DOMAIN_NAME_PATH."tour_control_center/assets/upload/tour/");
+define("TRANSFER_IMAGE_PATH", DOMAIN_NAME_PATH."transfer_control_center/assets/upload/transfer/");
+define("PACKAGE_IMAGE_PATH", DOMAIN_NAME_PATH."package_control_center/assets/upload/package/");
 ?>

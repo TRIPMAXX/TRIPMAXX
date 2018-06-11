@@ -767,13 +767,13 @@
 																	if($tour_val['pickup_time']!=""):
 																	?>
 																	<br/>
-																	Pick Up Time: <?php echo date("h:i A", strtotime($tour_val['pickup_time'].":00"));?>
+																	From: <?php echo date("h:i A", strtotime($tour_val['pickup_time'].":00"));?>
 																	<?php
 																	endif;
 																	if($tour_val['dropoff_time']!=""):
 																	?>
 																	<br/>
-																	Drop off Time: <?php echo date("h:i A", strtotime($tour_val['dropoff_time'].":00"));?>
+																	To: <?php echo date("h:i A", strtotime($tour_val['dropoff_time'].":00"));?>
 																	<?php
 																	endif;
 																	?>
@@ -842,13 +842,13 @@
 																	if($transfer_val['pickup_time']!=""):
 																	?>
 																	<br/>
-																	Pick Up Time: <?php echo date("h:i A", strtotime($transfer_val['pickup_time'].":00"));?>
+																	From: <?php echo date("h:i A", strtotime($transfer_val['pickup_time'].":00"));?>
 																	<?php
 																	endif;
 																	if($transfer_val['dropoff_time']!=""):
 																	?>
 																	<br/>
-																	Drop off Time: <?php echo date("h:i A", strtotime($transfer_val['dropoff_time'].":00"));?>
+																	To: <?php echo date("h:i A", strtotime($transfer_val['dropoff_time'].":00"));?>
 																	<?php
 																	endif;
 																	if($transfer_val['airport']!=""):
@@ -1085,60 +1085,60 @@
 							endif;
 							?>
 							<table aria-describedby="example1_info" id="example" class="table table-bordered table-striped dataTable">
-							<thead>
-								<tr role="row">
-									<th style = "text-align:center;" colspan = "3">Quotation</th>
-								</tr>
-							</thead>
-							<tbody aria-relevant="all" aria-live="polite" role="alert">
-								<tr class="odd">
-									<td style = "text-align:left;font-weight:bold;">Total Cost for Hotel Accommodation</td>
-									<td style = "text-align:center;font-weight:bold;" colspan = "2"><?php echo $booking_details_list['currency_code'].number_format($hotel_price, 2,".",",");?></td>
-								</tr>
-								<?php
-								if($tour_price!=0.00 || $transfer_price!=0.00):
-								?>
+								<thead>
+									<tr role="row">
+										<th style = "text-align:center;" colspan = "3">Quotation</th>
+									</tr>
+								</thead>
+								<tbody aria-relevant="all" aria-live="polite" role="alert">
+									<tr class="odd">
+										<td style = "text-align:left;font-weight:bold;">Total Cost for Hotel Accommodation</td>
+										<td style = "text-align:center;font-weight:bold;" colspan = "2"><?php echo $booking_details_list['currency_code'].number_format($hotel_price, 2,".",",");?></td>
+									</tr>
+									<?php
+									if($tour_price!=0.00 || $transfer_price!=0.00):
+									?>
+										<tr class="odd">
+											<td style = "text-align:left;font-weight:bold;">
+												Add-on : Cost for other components Tours & Transfer
+											</td>
+											<td style = "text-align:center;font-weight:bold;">
+												PER ADULT
+												<br/>
+												<?php echo $booking_details_list['currency_code'].number_format($tour_price+$transfer_price, 2,".",",");?>
+											</td>
+											<td style = "text-align:center;font-weight:bold;">
+												PER CHILD
+												<br/>
+												<?php echo $booking_details_list['currency_code'].number_format(0, 2,".",",");?>
+											</td>
+										</tr>
+									<?php
+									endif;
+									?>
 									<tr class="odd">
 										<td style = "text-align:left;font-weight:bold;">
-											Add-on : Cost for other components Tours & Transfer
+											No of Guests
 										</td>
 										<td style = "text-align:center;font-weight:bold;">
-											PER ADULT
+											ADULT
 											<br/>
-											<?php echo $booking_details_list['currency_code'].number_format($tour_price+$transfer_price, 2,".",",");?>
+											<?php echo $number_of_adult;?>
 										</td>
 										<td style = "text-align:center;font-weight:bold;">
-											PER CHILD
+											CHILD
 											<br/>
-											<?php echo $booking_details_list['currency_code'].number_format(0, 2,".",",");?>
+											<?php echo $number_of_child;?>
 										</td>
 									</tr>
-								<?php
-								endif;
-								?>
-								<tr class="odd">
-									<td style = "text-align:left;font-weight:bold;">
-										No of Guests
-									</td>
-									<td style = "text-align:center;font-weight:bold;">
-										ADULT
-										<br/>
-										<?php echo $number_of_adult;?>
-									</td>
-									<td style = "text-align:center;font-weight:bold;">
-										CHILD
-										<br/>
-										<?php echo $number_of_child;?>
-									</td>
-								</tr>
-								<tr class="odd">
-									<td style = "text-align:left;font-weight:bold;">Total Quantity</td>
-									<td style = "text-align:center;font-weight:bold;color:red;" colspan = "2">
-										<?php echo $booking_details_list['currency_code'].number_format($hotel_price+(($tour_price+$transfer_price)*$number_of_adult), 2,".",",");?>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+									<tr class="odd">
+										<td style = "text-align:left;font-weight:bold;">Total Quantity</td>
+										<td style = "text-align:center;font-weight:bold;color:red;" colspan = "2">
+											<?php echo $booking_details_list['currency_code'].number_format($hotel_price+(($tour_price+$transfer_price)*$number_of_adult), 2,".",",");?>
+										</td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
 						<?php
 						else:

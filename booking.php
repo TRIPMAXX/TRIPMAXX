@@ -1,6 +1,13 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['AGENT_SESSION_DATA']['id'], DOMAIN_NAME_PATH.'');
+	if(isset($_GET['msg']) && $_GET['msg']=="b_success")
+	{
+		$_SESSION['SET_TYPE'] = 'success';
+		$_SESSION['SET_FLASH'] = "Booking has been saved successfully.";
+		header("location:booking.php");
+		exit;
+	}
 	$autentication_data_booking=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."authorized.php"));
 	if(isset($autentication_data_booking->status)):
 		if($autentication_data_booking->status=="success"):
@@ -167,7 +174,7 @@
 																		<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $book_val['status']==1 ? "btn-success" : "btn-warning";?>" onclick="change_status(<?= $book_val['id'];?>, $(this))"><?= $book_val['status']==1 ? "Completed" : "Pending";?></a>
 																	</td>
 																	<td class="text-center" data-title="Action">
-																		<a href = "<?php echo(DOMAIN_NAME_PATH);?>view_booking.php?booking_id=<?php echo base64_encode($book_val['id']);?>" title = "View Booking Details"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
+																		<a href = "<?php echo(DOMAIN_NAME_PATH);?>view_booking.php?booking_id=<?php echo base64_encode($book_val['id']);?><?php echo(isset($_GET['sub_agent_id']) && $_GET['sub_agent_id']!="" ? "&sub_agent_id=".$_GET['sub_agent_id'] : "");?>" title = "View Booking Details"><i class="fa fa-eye fa-1x" ></i></a>&nbsp;&nbsp;
 																	</td>
 																</tr>
 															<?php
