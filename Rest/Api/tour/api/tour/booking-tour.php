@@ -67,7 +67,7 @@
 			endif;
 			$find_tour_type = tools::find("first", TM_ATTRIBUTES, '*', "WHERE id=:id ", array(":id"=>$server_data['data']['tour_type']));
 			$pickuptime=$server_data['data']['pick_time'];
-			$pickup_time_str=strtotime($server_data['data']['booking_tour_date']." ".$server_data['data']['pick_time'].":00")+($server_data['data']['threshold_booking_time']['threshold_booking_time']*60*60);
+			$pickup_time_str=strtotime($server_data['data']['booking_tour_date']." ".$server_data['data']['pick_time'].":00");
 			$pickuptime=date("H:i", $pickup_time_str);
 			$pickupdate=$dropoffdate=$server_data['data']['booking_tour_date'];
 			foreach($server_data['data']['country'] as $country_key=>$counrty_val):	

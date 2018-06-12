@@ -1,6 +1,19 @@
 <?php
 	require_once('loader.inc');
 	tools::module_validation_check(@$_SESSION['AGENT_SESSION_DATA']['id'], DOMAIN_NAME_PATH.'');
+	if(isset($_GET['sub_agent_id']) && $_GET['sub_agent_id']!=""):
+		$sub_agent_data = tools::find("first", TM_AGENT, "*", "WHERE id=:id AND parent_id=:parent_id", array(':id'=>base64_decode($_GET['sub_agent_id']), ':parent_id'=>$_SESSION['AGENT_SESSION_DATA']['id']));
+		if(!empty($sub_agent_data)):
+			$agent_id=base64_decode($_GET['sub_agent_id']);
+		else:
+			$_SESSION['SET_TYPE'] = 'error';
+			$_SESSION['SET_FLASH']="Invalid sub agent.";
+			header("location:".DOMAIN_NAME_PATH."create_new_booking.php");
+			exit;
+		endif;
+	else:
+		$agent_id=$_SESSION['AGENT_SESSION_DATA']['id'];
+	endif;
 	$contry_list = tools::find("all", TM_COUNTRIES, '*', "WHERE :all ORDER BY name ASC", array(":all"=>1));
 	$currency_list = tools::find("all", TM_CURRENCIES, '*', "WHERE status=:status ORDER BY serial_number ASC", array(":status"=>1));
 ?>
@@ -74,9 +87,9 @@
 				{
 					$("#agent_name").attr("disabled", false);
 					$.ajax({
-						url:'<?= DOMAIN_NAME_PATH."ajax_booking_step1_execute";?>',
+						url:'<?= DOMAIN_NAME_PATH."ajax_booking_step1_execute.php";?>',
 						type:"post",
-						data:$("#form_first_step").serialize(),
+						data:$("#form_first_step").serialize()+'&agent_id=<?php echo $agent_id;?>',
 						beforeSend:function(){
 							$(".loader_inner").fadeIn();
 						},
@@ -97,8 +110,8 @@
 							else
 							{
 								showError(response.msg);
+								$(".loader_inner").fadeOut();
 							}
-							$(".loader_inner").fadeOut();
 						},
 						error:function(){
 							//showError("We are having some problem. Please try later.");
@@ -183,7 +196,7 @@
 						hotel_room_arr.push($(this).val());
 					});
 					$.ajax({
-						url:'<?= DOMAIN_NAME_PATH."ajax_booking_step2_execute";?>',
+						url:'<?= DOMAIN_NAME_PATH."ajax_booking_step2_execute.php";?>',
 						type:"post",
 						data:{
 							hotel_room_arr:hotel_room_arr
@@ -210,8 +223,8 @@
 							else
 							{
 								showError(response.msg);
+								$(".loader_inner").fadeOut();
 							}
-							$(".loader_inner").fadeOut();
 						},
 						error:function(){
 							//showError("We are having some problem. Please try later.");
@@ -242,7 +255,7 @@
 					}
 				});
 				$.ajax({
-					url:'<?= DOMAIN_NAME_PATH."ajax_booking_step3_execute";?>',
+					url:'<?= DOMAIN_NAME_PATH."ajax_booking_step3_execute.php";?>',
 					type:"post",
 					data:{
 						tour_offer_arr:tour_offer_arr,
@@ -279,8 +292,8 @@
 						else
 						{
 							showError(response.msg);
+							$(".loader_inner").fadeOut();
 						}
-						$(".loader_inner").fadeOut();
 					},
 					error:function(){
 						//showError("We are having some problem. Please try later.");
@@ -314,7 +327,7 @@
 					}
 				});
 				$.ajax({
-					url:'<?= DOMAIN_NAME_PATH."ajax_booking_step4_execute";?>',
+					url:'<?= DOMAIN_NAME_PATH."ajax_booking_step4_execute.php";?>',
 					type:"post",
 					data:{
 						transfer_offer_arr:transfer_offer_arr,
@@ -355,8 +368,8 @@
 						else
 						{
 							showError(response.msg);
+							$(".loader_inner").fadeOut();
 						}
-						$(".loader_inner").fadeOut();
 					},
 					error:function(){
 						//showError("We are having some problem. Please try later.");
@@ -367,7 +380,7 @@
 				if($("#quotation_name_form").validationEngine("validate"))
 				{
 					$.ajax({
-						url:'<?= DOMAIN_NAME_PATH."ajax_update_quotation_name";?>',
+						url:'<?= DOMAIN_NAME_PATH."ajax_update_quotation_name.php";?>',
 						type:"post",
 						data:$("#quotation_name_form").serialize(),
 						beforeSend:function(){
@@ -402,7 +415,7 @@
 				else
 				{
 					$.ajax({
-						url:'<?= DOMAIN_NAME_PATH."ajax_booking_step5_execute";?>',
+						url:'<?= DOMAIN_NAME_PATH."ajax_booking_step5_execute.php";?>',
 						type:"post",
 						data:$("#payment_method_form").serialize(),
 						beforeSend:function(){
@@ -415,7 +428,7 @@
 							if(response.status=="success")
 							{
 								//showSuccess(response.msg);
-								window.location.href="booking.php?msg=b_success";
+								window.location.href="booking.php?msg=b_success<?php echo(isset($_GET['sub_agent_id']) && $_GET['sub_agent_id']!='' ? '&sub_agent_id='.$_GET['sub_agent_id'] : '');?>";
 							}
 							else
 							{
@@ -597,7 +610,7 @@
 		function fetch_city(country_id, key)
 		{
 			$.ajax({
-				url:"<?= DOMAIN_NAME_PATH."ajax_booking_city_fetch";?>",
+				url:"<?= DOMAIN_NAME_PATH."ajax_booking_city_fetch.php";?>",
 				type:"post",
 				data:{
 					country_id:country_id
@@ -821,7 +834,7 @@
 		function fetch_step2_rcd(page, type, sort_order='', city_id='', country_id='', search_val='')
 		{
 			$.ajax({
-				url:'<?= DOMAIN_NAME_PATH."ajax_find_booking_step2_data";?>',
+				url:'<?= DOMAIN_NAME_PATH."ajax_find_booking_step2_data.php";?>',
 				type:"post",
 				data:{
 					page:page,
@@ -898,7 +911,7 @@
 		function fetch_step3_rcd(page, type, sort_order='', city_id='', country_id='', search_val='', booking_tour_date='', tour_type='', pick_time='', selected_service_type='', search_counter='')
 		{
 			$.ajax({
-				url:'<?= DOMAIN_NAME_PATH."ajax_find_booking_step3_data";?>',
+				url:'<?= DOMAIN_NAME_PATH."ajax_find_booking_step3_data.php";?>',
 				type:"post",
 				data:{
 					page:page,
@@ -1069,7 +1082,7 @@
 		function fetch_new_step3_rcd(page, type, sort_order='', city_id='', country_id='', search_val='')
 		{
 			$.ajax({
-				url:'<?= DOMAIN_NAME_PATH."ajax_find_new_booking_step3_data";?>',
+				url:'<?= DOMAIN_NAME_PATH."ajax_find_new_booking_step3_data.php";?>',
 				type:"post",
 				data:{
 					page:page,
@@ -1140,7 +1153,7 @@
 		function fetch_step4_rcd(page, type, sort_order='', city_id='', country_id='', search_val='', booking_transfer_date='', pickup_dropoff_type='', selected_airport='', arr_dept_flight_number='', arr_dept_time='', selected_service_type='', search_counter='')
 		{
 			$.ajax({
-				url:'<?= DOMAIN_NAME_PATH."ajax_find_booking_step4_data";?>',
+				url:'<?= DOMAIN_NAME_PATH."ajax_find_booking_step4_data.php";?>',
 				type:"post",
 				data:{
 					page:page,
@@ -1293,7 +1306,7 @@
 		function fetch_new_step4_rcd(page, type, sort_order='', city_id='', country_id='', search_val='')
 		{
 			$.ajax({
-				url:'<?= DOMAIN_NAME_PATH."ajax_find_new_booking_step4_data";?>',
+				url:'<?= DOMAIN_NAME_PATH."ajax_find_new_booking_step4_data.php";?>',
 				type:"post",
 				data:{
 					page:page,
@@ -1364,7 +1377,7 @@
 		function fetch_step5_data()
 		{
 			$.ajax({
-				url:'<?= DOMAIN_NAME_PATH."ajax_find_booking_step5_data";?>',
+				url:'<?= DOMAIN_NAME_PATH."ajax_find_booking_step5_data.php";?>',
 				type:"post",
 				beforeSend:function(){
 					$(".loader_inner").fadeIn();
@@ -1416,7 +1429,7 @@
 					hotel_type=cur.parents(".each_city_row").find(".form-group:eq(3) select").val();
 				}
 				$.ajax({
-					url:'<?= DOMAIN_NAME_PATH."ajax_find_city_hotel_data";?>',
+					url:'<?= DOMAIN_NAME_PATH."ajax_find_city_hotel_data.php";?>',
 					type:"post",
 					data:{
 						city_id:city_id,
@@ -2051,6 +2064,8 @@
 			}
 			function enable_disable_airport(cur)
 			{
+				cur.parents("form").find(".selected_airport").val("");
+				cur.parents("form").find(".arr_dept_flight_number").val("");
 				if(cur.val()==1 || cur.val()==4)
 				{
 					cur.parents("form").find(".airport_all_div").show();

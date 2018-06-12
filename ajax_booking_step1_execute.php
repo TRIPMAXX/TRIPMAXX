@@ -6,7 +6,7 @@
 	if(isset($_POST) && !empty($_POST)):
 		$_SESSION['step_1']=$_POST;
 		$_SESSION['step_1']['booking_type']="agent";
-		$_SESSION['step_1']['agent_name']=$_SESSION['AGENT_SESSION_DATA']['id'];
+		$_SESSION['step_1']['agent_name']=$_POST['agent_id'];
 		$data['status']="success";
 		$data['msg']="Saved to session.";
 	endif;

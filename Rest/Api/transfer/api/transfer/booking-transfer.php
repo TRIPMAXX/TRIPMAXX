@@ -68,7 +68,7 @@
 			$find_pickup_dropoff_type = tools::find("first", TM_ATTRIBUTES, '*', "WHERE id=:id ", array(":id"=>$server_data['data']['pickup_dropoff_type']));
 			$pickuptime=$dropofftime="";
 			$pickupdate=$dropoffdate=$server_data['data']['booking_transfer_date'];
-			if($find_pickup_dropoff_type['id']!=4)
+			if($find_pickup_dropoff_type['id']==1)
 			{
 				$pickup_time_str=strtotime($server_data['data']['booking_transfer_date']." ".$server_data['data']['arr_dept_time'].":00")+($server_data['data']['threshold_booking_time']['threshold_booking_time']*60*60);
 				$pickuptime=date("H:i", $pickup_time_str);
@@ -79,6 +79,12 @@
 				$dropoff_time_str=strtotime($server_data['data']['booking_transfer_date']." ".$server_data['data']['arr_dept_time'])-($server_data['data']['threshold_booking_time']['threshold_booking_time']*60*60);
 				$dropofftime=date("H:i", $dropoff_time_str);
 				$pickupdate=$dropoffdate=date("Y-m-d", $dropoff_time_str);
+			}
+			else
+			{
+				$pickup_time_str=strtotime($server_data['data']['booking_transfer_date']." ".$server_data['data']['arr_dept_time'].":00");
+				$pickuptime=date("H:i", $pickup_time_str);
+				$dropoffdate=$pickupdate=date("Y-m-d", $pickup_time_str);
 			}
 			foreach($server_data['data']['country'] as $country_key=>$counrty_val):	
 				$transfer_first_row=1;

@@ -209,8 +209,8 @@
 							else
 							{
 								showError(response.msg);
+								$(".loader_inner").fadeOut();
 							}
-							$(".loader_inner").fadeOut();
 						},
 						error:function(){
 							//showError("We are having some problem. Please try later.");
@@ -321,8 +321,8 @@
 							else
 							{
 								showError(response.msg);
+								$(".loader_inner").fadeOut();
 							}
-							$(".loader_inner").fadeOut();
 						},
 						error:function(){
 							//showError("We are having some problem. Please try later.");
@@ -390,8 +390,8 @@
 						else
 						{
 							showError(response.msg);
+							$(".loader_inner").fadeOut();
 						}
-						$(".loader_inner").fadeOut();
 					},
 					error:function(){
 						//showError("We are having some problem. Please try later.");
@@ -466,8 +466,8 @@
 						else
 						{
 							showError(response.msg);
+							$(".loader_inner").fadeOut();
 						}
-						$(".loader_inner").fadeOut();
 					},
 					error:function(){
 						//showError("We are having some problem. Please try later.");
@@ -2165,6 +2165,8 @@
 		}
 		function enable_disable_airport(cur)
 		{
+			cur.parents("form").find(".selected_airport").val("");
+			cur.parents("form").find(".arr_dept_flight_number").val("");
 			if(cur.val()==1 || cur.val()==4)
 			{
 				cur.parents("form").find(".airport_all_div").show();

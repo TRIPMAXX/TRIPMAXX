@@ -404,7 +404,7 @@
 						$country_city_rcd_html.='</div>';
 						$country_city_rcd_html.='<div class="form-group col-sm-3 airport_all_div">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Flight Number and Name</label>';
-							$country_city_rcd_html.='<input type="text" class="form-control" name="arr_dept_flight_number'.$server_data['data']['city'][$country_key].'" id="arr_dept_flight_number'.$server_data['data']['city'][$country_key].'" value="" >';
+							$country_city_rcd_html.='<input type="text" class="form-control arr_dept_flight_number" name="arr_dept_flight_number'.$server_data['data']['city'][$country_key].'" id="arr_dept_flight_number'.$server_data['data']['city'][$country_key].'" value="">';
 						$country_city_rcd_html.='</div>';
 						$country_city_rcd_html.='<div class="clearfix"></div>';
 						$country_city_rcd_html.='<div class="form-group col-sm-3">';

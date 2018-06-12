@@ -476,7 +476,7 @@
 																<a style="padding: 3px;border-radius: 2px;cursor:pointer;text-decoration:none" data-id="" class="status_checks <?= $agent_val['status']==1 ? "btn-success" : "btn-danger";?>" onclick="change_status(<?= $agent_val['id'];?>, $(this))"><?= $agent_val['status']==1 ? "Active" : "Inactive";?></a>
 															</td>
 															<td class=" " data-title="Action">
-																<a href = "<?php echo(DOMAIN_NAME_PATH);?>create_new_booking.php" title = "Create New Bookings"><i class="fa fa-plus-square fa-1x" ></i></a>&nbsp;&nbsp;
+																<a href = "<?php echo(DOMAIN_NAME_PATH);?>create_new_booking.php?sub_agent_id=<?php echo base64_encode($agent_val['id']);?>" title = "Create New Bookings"><i class="fa fa-plus-square fa-1x" ></i></a>&nbsp;&nbsp;
 																<a href = "<?php echo(DOMAIN_NAME_PATH);?>booking.php?sub_agent_id=<?php echo base64_encode($agent_val['id']);?>" title = "Lists Of Bookings"><i class="fa fa-plane fa-1x" ></i></a>&nbsp;&nbsp;
 																<?php if(isset($agent_val['payment_type']) && $agent_val['payment_type']!='cash'){;?>
 																<a href = "<?php echo(DOMAIN_NAME_PATH);?>accounting.php?sub_agent_id=<?php echo base64_encode($agent_val['id']);?>" title = "Accounting"><i class="fa fa-usd fa-1x" ></i></a>&nbsp;&nbsp;

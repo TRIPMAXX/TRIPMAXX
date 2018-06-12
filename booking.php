@@ -5,7 +5,7 @@
 	{
 		$_SESSION['SET_TYPE'] = 'success';
 		$_SESSION['SET_FLASH'] = "Booking has been saved successfully.";
-		header("location:booking.php");
+		header("location:booking.php".(isset($_GET['sub_agent_id']) && $_GET['sub_agent_id']!='' ? '?sub_agent_id='.$_GET['sub_agent_id'] : ''));
 		exit;
 	}
 	$autentication_data_booking=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.BOOKING_API_PATH."authorized.php"));
