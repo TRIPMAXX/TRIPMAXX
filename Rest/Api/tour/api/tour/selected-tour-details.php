@@ -75,7 +75,7 @@
 				$each_tour_price=$total_price+$agent_commision+$nationality_charge;
 				$total_tour_price=$total_tour_price+$total_price+$agent_commision+$nationality_charge;
 				if($prev_booking_date=="" || $prev_booking_date!=$server_data['data']['step_3_all']['tour_booking_tour_date_arr'][$offer_key]):
-					$prev_booking_date=$server_data['data']['step_3_all']['tour_booking_tour_date_arr'][$offer_key]
+					$prev_booking_date=$server_data['data']['step_3_all']['tour_booking_tour_date_arr'][$offer_key];
 ?>
 				<tr class="odd">
 					<td style = "text-align:left;padding-bottom: 0;" colspan="100%">

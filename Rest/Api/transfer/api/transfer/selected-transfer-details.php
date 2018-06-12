@@ -84,7 +84,7 @@
 				$each_transfer_price=$total_price+$agent_commision+$nationality_charge;
 				$total_transfer_price=$total_transfer_price+$total_price+$agent_commision+$nationality_charge;
 				if($prev_booking_date=="" || $prev_booking_date!=$server_data['data']['step_4_all']['transfer_booking_transfer_date_arr'][$offer_key]):
-					$prev_booking_date=$server_data['data']['step_4_all']['transfer_booking_transfer_date_arr'][$offer_key]
+					$prev_booking_date=$server_data['data']['step_4_all']['transfer_booking_transfer_date_arr'][$offer_key];
 ?>
 				<tr class="odd">
 					<td style = "text-align:left;padding-bottom: 0;" colspan="100%">

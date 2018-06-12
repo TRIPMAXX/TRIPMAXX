@@ -725,6 +725,7 @@
 										endforeach;
 									endif;
 									if(isset($desti_val['booking_tour_list']) && !empty($desti_val['booking_tour_list'])):
+										$prev_booking_date="";
 										foreach($desti_val['booking_tour_list'] as $tour_key=>$tour_val):
 											$autentication_data_tour=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.TOUR_API_PATH."authorized.php"));
 											if(isset($autentication_data_tour->status)):
@@ -757,6 +758,16 @@
 															$each_tour_price=$tour_val['price']+(($tour_val['price']*$tour_val['nationality_addon_percentage'])/100)+(($tour_val['price']*$tour_val['agent_markup_percentage'])/100);
 															$tour_price=$tour_price+$each_tour_price;
 															ob_start();
+															if($prev_booking_date=="" || $prev_booking_date!=$tour_val['booking_start_date']):
+																$prev_booking_date=$tour_val['booking_start_date'];
+														?>
+															<tr class="odd">
+																<td style = "text-align:left;padding-bottom: 0;" colspan="100%">
+																	<h4 style="margin: 0;"><?php echo tools::module_date_format($tour_val['booking_start_date']);?></h4>
+																</td>
+															</tr>
+														<?php
+															endif;
 														?>
 															<tr class="odd">
 																<td style = "text-align:left;">
@@ -795,6 +806,7 @@
 										endforeach;
 									endif;
 									if(isset($desti_val['booking_transfer_list']) && !empty($desti_val['booking_transfer_list'])):
+										$prev_booking_date="";
 										foreach($desti_val['booking_transfer_list'] as $transfer_key=>$transfer_val):
 											$autentication_data_transfer=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.TRANSFER_API_PATH."authorized.php"));
 											if(isset($autentication_data_transfer->status)):
@@ -826,6 +838,16 @@
 															$each_transfer_price=$transfer_val['price']+(($transfer_val['price']*$transfer_val['nationality_addon_percentage'])/100)+(($transfer_val['price']*$transfer_val['agent_markup_percentage'])/100);
 															$transfer_price=$transfer_price+$each_transfer_price;
 															ob_start();
+															if($prev_booking_date=="" || $prev_booking_date!=$transfer_val['booking_start_date']):
+																$prev_booking_date=$transfer_val['booking_start_date'];
+														?>
+															<tr class="odd">
+																<td style = "text-align:left;padding-bottom: 0;" colspan="100%">
+																	<h4 style="margin: 0;"><?php echo tools::module_date_format($transfer_val['booking_start_date']);?></h4>
+																</td>
+															</tr>
+														<?php
+															endif;
 														?>
 															<tr class="odd">
 																<td style = "text-align:left;">
