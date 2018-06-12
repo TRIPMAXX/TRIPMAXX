@@ -167,6 +167,76 @@
 								endif;
 							endforeach;
 						endif;
+						if(isset($desti_val['booking_tour_list']) && !empty($desti_val['booking_tour_list'])):
+							foreach($desti_val['booking_tour_list'] as $tour_key=>$tour_val):
+								$autentication_data_tour=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.TOUR_API_PATH."authorized.php"));
+								if(isset($autentication_data_tour->status)):
+									if($autentication_data_tour->status=="success"):
+										$post_data_tour['token']=array(
+											"token"=>$autentication_data_tour->results->token,
+											"token_timeout"=>$autentication_data_tour->results->token_timeout,
+											"token_generation_time"=>$autentication_data_tour->results->token_generation_time
+										);
+										$post_data_tour['data']['tour_id']=$tour_val['tour_id'];
+										$post_data_tour['data']['offer_id']=$tour_val['offer_id'];
+										$post_data_str_tour=json_encode($post_data_tour);
+										$ch = curl_init();
+										curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+										curl_setopt($ch, CURLOPT_HEADER, false);
+										curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+										curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+										curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.TOUR_API_PATH."tour/find-booked-tour.php");
+										curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str_tour);
+										curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+										$return_data_tour = curl_exec($ch);
+										curl_close($ch);
+										$return_data_arr_tour=json_decode($return_data_tour, true);
+										//print_r($return_data_arr_tour);
+										if(!isset($return_data_arr_tour['status'])):
+											$data['status'] = 'error';
+											$data['msg']="Some error has been occure during execution.";
+										elseif($return_data_arr_tour['status']=="success"):
+											if(isset($return_data_arr_tour['find_tour']) && isset($return_data_arr_tour['find_offer'])):
+												$each_tour_price=$tour_val['price']+(($tour_val['price']*$tour_val['nationality_addon_percentage'])/100)+(($tour_val['price']*$tour_val['agent_markup_percentage'])/100);
+												$tour_price=$tour_price+$each_tour_price;
+												ob_start();
+											?>
+												<tr class="odd">
+													<td style = "text-align:left;">
+														<?php echo $return_data_arr_tour['find_tour']['tour_title'];?> - <?php echo $return_data_arr_tour['find_offer']['offer_title'];?> - <?php echo $return_data_arr_tour['find_offer']['service_type'];?> ( Capacity:  <?php echo $return_data_arr_tour['find_offer']['offer_capacity'];?> )
+														<br/>
+														Price: <?php echo $booking_details_list['currency_code'].number_format($each_tour_price, 2,".",",");?>
+														<?php
+														if($tour_val['pickup_time']!=""):
+														?>
+														<br/>
+														Form: <?php echo date("h:i A", strtotime($tour_val['pickup_time'].":00"));?>
+														<?php
+														endif;
+														if($tour_val['dropoff_time']!=""):
+														?>
+														<br/>
+														To: <?php echo date("h:i A", strtotime($tour_val['dropoff_time'].":00"));?>
+														<?php
+														endif;
+														?>
+													</td>
+												</tr>
+											<?php
+												$each_tour_html=ob_get_clean();
+												$tour_html.=$each_tour_html;
+											endif;
+										else:
+											$data['status'] = 'error';
+											$data['msg'] = $return_data_arr_hotel['msg'];
+										endif;
+									endif;
+								else:
+									$data['status'] = 'error';
+									$data['msg'] = $autentication_data->msg;
+								endif;
+							endforeach;
+						endif;
 
 					endforeach;
 				endif;
