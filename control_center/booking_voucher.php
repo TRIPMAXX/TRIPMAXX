@@ -28,18 +28,154 @@
 					$_SESSION['SET_FLASH']="Some error has been occure during execution.";
 				elseif($return_data_arr_booking['status']=="success"):
 					$booking_details_list=$return_data_arr_booking['results'][0];
-					//print_r($booking_details_list);
+					//print_r($booking_details_list);exit;
 				else:
 					$_SESSION['SET_TYPE'] = 'error';
 					$_SESSION['SET_FLASH'] = $return_data_arr_booking['msg'];
 				endif;
+				//
+				
+				$number_of_person=$number_of_adult=$number_of_child=0;
+				$audlt_arr=json_decode($booking_details_list['adult'], true);
+				foreach($audlt_arr as $adult_key=>$adult_val):
+					if($adult_val!="")
+						$number_of_adult=$number_of_adult+$adult_val;
+				endforeach;
+				$child_arr=json_decode($booking_details_list['child'], true);
+				foreach($child_arr as $child_key=>$child_val):
+					if(isset($child_val['child']) && $child_val['child']!="")
+						$number_of_child=$number_of_child+$child_val['child'];
+				endforeach;
+				$number_of_person=$number_of_adult+$number_of_child;
 
-				// HTML \\
+				///////////////////////////////////
+				$hotel_html=array();
+				$hotel_number=0;
+				$tour_html='';
+				$transfer_html='';
+				$hotel_price=$tour_price=$transfer_price=0.00;
+				if(isset($booking_details_list['booking_destination_list']) && !empty($booking_details_list['booking_destination_list'])):
+					foreach($booking_details_list['booking_destination_list'] as $desti_key=>$desti_val):
+						if(isset($desti_val['booking_hotel_list']) && !empty($desti_val['booking_hotel_list'])):
+							foreach($desti_val['booking_hotel_list'] as $hotel_key=>$hotel_val):
+								$autentication_data_hotel=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
+								if(isset($autentication_data_hotel->status)):
+									if($autentication_data_hotel->status=="success"):
+										$post_data_hotel['token']=array(
+											"token"=>$autentication_data_hotel->results->token,
+											"token_timeout"=>$autentication_data_hotel->results->token_timeout,
+											"token_generation_time"=>$autentication_data_hotel->results->token_generation_time
+										);
+										$post_data_hotel['data']['hotel_id']=$hotel_val['hotel_id'];
+										$post_data_hotel['data']['room_id']=$hotel_val['room_id'];
+										$post_data_str_hotel=json_encode($post_data_hotel);
+										$ch = curl_init();
+										curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+										curl_setopt($ch, CURLOPT_HEADER, false);
+										curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+										curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+										curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."hotel/find-booked-hotel.php");
+										curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str_hotel);
+										curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+										$return_data_hotel = curl_exec($ch);
+										curl_close($ch);
+										$return_data_arr_hotel=json_decode($return_data_hotel, true);
+										if(!isset($return_data_arr_hotel['status'])):
+											$data['status'] = 'error';
+											$data['msg']="Some error has been occure during execution.";
+										elseif($return_data_arr_hotel['status']=="success"):
+											if(isset($return_data_arr_hotel['find_hotel']) && isset($return_data_arr_hotel['find_room'])):
+												ob_start();
+											?>
+											<div style="width: 100%;">
+												<h3 style="background:#93302c; text-align:center; color:white; font-size: 20px;">ACCOMMODATION VOUCHER</h3>
+												<h4 style="background:#a5a5a5;font-size: 16px;margin: -10px auto 8px;padding: 0px 10px;color:white;">HOTEL INFORMATION</h4>
+												<div class="box-body" style="margin:0 15px 15px;"  >
+													<table style="width:100%; border-collapse: separate; font-size:12px;" cellspacing="0">
+														<tbody aria-relevant="all" aria-live="polite" role="alert">
+															<tr class="odd">
+																<td style="width:150px;"><strong>Hotel Name </strong></td>
+																<td style = "text-align:left;"><?php echo $return_data_arr_hotel['find_hotel']['hotel_name'];?></td>
+															</tr>
+															<tr class="odd">
+																<td><strong>Hotel Address</strong></td>
+																<td style = "text-align:left;"><?php echo $return_data_arr_hotel['find_hotel']['hotel_address'];?></td>
+															</tr>
+															<tr class="odd">
+																<td><strong>Tel</strong></td>
+																<td style = "text-align:left;"><?php echo $return_data_arr_hotel['find_hotel']['phone_number']!=""?$return_data_arr_hotel['find_hotel']['phone_number']:"n/a";?></td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+												<h4 style="background:#a5a5a5;font-size: 16px;margin: -10px auto 8px;padding: 0px 10px;color:white;">BOOKING DETAILS </h4>
+												<div class="box-body" style="margin:0 15px 15px;" >
+													<table style="width:100%; border-collapse: separate; font-size:12px;" cellspacing="0">
+														<tbody aria-relevant="all" aria-live="polite" role="alert">
+															<tr class="odd">
+																<td style="width:150px;"><strong>Room Type</strong></td>
+																<td style = "text-align:left;"><?= $return_data_arr_hotel['find_room']['room_type'];?>
+																<br/>
+																<font color="red"><?= $return_data_arr_hotel['find_room']['room_description'];?></font>
+																</td>
+															</tr>
+															<tr class="odd">
+																<td><strong>Check In</strong></td>
+																<td style = "text-align:left;"><?php echo tools::module_date_format($hotel_val['booking_start_date'], "Y-m-d");?></td>
+															</tr>
+															<tr class="odd">
+																<td><strong>Check Out</strong></td>
+																<td style = "text-align:left;"><?php echo tools::module_date_format($hotel_val['booking_end_date'], "Y-m-d");?></td>
+															</tr>
+															<tr class="odd">
+																<td><strong>Number of Night(s)</strong></td>
+																<td style = "text-align:left;"><?=$desti_val['no_of_night'];?></td>
+															</tr>
+															<tr class="odd">
+																<td><strong>Number of Rooms(s)</strong></td>
+																<td style = "text-align:left;"><?= $booking_details_list['number_of_rooms'];?></td>
+															</tr>
+															<tr class="odd">
+																<td><strong>Number of Adult(s)</strong></td>
+																<td style = "text-align:left;"><?=$number_of_adult;?></td>
+															</tr>
+															<tr class="odd">
+																<td><strong>Number of Child(ren)</strong></td>
+																<td style = "text-align:left;"><?=$number_of_child>0?$number_of_child:'-';?></td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+												<h4 style="font-size: 16px;margin-bottom: 5px"><em>IMPORTANT NOTE TO HOTEL : </em></h4>
+												<p style="margin:0 15px 15px;" >This is a prepaid booking. Please do not collect any payment from the guest. Please contact our customer service center at <u><em>+91 33 4032 8888</em></u> if you have any question or doubt.</p>
+												<h4 style="font-size: 16px;margin-bottom: 5px;">Remark :</h4>
+												<p style="margin:0 15px 15px;" >TRIPMAXX<br> Checkin Time:- <?=$return_data_arr_hotel['find_hotel']['checkin_time']?> hrs</p>
+											</div>
+											<?php
+												$each_hotel_html=ob_get_clean();
+												$hotel_html[$hotel_number]=$each_hotel_html;
+												$hotel_number++;
+											endif;
+										else:
+											$data['status'] = 'error';
+											$data['msg'] = $return_data_arr_hotel['msg'];
+										endif;
+									endif;
+								else:
+									$data['status'] = 'error';
+									$data['msg'] = $autentication_data->msg;
+								endif;
+							endforeach;
+						endif;
+
+					endforeach;
+				endif;
+				// HTML FOR PDF \\
 				$html_header='
 					<div style="width: 100%;">
 						<div style="width: 100%; border-bottom: 3px double #54b9f0; border-top: 2px solid #54b9f0;">
 							<div style="width:25%;float:left;">
-								<img src="assets/img/logo.png" border="0" alt="" style="width: 150px;">
+								<img src="assets/img/logo_small.png" border="0" alt="" style="width: 150px;float:left;">
 							</div>
 							<div style="width:75%;float:left;">
 								<table>
@@ -55,153 +191,13 @@
 							<div style="clear:both;"></div>
 						</div>
 					</div>';
-				$html_body='
-					<div style="width: 100%;">
-						<div style="width: 100%;">
-							<h3>Complete Your Booking</h3>
-							
-										<div class="box-body">
-											<table style="width:100%; margin-bottom:15px; /*border:1px solid black;" border="1" cellspacing="0">
-												<thead>
-													<tr role="row">
-														<th style="text-align:center;">Pax</th>
-														<th style="text-align:center;">Quote Date</th>
-														<th style="text-align:center;">Destination</th>
-														<th style="text-align:center;">Booking Date</th>
-													</tr>
-												</thead>
-												<tbody aria-relevant="all" aria-live="polite" role="alert">
-													<tr class="odd">
-														<td style="text-align:center;">1</td>
-														<td style="text-align:center;">07/06/2018</td>
-														<td style="text-align:center;">Bangkok</td>
-														<td style="text-align:center;">05/06/2018</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-										<div class="box-body">
-											<table style="width:100%; margin-bottom:15px; /*border:1px solid black;" border="1" cellspacing="0">
-												<thead>
-													<tr role="row">
-														<th style="text-align:left;">Hotel Type</th>
-														<th style="text-align:left;">Hotel</th>
-														<th style="text-align:center;">Room Type</th>
-														<th style="text-align:center;">Check In</th>
-														<th style="text-align:center;">Check Out</th>
-														<th style="text-align:center;">Rooms</th>
-														<th style="text-align:center;">Nights</th>
-													</tr>
-												</thead>
-												<tbody aria-relevant="all" aria-live="polite" role="alert">
-													<tr class="odd">
-														<td style="text-align:left;">
-															Honeymoon					
-														</td>
-														<td style="text-align:left;">SUNNY RESIDENCE</td>
-														<td style="text-align:center;">
-															Double + Child W/O Bed Room Superior Room Only						<br>
-															<font color="red"></font>
-														</td>
-														<td style="text-align:center;">05/06/2018</td>
-														<td style="text-align:center;">12/06/2018</td>
-														<td style="text-align:center;">10</td>
-														<td style="text-align:center;">7</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-										<div class="box-body">
-											<table style="width:100%; margin-bottom:15px; /*border:1px solid black;" border="1" cellspacing="0">
-												<thead>
-													<tr role="row">
-														<th style="text-align:left;">Transfers</th>
-													</tr>
-												</thead>
-												<tbody aria-relevant="all" aria-live="polite" role="alert">
-													<tr class="odd">
-														<td style="text-align:left;padding-bottom: 0;" colspan="100%">
-															<h4 style="margin: 0;">05/06/2018</h4>
-														</td>
-													</tr>
-													<tr class="odd">
-														<td style="text-align:left;">
-															Bangkok Suvarnabhumi Airport - Bangkok City Hotel Service - Private Standard Van with Luggage - Private ( Capacity:  4 )
-															<br>
-															Price: INR2,568.24												<br>
-															Pick Up/Drop off Type: Arrival												<br>
-															Pick Up Time: 10:00 AM												<br>
-															Drop off Time: 12:00 PM												<br>
-															Airport: Buri Ram Airport											
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-										<div class="box-body">
-											<table style="width:100%; margin-bottom:15px; /*border:1px solid black;" border="1" cellspacing="0">
-												<thead>
-													<tr role="row">
-														<th style="text-align:left;">Tour Sites</th>
-													</tr>
-												</thead>
-												<tbody aria-relevant="all" aria-live="polite" role="alert">
-													<tr class="odd">
-														<td style="text-align:left;padding-bottom: 0;">
-															<h4 style="margin: 0;">05/06/2018</h4>
-														</td>
-													</tr>
-													<tr class="odd">
-														<td style="text-align:left;">
-															Art In Paradise with return transfer - Private Tour - Private ( Capacity:  4 )
-															<br>
-															Price: INR2,878.40												<br>
-															Pick Up Time: 05:00 PM												<br>
-															Drop off Time: 08:00 PM											
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-										<div class="box-body">
-											<table style="width:100%; margin-bottom:15px; /*border:1px solid black;" border="1" cellspacing="0">
-												<thead>
-													<tr role="row">
-														<th style="text-align:center;" colspan="3">Quotation</th>
-													</tr>
-												</thead>
-												<tbody aria-relevant="all" aria-live="polite" role="alert">
-													<tr class="odd">
-														<td style="text-align:left;font-weight:bold;">Total Cost for Hotel Accommodation</td>
-														<td style="text-align:center;font-weight:bold;" colspan="2">INR6,742.55</td>
-													</tr>
-													<tr class="odd">
-														<td style="text-align:left;font-weight:bold;">Add-on : Cost for other components Tours &amp; Transfer</td>
-														<td style="text-align:center;font-weight:bold;"><br>INR5,446.64</td>
-														<td style="text-align:center;font-weight:bold;"><br>INR0.00</td>
-													</tr>
-													<tr class="odd">
-														<td style="text-align:left;font-weight:bold;">No of Guests</td>
-														<td style="text-align:center;font-weight:bold;">ADULT<br>1</td>
-														<td style="text-align:center;font-weight:bold;">CHILD<br>0</td>
-													</tr>
-													<tr class="odd">
-														<td style="text-align:left;font-weight:bold;">Total Quantity</td>
-														<td style="text-align:center;font-weight:bold;color:red;" colspan="2">INR12,189.19</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-						</div>
-						<div style="width: 100%;">
-						</div>
-					</div>';
 				$html_footer='
 					<div style="width: 100%;">
 						<div style="width: 100%; border-top: 3px double #54b9f0; border-bottom: 2px solid #54b9f0;">
 							<h6 style="margin:5px 0">&copy; COPYRIGHT 2017 TRIPMAXX. ALL RIGHTS RESERVED</h6>
 						</div>
 					</div>';
+				$html_body="";
 				/*print $html_header;
 				print $html_body;
 				print $html_footer;
@@ -211,9 +207,17 @@
 				$mpdf=new mPDF('c','A4','','','15','15','28','18'); 
 				$mpdf->SetHeader($html_header);
 				$mpdf->SetFooter($html_footer);
-				$mpdf->WriteHTML($html_body);
+				if(isset($hotel_html) && !empty($hotel_html)):
+					foreach($hotel_html as $h_key => $html_body):
+						if($h_key>0):
+							$mpdf->AddPage('','','1','i','on');
+						endif;
+						$mpdf->WriteHTML($html_body);
+					endforeach;
+				endif;
+				//$mpdf->AddPage('','','1','i','on');
 				$mpdf->Output();
-				$mpdf->Output('booking_invoice.pdf','D');
+				$mpdf->Output('booking_voucher.pdf','D');
 
 				exit;
 

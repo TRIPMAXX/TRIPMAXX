@@ -96,7 +96,8 @@
 													<td style = "text-align:center;"><?php echo tools::module_date_format($hotel_val['booking_start_date'], "Y-m-d");?></td>
 													<td style = "text-align:center;"><?php echo tools::module_date_format($hotel_val['booking_end_date'], "Y-m-d");?></td>
 													<td style = "text-align:center;"><?= $booking_details_list['number_of_rooms'];?></td>
-													<td style = "text-align:center;"><?php echo $desti_val['no_of_night'];?></td><td style = "text-align:center;">
+													<td style = "text-align:center;"><?php echo $desti_val['no_of_night'];?></td>
+													<td style = "text-align:center;">
 														<?php 
 														$agent_commision=($hotel_val['price'] * $hotel_val['agent_markup_percentage'])/100;
 														echo $booking_details_list['currency_code'].number_format($hotel_val['price']+$agent_commision, 2, ".", ",");
