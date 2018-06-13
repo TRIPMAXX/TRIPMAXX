@@ -234,8 +234,9 @@
 									break;
 								endfor;
 								$nationality_charge=($total_price * $nationality_addon_percentage)/100;
+								$marque_id='transfer_marque_'.date("Ymdhis").'_'.rand(0, 100000).'_new';
 								?>
-								<div class="radio_button_row <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'radio_button_row_background' : "");?>" onclick="select_transfer_radio_row($(this))">
+								<div class="radio_button_row <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'radio_button_row_background' : "");?>" onclick="select_transfer_radio_row($(this))" data-transfer="<?php echo $transfer_val['transfer_title'];?>" data-transfer_offer="<?php echo $offer_val['offer_title'];?>" data-transfer_offer_service="<?php echo $offer_val['service_type'];?>" data-transfer_offer_capacity="<?php echo $offer_val['offer_capacity'];?>" data-pickup_dropoff="<?php echo $server_data['data']['pickup_dropoff_type'];?>" data-price="<?php echo $default_currency['currency_code'].number_format(($total_price+$agent_commision+$nationality_charge), 2,".",",");?>" data-marque_id="<?php echo $marque_id;?>">
 									<div class="col-md-1" style="font-weight:bold;">
 										<?php
 										if($offer_avaliability_status=="avaliable" || $edit_avalibility_status=="A"):
@@ -335,11 +336,11 @@
 										if(isset($server_data['data']['arr_dept_flight_number']) && $server_data['data']['arr_dept_flight_number']!=""):
 										?>
 										<!-- <strong>Flight Number and Name: </strong><?php echo $server_data['data']['arr_dept_flight_number'];?><br/> -->
-										<strong>Flight Number and Name: </strong><input type="text" name="arr_dept_flight_number[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="arr_dept_flight_number[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo(isset($server_data['data']['arr_dept_flight_number']) ? $server_data['data']['arr_dept_flight_number'] : "");?>" class="arr_dept_flight_number">
+										<strong>Flight Number and Name: </strong><input type="text" name="arr_dept_flight_number[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="arr_dept_flight_number[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo(isset($server_data['data']['arr_dept_flight_number']) ? $server_data['data']['arr_dept_flight_number'] : "");?>" class="arr_dept_flight_number" onkeyup="change_related($(this))">
 										<?php
 										else:
 										?>
-										<input type="hidden" name="arr_dept_flight_number[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="arr_dept_flight_number[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo(isset($server_data['data']['arr_dept_flight_number']) ? $server_data['data']['arr_dept_flight_number'] : "");?>" class="arr_dept_flight_number">
+										<input type="hidden" name="arr_dept_flight_number[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" id="arr_dept_flight_number[<?= $server_data['data']['city'][$country_key];?>][<?php echo $transfer_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo(isset($server_data['data']['arr_dept_flight_number']) ? $server_data['data']['arr_dept_flight_number'] : "");?>" class="arr_dept_flight_number" onkeyup="change_related($(this))">
 										<?php
 										endif;
 										?>

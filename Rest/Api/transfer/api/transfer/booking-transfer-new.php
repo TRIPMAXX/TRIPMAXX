@@ -28,7 +28,7 @@
 				$checkin_date_on_city=date("Y-m-d", strtotime($checkin_date)+(24*60*60*$add_day));
 				$add_day=$add_day+$server_data['data']['number_of_night'][$country_key];
 				$checkout_date_on_city=date("Y-m-d", strtotime($checkin_date_on_city)+(24*60*60*$server_data['data']['number_of_night'][$country_key]));
-				$transfer_prev_html=$transfer_all_html=$transfer_date=$transfer_svg_line='';
+				$transfer_prev_html=$transfer_all_html=$transfer_date=$transfer_svg_line=$transfer_marquee_html='';
 				if(isset($server_data['data']['booking_details_list']) && $server_data['data']['booking_details_list']!=""):
 					$booking_details_list=$server_data['data']['booking_details_list'];
 					if(isset($booking_details_list) && !empty($booking_details_list)):
@@ -40,6 +40,9 @@
 											$transfer_all_html.='<div class="each_date_div_'.$transfer_date.' each_date_div" data-date_time="'.strtotime($transfer_date).'">';
 												$transfer_all_html.='<div class="col-md-12 date_heading_div" onclick="hide_show_transfer_details($(this))">';
 													$transfer_all_html.='<h4>Date: '.date("F j, Y", strtotime($transfer_date)).'</h4>';
+													if($transfer_marquee_html!=""):
+														$transfer_all_html.='<marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();">'.$transfer_marquee_html.'</marquee>';
+													endif;
 													$transfer_all_html.='<div class="clock_img_div">';
 														$clock_am_div=$clock_pm_div='';
 														foreach($booking_details_list['booking_destination_list'] as $svg_b_key=>$svg_b_val):
@@ -167,7 +170,7 @@
 													$transfer_prev_html.='<input type="hidden" name="selected_airport['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="selected_airport['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$t_val['airport'].'" class="selected_airport">';
 													if($t_val['flight_number_name']!=""):
 														//$transfer_prev_html.='<strong>Flight Number and Name: </strong>'.$t_val['flight_number_name'].'<br/>';
-														$transfer_prev_html.='<strong>Flight Number and Name: </strong><input type="text" name="arr_dept_flight_number['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="arr_dept_flight_number['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$t_val['flight_number_name'].'" class="arr_dept_flight_number">';
+														$transfer_prev_html.='<strong>Flight Number and Name: </strong><input type="text" name="arr_dept_flight_number['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="arr_dept_flight_number['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$t_val['flight_number_name'].'" class="arr_dept_flight_number" onkeyup="change_related($(this))">';
 													else:
 														$transfer_prev_html.='<input type="hidden" name="arr_dept_flight_number['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" id="arr_dept_flight_number['.$b_val['city_id'].']['.$t_val['transfer_id'].'][old'.$t_key.']" value="'.$t_val['flight_number_name'].'" class="arr_dept_flight_number">';
 													endif;
@@ -245,7 +248,8 @@
 																$offer_avaliability_status="avaliable";
 															endif;
 														endif;
-														$transfer_prev_html.='<div class="radio_button_row '.($list_val['id']==$find_transfer_offer_details['id'] ? "radio_button_row_background" : "").'" onclick="select_transfer_radio_row($(this))">';
+														$marque_id='transfer_marque_'.date("Ymdhis").'_'.rand(0, 100000).'_old';
+														$transfer_prev_html.='<div class="radio_button_row '.($list_val['id']==$find_transfer_offer_details['id'] ? "radio_button_row_background" : "").'" onclick="select_transfer_radio_row($(this))" data-transfer="'.$find_transfer_details['transfer_title'].'" data-transfer_offer="'.$list_val['offer_title'].'" data-transfer_offer_service="'.$list_val['service_type'].'" data-transfer_offer_capacity="'.$list_val['offer_capacity'].'" data-pickup_dropoff="'.$transfer_attributes_pickup['allow_pickup_type'].'" data-price="'.$default_currency['currency_code'].number_format($list_val['price_per_person'], 2,".",",").'" data-marque_id="'.$marque_id.'">';
 															$transfer_prev_html.='<div class="col-md-1" style="font-weight:bold;">';
 																if($offer_avaliability_status=="avaliable"):
 																	$avalibility_status="A";
@@ -267,6 +271,10 @@
 															$transfer_prev_html.='</div>';
 															$transfer_prev_html.='<div class="clearfix"></div>';
 														$transfer_prev_html.='</div>';
+														if($list_val['id']==$find_transfer_offer_details['id']):
+															$transfer_marquee_html.='<p class="'.$marque_id.'">'.$find_transfer_details['transfer_title'].' - '.$list_val['offer_title'].' - '.$list_val['service_type'].' - (Capacity: '.$list_val['offer_capacity'].')'.($t_val['airport']!=""? ' - (Airport: '.$t_val['airport'].')' : '').($t_val['flight_number_name']!="" ? ' - (Flight Number and Name: '.$t_val['flight_number_name'].')' : '').'<br/>';
+															$transfer_marquee_html.=''.$default_currency['currency_code'].number_format($list_val['price_per_person'], 2,".",",").' - '.$transfer_attributes_pickup['allow_pickup_type'].' - '.date("h:i A", strtotime($t_val['pickup_time'].":00")).' - '.date("h:i A", strtotime($t_val['dropoff_time'].":00")).'</p>';
+														endif;
 													endforeach;
 												$transfer_prev_html.='</div>';
 											$transfer_prev_html.='</div>';
@@ -277,6 +285,9 @@
 									$transfer_all_html.='<div class="each_date_div_'.$transfer_date.' each_date_div" data-date_time="'.strtotime($transfer_date).'">';
 										$transfer_all_html.='<div class="col-md-12 date_heading_div" onclick="hide_show_transfer_details($(this))">';
 											$transfer_all_html.='<h4>Date: '.date("F j, Y", strtotime($transfer_date)).'</h4>';
+											if($transfer_marquee_html!=""):
+												$transfer_all_html.='<marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();">'.$transfer_marquee_html.'</marquee>';
+											endif;
 											$transfer_all_html.='<div class="clock_img_div">';
 												$clock_am_div=$clock_pm_div='';
 												foreach($booking_details_list['booking_destination_list'] as $svg_b_key=>$svg_b_val):
@@ -404,7 +415,7 @@
 						$country_city_rcd_html.='</div>';
 						$country_city_rcd_html.='<div class="form-group col-sm-3 airport_all_div">';
 							$country_city_rcd_html.='<label for="inputName" class="control-label">Flight Number and Name</label>';
-							$country_city_rcd_html.='<input type="text" class="form-control arr_dept_flight_number" name="arr_dept_flight_number'.$server_data['data']['city'][$country_key].'" id="arr_dept_flight_number'.$server_data['data']['city'][$country_key].'" value="">';
+							$country_city_rcd_html.='<input type="text" class="form-control arr_dept_flight_number" name="arr_dept_flight_number'.$server_data['data']['city'][$country_key].'" id="arr_dept_flight_number'.$server_data['data']['city'][$country_key].'" value="" onkeyup="change_related($(this))">';
 						$country_city_rcd_html.='</div>';
 						$country_city_rcd_html.='<div class="clearfix"></div>';
 						$country_city_rcd_html.='<div class="form-group col-sm-3">';
