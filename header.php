@@ -21,11 +21,11 @@
 				<nav>
 					<ul>
 						<li><a class="has-child" href="<?=DOMAIN_NAME_PATH?>">HOME</a></li>
-						<li><a class="has-child" href="<?=DOMAIN_NAME_PATH."who-we-are"?>">WHO WE ARE</a></li>
-						<li><a class="has-child" href="<?=DOMAIN_NAME_PATH."experience-destination"?>">EXPERIENCE DESTINATION</a></li>
-						<li><a class="has-child" href="<?=DOMAIN_NAME_PATH."know-the-team"?>">KNOW THE TEAM</a></li>
-						<li><a class="has-child" href="<?=DOMAIN_NAME_PATH."career"?>">CAREER</a></li>
-						<li><a class="has-child" href="<?=DOMAIN_NAME_PATH."contact"?>">CONTACT</a></li>
+						<li><a class="has-child" href="<?=DOMAIN_NAME_PATH."who-we-are.php"?>">WHO WE ARE</a></li>
+						<li><a class="has-child" href="<?=DOMAIN_NAME_PATH."experience-destination.php"?>">EXPERIENCE DESTINATION</a></li>
+						<li><a class="has-child" href="<?=DOMAIN_NAME_PATH."know-the-team.php"?>">KNOW THE TEAM</a></li>
+						<li><a class="has-child" href="<?=DOMAIN_NAME_PATH."career.php"?>">CAREER</a></li>
+						<li><a class="has-child" href="<?=DOMAIN_NAME_PATH."contact.php"?>">CONTACT</a></li>
 					</ul>
 				</nav>
 			</div>
@@ -44,11 +44,11 @@
 					<nav class="header-nav">
 						<ul>
 							<li><a href="<?=DOMAIN_NAME_PATH?>">HOME</a></li>
-							<li><a href="<?=DOMAIN_NAME_PATH."who-we-are"?>">WHO WE ARE</a></li>
-							<li><a href="<?=DOMAIN_NAME_PATH."experience-destination"?>">EXPERIENCE DESTINATION</a></li>
-							<li><a href="<?=DOMAIN_NAME_PATH."know-the-team"?>">KNOW THE TEAM</a></li>
-							<li><a href="<?=DOMAIN_NAME_PATH."career"?>">CAREER</a></li>
-							<li><a href="<?=DOMAIN_NAME_PATH."contact"?>">CONTACT</a></li>
+							<li><a href="<?=DOMAIN_NAME_PATH."who-we-are.php"?>">WHO WE ARE</a></li>
+							<li><a href="<?=DOMAIN_NAME_PATH."experience-destination.php"?>">EXPERIENCE DESTINATION</a></li>
+							<li><a href="<?=DOMAIN_NAME_PATH."know-the-team.php"?>">KNOW THE TEAM</a></li>
+							<li><a href="<?=DOMAIN_NAME_PATH."career.php"?>">CAREER</a></li>
+							<li><a href="<?=DOMAIN_NAME_PATH."contact.php"?>">CONTACT</a></li>
 						</ul>
 					</nav>
 				</div>

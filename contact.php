@@ -9,7 +9,7 @@ if(isset($autentication_data_cms->status)):
 			"token_timeout"=>$autentication_data_cms->results->token_timeout,
 			"token_generation_time"=>$autentication_data_cms->results->token_generation_time
 		);
-		$post_data_cms['data']['page_slug']="bbb";
+		$post_data_cms['data']['page_slug']="contact";
 		$post_cms_data_str=json_encode($post_data_cms);
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
