@@ -117,7 +117,7 @@ $currency_details = tools::find("all", TM_CURRENCIES, '*', "WHERE status=:status
 										<div class="form-group col-md-6">
 											<label for="contact_address" class="control-label">Contact Address</label>
 											<div class="input-icon right">
-												<input type="text" class="form-control" value="<?php echo(isset($_POST['contact_address']) && $_POST['contact_address']!='' ? $_POST['contact_address'] : $general_setting['contact_address']);?>" name="contact_address" id="contact_address" placeholder="Contact Address" tabindex = "6" />
+												<textarea class="form-control" name="contact_address" id="contact_address" placeholder="Contact Address" tabindex = "6" ><?php echo(isset($_POST['contact_address']) && $_POST['contact_address']!='' ? $_POST['contact_address'] : $general_setting['contact_address']);?></textarea>
 											</div>
 										</div>
 										<div class="form-group col-md-6">

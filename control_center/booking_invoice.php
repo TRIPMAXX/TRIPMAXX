@@ -158,7 +158,7 @@
 													$prev_booking_date=$tour_val['booking_start_date'];
 											?>
 												<tr class="odd">
-													<td style = "text-align:left;padding-bottom: 0;" colspan="100%">
+													<td style = "text-align:left;padding-bottom: 0;">
 														<h4 style="margin: 0;"><?php echo tools::module_date_format($tour_val['booking_start_date']);?></h4>
 													</td>
 												</tr>
@@ -238,7 +238,7 @@
 													$prev_booking_date=$transfer_val['booking_start_date'];
 											?>
 												<tr class="odd">
-													<td style = "text-align:left;padding-bottom: 0;" colspan="100%">
+													<td style = "text-align:left;padding-bottom: 0;">
 														<h4 style="margin: 0;"><?php echo tools::module_date_format($transfer_val['booking_start_date']);?></h4>
 													</td>
 												</tr>
@@ -302,28 +302,42 @@
 					endforeach;
 				endif;
 				// HTML FOR PDF \\
-				$html_header='
+				$general_setting = tools::find("first", TM_SETTINGS, '*', "WHERE id=:id ", array(":id"=>1));
+				ob_start();
+				?>
 					<div style="width: 100%;">
 						<div style="width: 100%; border-bottom: 3px double #54b9f0; border-top: 2px solid #54b9f0;">
 							<div style="width:25%;float:left;">
+							<?php
+							if($general_setting['website_logo']!="" && file_exists(GENERAL_IMAGES.$general_setting['website_logo'])):
+							?>
+								<img src="<?php echo DOMAIN_NAME_PATH_ADMIN.GENERAL_IMAGES.$general_setting['website_logo'];?>"  border="0" alt="" style="width: 150px;float:left;"/>
+							<?php
+							else:
+							?>
 								<img src="assets/img/logo_small.png" border="0" alt="" style="width: 150px;float:left;">
+							<?php
+							endif;
+							?>
 							</div>
 							<div style="width:75%;float:left;">
-								<table>
+								<table style="width: 100%;">
 									<tr>
-										<td colspan="100%" style="font-size:13px;"><img src="assets/img/location-pin-512.png" border="0" alt="" style="width: 12px;"> 2, Ganesh Chandra Avenue, Commerce House, 1st floor, Kolkata 700013. India.</td>
+										<td colspan="100%" style="font-size:20px;"><img src="assets/img/location-pin-512.png" border="0" alt="" style="width: 14px;"> <?=$general_setting['contact_address']?></td>
 									</tr>
 									<tr>
-										<td style="font-size:13px;width:50%;"><img src="assets/img/Mail_email_envelope_letter.png" border="0" alt="" style="width: 12px;margin-top:7px;"> travel@tripmaxx.in</td>
-										<td style="font-size:13px;width:50%;">&nbsp;&nbsp;&nbsp;<!-- <img src="assets/img/phone.png" border="0" alt="" style="width: 12px;margin-top:3px;"> --> +91 33 4032 8888</td>
+										<td style="font-size:20px;width: 350px;"><img src="assets/img/Mail_email_envelope_letter.png" border="0" alt="" style="width: 14px;margin-top:7px;"> <?=$general_setting['contact_email_address']?></td>
+										<td style="font-size:20px;width: 200px;">&nbsp;&nbsp;&nbsp;<img src="assets/img/phone.png" border="0" alt="" style="width: 14px;margin-top:3px;">  <?=$general_setting['contact_phone_number']?></td>
 									</tr>
 								</table>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
-					</div>';
+					</div>
+				<?php
+				$html_header=ob_get_clean();
 				ob_start();
-?>
+				?>
 					<div style="width: 100%;">
 						<div style="width: 100%;">
 							<h3>Complete Your Booking</h3>

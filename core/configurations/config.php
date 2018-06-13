@@ -74,6 +74,8 @@ define("PRODUCT_NAME", "TRIPMAXX");
 define("SECURITY_SALT", "neo@008790-09878900678905456@coderz%4844q0pdda!4545");
 define("AUTO_LOGIN_SECURITY_KEY", "hjre658@37#99!");
 define("AGENT_IMAGES", "agent_control_center/assets/upload/agent/");
+define("CMS_BANNER", "control_center/assets/upload/cms_banner/");
+define("GENERAL_IMAGES", "control_center/assets/upload/general/");
 
 define("REST_API_PATH", "Rest/Api/");
 define("SUPPLIER_API_PATH", "supplier/api/");

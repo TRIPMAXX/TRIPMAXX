@@ -50,7 +50,7 @@
 
 				///////////////////////////////////
 				$hotel_html=array();
-				$hotel_number=0;
+				$hotel_number=$transfer_day=$tour_day=0;
 				$tour_html='';
 				$transfer_html='';
 				$hotel_price=$tour_price=$transfer_price=0.00;
@@ -168,6 +168,7 @@
 							endforeach;
 						endif;
 						if(isset($desti_val['booking_tour_list']) && !empty($desti_val['booking_tour_list'])):
+							$prev_booking_date="";
 							foreach($desti_val['booking_tour_list'] as $tour_key=>$tour_val):
 								$autentication_data_tour=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.TOUR_API_PATH."authorized.php"));
 								if(isset($autentication_data_tour->status)):
@@ -200,31 +201,174 @@
 												$each_tour_price=$tour_val['price']+(($tour_val['price']*$tour_val['nationality_addon_percentage'])/100)+(($tour_val['price']*$tour_val['agent_markup_percentage'])/100);
 												$tour_price=$tour_price+$each_tour_price;
 												ob_start();
+												if($prev_booking_date=="" || $prev_booking_date!=$tour_val['booking_start_date']):
+													$prev_booking_date=$tour_val['booking_start_date'];
+													$tour_day++;
 											?>
-												<tr class="odd">
-													<td style = "text-align:left;">
-														<?php echo $return_data_arr_tour['find_tour']['tour_title'];?> - <?php echo $return_data_arr_tour['find_offer']['offer_title'];?> - <?php echo $return_data_arr_tour['find_offer']['service_type'];?> ( Capacity:  <?php echo $return_data_arr_tour['find_offer']['offer_capacity'];?> )
-														<br/>
-														Price: <?php echo $booking_details_list['currency_code'].number_format($each_tour_price, 2,".",",");?>
-														<?php
+											<h4 style="background:#a5a5a5;font-size: 16px;margin: -10px auto 8px;padding: 0px 10px;color:white;">DAY <?php echo $tour_day.' - '.tools::module_date_format($tour_val['booking_start_date']);?></h4>
+											<?php
+												endif;
+											?>
+											<div class="box-body" style="margin:0 15px 15px;"  >
+												<table style="width:100%; border-collapse: separate; font-size:12px;" cellspacing="0">
+													<tbody aria-relevant="all" aria-live="polite" role="alert">
+														<tr class="odd">
+															<td style = "text-align:left;font-weight:bold;width:200px;">Title</td>
+															<td style = "text-align:left;"><?php echo $return_data_arr_tour['find_tour']['tour_title'];?></td>
+														</tr>
+														<tr class="odd">
+															<td style = "text-align:left;font-weight:bold">Offer Title</td>
+															<td style = "text-align:left;"><?php echo $return_data_arr_tour['find_offer']['offer_title'];?></td>
+														</tr>
+														<tr class="odd">
+															<td style = "text-align:left;font-weight:bold">Service Type</td>
+															<td style = "text-align:left;"><?php echo $return_data_arr_tour['find_offer']['service_type'];?></td>
+														</tr>
+														<tr class="odd">
+															<td style = "text-align:left;font-weight:bold">Capacity</td>
+															<td style = "text-align:left;"><?php echo $return_data_arr_tour['find_offer']['offer_capacity'];?></td>
+														</tr>
+														<?php 
 														if($tour_val['pickup_time']!=""):
 														?>
-														<br/>
-														Form: <?php echo date("h:i A", strtotime($tour_val['pickup_time'].":00"));?>
-														<?php
+														<tr class="odd">
+															<td style = "text-align:left;font-weight:bold">Form:</td>
+															<td style = "text-align:left;"><?php echo date("h:i A", strtotime($tour_val['pickup_time'].":00"));?></td>
+														</tr>
+														<?php 
 														endif;
 														if($tour_val['dropoff_time']!=""):
 														?>
-														<br/>
-														To: <?php echo date("h:i A", strtotime($tour_val['dropoff_time'].":00"));?>
-														<?php
+														<tr class="odd">
+															<td style = "text-align:left;font-weight:bold">Form:</td>
+															<td style = "text-align:left;"><?php echo date("h:i A", strtotime($tour_val['dropoff_time'].":00"));?></td>
+														</tr>
+														<?php 
 														endif;
 														?>
-													</td>
-												</tr>
+													</tbody>
+												</table>
+											</div>
 											<?php
 												$each_tour_html=ob_get_clean();
 												$tour_html.=$each_tour_html;
+											endif;
+										else:
+											$data['status'] = 'error';
+											$data['msg'] = $return_data_arr_hotel['msg'];
+										endif;
+									endif;
+								else:
+									$data['status'] = 'error';
+									$data['msg'] = $autentication_data->msg;
+								endif;
+							endforeach;
+						endif;
+						if(isset($desti_val['booking_transfer_list']) && !empty($desti_val['booking_transfer_list'])):
+							$prev_booking_date="";
+							foreach($desti_val['booking_transfer_list'] as $transfer_key=>$transfer_val):
+								$autentication_data_transfer=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.TRANSFER_API_PATH."authorized.php"));
+								if(isset($autentication_data_transfer->status)):
+									if($autentication_data_transfer->status=="success"):
+										$post_data_transfer['token']=array(
+											"token"=>$autentication_data_transfer->results->token,
+											"token_timeout"=>$autentication_data_transfer->results->token_timeout,
+											"token_generation_time"=>$autentication_data_transfer->results->token_generation_time
+										);
+										$post_data_transfer['data']['transfer_id']=$transfer_val['transfer_id'];
+										$post_data_transfer['data']['offer_id']=$transfer_val['offer_id'];
+										$post_data_str_transfer=json_encode($post_data_transfer);
+										$ch = curl_init();
+										curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+										curl_setopt($ch, CURLOPT_HEADER, false);
+										curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+										curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+										curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.TRANSFER_API_PATH."transfer/find-booked-transfer.php");
+										curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str_transfer);
+										curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+										$return_data_transfer = curl_exec($ch);
+										curl_close($ch);
+										$return_data_arr_transfer=json_decode($return_data_transfer, true);
+										if(!isset($return_data_arr_transfer['status'])):
+											$data['status'] = 'error';
+											$data['msg']="Some error has been occure during execution.";
+										elseif($return_data_arr_transfer['status']=="success"):
+											if(isset($return_data_arr_transfer['find_transfer']) && isset($return_data_arr_transfer['find_offer'])):
+												$each_transfer_price=$transfer_val['price']+(($transfer_val['price']*$transfer_val['nationality_addon_percentage'])/100)+(($transfer_val['price']*$transfer_val['agent_markup_percentage'])/100);
+												$transfer_price=$transfer_price+$each_transfer_price;
+												ob_start();
+												
+												if($prev_booking_date=="" || $prev_booking_date!=$transfer_val['booking_start_date']):
+													$prev_booking_date=$transfer_val['booking_start_date'];
+													$transfer_day++;
+											?>
+											<h4 style="background:#a5a5a5;font-size: 16px;margin: -10px auto 8px;padding: 0px 10px;color:white;">DAY <?php echo $transfer_day.' - '.tools::module_date_format($transfer_val['booking_start_date']);?></h4>
+											<?php
+												endif;
+											?>
+											<div class="box-body" style="margin:0 15px 15px;"  >
+												<table style="width:100%; border-collapse: separate; font-size:12px;" cellspacing="0">
+													<tbody aria-relevant="all" aria-live="polite" role="alert">
+														<tr class="odd">
+															<td style = "text-align:left;font-weight:bold;width:200px;">Title</td>
+															<td style = "text-align:left;"><?php echo $return_data_arr_transfer['find_transfer']['transfer_title'];?></td>
+														</tr>
+														<tr class="odd">
+															<td style = "text-align:left;font-weight:bold">Offer Title</td>
+															<td style = "text-align:left;"><?php echo $return_data_arr_transfer['find_offer']['offer_title'];?></td>
+														</tr>
+														<tr class="odd">
+															<td style = "text-align:left;font-weight:bold">Service Type</td>
+															<td style = "text-align:left;"><?php echo $return_data_arr_transfer['find_offer']['service_type'];?></td>
+														</tr>
+														<tr class="odd">
+															<td style = "text-align:left;font-weight:bold">Capacity</td>
+															<td style = "text-align:left;"><?php echo $return_data_arr_transfer['find_offer']['offer_capacity'];?></td>
+														</tr>
+														<tr class="odd">
+															<td style = "text-align:left;font-weight:bold">Pick Up/Drop off Type:</td>
+															<td style = "text-align:left;"><?php echo ($return_data_arr_transfer['find_transfer']['allow_pickup_type']!=""?$return_data_arr_transfer['find_transfer']['allow_pickup_type']:"-");?></td>
+														</tr>
+														<?php 
+														if($transfer_val['pickup_time']!=""):
+														?>
+														<tr class="odd">
+															<td style = "text-align:left;font-weight:bold">Form:</td>
+															<td style = "text-align:left;"><?php echo date("h:i A", strtotime($transfer_val['pickup_time'].":00"));?></td>
+														</tr>
+														<?php 
+														endif;
+														if($transfer_val['dropoff_time']!=""):
+														?>
+														<tr class="odd">
+															<td style = "text-align:left;font-weight:bold">Form:</td>
+															<td style = "text-align:left;"><?php echo date("h:i A", strtotime($transfer_val['dropoff_time'].":00"));?></td>
+														</tr>
+														<?php
+														endif;
+														if($transfer_val['airport']!=""):
+														?>
+														<tr class="odd">
+															<td style = "text-align:left;font-weight:bold">Airport:</td>
+															<td style = "text-align:left;"><?php echo $transfer_val['airport'];?></td>
+														</tr>
+														<?php
+														endif;
+														if($transfer_val['flight_number_name']!=""):
+														?>
+														<tr class="odd">
+															<td style = "text-align:left;font-weight:bold">Flight Number and Name:</td>
+															<td style = "text-align:left;"><?php echo $transfer_val['flight_number_name'];?></td>
+														</tr>
+														<?php
+														endif;
+														?>
+													</tbody>
+												</table>
+											</div>
+											<?php
+												$each_transfer_html=ob_get_clean();
+												$transfer_html.=$each_transfer_html;
 											endif;
 										else:
 											$data['status'] = 'error';
@@ -241,35 +385,63 @@
 					endforeach;
 				endif;
 				// HTML FOR PDF \\
-				$html_header='
+				$general_setting = tools::find("first", TM_SETTINGS, '*', "WHERE id=:id ", array(":id"=>1));
+				ob_start();
+				?>
 					<div style="width: 100%;">
 						<div style="width: 100%; border-bottom: 3px double #54b9f0; border-top: 2px solid #54b9f0;">
 							<div style="width:25%;float:left;">
+							<?php
+							if($general_setting['website_logo']!="" && file_exists(GENERAL_IMAGES.$general_setting['website_logo'])):
+							?>
+								<img src="<?php echo DOMAIN_NAME_PATH_ADMIN.GENERAL_IMAGES.$general_setting['website_logo'];?>"  border="0" alt="" style="width: 150px;float:left;"/>
+							<?php
+							else:
+							?>
 								<img src="assets/img/logo_small.png" border="0" alt="" style="width: 150px;float:left;">
+							<?php
+							endif;
+							?>
 							</div>
 							<div style="width:75%;float:left;">
-								<table>
+								<table style="width: 100%;">
 									<tr>
-										<td colspan="100%" style="font-size:13px;"><img src="assets/img/location-pin-512.png" border="0" alt="" style="width: 12px;"> 2, Ganesh Chandra Avenue, Commerce House, 1st floor, Kolkata 700013. India.</td>
+										<td colspan="100%" style="font-size:20px;"><img src="assets/img/location-pin-512.png" border="0" alt="" style="width: 14px;"> <?=$general_setting['contact_address']?></td>
 									</tr>
 									<tr>
-										<td style="font-size:13px;width:50%;"><img src="assets/img/Mail_email_envelope_letter.png" border="0" alt="" style="width: 12px;margin-top:7px;"> travel@tripmaxx.in</td>
-										<td style="font-size:13px;width:50%;">&nbsp;&nbsp;&nbsp;<!-- <img src="assets/img/phone.png" border="0" alt="" style="width: 12px;margin-top:3px;"> --> +91 33 4032 8888</td>
+										<td style="font-size:20px;width: 350px;"><img src="assets/img/Mail_email_envelope_letter.png" border="0" alt="" style="width: 14px;margin-top:7px;"> <?=$general_setting['contact_email_address']?></td>
+										<td style="font-size:20px;width: 200px;">&nbsp;&nbsp;&nbsp;<img src="assets/img/phone.png" border="0" alt="" style="width: 14px;margin-top:3px;">  <?=$general_setting['contact_phone_number']?></td>
 									</tr>
 								</table>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
-					</div>';
+					</div>
+				<?php
+				$html_header=ob_get_clean();
 				$html_footer='
 					<div style="width: 100%;">
 						<div style="width: 100%; border-top: 3px double #54b9f0; border-bottom: 2px solid #54b9f0;">
 							<h6 style="margin:5px 0">&copy; COPYRIGHT 2017 TRIPMAXX. ALL RIGHTS RESERVED</h6>
 						</div>
 					</div>';
-				$html_body="";
+				$tour_html_body='
+					<div style="width: 100%;">
+						<h3 style="background:#93302c; text-align:center; color:white; font-size: 20px;">TOUR VOUCHER</h3>
+				';
+				$tour_html_body.=$tour_html;
+				$tour_html_body.='
+					</div>
+				';
+				$transfer_html_body='
+					<div style="width: 100%;">
+						<h3 style="background:#93302c; text-align:center; color:white; font-size: 20px;">TRANSFER VOUCHER</h3>
+				';
+				$transfer_html_body.=$transfer_html;
+				$transfer_html_body.='
+					</div>
+				';
 				/*print $html_header;
-				print $html_body;
 				print $html_footer;
 				exit;*/
 
@@ -285,7 +457,13 @@
 						$mpdf->WriteHTML($html_body);
 					endforeach;
 				endif;
-				//$mpdf->AddPage('','','1','i','on');
+
+				$mpdf->AddPage('','','1','i','on');
+				$mpdf->WriteHTML($transfer_html_body);
+
+				$mpdf->AddPage('','','1','i','on');
+				$mpdf->WriteHTML($tour_html_body);
+
 				$mpdf->Output();
 				$mpdf->Output('booking_voucher.pdf','D');
 

@@ -129,14 +129,12 @@
 					<div style="float:left;width:100%;">
 						<div style="float:left;width:46%;padding:2%;">
 							<div style="font-size: 20px;padding-bottom: 18px;color:#ffffff;">Get In Touch</div>
-							<div style="font-size:13px;line-height:25px;color:#f7f7f7;">
-								2, Ganesh Chandra Avenue, Commerce House, 1st floor, Kolkata 700013. India.
-							</div>
+							<div style="font-size:13px;line-height:25px;color:#f7f7f7;"> <?=nl2br($general_setting['contact_address'])?> </div>
 						</div>
 						<div style="float:left;width:46%;padding:2%;">
 							<div style="font-size: 20px;padding-bottom: 18px;color:#ffffff;">CONTACT</div>
-							<div style="font-size:13px;color:#f7f7f7;line-height:25px;">Telephones: +91 33 4032 8888</div>
-							<div style="font-size:13px;color:#f7f7f7;line-height:25px;">E-mail: travel@tripmaxx.in</div>
+							<div style="font-size:13px;color:#f7f7f7;line-height:25px;"><?php echo(isset($general_setting['contact_phone_number']) && $general_setting['contact_phone_number']!='' ? "Telephones: ".$general_setting['contact_phone_number']:"");?></div>
+							<div style="font-size:13px;color:#f7f7f7;line-height:25px;"><?php echo(isset($general_setting['contact_email_address']) && $general_setting['contact_email_address']!='' ? "E-mail: ".$general_setting['contact_email_address']:"");?></div>
 						</div>
 						<div style="clear:both"></div>
 					</div>

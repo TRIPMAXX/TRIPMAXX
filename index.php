@@ -52,68 +52,8 @@ if(isset($_POST['btn_login']))
 	<!-- TOP HEADER -->
 	<div class="main-cont">
 		<div class="body-padding">
-			<div class="mp-slider">
-				<section class="home_page_slider">
-					<div class="slider_txt">
-						<div class="slider_txt_area">
-							<div class="container">
-								<div class="row rows">
-									<div class="col-md-8 col-sm-6 ">
-										<div class="banner_right_txt">
-											<h2>HANDPICKED CHOICE OF PRODUCTS</h2>
-											<div class="agent_btn">
-												<button class="btn_styl_2 btn3" onclick="window.location.href='<?php echo(DOMAIN_NAME_PATH);?>agent_sign_up.php'"><span>AGENT SIGN UP</span> </button>
-												<button class="btn_styl_2"><span>SUPPLIER SIGN UP</span></button>
-											</div>
-										</div>
-									</div>
-									<div class="col-md-4 col-sm-6">
-										<div class="select_area">
-											<h3 class="select_area_heading">Agent Partner Login</h3>
-											<form name="agent_login" id="agent_login" method="POST">
-												<div id="notify_msg_div"></div>
-												<div class="select_box">
-													<input type="text" class="styl1 validate[required]" id="code" name="code" placeholder="AGENT CODE" value="<?php echo(isset($_POST['code']) && $_POST['code']!='' ? $_POST['code'] : "");?>" tabindex="1">
-													<input type="text" class="styl1 validate[required]" id="username" name="username" placeholder="YOUR USERNAME" value="<?php echo(isset($_POST['username']) && $_POST['username']!='' ? $_POST['username'] : "");?>" tabindex="2">
-													<input type="password" class="styl1 validate[required]" id="password" name="password" placeholder="YOUR PASSWORD" value="" tabindex="3">
-												</div>
-												<p><a href="<?php echo DOMAIN_NAME_PATH."agent_forgot_password.php";?>" tabindex="4">Forget Password?</a></p>
-												<div class="select_box_btn">
-													<input type="hidden" name="token" value="<?php echo(tools::generateFormToken($verify_token)); ?>" />
-													<button type="submit" class="btn_styl_3 select_area_btn" name="btn_login" tabindex="5">LOGIN</button>
-												</div>
-											</form> 
-										</div>
-									</div>
-									<div class="clearfix"></div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="swiper-container" id="swiper-container1">
-						<div class="swiper-wrapper">
-							<div class="swiper-slide slide_height" style="background:url(img/sider-01.jpg)no-repeat center center / cover"> </div>
-							<div class="swiper-slide slide_height" style="background:url(img/sider-02.jpg)no-repeat center center / cover;"> </div>
-						</div>
-						<script>
-							var swiper = new Swiper('#swiper-container1', {
-								paginationClickable: false,
-								effect: 'fade',
-								//centeredSlides: true,
-								autoplay: true,
-								autoplay: 3500,
-								autoplayDisableOnInteraction: false,
-								slidesPerView: 1,
-								loop: true,
-								spaceBetween:30,
-								breakpoints: {
-								}
-							});
-						</script> 
-					</div>
-				</section>
-			</div>
-			<div class="mp-offesr">
+			<?php require_once('home_slider.php');?>	
+			<!-- <div class="mp-offesr">
 				<div class="wrapper-padding-a" >
 					<div class="offer-slider">
 						<header class="fly-in page-lbl">
@@ -338,7 +278,7 @@ if(isset($_POST['btn_login']))
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 		</div>
 	</div>
 	<!-- FOOTER -->
