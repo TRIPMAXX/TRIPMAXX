@@ -215,9 +215,10 @@
 									$i=$i+(24*60*60);
 									break;
 								endfor;
-								$nationality_charge=($total_price * $nationality_addon_percentage)/100;
+								$nationality_charge=($total_price * $nationality_addon_percentage)/100;				
+								$marque_id='tour_marque_'.date("Ymdhis").'_'.rand(0, 100000).'_new';
 								?>
-								<div class="radio_button_row <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'radio_button_row_background' : "");?>" onclick="select_tour_radio_row($(this))">
+								<div class="radio_button_row <?php echo(isset($edit_avalibility_status) && $edit_avalibility_status!="" ? 'radio_button_row_background' : "");?>" onclick="select_tour_radio_row($(this))" data-tour="<?php echo $tour_val['tour_title'];?>" data-tour_offer="<?php echo $offer_val['offer_title'];?>" data-tour_offer_service="<?php echo $offer_val['service_type'];?>" data-tour_offer_capacity="<?php echo $offer_val['offer_capacity'];?>" data-tour_type="<?php echo $find_tour_type['attribute_name'];?>" data-price="<?php echo $default_currency['currency_code'].number_format(($total_price+$agent_commision+$nationality_charge), 2,".",",");?>" data-marque_id="<?php echo $marque_id;?>">
 									<div class="col-md-1" style="font-weight:bold;">
 										<?php
 										if($offer_avaliability_status=="avaliable" || $edit_avalibility_status=="A"):

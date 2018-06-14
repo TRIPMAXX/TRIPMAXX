@@ -30,7 +30,7 @@
 				if(isset($server_data['data']['booking_details_list']) && $server_data['data']['booking_details_list']!=""):
 					$booking_details_list=$server_data['data']['booking_details_list'];
 				endif;
-				$tour_prev_html=$tour_all_html=$tour_date=$tour_svg_line='';
+				$tour_prev_html=$tour_all_html=$tour_date=$tour_svg_line=$tour_marquee_html='';
 				if(isset($server_data['data']['booking_details_list']) && $server_data['data']['booking_details_list']!=""):
 					$booking_details_list=$server_data['data']['booking_details_list'];
 					if(isset($booking_details_list) && !empty($booking_details_list)):
@@ -44,6 +44,13 @@
 											<div class="each_tour_date_div_<?php echo $tour_date;?> each_tour_date_div" data-date_time="<?php echo strtotime($tour_date);?>">
 												<div class="col-md-12 date_heading_div" onclick="hide_show_tour_details($(this))">
 													<h4>Date: <?php echo date("F j, Y", strtotime($tour_date));?></h4>
+											<?php
+													if($tour_marquee_html!=""):
+											?>
+														<marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();"><?php echo $tour_marquee_html;?></marquee>
+											<?php
+													endif;
+											?>
 													<div class="clock_img_div">
 											<?php
 														$clock_am_div=$clock_pm_div='';
@@ -249,8 +256,9 @@
 																$offer_avaliability_status="avaliable";
 															endif;
 														endif;
+														$marque_id='tour_marque_'.date("Ymdhis").'_'.rand(0, 100000).'_old';
 										?>
-														<div class="radio_button_row <?php echo($list_val['id']==$find_tour_offer_details['id'] ? "radio_button_row_background" : "");?>" onclick="select_tour_radio_row($(this))">
+														<div class="radio_button_row <?php echo($list_val['id']==$find_tour_offer_details['id'] ? "radio_button_row_background" : "");?>" onclick="select_tour_radio_row($(this))" data-tour="<?php echo $find_tour_details['tour_title'];?>" data-tour_offer="<?php echo $list_val['offer_title'];?>" data-tour_offer_service="<?php echo $list_val['service_type'];?>" data-tour_offer_capacity="<?php echo $list_val['offer_capacity'];?>" data-tour_type="<?php echo $tour_type;?>" data-price="<?php echo $default_currency['currency_code'].number_format($list_val['price_per_person'], 2,".",",");?>" data-marque_id="<?php echo $marque_id;?>">
 															<div class="col-md-1" style="font-weight:bold;">
 										<?php
 																if($offer_avaliability_status=="avaliable"):
@@ -279,6 +287,10 @@
 															<div class="clearfix"></div>
 														</div>
 											<?php
+														if($list_val['id']==$find_tour_offer_details['id']):
+															$tour_marquee_html.='<p class="'.$marque_id.'">'.$find_tour_details['tour_title'].' - '.$list_val['offer_title'].' - '.$list_val['service_type'].' - (Capacity: '.$list_val['offer_capacity'].')'.($tour_type!=""? ' - (Tour Type: '.$tour_type.')' : '').'<br/>';
+															$tour_marquee_html.=''.$default_currency['currency_code'].number_format($list_val['price_per_person'], 2,".",",").' - '.date("h:i A", strtotime($t_val['pickup_time'].":00")).' - '.date("h:i A", strtotime($t_val['dropoff_time'].":00")).'</p>';
+														endif;
 													endforeach;
 											?>
 												</div>
@@ -295,6 +307,13 @@
 									<div class="each_tour_date_div_<?php echo $tour_date;?> each_tour_date_div" data-date_time="<?php echo strtotime($tour_date);?>">
 										<div class="col-md-12 date_heading_div" onclick="hide_show_tour_details($(this))">
 											<h4>Date: <?php echo date("F j, Y", strtotime($tour_date));?></h4>
+									<?php
+											if($tour_marquee_html!=""):
+									?>
+												<marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();"><?php echo $tour_marquee_html;?></marquee>
+									<?php
+											endif;
+									?>
 											<div class="clock_img_div">
 									<?php
 												$clock_am_div=$clock_pm_div='';
