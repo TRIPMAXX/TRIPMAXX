@@ -5769,10 +5769,18 @@ fieldset[disabled] .btn-vk.active {
 	color: white;
     padding: 5px 15px;
     line-height: 39px;
-    width: 300px;
+    width: 250px;
     float: left;
 }
-
+.date_heading_div marquee {
+    width: 600px;
+    float: left;
+    color: white;
+}
+.date_heading_div marquee p {
+    display: inline-block;
+    padding: 10px;
+}
 .pickuptime,
 .dropofftime {
 	margin: 5px;

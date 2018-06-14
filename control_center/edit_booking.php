@@ -1752,6 +1752,7 @@
 					cur.parents(".form-group").find(".default_price_div").html(cur.find('input[type="radio"]').attr('data-price'));
 					showSuccess("Tour selected successfully.");
 				}
+				change_tour_marque(cur);
 			}
 			else
 			{
@@ -2086,6 +2087,7 @@
 							});
 						}
 					}
+					change_tour_marque(cur);
 				}
 				else
 				{
@@ -2119,6 +2121,12 @@
 		{
 			if(confirm("Are you sure you want to remove this row?"))
 			{
+				cur.parents(".each_transfer_row_outer").find(".radio_button_row").each(function(){
+					var marque_id=$(this).attr("data-marque_id");
+					cur.parents(".each_date_div").find("marquee ."+marque_id).remove();
+				});
+				if(cur.parents(".each_date_div").find("marquee").length <1)
+					cur.parents(".each_date_div").find("marquee").remove();
 				if(cur.parents(".each_date_div").find(".each_transfer_row_outer").length==1)
 				{
 					$(".am_"+cur.parent("div").find(".svg_path_id_input").val()).remove();
@@ -2137,6 +2145,12 @@
 		{
 			if(confirm("Are you sure you want to remove this row?"))
 			{
+				cur.parents(".each_tour_row_outer").find(".radio_button_row").each(function(){
+					var marque_id=$(this).attr("data-marque_id");
+					cur.parents(".each_tour_date_div").find("marquee ."+marque_id).remove();
+				});
+				if(cur.parents(".each_tour_date_div").find("marquee").length <1)
+					cur.parents(".each_tour_date_div").find("marquee").remove();
 				if(cur.parents(".each_tour_date_div").find(".each_tour_row_outer").length==1)
 				{
 					$(".am_"+cur.parent("div").find(".svg_path_id_input").val()).remove();
@@ -2199,17 +2213,17 @@
 				var timeStart = new Date(selected_date+" "+valuestart+":00");
 				var timeEnd = new Date(selected_date+" "+valuestop+":00");
 				var marquee_html='<p class="'+input.attr("data-marque_id")+'">'+input.attr("data-transfer")+' - '+input.attr("data-transfer_offer")+' - '+input.attr("data-transfer_offer_service")+' - (Capacity: '+input.attr("data-transfer_offer_capacity")+')'+(cur.parents(".each_transfer_row_outer").find(".selected_airport").val()!="" ? ' - (Airport: '+cur.parents(".each_transfer_row_outer").find(".selected_airport").val()+')' : '')+(cur.parents(".each_transfer_row_outer").find(".arr_dept_flight_number").val()!="" ? ' - (Flight Number and Name: '+cur.parents(".each_transfer_row_outer").find(".arr_dept_flight_number").val()+')' : '')+'<br/>'+input.attr("data-price")+' - '+input.attr("data-pickup_dropoff")+' - '+formatAMPM(timeStart)+' - '+formatAMPM(timeEnd)+'</p>';
-				if(cur.parents(".each_date_div").find("marquee"))
+				if(cur.parents(".each_date_div").find("marquee").length > 0)
 				{
 					cur.parents(".each_transfer_row_outer").find(".radio_button_row").each(function(){
 						var marque_id=$(this).attr("data-marque_id");
 						cur.parents(".each_date_div").find("marquee ."+marque_id).remove();
 					});
-					cur.parents(".each_date_div").find(".date_heading_div h4").after('<marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();">'+marquee_html+'</marquee>');
+					cur.parents(".each_date_div").find("marquee").append(marquee_html);
 				}
 				else
 				{
-					cur.parents(".each_date_div").find("marquee").append(marquee_html);
+					cur.parents(".each_date_div").find(".date_heading_div h4").after('<marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();">'+marquee_html+'</marquee>');
 				}
 			}
 			else
@@ -2218,6 +2232,8 @@
 					var marque_id=$(this).attr("data-marque_id");
 					cur.parents(".each_date_div").find("marquee ."+marque_id).remove();
 				});
+				if(cur.parents(".each_date_div").find("marquee").length <1)
+					cur.parents(".each_date_div").find("marquee").remove();
 			}
 		}
 		function formatAMPM(date) {
@@ -2234,6 +2250,40 @@
 		function change_related(cur)
 		{
 			change_marque(cur);
+		}
+		function change_tour_marque(cur)
+		{
+			if(cur.parents(".each_tour_row_outer").find(".radio_button_row_background").attr("data-marque_id"))
+			{
+				var input=cur.parents(".each_tour_row_outer").find(".radio_button_row_background");
+				var selected_date=cur.parents(".each_tour_row_outer").find(".selected_booking_tour_date").val();
+				var valuestart=cur.parents(".each_tour_row_outer").find(".pickuptime").val();
+				var valuestop=cur.parents(".each_tour_row_outer").find(".dropofftime").val();
+				var timeStart = new Date(selected_date+" "+valuestart+":00");
+				var timeEnd = new Date(selected_date+" "+valuestop+":00");
+				var marquee_html='<p class="'+input.attr("data-marque_id")+'">'+input.attr("data-tour")+' - '+input.attr("data-tour_offer")+' - '+input.attr("data-tour_offer_service")+' - (Capacity: '+input.attr("data-tour_offer_capacity")+')'+(input.attr("data-tour_type")!="" ? ' - (Tour Type: '+input.attr("data-tour_type")+')' : '')+'<br/>'+input.attr("data-price")+' - '+formatAMPM(timeStart)+' - '+formatAMPM(timeEnd)+'</p>';
+				if(cur.parents(".each_tour_date_div").find("marquee").length > 0)
+				{
+					cur.parents(".each_tour_row_outer").find(".radio_button_row").each(function(){
+						var marque_id=$(this).attr("data-marque_id");
+						cur.parents(".each_tour_date_div").find("marquee ."+marque_id).remove();
+					});
+					cur.parents(".each_tour_date_div").find("marquee").append(marquee_html);
+				}
+				else
+				{
+					cur.parents(".each_tour_date_div").find(".date_heading_div h4").after('<marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();">'+marquee_html+'</marquee>');
+				}
+			}
+			else
+			{
+				cur.parents(".each_tour_row_outer").find(".radio_button_row").each(function(){
+					var marque_id=$(this).attr("data-marque_id");
+					cur.parents(".each_tour_date_div").find("marquee ."+marque_id).remove();
+				});
+				if(cur.parents(".each_tour_date_div").find("marquee").length <1)
+					cur.parents(".each_tour_date_div").find("marquee").remove();
+			}
 		}
 		/*window.onerror = function(msg, file, line) {
 			alert(msg + '; ' + file + '; ' + line);
