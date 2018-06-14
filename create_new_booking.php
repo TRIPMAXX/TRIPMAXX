@@ -1656,7 +1656,7 @@
 						cur.parents(".form-group").find(".default_price_div").html(cur.find('input[type="radio"]').attr('data-price'));
 						showSuccess("Tour selected successfully.");
 					}
-					change_tour_marque(cur)
+					change_tour_marque(cur);
 				}
 				else
 				{
