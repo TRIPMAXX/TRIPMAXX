@@ -16,10 +16,10 @@
 				<div class="mp-offesr">
 					<div class="wrapper-padding-a">
 						<div class="offer-slider">
-							<header class="fly-in res_padding">
+							<div class="fly-in res_padding">
 								<div class="offer-slider-lbl"><?=$cms_pages['page_title']?></div>
 								<?=$cms_pages['page_description']?>
-							</header>
+							</div>
 							<div class="fly-in offer-slider-c">
 								
 							</div>

@@ -13,6 +13,8 @@
 			$booking_list = tools::find("all", TM_BOOKING_MASTERS." as b, ".TM_CURRENCIES." as cu", 'b.*, cu.currency_code as currency_code, cu.currency_name as currency_name', "WHERE b.invoice_currency=cu.id AND b.id=:id AND b.agent_id=:agent_id AND b.is_deleted = :is_deleted ", array(":id"=>$server_data['data']['booking_id'], ":agent_id"=>$server_data['data']['agent_id'], ":is_deleted"=>"N"));
 		elseif(isset($server_data['data']) && isset($server_data['data']['agent_id']) && $server_data['data']['agent_id']!=""):
 			$booking_list = tools::find("all", TM_BOOKING_MASTERS." as b, ".TM_CURRENCIES." as cu", 'b.*, cu.currency_code as currency_code, cu.currency_name as currency_name', "WHERE b.invoice_currency=cu.id AND b.agent_id=:agent_id AND b.is_deleted = :is_deleted ", array(":agent_id"=>$server_data['data']['agent_id'], ":is_deleted"=>"N"));
+		elseif(isset($server_data['data']) && isset($server_data['data']['latest']) && $server_data['data']['latest']=="Y"):
+			$booking_list = tools::find("all", TM_BOOKING_MASTERS." as b, ".TM_CURRENCIES." as cu", 'b.*, cu.currency_code as currency_code, cu.currency_name as currency_name', "WHERE b.invoice_currency=cu.id AND b.booking_type='agent' AND b.is_deleted = :is_deleted AND b.status = :status ORDER BY id DESC LIMIT 3", array(":is_deleted"=>"N", ":status"=>0));
 		else:
 			$booking_list = tools::find("all", TM_BOOKING_MASTERS." as b, ".TM_CURRENCIES." as cu", 'b.*, cu.currency_code as currency_code, cu.currency_name as currency_name', "WHERE b.invoice_currency=cu.id AND :all AND b.is_deleted = :is_deleted ", array(":all"=>1, ":is_deleted"=>"N"));
 		endif;

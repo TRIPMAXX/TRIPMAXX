@@ -15,6 +15,8 @@
 			$agent_list = tools::find("all", TM_AGENT." as a, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci, ".TM_CURRENCIES." as cu", 'a.*, co.name as co_name, s.name as s_name, ci.name as ci_name, cu.currency_code as currency_code, cu.currency_name as currency_name', "WHERE a.country=co.id AND a.state=s.id AND a.city=ci.id AND a.preferred_currency=cu.id AND type=:type ", array(":type"=>"G"));
 		elseif(isset($server_data['data']) && isset($server_data['data']['status']) && $server_data['data']['status']==1):
 			$agent_list = tools::find("all", TM_AGENT, 'id, type, first_name, middle_name, last_name, code', "WHERE status=:status ORDER BY first_name, middle_name, last_name", array(":status"=>1));
+		elseif(isset($server_data['data']) && isset($server_data['data']['status']) && $server_data['data']['status']==2):
+			$agent_list = tools::find("all", TM_AGENT, '*', "WHERE status=:status ORDER BY first_name, middle_name, last_name", array(":status"=>2));
 		elseif(isset($server_data['data']) && isset($server_data['data']['payment_type']) && $server_data['data']['payment_type']!="all"):
 			$agent_list = tools::find("all", TM_AGENT, 'id, type, first_name, middle_name, last_name, code', "WHERE payment_type=:payment_type ORDER BY first_name, middle_name, last_name", array(":payment_type"=>$server_data['data']['payment_type']));
 			// ************************** //
@@ -33,6 +35,9 @@
 			// ************************** //
 		else:
 			$agent_list = tools::find("all", TM_AGENT." as a, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci, ".TM_CURRENCIES." as cu", 'a.*, co.name as co_name, s.name as s_name, ci.name as ci_name, cu.currency_code as currency_code, cu.currency_name as currency_name', "WHERE a.country=co.id AND a.state=s.id AND a.city=ci.id AND a.preferred_currency=cu.id AND type=:type AND parent_id=:parent_id ", array(":type"=>"A", ':parent_id'=>(isset($server_data['data']['parent_id']) && $server_data['data']['parent_id']!="" ? $server_data['data']['parent_id'] : 0)));
+		endif;
+		if(isset($server_data['data']) && isset($server_data['data']['agent_count']) && $server_data['data']['agent_count']=="Y"):
+			$agent_list['no_of_agents']=tools::module_counter("COUNT", "id", "status =1 ", TM_AGENT);
 		endif;
 		$return_data['status']="success";
 		$return_data['results']=$agent_list;

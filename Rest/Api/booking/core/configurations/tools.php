@@ -704,7 +704,6 @@ class tools {
 	*/
 	public static function module_counter($type, $field_to_count, $where_clause, $table) {
 		$where_clause = "WHERE ".$where_clause;
-
 		if($type == "COUNT") {
 			if($count_data = tools::find("first", $table, $value = 'count('.$field_to_count.') AS COUNT_VAL', $where_clause, array()))
 			{
