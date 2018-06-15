@@ -39,7 +39,7 @@
 										if($transfer_date!="" && $transfer_date!=$t_val['booking_start_date']):
 											$transfer_all_html.='<div class="each_date_div_'.$transfer_date.' each_date_div" data-date_time="'.strtotime($transfer_date).'">';
 												$transfer_all_html.='<div class="col-md-12 date_heading_div" onclick="hide_show_transfer_details($(this))">';
-													$transfer_all_html.='<h4>Date: '.date("F j, Y", strtotime($transfer_date)).'</h4>';
+													$transfer_all_html.='<h4>'.date("F j, Y", strtotime($transfer_date)).'</h4>';
 													if($transfer_marquee_html!=""):
 														$transfer_all_html.='<marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();">'.$transfer_marquee_html.'</marquee>';
 													endif;
@@ -284,7 +284,7 @@
 								if($transfer_date!="" && $transfer_prev_html!=""):
 									$transfer_all_html.='<div class="each_date_div_'.$transfer_date.' each_date_div" data-date_time="'.strtotime($transfer_date).'">';
 										$transfer_all_html.='<div class="col-md-12 date_heading_div" onclick="hide_show_transfer_details($(this))">';
-											$transfer_all_html.='<h4>Date: '.date("F j, Y", strtotime($transfer_date)).'</h4>';
+											$transfer_all_html.='<h4>'.date("F j, Y", strtotime($transfer_date)).'</h4>';
 											if($transfer_marquee_html!=""):
 												$transfer_all_html.='<marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();">'.$transfer_marquee_html.'</marquee>';
 											endif;

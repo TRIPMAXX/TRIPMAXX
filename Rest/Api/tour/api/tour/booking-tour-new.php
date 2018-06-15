@@ -43,7 +43,7 @@
 ?>
 											<div class="each_tour_date_div_<?php echo $tour_date;?> each_tour_date_div" data-date_time="<?php echo strtotime($tour_date);?>">
 												<div class="col-md-12 date_heading_div" onclick="hide_show_tour_details($(this))">
-													<h4>Date: <?php echo date("F j, Y", strtotime($tour_date));?></h4>
+													<h4><?php echo date("F j, Y", strtotime($tour_date));?></h4>
 											<?php
 													if($tour_marquee_html!=""):
 											?>
@@ -306,7 +306,7 @@
 ?>
 									<div class="each_tour_date_div_<?php echo $tour_date;?> each_tour_date_div" data-date_time="<?php echo strtotime($tour_date);?>">
 										<div class="col-md-12 date_heading_div" onclick="hide_show_tour_details($(this))">
-											<h4>Date: <?php echo date("F j, Y", strtotime($tour_date));?></h4>
+											<h4><?php echo date("F j, Y", strtotime($tour_date));?></h4>
 									<?php
 											if($tour_marquee_html!=""):
 									?>

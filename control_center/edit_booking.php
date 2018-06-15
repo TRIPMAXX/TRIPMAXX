@@ -1092,7 +1092,7 @@
 								var add_html='';
 								add_html+='<div class="each_tour_date_div_'+response['post_data']['country_city_rcd_date']+' each_tour_date_div" data-date_time="'+response['post_data']['country_city_rcd_date_time']+'">';
 									add_html+='<div class="col-md-12 date_heading_div" onclick="hide_show_transfer_details($(this))">';
-										add_html+='<h4>Date: '+response['post_data']['country_city_rcd_formated_date']+'</h4>';
+										add_html+='<h4>'+response['post_data']['country_city_rcd_formated_date']+'</h4>';
 										add_html+='<div class="clock_img_div">';
 											add_html+='<div class="change_clock_am_div">';
 												add_html+='<input type="checkbox" checked="" data-toggle="toggle" data-on="AM" data-off="PM" data-onstyle="primary" data-offstyle="danger" class="toggle-demo" onchange="change_clock($(this))">';
@@ -1326,7 +1326,7 @@
 								var add_html='';
 								add_html+='<div class="each_date_div_'+response['post_data']['country_city_rcd_date']+' each_date_div" data-date_time="'+response['post_data']['country_city_rcd_date_time']+'">';
 									add_html+='<div class="col-md-12 date_heading_div" onclick="hide_show_transfer_details($(this))">';
-										add_html+='<h4>Date: '+response['post_data']['country_city_rcd_formated_date']+'</h4>';
+										add_html+='<h4>'+response['post_data']['country_city_rcd_formated_date']+'</h4>';
 										add_html+='<div class="clock_img_div">';
 											add_html+='<div class="change_clock_am_div">';
 												add_html+='<input type="checkbox" checked="" data-toggle="toggle" data-on="AM" data-off="PM" data-onstyle="primary" data-offstyle="danger" class="toggle-demo" onchange="change_clock($(this))">';
