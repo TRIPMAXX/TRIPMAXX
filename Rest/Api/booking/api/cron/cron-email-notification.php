@@ -55,7 +55,7 @@
 									$return_data_dmc_arr=json_decode($return_data_dmc, true);
 									//print_r($return_data_dmc_arr);
 									if($return_data_dmc_arr['status']=="success"):
-										$agent_url_details="";
+										$agent_url_details='<a href="'.DOMAIN_NAME_PATH.'index.php?auto_login_id='.base64_encode(SECURITY_SALT.$return_data_arr_agent['results']['id']."agent".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_val['id']).'" title="View Order">'.DOMAIN_NAME_PATH.'index.php?auto_login_id='.base64_encode(SECURITY_SALT.$return_data_arr_agent['results']['id']."agent".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_val['id']).'</a>';
 										$cash_payment_str="Cash payment needed to be done within 1 day";
 										$email_template=$return_data_dmc_arr['email_template'];
 										$email_body = str_replace(array('[FIRST_NAME]', '[LAST_NAME]', "[DETAILS_URL]", "[CASH_PAYMENT]"), array($return_data_arr_agent['results']['first_name'], $return_data_arr_agent['results']['last_name'], $agent_url_details, $cash_payment_str), $email_template['template_body']);

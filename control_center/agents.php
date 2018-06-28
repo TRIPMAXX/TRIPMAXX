@@ -175,7 +175,7 @@
 										<thead>
 											<tr role="row">
 												<th>#</th>
-												<th>Logo</th>
+												<th>Agent Type</th>
 												<th>Name</th>
 												<th>Code</th>
 												<th>Email</th>
@@ -195,13 +195,14 @@
 												<td class="  sorting_1"><?= $agent_key+1;?></td>
 												<td class=" ">
 												<?php
-												if($agent_val['image']!=""):
+												/*if($agent_val['image']!=""):
 												?>
 													<img src = "<?php echo(AGENT_IMAGE_PATH.$agent_val['image']);?>" border = "0" alt = "" width = "80" height = "80" onerror="this.remove;"/>
 												<?php
 												else:
 													echo "N/A";
-												endif;
+												endif;*/
+												echo $agent_val['payment_type'];
 												?>
 												</td>
 												<td class=" "><?= $agent_val['first_name']." ".($agent_val['middle_name']!="" ? $agent_val['middle_name']." " : "").$agent_val['last_name'];?></td>
@@ -256,9 +257,9 @@
 												<td class=" " data-title="Action">
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>create_new_booking?agent_id=<?php echo base64_encode($agent_val['id']);?>" title = "Create New Bookings"><i class="fa fa-plus-square fa-1x" ></i></a>&nbsp;&nbsp;
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>bookings?agent_id=<?php echo base64_encode($agent_val['id']);?>" title = "Lists Of Bookings"><i class="fa fa-plane fa-1x" ></i></a>&nbsp;&nbsp;
-													<?php if(isset($agent_val['payment_type']) && $agent_val['payment_type']!='cash'){;?>
+													<?php //if(isset($agent_val['payment_type']) && $agent_val['payment_type']!='cash'){;?>
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>accounting?agent_id=<?php echo base64_encode($agent_val['id']);?>" title = "Accounting"><i class="fa fa-usd fa-1x" ></i></a>&nbsp;&nbsp;
-													<?php };?>
+													<?php //};?>
 													<a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>edit_agent?agent_id=<?php echo base64_encode($agent_val['id']);?>" title = "Edit Agent"><i class="fa fa-pencil-square-o fa-1x" ></i></a>&nbsp;&nbsp;
 													<!-- <a href = "<?php echo(DOMAIN_NAME_PATH_ADMIN);?>agents?agent_id=<?php echo base64_encode($agent_val['id']);?>"  title = "Delete Agent" onclick = "confirm('Are you sure you want to delete this item?') ? '' : event.preventDefault()"><i class="fa fa fa-trash-o fa-1x"></i></a> -->
 												</td>

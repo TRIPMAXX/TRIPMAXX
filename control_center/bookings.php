@@ -123,7 +123,7 @@
 											<thead>
 												<tr role="row">
 													<th>#</th>
-													<th>Booking Type</th>
+													<th>Quotation Name</th>
 													<th>Created By</th>
 													<th>Check In & Check Out Date</th>
 													<th>Number Of Person</th>
@@ -169,9 +169,10 @@
 											?>
 												<tr class="odd">
 													<td class="  sorting_1"><?php echo $book_key+1;?></td>
-													<td class=" "><?php echo $book_val['booking_type'];?></td>
+													<td class=" "><?php echo $book_val['quotation_name'];?></td>
 													<td class=" " style="word-break:break-all;">
 													<?php
+													echo "Booking Type: ".$book_val['booking_type']."<br/>";
 													if($book_val['booking_type']=="personal"):
 														$find_dmc=tools::find("first", TM_DMC, '*', "WHERE id=:id ", array(":id"=>$book_val['dmc_id']));	
 														echo $find_dmc['first_name']." ".$find_dmc['last_name'];

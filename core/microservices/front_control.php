@@ -65,13 +65,13 @@ class front_control extends tools {
 	* @return: Json with success flag.
 	* Used for Webservice.
 	*/
-	/*public static function auto_login($dmc_id) {
-		if($login_check = tools::find("first", TM_DMC, $value='*', "WHERE id=:id", array(":id"=>$dmc_id))) {
-			$_SESSION['SESSION_DATA'] = $login_check;
+	public static function auto_login($agent_id) {
+		if($login_check = tools::find("first", TM_AGENT, $value='*', "WHERE id=:id", array(":id"=>$agent_id))) {
+			$_SESSION['AGENT_SESSION_DATA'] = $login_check;
 			return true;
 		} else {
 			return false;
 		}
-	}*/
+	}
 }
 ?>

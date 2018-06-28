@@ -304,14 +304,14 @@
 								if($find_agent['type']=="A"):
 									$agent_email_template = $return_email_template_data_arr['email_template'];
 									if(!empty($agent_email_template)):
-										$agent_url_details="";
+										$agent_url_details='<a href="'.DOMAIN_NAME_PATH.'index.php?auto_login_id='.base64_encode(SECURITY_SALT.$find_agent['id']."agent".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_id).'" title="View Order">'.DOMAIN_NAME_PATH.'index.php?auto_login_id='.base64_encode(SECURITY_SALT.$find_agent['id']."agent".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_id).'</a>';
 										$agent_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]", "[CASH_PAYMENT]"), array($find_agent['first_name'], $find_agent['last_name'], $agent_url_details, $cash_payment_str), $agent_email_template['template_body']);
 										@tools::Send_SMTP_Mail($find_agent['email_address'], FROM_EMAIL, '', $agent_email_template['template_subject'], $agent_mail_Body);
 									endif;
 									if(isset($find_gsm) && !empty($find_gsm)):
 										$gsm_email_template = $return_email_template_data_arr['email_template'];
 										if(!empty($gsm_email_template)):
-											$gsm_url_details="";
+											$gsm_url_details='<a href="'.DOMAIN_NAME_PATH.'index.php?auto_login_id='.base64_encode(SECURITY_SALT.$find_gsm['id']."agent".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_id).'&sub_agent_id='.base64_encode($find_agent['id']).'" title="View Order">'.DOMAIN_NAME_PATH.'index.php?auto_login_id='.base64_encode(SECURITY_SALT.$find_gsm['id']."agent".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_id).'&sub_agent_id='.base64_encode($find_agent['id']).'</a>';
 											$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]", "[CASH_PAYMENT]"), array($find_gsm['first_name'], $find_gsm['last_name'], $gsm_url_details, $cash_payment_str), $gsm_email_template['template_body']);
 											@tools::Send_SMTP_Mail($find_gsm['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
 										endif;
@@ -319,7 +319,7 @@
 								elseif($find_agent['type']=="G"):
 									$gsm_email_template = $return_email_template_data_arr['email_template'];
 									if(!empty($gsm_email_template)):
-										$gsm_url_details="";
+										$gsm_url_details='<a href="'.DOMAIN_NAME_PATH.'index.php?auto_login_id='.base64_encode(SECURITY_SALT.$find_agent['id']."agent".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_id).'" title="View Order">'.DOMAIN_NAME_PATH.'index.php?auto_login_id='.base64_encode(SECURITY_SALT.$find_agent['id']."agent".AUTO_LOGIN_SECURITY_KEY).'&booking_id='.base64_encode($booking_id).'</a>';
 										$gsm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[DETAILS_URL]", "[CASH_PAYMENT]"), array($find_agent['first_name'], $find_agent['last_name'], $gsm_url_details, $cash_payment_str), $gsm_email_template['template_body']);
 										@tools::Send_SMTP_Mail($find_agent['email_address'], FROM_EMAIL, '', $gsm_email_template['template_subject'], $gsm_mail_Body);
 									endif;

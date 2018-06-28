@@ -7,7 +7,9 @@
 	$return_data['msg']="Token is not verified.";
 	$server_data=json_decode(file_get_contents("php://input"), true);
 	if(isset($server_data['token']) && isset($server_data['token']['token']) && isset($server_data['token']['token_timeout']) && isset($server_data['token']['token_generation_time']) && tools::jwtTokenDecode($server_data['token']['token']) && ($server_data['token']['token_generation_time']+$server_data['token']['token_timeout']) > time()):
-		if(isset($server_data['data']) && isset($server_data['data']['agent_id']) && $server_data['data']['agent_id']!=""):
+		if(isset($server_data['data']) && isset($server_data['data']['gsm_agent_id']) && $server_data['data']['gsm_agent_id']!=""):
+			$agent_list = tools::find("first", TM_AGENT, '*', "WHERE id=:id", array(":id"=>base64_decode($server_data['data']['gsm_agent_id'])));
+		elseif(isset($server_data['data']) && isset($server_data['data']['agent_id']) && $server_data['data']['agent_id']!=""):
 			$agent_list = tools::find("first", TM_AGENT, '*', "WHERE id=:id AND type=:type", array(":id"=>base64_decode($server_data['data']['agent_id']), ":type"=>"A"));
 		elseif(isset($server_data['data']) && isset($server_data['data']['gsa_id']) && $server_data['data']['gsa_id']!=""):
 			$agent_list = tools::find("first", TM_AGENT." as a, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci, ".TM_CURRENCIES." as cu", 'a.*, co.name as co_name, s.name as s_name, ci.name as ci_name, cu.currency_code as currency_code, cu.currency_name as currency_name', "WHERE a.country=co.id AND a.state=s.id AND a.city=ci.id AND a.preferred_currency=cu.id AND a.id=:id AND type=:type ", array(":id"=>base64_decode($server_data['data']['gsa_id']), ":type"=>"G"));

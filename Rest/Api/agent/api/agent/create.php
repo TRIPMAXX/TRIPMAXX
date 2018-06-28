@@ -50,18 +50,23 @@
 					file_put_contents(AGENT_IMAGES.$file_name, $data_img_str);
 					$_POST['image']=$file_name;
 				}
+				if($_POST['payment_type']=="cash")
+					$_POST['credit_balance']=0.00;
 				if($save_agent = tools::module_form_submission($uploaded_file_json_data, TM_AGENT)) {
-					$credit_balance=$_POST['credit_balance'];
-					unset($_POST);
-					$_POST['agent_id']=$save_agent;
-					$_POST['amount']=$credit_balance;
-					$_POST['note']="Default Credit";
-					$_POST['closing_balance']=$credit_balance;
-					$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
-					unset($_POST);
-					$_POST['transaction_id']=tools::generate_transaction_id("TM-".$save_agent_accounting);
-					$_POST['id']=$save_agent_accounting;
-					$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+					if($_POST['payment_type']=="credit")
+					{
+						$credit_balance=$_POST['credit_balance'];
+						unset($_POST);
+						$_POST['agent_id']=$save_agent;
+						$_POST['amount']=$credit_balance;
+						$_POST['note']="Default Credit";
+						$_POST['closing_balance']=$credit_balance;
+						$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+						unset($_POST);
+						$_POST['transaction_id']=tools::generate_transaction_id("TM-".$save_agent_accounting);
+						$_POST['id']=$save_agent_accounting;
+						$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+					}
 					$return_data['status']="success";
 					$return_data['msg'] = 'Agent has been created successfully.';
 					if(isset($_POST['type']) && $_POST['type']=="G")

@@ -10,7 +10,7 @@
 					"token_timeout"=>$autentication_data->results->token_timeout,
 					"token_generation_time"=>$autentication_data->results->token_generation_time
 				);
-				$post_data['data']=$_GET;
+				$post_data['data']['gsm_agent_id']=$_GET['agent_id'];
 				$post_data_str=json_encode($post_data);
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -144,7 +144,7 @@
 						<div class="box-body">
 							<div id="" class="row">
 								<div id="" class="col-md-8">
-									<h4><strong>Current Credit Balance</strong> : <?php echo number_format($agent_data['credit_balance'], 2, ".", ",");?></h4>
+									<h4><strong>Current <?php echo ucfirst($agent_data['payment_type'])?> Balance</strong> : <?php echo number_format($agent_data['credit_balance'], 2, ".", ",");?></h4>
 								</div>
 								<div id="" class="col-md-4">
 									<a href="<?php echo(DOMAIN_NAME_PATH_ADMIN);?>print_accounting?agent_id=<?php echo base64_encode($agent_data['id']);?>" target="_blank"><button class="status_checks btn btn-success btn-md" type="submit" style="float:right; margin-bottom:10px;margin-left:15px;" value="">Print</button></a>

@@ -99,22 +99,27 @@
 				$_SESSION['SET_TYPE']="error";
 				$_SESSION['SET_FLASH'] = 'This username already exists.';		
 			} else {
+				if($_POST['payment_type']=="cash")
+					$_POST['credit_balance']=0.00;
 				if($save_agent = tools::module_form_submission($uploaded_file_json_data, TM_AGENT)) {
-					$credit_balance=$_POST['credit_balance'];
-					$first_name=$_POST['first_name'];
-					$last_name=$_POST['last_name']; 
-					$username=$_POST['username'];
-					$password=$_POST['password'];
-					unset($_POST);
-					$_POST['agent_id']=$save_agent;
-					$_POST['amount']=$credit_balance;
-					$_POST['note']="Default Credit";
-					$_POST['closing_balance']=$credit_balance;
-					$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
-					unset($_POST);
-					$_POST['transaction_id']=tools::generate_transaction_id("TM-".$save_agent_accounting);
-					$_POST['id']=$save_agent_accounting;
-					$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+					if($_POST['payment_type']=="credit")
+					{
+						$credit_balance=$_POST['credit_balance'];
+						$first_name=$_POST['first_name'];
+						$last_name=$_POST['last_name']; 
+						$username=$_POST['username'];
+						$password=$_POST['password'];
+						unset($_POST);
+						$_POST['agent_id']=$save_agent;
+						$_POST['amount']=$credit_balance;
+						$_POST['note']="Default Credit";
+						$_POST['closing_balance']=$credit_balance;
+						$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+						unset($_POST);
+						$_POST['transaction_id']=tools::generate_transaction_id("TM-".$save_agent_accounting);
+						$_POST['id']=$save_agent_accounting;
+						$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+					}
 					if(!empty($tm_agent_template)):
 						$tm_mail_Body=str_replace(array("[FIRST_NAME]", "[LAST_NAME]", "[USERNAME]", "[PASSWORD]"), array($first_name, $last_name, $username, $password), $tm_agent_template['template_body']);
 						//print_r($tm_mail_Body);exit;
