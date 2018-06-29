@@ -21,6 +21,8 @@
 			$agent_list = tools::find("all", TM_AGENT, '*', "WHERE status=:status ORDER BY first_name, middle_name, last_name", array(":status"=>2));
 		elseif(isset($server_data['data']) && isset($server_data['data']['payment_type']) && $server_data['data']['payment_type']!="all"):
 			$agent_list = tools::find("all", TM_AGENT, 'id, type, first_name, middle_name, last_name, code', "WHERE payment_type=:payment_type ORDER BY first_name, middle_name, last_name", array(":payment_type"=>$server_data['data']['payment_type']));
+		elseif(isset($server_data['data']) && isset($server_data['data']['payment_type']) && $server_data['data']['payment_type']=="all"):
+			$agent_list = tools::find("all", TM_AGENT, 'id, type, first_name, middle_name, last_name, code', "WHERE ORDER BY first_name, middle_name, last_name", array());
 			// ************************** //
 		elseif(isset($server_data['data']) && isset($server_data['data']['agent_type']) && isset($server_data['data']['agents'])):
 			if($server_data['data']['agents']!="all"):

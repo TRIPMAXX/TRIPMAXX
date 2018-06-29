@@ -11,6 +11,7 @@
 				"token_timeout"=>$autentication_data->results->token_timeout,
 				"token_generation_time"=>$autentication_data->results->token_generation_time
 			);
+			$post_data['data']['payment_type']="all";
 			$post_data_str=json_encode($post_data);
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
