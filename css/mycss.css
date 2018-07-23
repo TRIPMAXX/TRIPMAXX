@@ -178,41 +178,46 @@
 .tabs_area ul {
 	list-style: none;
 	padding-left: 0px;
+	text-align:center;
 }
 .tabs_area ul li {
 	width: 19%;
-	    float: left;
+	/*float: left;*/
 	margin-right: 10px !important;
 }
 .tabs_area ul li {
-	width: 19.3%;
-	    float: left;
+	width: 16.3%;
+	/*float: left;*/
+	display:inline-block;
 	margin-right: 10px !important;
+	border-radius: 15px;
 }
 
 .tabs_area ul li:last-child {
 	margin-right: 0px;
 }
 .tab_name_area {
-	height: 200px !important;
+	height: 100px !important;
     width:100%;
+	padding: 0px 10px;
 }
 
 .tab_wrapper{
-    display:table !important;
+    /*display:table !important;*/
 }
 .tabs_area .pad0{
         margin-right: 0px !important;
 }
 .tab_name_area{
- display:table-cell !important;
-text-align:center;
-vertical-align:middle;
+	display: table !important;
 }
 .tab_name_area h1 {
 	color: #fff;
-	font-size: 25px;
+	font-size: 20px;
 	text-align: center;
+ display:table-cell !important;
+text-align:center;
+vertical-align:middle;
 	
 }
 .tab_link_area {

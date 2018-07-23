@@ -3,8 +3,10 @@
 	tools::module_validation_check(@$_SESSION['AGENT_SESSION_DATA']['id'], DOMAIN_NAME_PATH.'');
 	$data['status']="error";
 	$data['msg']="Some data missing.";
-	if(isset($_POST) && !empty($_POST)):
-		$_SESSION['step_2']=$_POST['hotel_room_arr'];
+	if(isset($_POST)):
+		$_SESSION['step_2']=array();
+		if(!empty($_POST))
+			$_SESSION['step_2']=$_POST['hotel_room_arr'];
 		$data['status']="success";
 		$data['msg']="Saved to session.";
 	endif;

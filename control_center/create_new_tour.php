@@ -307,12 +307,12 @@
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-6">
-											<label for="tour_start_time" class="control-label">Tour Start Time (24 hour format - hh:mm)</label>
-											<input type="text" class="form-control"  value="<?php echo(isset($_POST['tour_start_time']) && $_POST['tour_start_time']!='' ? $_POST['tour_start_time'] : "");?>" name="tour_start_time" id="tour_start_time" placeholder="Tour Start Time" tabindex = "9" />
+											<label for="tour_start_time" class="control-label">Tour Start Time <font color="#FF0000">*</font></label>
+											<input type="time" class="form-control validate[required]"  value="<?php echo(isset($_POST['tour_start_time']) && $_POST['tour_start_time']!='' ? $_POST['tour_start_time'] : "");?>" name="tour_start_time" id="tour_start_time" placeholder="Tour Start Time" tabindex = "9" />
 										</div>
 										<div class="form-group col-md-6">
-											<label for="tour_end_time" class="control-label">Tour End Time (24 hour format - hh:mm)</label>
-											<input type="text" class="form-control"  value="<?php echo(isset($_POST['tour_end_time']) && $_POST['tour_end_time']!='' ? $_POST['tour_end_time'] : "");?>" name="tour_end_time" id="tour_end_time" placeholder="Tour End Time" tabindex = "10" />
+											<label for="tour_end_time" class="control-label">Tour End Time <font color="#FF0000">*</font></label>
+											<input type="time" class="form-control validate[required]"  value="<?php echo(isset($_POST['tour_end_time']) && $_POST['tour_end_time']!='' ? $_POST['tour_end_time'] : "");?>" name="tour_end_time" id="tour_end_time" placeholder="Tour End Time" tabindex = "10" />
 										</div>
 										<div class="clearfix"></div>
 										<div class="form-group col-md-12">

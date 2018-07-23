@@ -70,6 +70,7 @@
 			$pickup_time_str=strtotime($server_data['data']['booking_tour_date']." ".$server_data['data']['pick_time'].":00");
 			$pickuptime=date("H:i", $pickup_time_str);
 			$pickupdate=$dropoffdate=$server_data['data']['booking_tour_date'];
+			
 			foreach($server_data['data']['country'] as $country_key=>$counrty_val):	
 				$tour_first_row=1;
 				$order_by='ORDER BY t.id DESC';
@@ -113,6 +114,11 @@
 					$booking_details_list=$server_data['data']['booking_details_list'];
 				endif;
 				$edit_avalibility_status="";
+				if($server_data['data']['pick_time']!="")
+				{
+					$search_query.=" AND t.tour_start_time=:tour_start_time ";
+					$execute[':tour_start_time']=$server_data['data']['pick_time'];
+				}
 				$tour_list = tools::find("all", TM_TOURS." as t, ".TM_COUNTRIES." as co, ".TM_STATES." as s, ".TM_CITIES." as ci", 't.*, co.name as co_name, s.name as s_name, ci.name as ci_name', "WHERE t.country=co.id AND t.state=s.id AND t.city=ci.id AND co.id=:co_id AND ci.id=:ci_id ".$search_query.$order_by." LIMIT ".$offset.", ".$limit." ", $execute);
 				if(!empty($tour_list)):
 					$country_name=$tour_list[0]['co_name'];
@@ -127,6 +133,10 @@
 						$offer_html='';
 						$tour_avalibility_status="";
 						$tour_edit_avalibility_status="";
+						$loginTime = strtotime($tour_val['tour_start_time'].':00');
+						$logoutTime = strtotime($tour_val['tour_end_time'].':00');
+						$diff = $logoutTime - $loginTime;
+						$hour=$diff/3600;
 						if(!empty($offers_list)):
 							foreach($offers_list as $offer_key=>$offer_val):
 								$edit_avalibility_status="";
@@ -306,9 +316,9 @@
 										<input type="hidden" name="selected_service_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" id="selected_service_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $server_data['data']['selected_service_type'];?>" class="selected_service_type">
 										<strong>Tour Type: </strong><?php echo $find_tour_type['attribute_name'];?><br/>
 										<input type="hidden" name="selected_tour_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" id="tour_type[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $find_tour_type['id'];?>" class="tour_type">
-										<strong>From: </strong><?php //echo tools::module_date_format($pickupdate);?><input type="time" name="selected_pickuptime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" id="selected_pickuptime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $pickuptime;?>" class="pickuptime" onkeyup="calculate_tour_time($(this), 'p')"><br/>
-										<strong>To: </strong><?php //echo tools::module_date_format($dropoffdate);?><input type="time" name="selected_dropofftime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" id="selected_dropofftime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" value="" class="dropofftime" onkeyup="calculate_tour_time($(this), 'd')"><br/>
-										<strong>Time: </strong><span class="calculated_time_diff">--</span><br/>
+										<strong>From: </strong><?php echo date("h:i A", strtotime($tour_val['tour_start_time']));?><?php //echo tools::module_date_format($pickupdate);?><input type="time" name="selected_pickuptime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" id="selected_pickuptime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $tour_val['tour_start_time'];?>" class="pickuptime" onkeyup="calculate_tour_time($(this), 'p')" style="display:none"><br/>
+										<strong>To: </strong><?php echo date("h:i A", strtotime($tour_val['tour_end_time']));?><?php //echo tools::module_date_format($dropoffdate);?><input type="time" name="selected_dropofftime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" id="selected_dropofftime[<?= $server_data['data']['city'][$country_key];?>][<?php echo $tour_val['id'];?>][<?php echo $search_counter;?>]" value="<?php echo $tour_val['tour_end_time'];?>" class="dropofftime" onkeyup="calculate_tour_time($(this), 'd')" style="display:none"><br/>
+										<strong>Time: </strong><span class="calculated_time_diff"><?php echo $hour;?> hours</span><br/>
 									</div>
 									<div class="clearfix"></div>
 									<div class="col-md-12">

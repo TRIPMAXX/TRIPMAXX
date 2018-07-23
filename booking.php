@@ -130,11 +130,13 @@
 																	$checkout_date = strtotime($book_val['checkout_date']);
 																	$datediff = $checkout_date - $checkin_date;
 																	$destination_str="";
-																	$service_arr=array("Hotel");
+																	$service_arr=array();
 																	foreach($book_val['booking_destination_list'] as $dest_key=>$dest_val):
 																		if($destination_str!="")
 																			$destination_str.=", ";
 																		$destination_str.=$dest_val['ci_name'];
+																		if(isset($dest_val['booking_hotel_list']) && !empty($dest_val['booking_hotel_list']) && !in_array("Hotel", $service_arr))
+																			array_push($service_arr, "Hotel");
 																		if(isset($dest_val['booking_tour_list']) && !empty($dest_val['booking_tour_list']) && !in_array("Tour", $service_arr))
 																			array_push($service_arr, "Tour");
 																		if(isset($dest_val['booking_transfer_list']) && !empty($dest_val['booking_transfer_list']) && !in_array("Transfer", $service_arr))

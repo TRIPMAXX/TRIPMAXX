@@ -3,7 +3,7 @@
 	tools::module_validation_check(@$_SESSION['SESSION_DATA']['id'], DOMAIN_NAME_PATH_ADMIN.'login');	
 	$data['status']="error";
 	$data['msg']="Some data missing.";
-	if(isset($_SESSION) && !empty($_SESSION) && isset($_SESSION['step_1']) && !empty($_SESSION['step_1']) && isset($_SESSION['step_2']) && !empty($_SESSION['step_2'])):
+	if(isset($_SESSION) && !empty($_SESSION) && isset($_SESSION['step_1']) && !empty($_SESSION['step_1'])):
 		//print_r($_SESSION);
 		$number_of_person=$number_of_adult=$number_of_child=0;
 		foreach($_SESSION['step_1']['adult'] as $adult_key=>$adult_val):
@@ -42,50 +42,53 @@
 		</div>
 <?php
 		$first_section_html=ob_get_clean();
-		$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
+		$secend_section_html='';
 		$hotel_price=0.00;
 		$hotel_currency="INR";
-		if(isset($autentication_data->status)):
-			if($autentication_data->status=="success"):
-				$post_data['token']=array(
-					"token"=>$autentication_data->results->token,
-					"token_timeout"=>$autentication_data->results->token_timeout,
-					"token_generation_time"=>$autentication_data->results->token_generation_time
-				);
-				$post_data['data']['step_1']=$_SESSION['step_1'];
-				$post_data['data']['step_2']=$_SESSION['step_2'];
-				$post_data_str=json_encode($post_data);
-				$ch = curl_init();
-				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-				curl_setopt($ch, CURLOPT_HEADER, false);
-				curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
-				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-				curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."hotel/selected-hotel-details.php");
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-				$return_data = curl_exec($ch);
-				curl_close($ch);
-				$return_data_arr=json_decode($return_data, true);
-				$hotel_data=array();
-				if(!isset($return_data_arr['status'])):
-					//$data['status'] = 'error';
-					//$data['msg']="Some error has been occure during execution.";
-				elseif($return_data_arr['status']=="success"):
-					//$data['status'] = 'success';
-					//$data['msg']="Data received successfully";
-					$secend_section_html=$return_data_arr['room_details'];
-					$hotel_price=$return_data_arr['hotel_price'];
-					$hotel_currency=$return_data_arr['default_currency'];
-					//$data['city_tab_html']=$return_data_arr['city_tab_html'];
-					//$data['heading_count_rcd']=$return_data_arr['heading_count_rcd'];
-				else:
-					//$data['status'] = 'error';
-					//$data['msg'] = $return_data_arr['msg'];
+		if(isset($_SESSION['step_2']) && !empty($_SESSION['step_2'])):
+			$autentication_data=json_decode(tools::apiauthentication(DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."authorized.php"));
+			if(isset($autentication_data->status)):
+				if($autentication_data->status=="success"):
+					$post_data['token']=array(
+						"token"=>$autentication_data->results->token,
+						"token_timeout"=>$autentication_data->results->token_timeout,
+						"token_generation_time"=>$autentication_data->results->token_generation_time
+					);
+					$post_data['data']['step_1']=$_SESSION['step_1'];
+					$post_data['data']['step_2']=$_SESSION['step_2'];
+					$post_data_str=json_encode($post_data);
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($ch, CURLOPT_HEADER, false);
+					curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json, Content-Type: application/json"));
+					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+					curl_setopt($ch, CURLOPT_URL, DOMAIN_NAME_PATH.REST_API_PATH.HOTEL_API_PATH."hotel/selected-hotel-details.php");
+					curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_str);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+					$return_data = curl_exec($ch);
+					curl_close($ch);
+					$return_data_arr=json_decode($return_data, true);
+					$hotel_data=array();
+					if(!isset($return_data_arr['status'])):
+						//$data['status'] = 'error';
+						//$data['msg']="Some error has been occure during execution.";
+					elseif($return_data_arr['status']=="success"):
+						//$data['status'] = 'success';
+						//$data['msg']="Data received successfully";
+						$secend_section_html=$return_data_arr['room_details'];
+						$hotel_price=$return_data_arr['hotel_price'];
+						$hotel_currency=$return_data_arr['default_currency'];
+						//$data['city_tab_html']=$return_data_arr['city_tab_html'];
+						//$data['heading_count_rcd']=$return_data_arr['heading_count_rcd'];
+					else:
+						//$data['status'] = 'error';
+						//$data['msg'] = $return_data_arr['msg'];
+					endif;
 				endif;
+			else:
+				//$data['status'] = 'error';
+				//$data['msg'] = $autentication_data->msg;
 			endif;
-		else:
-			//$data['status'] = 'error';
-			//$data['msg'] = $autentication_data->msg;
 		endif;
 		$third_section_html='';
 		$tour_price=0.00;

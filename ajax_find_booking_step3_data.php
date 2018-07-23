@@ -65,7 +65,7 @@
 					$post_data['data']['search_counter']=$_POST['search_counter'];
 					$post_data['data']['threshold_booking_time']=$find_threshold_booking_time;
 					if(isset($_POST['booking_details_list']) && $_POST['booking_details_list']!=""):
-						$post_data['data']['booking_details_list']=$_POST['booking_details_list'];
+						//$post_data['data']['booking_details_list']=$_POST['booking_details_list'];
 					endif;
 					$post_data_str=json_encode($post_data);
 					$ch = curl_init();

@@ -20,7 +20,11 @@
 					$_POST['note']="Debit money for booking with quotation name:".$server_data['data']['quotation_name'];
 					$_POST['debit_or_credit']="Debit";
 					$_POST['closing_balance']=$closing_balance;
-					tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+					$save_agent_credit=tools::module_form_submission("", TM_AGENT_ACCOUNTING);
+					unset($_POST);
+					$_POST['transaction_id']=tools::generate_transaction_id("TM-".$save_agent_credit);
+					$_POST['id']=$save_agent_credit;
+					$save_agent_accounting = tools::module_form_submission("", TM_AGENT_ACCOUNTING);
 					$return_data['status'] = 'success';
 					$return_data['result'] = $find_agent;
 					if($find_agent['type']=="A" && $find_agent['parent_id'] > 0):

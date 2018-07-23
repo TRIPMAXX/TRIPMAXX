@@ -242,12 +242,12 @@
 			$('select').select2();
 		});
 		$(".save_step2_data").click(function(){
-			if($('.each_hotel_tab_content').length != $('input[class="selected_room"]:checked').length)
+			/*if($('.each_hotel_tab_content').length != $('input[class="selected_room"]:checked').length)
 			{
 				showError("Please select hotel for all the cities.");
 			}
 			else
-			{
+			{*/
 				var hotel_room_arr=[];
 				$('input[class="selected_room"]:checked').each(function(){
 					hotel_room_arr.push($(this).val());
@@ -274,8 +274,16 @@
 							var $active = $('.wizard .nav-tabs li.active');
 							$active.next().removeClass('disabled');
 							$active.next().find('a[data-toggle="tab"]').click();
-							$(".nav-tabs li:eq(1)").addClass("completed_booking_step");
-							$(".nav-tabs li:gt(1)").removeClass("completed_booking_step").removeClass("uncompleted_booking_step");
+							//$(".nav-tabs li:eq(1)").addClass("completed_booking_step");
+							//$(".nav-tabs li:gt(1)").removeClass("completed_booking_step").removeClass("uncompleted_booking_step");
+							if($('.each_hotel_tab_content').length == $('input[class="selected_room"]:checked').length)
+							{
+								$(".nav-tabs li:eq(1)").addClass("completed_booking_step").removeClass("uncompleted_booking_step");
+							}
+							else
+							{
+								$(".nav-tabs li:eq(1)").addClass("uncompleted_booking_step").removeClass("completed_booking_step");
+							}
 						}
 						else
 						{
@@ -287,7 +295,7 @@
 						//showError("We are having some problem. Please try later.");
 					}
 				});
-			}
+			//}
 		});
 		$(".save_step3_data").click(function(){
 			var tour_offer_arr=[];
@@ -522,6 +530,10 @@
 			if($("#quotation_name").val()=="")
 			{
 				showError("Please first save the quotation name");
+			}
+			else if($('.each_hotel_tab_content').length != $('input[class="selected_room"]:checked').length && $('input[class="selected_tour"]:checked').length==0 && $('input[class="selected_transfer"]:checked').length==0)
+			{
+				showError("Please complete atleast one among hotel or tour or transfer");
 			}
 			else
 			{
@@ -1660,10 +1672,15 @@
 		}
 		function select_tour_radio_row(cur)
 		{
-			if(cur.parents(".each_tour_row_outer").find(".pickuptime").val()!="" && cur.parents(".each_tour_row_outer").find(".dropofftime").val()!="")
+			var valuestart = cur.parents(".each_tour_row_outer").find(".pickuptime").val();
+			var valuestop=cur.parents(".each_tour_row_outer").find(".dropofftime").val();
+			if(valuestart!="" && valuestop!="")
 			{
 				if(cur.hasClass("radio_button_row_background"))
 				{
+					$(".am_"+cur.parents(".each_tour_row_outer").find(".svg_path_id_input").val()).remove();
+					$(".pm_"+cur.parents(".each_tour_row_outer").find(".svg_path_id_input").val()).remove();
+					cur.parents(".each_tour_row_outer").find(".svg_path_id_input").remove();
 					cur.removeClass("radio_button_row_background");
 					cur.find('input[type="radio"]').prop("checked", false);
 					cur.parents(".form-group").find(".default_price_div").html(cur.parents(".form-group").find(".default_price_div").attr("data-default_price"));
@@ -1671,12 +1688,135 @@
 				}
 				else
 				{
-					cur.parent(".tour_offer_cls").find(".radio_button_row").removeClass("radio_button_row_background");
-					cur.parent(".tour_offer_cls").find(".radio_button_row").find('input[type="radio"]').removeAttr("checked");
-					cur.addClass("radio_button_row_background");
-					cur.find('input[type="radio"]').prop("checked", true);
-					cur.parents(".form-group").find(".default_price_div").html(cur.find('input[type="radio"]').attr('data-price'));
-					showSuccess("Tour selected successfully.");
+					
+					var exists_msg="";
+					var selected_date=cur.parents(".each_tour_row_outer").find(".selected_booking_tour_date").val();
+					var timeStart = new Date(selected_date+" "+valuestart+":00");
+					var timeEnd = new Date(selected_date+" "+valuestop+":00");
+					if(timeEnd > timeStart)
+					{
+						$(".each_transfer_row_outer").each(function(){
+							var other_valuestart = $(this).find(".calculate_time .pickuptime").val();
+							var other_valuestop=$(this).find(".calculate_time .dropofftime").val();
+							if(other_valuestart!="" && other_valuestop!="")
+							{
+								var other_selected_date=$(this).find(".calculate_time .selected_booking_transfer_date").val();
+								var other_timeStart = new Date(other_selected_date+" "+other_valuestart+":00");
+								var other_timeEnd = new Date(other_selected_date+" "+other_valuestop+":00");
+								if((other_timeStart>=timeStart && other_timeEnd<timeStart) || (other_timeStart<timeEnd && other_timeEnd>=timeEnd) || (other_timeStart>=timeStart && other_timeEnd<=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd && other_timeEnd>=timeStart) || (other_timeStart>=timeStart && other_timeEnd>=timeEnd && other_timeStart<=timeStart))
+								{
+									exists_msg="You have transfer in this time.";
+								}
+							}
+						});
+						$(".each_tour_row_outer").not(cur.parents(".each_tour_row_outer")).each(function(){
+							var other_valuestart = $(this).find(".calculate_tour_time .pickuptime").val();
+							var other_valuestop=$(this).find(".calculate_tour_time .dropofftime").val();
+							if(other_valuestart!="" && other_valuestop!="" && $(this).find(".selected_tour").is(":checked")==true)
+							{
+								var other_selected_date=$(this).find(".calculate_tour_time .selected_booking_tour_date").val();
+								var other_timeStart = new Date(other_selected_date+" "+other_valuestart+":00");
+								var other_timeEnd = new Date(other_selected_date+" "+other_valuestop+":00");
+								if((other_timeStart>=timeStart && other_timeEnd<timeStart) || (other_timeStart<timeEnd && other_timeEnd>=timeEnd) || (other_timeStart>=timeStart && other_timeEnd<=timeEnd) || (other_timeStart<=timeStart && other_timeEnd<=timeEnd && other_timeEnd>=timeStart) || (other_timeStart>=timeStart && other_timeEnd>=timeEnd && other_timeStart<=timeStart))
+								{
+									if(exists_msg=="")
+										exists_msg="You have tour in this time.";
+									else
+										exists_msg="You have transfer and tour in this time.";
+								}
+							}
+						});
+						if(exists_msg=="" || confirm(exists_msg+" Are you sure you want to proceed?"))
+						{
+							var difference = timeEnd - timeStart;            
+							//var diff_result = new Date(difference);
+							var minuteDiff = difference/ (60*1000);
+							var hourDiff = Math.floor(minuteDiff / 60) ;
+							var minuteDiff = minuteDiff % 60 ;
+							cur.parents(".each_tour_row_outer").find(".calculated_time_diff").text((hourDiff > 0 ? hourDiff+(hourDiff > 1 ? " hours " : " hour ") : "")+(minuteDiff > 0 ? minuteDiff+(minuteDiff > 1 ? " minutes" : " minute") : ""));
+							var start_angle=(timeStart.getHours()*60+timeStart.getMinutes())*.5;
+							var start_point=(((timeStart.getHours()*60+timeStart.getMinutes())*644)/1440);
+							var end_angle=(timeEnd.getHours()*60+timeEnd.getMinutes())*.5;
+							var end_point=(((timeEnd.getHours()*60+timeEnd.getMinutes())*644)/1440);
+							//var arc = describeArc(50, 28, 28, start_angle, end_angle);
+							if(start_angle < 360 && end_angle < 360)
+							{
+								var arc_am=describeArc(30, 17.5, 17, start_angle, end_angle);
+								var arc_pm='';
+							}
+							else if(start_angle < 360 && end_angle > 359)
+							{
+								var arc_am=describeArc(30, 17.5, 17, start_angle, 359);
+								var arc_pm=describeArc(30, 17.5, 17, 360, end_angle);
+							}
+							else if(start_angle > 359 && end_angle < 720)
+							{
+								var arc_am='';
+								var arc_pm=describeArc(30, 17.5, 17, start_angle, end_angle);
+							}
+							//alert(cur.parents(".each_tour_row_outer").find(".svg_path_id_input").length)
+							if(cur.parents(".each_tour_row_outer").find(".svg_path_id_input").length)
+							{
+								//alert(cur.parents(".each_tour_row_outer").find(".svg_path_id_input").val());
+								$(".am_"+cur.parents(".each_tour_row_outer").find(".svg_path_id_input").val()).attr("d", arc_am);
+								$(".pm_"+cur.parents(".each_tour_row_outer").find(".svg_path_id_input").val()).attr("d", arc_pm);
+								//$("."+cur.parents(".each_tour_row_outer").find(".svg_path_id_input").val()).attr("x1", start_point).attr("x2", end_point);
+								$(".each_date_div").each(function(){
+									if($(this).attr("data-date_time")==cur.parents(".each_tour_date_div").attr("data-date_time"))
+									{
+										$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
+										$(this).find(".clock_pm_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html());
+									}
+								});
+								$(".each_tour_date_div").each(function(){
+									if($(this).attr("data-date_time")==cur.parents(".each_tour_date_div").attr("data-date_time"))
+									{
+										$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
+										$(this).find(".clock_pm_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html());
+									}
+								});
+							}
+							else
+							{
+								var svg_path_id=Math.floor((Math.random() * 1000) + 1);
+								cur.parents(".each_tour_row_outer").find(".calculate_tour_time").append('<input type="hidden" name="svg_path_id_input_hidden" class="svg_path_id_input" value="'+svg_path_id+'">');
+								var prev_am_html=cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html();
+								var prev_pm_html=cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html();
+								cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html(prev_am_html+'<path class="am_'+svg_path_id+'" fill="green" d="'+arc_am+'"/>');
+								cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html(prev_pm_html+'<path class="pm_'+svg_path_id+'" fill="green" d="'+arc_pm+'"/>');
+								//cur.parents(".each_tour_date_div").find(".date_heading_div .clock svg").html(prev_html+' <line x1="'+start_point+'" y1="0" x2="'+end_point+'" y2="0" class="'+svg_path_id+'"/>');
+								$(".each_date_div").each(function(){
+									if($(this).attr("data-date_time")==cur.parents(".each_tour_date_div").attr("data-date_time"))
+									{
+										$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
+										$(this).find(".clock_pm_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html());
+									}
+								});
+								$(".each_tour_date_div").each(function(){
+									if($(this).attr("data-date_time")==cur.parents(".each_tour_date_div").attr("data-date_time"))
+									{
+										$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
+										$(this).find(".clock_pm_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html());
+									}
+								});
+							}
+							cur.parent(".tour_offer_cls").find(".radio_button_row").removeClass("radio_button_row_background");
+							cur.parent(".tour_offer_cls").find(".radio_button_row").find('input[type="radio"]').removeAttr("checked");
+							cur.addClass("radio_button_row_background");
+							cur.find('input[type="radio"]').prop("checked", true);
+							cur.parents(".form-group").find(".default_price_div").html(cur.find('input[type="radio"]').attr('data-price'));
+							showSuccess("Tour selected successfully.");
+						}
+						else
+						{
+							cur.removeClass("radio_button_row_background");
+							cur.find('input[type="radio"]').prop("checked", false);
+						}
+					}
+					else
+					{
+						showError("Drop off time must be greater than pick up time");
+					}
 				}
 				change_tour_marque(cur);
 			}
