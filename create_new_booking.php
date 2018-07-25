@@ -588,27 +588,27 @@
 				$("#"+id).show();
 			}
 		}
-		function show_offers(id) 
+		function show_offers(id, cur) 
 		{
-			if($("#"+id).is(":visible"))
+			if(cur.parents(".each_tour_row_outer").find("."+id).is(":visible"))
 			{
-				$("#"+id).hide();
+				cur.parents(".each_tour_row_outer").find("."+id).hide();
 			}
 			else
 			{
-				$("#"+id).show();
+				cur.parents(".each_tour_row_outer").find("."+id).show();
 			}
 		}
 
-		function show_transfers(id)
+		function show_transfers(id, cur)
 		{
-			if($("#"+id).is(":visible"))
+			if(cur.parents(".each_transfer_row_outer").find("."+id).is(":visible"))
 			{
-				$("#"+id).hide();
+				cur.parents(".each_transfer_row_outer").find("."+id).hide();
 			}
 			else
 			{
-				$("#"+id).show();
+				cur.parents(".each_transfer_row_outer").find("."+id).show();
 			}
 		}
 		
@@ -988,7 +988,7 @@
 								});*/
 								var exists_am_svg_path="";
 								var exists_pm_svg_path="";
-								$(".each_tour_date_div").each(function(){
+								/*$(".each_tour_date_div").each(function(){
 									if($(this).attr("data-date_time")==response['post_data']['country_city_rcd_date_time'] && $(this).find(".radio_button_row_background").length>0)
 									{
 										exists_am_svg_path+=($(this).find(".clock_am_div svg").html() ? $(this).find(".clock_am_div svg").html() : "");
@@ -1001,12 +1001,52 @@
 										exists_am_svg_path+=($(this).find(".clock_am_div svg").html() ? $(this).find(".clock_am_div svg").html() : "");
 										exists_pm_svg_path+=($(this).find(".clock_pm_div svg").html() ? $(this).find(".clock_pm_div svg").html() : "");
 									}
-								});
+								});*/
+								var top_clock_html='';
+								if($(".top_clock_div_"+response['post_data']['country_city_rcd_date']).html())
+								{
+									//Do nothing
+								}
+								else
+								{
+									top_clock_html+='<div class="each_top_clock_div top_clock_div_'+response['post_data']['country_city_rcd_date']+'" data-date_time="'+response['post_data']['country_city_rcd_date_time']+'">';
+										top_clock_html+='<h4>'+response['post_data']['country_city_rcd_formated_date']+'</h4>';
+										top_clock_html+='<div class="top_clock_img_div">';
+											top_clock_html+='<div class="change_clock_am_div">';
+												top_clock_html+='<input type="checkbox" checked="" data-toggle="toggle" data-on="AM" data-off="PM" data-onstyle="primary" data-offstyle="danger" class="toggle-demo" onchange="change_clock($(this))">';
+											top_clock_html+='</div>';
+											top_clock_html+='<div class="clock clock_am_div" style="">';
+												top_clock_html+='<svg></svg>';
+											top_clock_html+='</div>';
+											top_clock_html+='<div class="clock clock_pm_div" style="display: none;">';
+												top_clock_html+='<svg></svg>';
+											top_clock_html+='</div>';
+											top_clock_html+='<div class="clearfix"></div>';
+										top_clock_html+='</div>';
+									top_clock_html+='</div>';
+									var will_prepend_top_clock=false;
+									$(".each_top_clock_div").each(function(){
+										if(response['post_data']['country_city_rcd_date_time']<=$(this).attr("data-date_time"))
+										{
+											will_prepend_top_clock=true;
+											$(this).before(top_clock_html);
+											return false;
+										}
+									});
+									if(will_prepend_top_clock==true)
+									{
+										//$(".top_all_clock_div").prepend(top_clock_html);
+									}
+									else
+									{
+										$(".top_all_clock_div").append(top_clock_html);
+									}
+								}
 								var add_html='';
 								add_html+='<div class="each_tour_date_div_'+response['post_data']['country_city_rcd_date']+' each_tour_date_div" data-date_time="'+response['post_data']['country_city_rcd_date_time']+'">';
 									add_html+='<div class="col-md-12 date_heading_div" onclick="hide_show_tour_details($(this))">';
 										add_html+='<h4>'+response['post_data']['country_city_rcd_formated_date']+'</h4>';
-										add_html+='<div class="clock_img_div">';
+										/*add_html+='<div class="clock_img_div">';
 											add_html+='<div class="change_clock_am_div">';
 												add_html+='<input type="checkbox" checked="" data-toggle="toggle" data-on="AM" data-off="PM" data-onstyle="primary" data-offstyle="danger" class="toggle-demo" onchange="change_clock($(this))">';
 											add_html+='</div>';
@@ -1020,7 +1060,7 @@
 													add_html+=exists_pm_svg_path;
 												add_html+='</svg>';
 											add_html+='</div>';
-										add_html+='</div>';
+										add_html+='</div>';*/
 										/*add_html+='<div class="clock_img_div">';
 											add_html+='<div class="clock">';
 												add_html+='<svg>';
@@ -1219,18 +1259,58 @@
 							{
 								var exists_am_svg_path="";
 								var exists_pm_svg_path="";
-								$(".each_date_div").each(function(){
+								/*$(".each_date_div").each(function(){
 									if($(this).attr("data-date_time")==response['post_data']['country_city_rcd_date_time'] && $(this).find(".radio_button_row_background").length>0)
 									{
 										exists_am_svg_path+=($(this).find(".clock_am_div svg").html() ? $(this).find(".clock_am_div svg").html() : "");
 										exists_pm_svg_path+=($(this).find(".clock_pm_div svg").html() ? $(this).find(".clock_pm_div svg").html() : "");
 									}
-								});
+								});*/
+								var top_clock_html='';
+								if($(".top_clock_div_"+response['post_data']['country_city_rcd_date']).html())
+								{
+									//Do nothing
+								}
+								else
+								{
+									top_clock_html+='<div class="each_top_clock_div top_clock_div_'+response['post_data']['country_city_rcd_date']+'" data-date_time="'+response['post_data']['country_city_rcd_date_time']+'">';
+										top_clock_html+='<h4>'+response['post_data']['country_city_rcd_formated_date']+'</h4>';
+										top_clock_html+='<div class="top_clock_img_div">';
+											top_clock_html+='<div class="change_clock_am_div">';
+												top_clock_html+='<input type="checkbox" checked="" data-toggle="toggle" data-on="AM" data-off="PM" data-onstyle="primary" data-offstyle="danger" class="toggle-demo" onchange="change_clock($(this))">';
+											top_clock_html+='</div>';
+											top_clock_html+='<div class="clock clock_am_div" style="">';
+												top_clock_html+='<svg></svg>';
+											top_clock_html+='</div>';
+											top_clock_html+='<div class="clock clock_pm_div" style="display: none;">';
+												top_clock_html+='<svg></svg>';
+											top_clock_html+='</div>';
+											top_clock_html+='<div class="clearfix"></div>';
+										top_clock_html+='</div>';
+									top_clock_html+='</div>';
+									var will_prepend_top_clock=false;
+									$(".each_top_clock_div").each(function(){
+										if(response['post_data']['country_city_rcd_date_time']<=$(this).attr("data-date_time"))
+										{
+											will_prepend_top_clock=true;
+											$(this).before(top_clock_html);
+											return false;
+										}
+									});
+									if(will_prepend_top_clock==true)
+									{
+										//$(".top_all_clock_div").prepend(top_clock_html);
+									}
+									else
+									{
+										$(".top_all_clock_div").append(top_clock_html);
+									}
+								}
 								var add_html='';
 								add_html+='<div class="each_date_div_'+response['post_data']['country_city_rcd_date']+' each_date_div" data-date_time="'+response['post_data']['country_city_rcd_date_time']+'">';
 									add_html+='<div class="col-md-12 date_heading_div" onclick="hide_show_transfer_details($(this))">';
 										add_html+='<h4>'+response['post_data']['country_city_rcd_formated_date']+'</h4>';
-										add_html+='<div class="clock_img_div">';
+										/*add_html+='<div class="clock_img_div">';
 											add_html+='<div class="change_clock_am_div">';
 												add_html+='<input type="checkbox" checked="" data-toggle="toggle" data-on="AM" data-off="PM" data-onstyle="primary" data-offstyle="danger" class="toggle-demo" onchange="change_clock($(this))">';
 											add_html+='</div>';
@@ -1244,7 +1324,7 @@
 													add_html+=exists_pm_svg_path;
 												add_html+='</svg>';
 											add_html+='</div>';
-										add_html+='</div>';
+										add_html+='</div>';*/
 										/*add_html+='<div class="clock_img_div">';
 											add_html+='<div class="clock">';
 												add_html+='<svg>';
@@ -1675,7 +1755,7 @@
 							$(".each_transfer_row_outer").each(function(){
 								var other_valuestart = $(this).find(".calculate_time .pickuptime").val();
 								var other_valuestop=$(this).find(".calculate_time .dropofftime").val();
-								if(other_valuestart!="" && other_valuestop!="")
+								if(other_valuestart!="" && other_valuestop!="" && $(this).find(".selected_transfer:checked").val())
 								{
 									var other_selected_date=$(this).find(".calculate_time .selected_booking_transfer_date").val();
 									var other_timeStart = new Date(other_selected_date+" "+other_valuestart+":00");
@@ -1718,18 +1798,18 @@
 								//var arc = describeArc(50, 28, 28, start_angle, end_angle);
 								if(start_angle < 360 && end_angle < 360)
 								{
-									var arc_am=describeArc(30, 17.5, 17, start_angle, end_angle);
+									var arc_am=describeArc(45, 33, 28, start_angle, end_angle);
 									var arc_pm='';
 								}
 								else if(start_angle < 360 && end_angle > 359)
 								{
-									var arc_am=describeArc(30, 17.5, 17, start_angle, 359);
-									var arc_pm=describeArc(30, 17.5, 17, 360, end_angle);
+									var arc_am=describeArc(45, 33, 28, start_angle, 359);
+									var arc_pm=describeArc(45, 33, 28, 360, end_angle);
 								}
 								else if(start_angle > 359 && end_angle < 720)
 								{
 									var arc_am='';
-									var arc_pm=describeArc(30, 17.5, 17, start_angle, end_angle);
+									var arc_pm=describeArc(45, 33, 28, start_angle, end_angle);
 								}
 								//alert(cur.parents(".each_tour_row_outer").find(".svg_path_id_input").length)
 								if(cur.parents(".each_tour_row_outer").find(".svg_path_id_input").length)
@@ -1738,7 +1818,7 @@
 									$(".am_"+cur.parents(".each_tour_row_outer").find(".svg_path_id_input").val()).attr("d", arc_am);
 									$(".pm_"+cur.parents(".each_tour_row_outer").find(".svg_path_id_input").val()).attr("d", arc_pm);
 									//$("."+cur.parents(".each_tour_row_outer").find(".svg_path_id_input").val()).attr("x1", start_point).attr("x2", end_point);
-									$(".each_date_div").each(function(){
+									/*$(".each_date_div").each(function(){
 										if($(this).attr("data-date_time")==cur.parents(".each_tour_date_div").attr("data-date_time"))
 										{
 											$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
@@ -1751,18 +1831,18 @@
 											$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
 											$(this).find(".clock_pm_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html());
 										}
-									});
+									});*/
 								}
 								else
 								{
 									var svg_path_id=Math.floor((Math.random() * 1000) + 1);
 									cur.parents(".each_tour_row_outer").find(".calculate_tour_time").append('<input type="hidden" name="svg_path_id_input_hidden" class="svg_path_id_input" value="'+svg_path_id+'">');
-									var prev_am_html=cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html();
-									var prev_pm_html=cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html();
-									cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html(prev_am_html+'<path class="am_'+svg_path_id+'" fill="green" d="'+arc_am+'"/>');
-									cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html(prev_pm_html+'<path class="pm_'+svg_path_id+'" fill="green" d="'+arc_pm+'"/>');
+									var prev_am_html=$(".top_clock_div_"+selected_date).find(".clock_am_div svg").html();
+									var prev_pm_html=$(".top_clock_div_"+selected_date).find(".clock_pm_div svg").html();
+									$(".top_clock_div_"+selected_date).find(".clock_am_div svg").html(prev_am_html+'<path class="am_'+svg_path_id+'" fill="green" d="'+arc_am+'"/>');
+									$(".top_clock_div_"+selected_date).find(".clock_pm_div svg").html(prev_pm_html+'<path class="pm_'+svg_path_id+'" fill="green" d="'+arc_pm+'"/>');
 									//cur.parents(".each_tour_date_div").find(".date_heading_div .clock svg").html(prev_html+' <line x1="'+start_point+'" y1="0" x2="'+end_point+'" y2="0" class="'+svg_path_id+'"/>');
-									$(".each_date_div").each(function(){
+									/*$(".each_date_div").each(function(){
 										if($(this).attr("data-date_time")==cur.parents(".each_tour_date_div").attr("data-date_time"))
 										{
 											$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
@@ -1775,7 +1855,7 @@
 											$(this).find(".clock_am_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_am_div svg").html());
 											$(this).find(".clock_pm_div svg").html(cur.parents(".each_tour_date_div").find(".date_heading_div .clock_pm_div svg").html());
 										}
-									});
+									});*/
 								}
 								cur.parent(".tour_offer_cls").find(".radio_button_row").removeClass("radio_button_row_background");
 								cur.parent(".tour_offer_cls").find(".radio_button_row").find('input[type="radio"]').removeAttr("checked");
@@ -1827,7 +1907,7 @@
 						$(".each_transfer_row_outer").not(cur.parents(".each_transfer_row_outer")).each(function(){
 							var other_valuestart = $(this).find(".calculate_time .pickuptime").val();
 							var other_valuestop=$(this).find(".calculate_time .dropofftime").val();
-							if(other_valuestart!="" && other_valuestop!="")
+							if(other_valuestart!="" && other_valuestop!="" && $(this).find(".selected_transfer:checked").val())
 							{
 								var other_selected_date=$(this).find(".calculate_time .selected_booking_transfer_date").val();
 								var other_timeStart = new Date(other_selected_date+" "+other_valuestart+":00");
@@ -1846,7 +1926,7 @@
 						$(".each_tour_row_outer").each(function(){
 							var other_valuestart = $(this).find(".calculate_tour_time .pickuptime").val();
 							var other_valuestop=$(this).find(".calculate_tour_time .dropofftime").val();
-							if(other_valuestart!="" && other_valuestop!="")
+							if(other_valuestart!="" && other_valuestop!="" && $(this).find(".selected_tour:checked").val())
 							{
 								var other_selected_date=$(this).find(".calculate_tour_time .selected_booking_tour_date").val();
 								var other_timeStart = new Date(other_selected_date+" "+other_valuestart+":00");
@@ -1881,25 +1961,25 @@
 							//alert(cur.parents(".calculate_time").find(".svg_path_id_input").length);
 							if(start_angle < 360 && end_angle < 360)
 							{
-								var arc_am=describeArc(30, 17.5, 17, start_angle, end_angle);
+								var arc_am=describeArc(45, 33, 28, start_angle, end_angle);
 								var arc_pm='';
 							}
 							else if(start_angle < 360 && end_angle > 359)
 							{
-								var arc_am=describeArc(30, 17.5, 17, start_angle, 359);
-								var arc_pm=describeArc(30, 17.5, 17, 360, end_angle);
+								var arc_am=describeArc(45, 33, 28, start_angle, 359);
+								var arc_pm=describeArc(45, 33, 28, 360, end_angle);
 							}
 							else if(start_angle > 359 && end_angle < 720)
 							{
 								var arc_am='';
-								var arc_pm=describeArc(30, 17.5, 17, start_angle, end_angle);
+								var arc_pm=describeArc(45, 33, 28, start_angle, end_angle);
 							}
 							if(cur.parents(".calculate_time").find(".svg_path_id_input").length)
 							{
 								$(".am_"+cur.parents(".calculate_time").find(".svg_path_id_input").val()).attr("d", arc_am);
 								$(".pm_"+cur.parents(".calculate_time").find(".svg_path_id_input").val()).attr("d", arc_pm);
 								//$("."+cur.parents(".calculate_time").find(".svg_path_id_input").val()).attr("x1", start_point).attr("x2", end_point);
-								$(".each_date_div").each(function(){
+								/*$(".each_date_div").each(function(){
 									if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
 									{
 										$(this).find(".clock_am_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html());
@@ -1912,19 +1992,18 @@
 										$(this).find(".clock_am_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html());
 										$(this).find(".clock_pm_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html());
 									}
-								});
+								});*/
 							}
 							else
 							{
 								var svg_path_id=Math.floor((Math.random() * 1000) + 1);
 								cur.parents(".calculate_time").append('<input type="hidden" name="svg_path_id_input_hidden" class="svg_path_id_input" value="'+svg_path_id+'">');
-								//var prev_html=cur.parents(".each_date_div").find(".date_heading_div .clock svg").html();
-								var prev_am_html=cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html();
-								var prev_pm_html=cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html();
-								cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html(prev_am_html+'<path class="am_'+svg_path_id+'" fill="green" d="'+arc_am+'"/>');
-								cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html(prev_pm_html+'<path class="pm_'+svg_path_id+'" fill="green" d="'+arc_pm+'"/>');
+								var prev_am_html=$(".top_clock_div_"+selected_date).find(".clock_am_div svg").html();
+								var prev_pm_html=$(".top_clock_div_"+selected_date).find(".clock_pm_div svg").html();
+								$(".top_clock_div_"+selected_date).find(".clock_am_div svg").html(prev_am_html+'<path class="am_'+svg_path_id+'" fill="green" d="'+arc_am+'"/>');
+								$(".top_clock_div_"+selected_date).find(".clock_pm_div svg").html(prev_pm_html+'<path class="pm_'+svg_path_id+'" fill="green" d="'+arc_pm+'"/>');
 								//cur.parents(".each_date_div").find(".date_heading_div .clock svg").html(prev_html+' <line x1="'+start_point+'" y1="0" x2="'+end_point+'" y2="0" class="'+svg_path_id+'"/>');
-								$(".each_date_div").each(function(){
+								/*$(".each_date_div").each(function(){
 									if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
 									{
 										$(this).find(".clock_am_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html());
@@ -1937,7 +2016,7 @@
 										$(this).find(".clock_am_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html());
 										$(this).find(".clock_pm_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html());
 									}
-								});
+								});*/
 							}
 						}
 						else
@@ -1948,7 +2027,7 @@
 							{
 								$(".am_"+cur.parents(".calculate_time").find(".svg_path_id_input").val()).attr("d", "");
 								$(".pm_"+cur.parents(".calculate_time").find(".svg_path_id_input").val()).attr("d", "");
-								$(".each_date_div").each(function(){
+								/*$(".each_date_div").each(function(){
 									if($(this).attr("data-date_time")==cur.parents(".each_date_div").attr("data-date_time"))
 									{
 										$(this).find(".clock_am_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html());
@@ -1961,7 +2040,7 @@
 										$(this).find(".clock_am_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_am_div svg").html());
 										$(this).find(".clock_pm_div svg").html(cur.parents(".each_date_div").find(".date_heading_div .clock_pm_div svg").html());
 									}
-								});
+								});*/
 							}
 						}
 						change_marque(cur);
@@ -2042,18 +2121,18 @@
 							//alert(cur.parent("div").find(".svg_path_id_input").length)
 							if(start_angle < 360 && end_angle < 360)
 							{
-								var arc_am=describeArc(30, 17.5, 17, start_angle, end_angle);
+								var arc_am=describeArc(45, 33, 28, start_angle, end_angle);
 								var arc_pm='';
 							}
 							else if(start_angle < 360 && end_angle > 359)
 							{
-								var arc_am=describeArc(30, 17.5, 17, start_angle, 359);
-								var arc_pm=describeArc(30, 17.5, 17, 360, end_angle);
+								var arc_am=describeArc(45, 33, 28, start_angle, 359);
+								var arc_pm=describeArc(45, 33, 28, 360, end_angle);
 							}
 							else if(start_angle > 359 && end_angle < 720)
 							{
 								var arc_am='';
-								var arc_pm=describeArc(30, 17.5, 17, start_angle, end_angle);
+								var arc_pm=describeArc(45, 33, 28, start_angle, end_angle);
 							}
 							if(cur.parent("div").find(".svg_path_id_input").length)
 							{
@@ -2207,13 +2286,13 @@
 			{
 				if(cur.is(":checked"))
 				{
-					cur.parents(".clock_img_div").find(".clock_am_div").show();
-					cur.parents(".clock_img_div").find(".clock_pm_div").hide();
+					cur.parents(".top_clock_img_div").find(".clock_am_div").show();
+					cur.parents(".top_clock_img_div").find(".clock_pm_div").hide();
 				}
 				else
 				{
-					cur.parents(".clock_img_div").find(".clock_am_div").hide();
-					cur.parents(".clock_img_div").find(".clock_pm_div").show();
+					cur.parents(".top_clock_img_div").find(".clock_am_div").hide();
+					cur.parents(".top_clock_img_div").find(".clock_pm_div").show();
 				}
 				cur.parents(".date_heading_div").siblings().show();
 			}
@@ -2389,6 +2468,9 @@
 													</a>
 												</li>
 											</ul>
+										</div>
+										<div class="wizard-inner top_all_clock_div">
+											<!-- Top clock div -->
 										</div>
 										<div class="tab-content">
 											<div class="tab-pane active" role="tabpanel" id="step1">

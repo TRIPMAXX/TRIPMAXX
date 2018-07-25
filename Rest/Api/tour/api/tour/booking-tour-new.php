@@ -51,10 +51,10 @@
 											<?php
 													endif;
 											?>
-													<div class="clock_img_div">
+													<!-- <div class="clock_img_div"> -->
 											<?php
 														$clock_am_div=$clock_pm_div='';
-														foreach($booking_details_list['booking_destination_list'] as $svg_b_key=>$svg_b_val):
+														//foreach($booking_details_list['booking_destination_list'] as $svg_b_key=>$svg_b_val):
 															/*if(isset($svg_b_val['booking_transfer_list']) && !empty($svg_b_val['booking_transfer_list'])):
 																foreach($svg_b_val['booking_transfer_list'] as $svg_t_key=>$svg_t_val):
 																	if($tour_date==$svg_t_val['booking_start_date']):
@@ -78,7 +78,7 @@
 																	endif;
 																endforeach;
 															endif;*/
-															if(isset($svg_b_val['booking_tour_list']) && !empty($svg_b_val['booking_tour_list'])):
+															/*if(isset($svg_b_val['booking_tour_list']) && !empty($svg_b_val['booking_tour_list'])):
 																foreach($svg_b_val['booking_tour_list'] as $svg_t_key=>$svg_t_val):
 																	if($tour_date==$svg_t_val['booking_start_date']):
 																		$booking_start_time = explode(':', $svg_t_val['pickup_time']);
@@ -101,9 +101,9 @@
 																	endif;
 																endforeach;
 															endif;
-														endforeach;
+														endforeach;*/
 											?>
-														<div class="change_clock_am_div">
+														<!-- <div class="change_clock_am_div">
 															<input type="checkbox" checked data-toggle="toggle" data-on="AM" data-off="PM" data-onstyle="primary" data-offstyle="danger" class="toggle-demo" onchange="change_clock($(this))">
 														</div>
 														<div class="clock clock_am_div">
@@ -115,9 +115,9 @@
 															<svg>
 																<?php echo $clock_pm_div;?>
 															</svg>
-														</div>
+														</div> -->
 														<!-- <img src="assets/img/final_rular.png" border="0" alt=""> -->
-													</div>
+													<!-- </div> -->
 												</div>
 												<?php echo $tour_prev_html;?>
 												<div class="clearfix"></div>
@@ -199,10 +199,10 @@
 												</div>
 												<div class="clearfix"></div>
 												<div class="col-md-12">
-													<a href="<?php echo DOMAIN_NAME_PATH_ADMIN.'edit_tour?tour_id='.base64_encode($find_tour_details['id']);?>" target="_blank" style="font-size:14px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_tours(\'tour<?php echo $t_val['booking_start_date'].'-old-'.$find_tour_details['id'];?>\');" style="font-size:14px;"><b>VIEW AVAILABLE OFFERS</b></a>
+													<a href="<?php echo DOMAIN_NAME_PATH_ADMIN.'edit_tour?tour_id='.base64_encode($find_tour_details['id']);?>" target="_blank" style="font-size:14px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_offers(\'tour<?php echo $t_val['booking_start_date'].'-old-'.$find_tour_details['id'];?>\', $(this));" style="font-size:14px;"><b>VIEW AVAILABLE OFFERS</b></a>
 												</div>
 												<div class="clearfix"></div>
-												<div id="tour<?php echo $t_val['booking_start_date'].'-old-'.$find_tour_details['id'];?>" class="tour_offer_cls">
+												<div id="tour<?php echo $t_val['booking_start_date'].'-old-'.$find_tour_details['id'];?>" class="tour_offer_cls tour<?php echo $t_val['booking_start_date'].'-old-'.$find_tour_details['id'];?>">
 													<div style="border:1px solid gray;background-color:gray;margin-top:0px;">
 														<div class="col-md-1" style="font-weight:bold;color:#fff;">#</div>
 														<div class="col-md-3" style="font-weight:bold;color:#fff;">Offer Title</div>
@@ -314,10 +314,10 @@
 									<?php
 											endif;
 									?>
-											<div class="clock_img_div">
+											<!-- <div class="clock_img_div"> -->
 									<?php
 												$clock_am_div=$clock_pm_div='';
-												foreach($booking_details_list['booking_destination_list'] as $svg_b_key=>$svg_b_val):
+												/*foreach($booking_details_list['booking_destination_list'] as $svg_b_key=>$svg_b_val):
 													if(isset($svg_b_val['booking_transfer_list']) && !empty($svg_b_val['booking_transfer_list'])):
 														foreach($svg_b_val['booking_transfer_list'] as $svg_t_key=>$svg_t_val):
 															if($tour_date==$svg_t_val['booking_start_date']):
@@ -364,23 +364,23 @@
 															endif;
 														endforeach;
 													endif;
-												endforeach;
+												endforeach;*/
 									?>
-												<div class="change_clock_am_div">
+												<!-- <div class="change_clock_am_div">
 													<input type="checkbox" checked data-toggle="toggle" data-on="AM" data-off="PM" data-onstyle="primary" data-offstyle="danger" class="toggle-demo" onchange="change_clock($(this))">
 												</div>
 												<div class="clock clock_am_div">
 													<svg>
-														<?php echo $clock_am_div;?>
+														<?php //echo $clock_am_div;?>
 													</svg>
 												</div>
 												<div class="clock clock_pm_div">
 													<svg>
-														<?php echo $clock_pm_div;?>
+														<?php //echo $clock_pm_div;?>
 													</svg>
-												</div>
+												</div> -->
 												<!-- <img src="assets/img/final_rular.png" border="0" alt=""> -->
-											</div>
+											<!-- </div> -->
 										</div>
 										<?php echo $tour_prev_html;?>
 										<div class="clearfix"></div>

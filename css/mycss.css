@@ -569,3 +569,19 @@ font-size:13px;
 	content: attr(data-title);
 }
 }
+.top_all_clock_div{
+    text-align: center;
+}
+.each_top_clock_div{
+	display:inline-block;
+	width: 18%;
+    text-align: center;
+}
+.top_clock_img_div{
+	display:inline-block;
+}
+.each_top_clock_div h4{
+	color: #000;
+    padding: 5px 15px;
+    width: 100%;
+}

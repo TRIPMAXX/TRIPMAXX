@@ -8,6 +8,7 @@
         margin: 40px auto;
         margin-bottom: 0;
         border-bottom-color: #e0e0e0;
+		text-align:center;
     }
 
     .wizard > div.wizard-inner {
@@ -66,6 +67,8 @@ span.round-tab:hover {
 
 .wizard .nav-tabs > li {
     width: 18%;
+	float:none;
+	display:inline-block;
 }
 
 .wizard li:after {

@@ -55,6 +55,7 @@
 						$data['msg']="Data received successfully";
 						$data['transfer_data']=$return_data_arr['country_city_rcd_html'];
 						$data['city_tab_html']=$return_data_arr['city_tab_html'];
+						$data['all_clock_html']=$return_data_arr['all_clock_html'];
 						$data['heading_count_rcd']=$return_data_arr['heading_count_rcd'];
 					else:
 						$data['status'] = 'error';

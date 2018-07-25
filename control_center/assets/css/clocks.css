@@ -1,11 +1,11 @@
 .clock {
    /*background: #fff url(../img/cface.png) 0 0 no-repeat;*/
     background: #fff url(../img/printable-clock.jpg) 0 0 no-repeat;
-    height: 60px;
+    height: 90px;
     margin: 0 auto;
     overflow: hidden;
     position: relative;
-    width: 60px;
+    width: 90px;
 
     -webkit-border-radius: 250px;
     -moz-border-radius: 250px;
@@ -28,7 +28,7 @@
 	/*float: right;*/
 	background-size: contain;
 	background-position: center center;
-	background-size: 60px;
+	background-size: 90px;
 	-webkit-border-radius: 50%;
 	-moz-border-radius: 50%;
 	-ms-border-radius: 50%;
@@ -49,7 +49,7 @@
 	border: 1px solid #FFF;*/
 }
 svg {
-	height: 35px;
+	height: 65px;
 	width: 100%;
 	margin: 12px 0px;
 	/*height: 20px;
@@ -72,7 +72,7 @@ svg line{
 }
 .change_clock_am_div{
 	float: right;
-    margin-top: 14px;
+    margin-top: 26px;
     margin-left: 15px;
 }
 .clock_pm_div{

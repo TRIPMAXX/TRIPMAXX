@@ -326,10 +326,10 @@
 									</div>
 									<div class="clearfix"></div>
 									<div class="col-md-12">
-										<a href="<?php echo DOMAIN_NAME_PATH_ADMIN;?>edit_tour?tour_id=<?php echo base64_encode($tour_val['id']);?>" target="_blank" style="font-size:14px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_offers('tour<?php echo $tour_val['id'];?>');" style="font-size:14px;"><b>VIEW AVAILABLE OFFERS</b></a>
+										<a href="<?php echo DOMAIN_NAME_PATH_ADMIN;?>edit_tour?tour_id=<?php echo base64_encode($tour_val['id']);?>" target="_blank" style="font-size:14px;"><b>MORE INFO</b></a> | <a href="javascript:void(0);" onclick="show_offers('tour<?php echo $tour_val['id'];?>', $(this));" style="font-size:14px;"><b>VIEW AVAILABLE OFFERS</b></a>
 									</div>
 									<div class="clearfix"></div>
-									<div id="tour<?php echo $tour_val['id'];?>" <?php echo($tour_first_row==1 && $offset==0 ? '' : 'style="display:none;"');?> class="tour_offer_cls">
+									<div id="tour<?php echo $tour_val['id'];?>" <?php echo($tour_first_row==1 && $offset==0 ? '' : 'style="display:none;"');?> class="tour_offer_cls tour<?php echo $tour_val['id'];?>">
 										<div style="border:1px solid gray;background-color:gray;margin-top:0px;">
 											<div class="col-md-1" style="font-weight:bold;color:#fff;">#</div>
 											<div class="col-md-3" style="font-weight:bold;color:#fff;">Offer Title</div>
